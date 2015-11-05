@@ -3,7 +3,10 @@
 
 #include <QtGlobal>
 
+class GGPage;
+
 class GGCreatePageCmd;
+class GGDeletePageCmd;
 
 class GGAbstractCommandFactory
 {
@@ -18,6 +21,8 @@ public:
     virtual GGCreatePageCmd *createConditionPage() = 0;
     virtual GGCreatePageCmd *createActionPage() = 0;
     virtual GGCreatePageCmd *createDecisionPage() = 0;
+
+    virtual GGDeletePageCmd *deletePage(GGPage *page) = 0;
 
 };
 

@@ -32,3 +32,8 @@ GGCreatePageCmd *GGEditCommandFactory::createDecisionPage()
     return new GGCreatePageCmd(m_model, GGCreatePageCmd::DecisionPage);
 }
 
+GGDeletePageCmd *GGEditCommandFactory::deletePage(GGPage *page)
+{
+    return new GGDeletePageCmd(m_model, page);
+}
+

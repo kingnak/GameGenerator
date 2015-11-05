@@ -2,6 +2,8 @@
 #define GGMODELCOMMANDS_H
 
 #include "ggabstractmodelcommand.h"
+#include <model/ggconnectionslot.h>
+#include <QList>
 
 class GGPage;
 class GGConnection;
@@ -35,5 +37,32 @@ private:
 };
 
 ///////////////////////////
+
+class GGDeletePageCmd : public GGAbstractModelCommand
+{
+public:
+    GGDeletePageCmd(GGEditModel *model, GGPage *page);
+    ~GGDeletePageCmd();
+
+    QString description() const;
+
+    GGPage *deletedPage();
+
+protected:
+    bool doExecute();
+    bool doUndo();
+    bool doRedo();
+
+private:
+    GGPage *m_deletedPage;
+    struct PCS {
+        GGConnectionSlot slot;
+        GGPage *page;
+        GGConnection *conn;
+    };
+
+    QList<PCS> m_slots;
+    QList<GGConnection *> m_affectedConnections;
+};
 
 #endif // GGMODELCOMMANDS_H

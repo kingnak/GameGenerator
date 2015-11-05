@@ -16,6 +16,8 @@ public:
     GGCreatePageCmd *createActionPage();
     GGCreatePageCmd *createDecisionPage();
 
+    GGDeletePageCmd *deletePage(GGPage *page);
+
 private:
     GGEditModel *m_model;
 };
