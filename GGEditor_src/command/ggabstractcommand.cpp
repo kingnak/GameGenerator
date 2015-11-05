@@ -2,9 +2,9 @@
 
 bool GGAbstractCommand::execute()
 {
+    Q_ASSERT(m_state == NotExecuted);
     if (m_state != NotExecuted) {
-		//Q_ASSERT(false);
-        return false;
+        return setError("Command is not in NotExecuted state");
     }
 
     if (doExecute()) {
@@ -16,9 +16,9 @@ bool GGAbstractCommand::execute()
 
 bool GGAbstractCommand::undo()
 {
+    Q_ASSERT(m_state == Executed);
     if (m_state != Executed) {
-		//Q_ASSERT(false);
-        return false;
+        return setError("Command is not in Executed state");
     }
 
     if (doUndo()) {
@@ -30,9 +30,9 @@ bool GGAbstractCommand::undo()
 
 bool GGAbstractCommand::redo()
 {
+    Q_ASSERT(m_state == Undone);
     if (m_state != Undone) {
-		//Q_ASSERT(false);
-        return false;
+        return setError("Command is not in Undone state");
     }
 
     if (doRedo()) {
