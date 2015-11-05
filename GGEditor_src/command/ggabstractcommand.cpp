@@ -1,9 +1,9 @@
-#include "ggabstractmodelcommand.h"
+#include "ggabstractcommand.h"
 
-bool GGAbstractModelCommand::execute()
+bool GGAbstractCommand::execute()
 {
     if (m_state != NotExecuted) {
-        Q_ASSERT(false);
+		//Q_ASSERT(false);
         return false;
     }
 
@@ -14,10 +14,10 @@ bool GGAbstractModelCommand::execute()
     return false;
 }
 
-bool GGAbstractModelCommand::undo()
+bool GGAbstractCommand::undo()
 {
     if (m_state != Executed) {
-        Q_ASSERT(false);
+		//Q_ASSERT(false);
         return false;
     }
 
@@ -28,10 +28,10 @@ bool GGAbstractModelCommand::undo()
     return false;
 }
 
-bool GGAbstractModelCommand::redo()
+bool GGAbstractCommand::redo()
 {
     if (m_state != Undone) {
-        Q_ASSERT(false);
+		//Q_ASSERT(false);
         return false;
     }
 
@@ -42,7 +42,7 @@ bool GGAbstractModelCommand::redo()
     return false;
 }
 
-bool GGAbstractModelCommand::setError(QString error)
+bool GGAbstractCommand::setError(QString error)
 {
     m_error = error;
     return false;
