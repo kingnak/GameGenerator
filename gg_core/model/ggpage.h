@@ -29,7 +29,7 @@ public:
     void setSceneName(QString sn) { m_sceneName = sn; }
     void setName(QString n) { m_name = n; }
 
-    virtual QList<GGConnection *> getConnections() = 0;
+    virtual QList<GGConnection *> getConnections() const = 0;
     virtual bool removeConnection(GGConnection *connection) = 0;
 
 private:
@@ -56,13 +56,13 @@ public:
     int type() const;
 
 
-    GGConnection *trueConnection();
-    GGConnection *falseConnection();
+    GGConnection *trueConnection() const;
+    GGConnection *falseConnection() const;
 
     void setTrueConnection(GGConnection *t);
     void setFalseConnection(GGConnection *f);
 
-    QList<GGConnection *> getConnections();
+    QList<GGConnection *> getConnections() const;
     bool removeConnection(GGConnection *connection);
 
 private:
@@ -97,8 +97,10 @@ public:
 
     int type() const;
 
-    void setConnection(GGConnection *conn);
-    QList<GGConnection *> getConnections();
+    void setStartConnection(GGConnection *conn);
+    GGConnection *startConnection() const;
+
+    QList<GGConnection *> getConnections() const;
     bool removeConnection(GGConnection *connection);
 
 private:
@@ -117,8 +119,16 @@ public:
     };
     int type() const;
 
-    QList<GGConnection *> getConnections();
+    QList<GGConnection *> getConnections() const;
     bool removeConnection(GGConnection *connection);
 };
+
+//////////////////////////////////////////
+
+template <class T> inline T ggpage_cast(GGPage *p)
+{ return (p && int(static_cast<T>(0)->Type) == p->type()) ? static_cast<T>(p) : 0; }
+
+template <class T> inline T ggpage_cast(const GGPage *p)
+{ return (p && int(static_cast<T>(0)->Type) == p->type()) ? static_cast<T>(p) : 0; }
 
 #endif // GGPAGE_H

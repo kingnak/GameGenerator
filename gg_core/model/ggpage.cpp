@@ -26,7 +26,27 @@ int GGConditionPage::type() const
     return Type;
 }
 
-QList<GGConnection *> GGConditionPage::getConnections()
+GGConnection *GGConditionPage::trueConnection() const
+{
+    return m_true;
+}
+
+GGConnection *GGConditionPage::falseConnection() const
+{
+    return m_false;
+}
+
+void GGConditionPage::setTrueConnection(GGConnection *t)
+{
+    m_true = t;
+}
+
+void GGConditionPage::setFalseConnection(GGConnection *f)
+{
+    m_false = f;
+}
+
+QList<GGConnection *> GGConditionPage::getConnections() const
 {
     QList<GGConnection *> ret;
     if (m_true) ret << m_true;
@@ -68,12 +88,17 @@ int GGStartPage::type() const
     return Type;
 }
 
-void GGStartPage::setConnection(GGConnection *conn)
+void GGStartPage::setStartConnection(GGConnection *conn)
 {
     m_conn = conn;
 }
 
-QList<GGConnection *> GGStartPage::getConnections()
+GGConnection *GGStartPage::startConnection() const
+{
+    return m_conn;
+}
+
+QList<GGConnection *> GGStartPage::getConnections() const
 {
     QList<GGConnection *> ret;
     if (m_conn)
@@ -103,7 +128,7 @@ int GGEndPage::type() const
     return Type;
 }
 
-QList<GGConnection *> GGEndPage::getConnections()
+QList<GGConnection *> GGEndPage::getConnections() const
 {
     return QList<GGConnection *>();
 }
