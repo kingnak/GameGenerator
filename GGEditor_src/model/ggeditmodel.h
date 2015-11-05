@@ -1,5 +1,5 @@
-#ifndef GGMODEL_H
-#define GGMODEL_H
+#ifndef GGEDITMODEL_H
+#define GGEDITMODEL_H
 
 #include <gg_definitions.h>
 #include <QMap>
@@ -31,4 +31,4 @@ private:
     GG::ConnectionID m_nextConnId;
 };
 
-#endif // GGMODEL_H
+#endif // GGEDITMODEL_H

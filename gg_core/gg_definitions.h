@@ -1,5 +1,5 @@
-#ifndef GG_GLOBAL_H
-#define GG_GLOBAL_H
+#ifndef GG_DEFINITIONS_H
+#define GG_DEFINITIONS_H
 
 #include <QtGlobal>
 
@@ -11,5 +11,5 @@ static const PageID InvalidPageId = 0xFFFFFFFF;
 static const ConnectionID InvalidConnectionId = 0xFFFFFFFF;
 }
 
-#endif // GG_GLOBAL_H
+#endif // GG_DEFINITIONS_H
 
