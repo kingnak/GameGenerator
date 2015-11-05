@@ -17,7 +17,7 @@ GGCreatePageCmd::~GGCreatePageCmd()
     }
 }
 
-bool GGCreatePageCmd::execute()
+bool GGCreatePageCmd::doExecute()
 {
     switch (m_type) {
     case StartPage:
@@ -41,7 +41,7 @@ bool GGCreatePageCmd::execute()
     return true;
 }
 
-bool GGCreatePageCmd::undo()
+bool GGCreatePageCmd::doUndo()
 {
     // New page cannot have connections
     if (!m_model->unregisterPage(m_createdPage->id())) {
@@ -50,7 +50,7 @@ bool GGCreatePageCmd::undo()
     return true;
 }
 
-bool GGCreatePageCmd::redo()
+bool GGCreatePageCmd::doRedo()
 {
     if (!m_model->registerPageWithId(m_createdPage)) {
         return setError("Cannot register page");

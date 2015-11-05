@@ -1,5 +1,5 @@
-#ifndef GGCREATEPAGECMD_H
-#define GGCREATEPAGECMD_H
+#ifndef GGMODELCOMMANDS_H
+#define GGMODELCOMMANDS_H
 
 #include "ggabstractmodelcommand.h"
 
@@ -20,12 +20,14 @@ public:
     GGCreatePageCmd(GGEditModel *model, PageType type);
     ~GGCreatePageCmd();
 
-    bool execute();
-    bool undo();
-    bool redo();
     QString description() const;
 
     GGPage *createdPage();
+
+protected:
+    bool doExecute();
+    bool doUndo();
+    bool doRedo();
 
 private:
     PageType m_type;
@@ -34,4 +36,4 @@ private:
 
 ///////////////////////////
 
-#endif // GGCREATEPAGECMD_H
+#endif // GGMODELCOMMANDS_H

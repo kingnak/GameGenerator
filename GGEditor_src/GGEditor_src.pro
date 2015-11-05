@@ -12,13 +12,16 @@ CONFIG += staticlib
 
 SOURCES += ggmainwindow.cpp \
     model/ggeditmodel.cpp \
-    command/ggmodelcommands.cpp
+    command/ggmodelcommands.cpp \
+    command/ggabstractmodelcommand.cpp \
+    command/ggeditcommandfactory.cpp
 
 HEADERS += ggmainwindow.h \
     model/ggeditmodel.h \
     command/ggabstractmodelcommand.h \
     command/ggabstractcommandfactory.h \
-    command/ggmodelcommands.h
+    command/ggmodelcommands.h \
+    command/ggeditcommandfactory.h
 unix {
     target.path = /usr/lib
     INSTALLS += target
