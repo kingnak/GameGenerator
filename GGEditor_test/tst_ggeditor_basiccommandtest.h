@@ -11,7 +11,10 @@ public:
     GGEditor_BasicCommandTest() {}
 
 private slots:
+    void testCommandBasics();
     void testCreatePage();
+    void testDeletePage();
+    void testDeletePageWithConnection();
 };
 
 #endif // TST_GGEDITOR_BASICCOMMANDTEST_H

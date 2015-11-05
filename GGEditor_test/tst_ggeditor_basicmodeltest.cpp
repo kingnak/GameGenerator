@@ -23,7 +23,7 @@ void GGEditor_BasicModelTest::init()
     // This is a "hack" here. In future, this should be done by Commands
     if (!m_warnedAboutConnectionHack) QWARN("s->c is set manually. In future, this must be done by commands!");
     m_warnedAboutConnectionHack = true;
-    ((GGStartPage*)s)->setConnection(c);
+    ((GGStartPage*)s)->setStartConnection(c);
 }
 
 void GGEditor_BasicModelTest::cleanup()
@@ -118,7 +118,7 @@ void GGEditor_BasicModelTest::testReregister()
     QEXPECT_FAIL("", "Setting connections on pages will be done by Commands", Continue);
     QVERIFY2(s->getConnections().value(0) == c, "s has not c after reregistering c");
     // HACK
-    ((GGStartPage*)s)->setConnection(c);
+    ((GGStartPage*)s)->setStartConnection(c);
 
     // reregister e
     model->unregisterPage(e->id());
@@ -131,5 +131,5 @@ void GGEditor_BasicModelTest::testReregister()
     QEXPECT_FAIL("", "Setting connections on pages will be done by Commands", Continue);
     QVERIFY2(s->getConnections().value(0) == c, "s has not c after reregistering c");
     // HACK
-    ((GGStartPage*)s)->setConnection(c);
+    ((GGStartPage*)s)->setStartConnection(c);
 }
