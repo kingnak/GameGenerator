@@ -14,6 +14,9 @@ private slots:
     void testCommandBasics();
     void testCreatePage();
     void testDeletePage();
+    void testCreateConnection();
+    void testDeleteConnection();
+
     void testDeletePageWithConnection();
 };
 
