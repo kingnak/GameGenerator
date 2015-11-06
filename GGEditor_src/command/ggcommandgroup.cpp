@@ -33,15 +33,20 @@ QList<GGAbstractCommand *> GGCommandGroup::commands()
 bool GGCommandGroup::doExecute()
 {
     for (int i = 0; i < m_commands.size(); ++i) {
-        if (!m_commands[i]->execute()) {
+        bool ret;
+        // Command might be undone by previous failed execute
+        if (m_commands[i]->state() == NotExecuted)
+            ret = m_commands[i]->execute();
+        else if (m_commands[i]->state() == Undone)
+            ret = m_commands[i]->redo();
+
+        if (!ret) {
             setError(m_commands[i]->error());
             for (int j = i-1; j >= 0; --j) {
                 if (!m_commands[j]->undo()) {
                     Q_ASSERT_X(false, "GGCommandGroup::doExecute", qPrintable("Error while rolling back in failed execute: " + m_commands[j]->error()));
                     break;
                 }
-                // FORACBLY SET TO NotExecuted
-                m_commands[j]->m_state = NotExecuted;
             }
             return false;
         }

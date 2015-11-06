@@ -295,7 +295,11 @@ void GGEditor_BasicCommandTest::testCommandGroup()
     QVERIFY2(!grp.execute(), "Can execute with failing command");
     QVERIFY(grp.commands().size() == 2);
     QVERIFY(grp.state() == GGAbstractCommand::NotExecuted);
-    QVERIFY(grp.commands()[0]->state() == GGAbstractCommand::NotExecuted);
+    if (c == d1) {
+        QVERIFY(grp.commands()[0]->state() == GGAbstractCommand::NotExecuted);
+    } else {
+        QVERIFY(grp.commands()[0]->state() == GGAbstractCommand::Undone);
+    }
     QVERIFY(grp.commands()[1]->state() == GGAbstractCommand::NotExecuted);
     QVERIFY(grp.error() == failing + " failed execute");
 
