@@ -8,7 +8,6 @@ GGEditModel::GGEditModel(GGAbstractFactory *factory)
 
 }
 
-
 bool GGEditModel::registerNewPage(GGPage *page)
 {
     if (!page || page->model() || page->id() != GG::InvalidPageId) {
@@ -21,8 +20,6 @@ bool GGEditModel::registerNewPage(GGPage *page)
 
     return true;
 }
-
-
 
 bool GGEditModel::registerNewConnection(GGConnection *conn)
 {

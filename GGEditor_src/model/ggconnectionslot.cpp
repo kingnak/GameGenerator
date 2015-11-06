@@ -3,7 +3,7 @@
 #include <model/ggconnection.h>
 #include <QList>
 
-bool GGConnectionSlot::apply(GGPage *page, GGConnection *conn)
+bool GGConnectionSlot::connect(GGPage *page, GGConnection *conn)
 {
     switch (m_type) {
     case StartConnection:

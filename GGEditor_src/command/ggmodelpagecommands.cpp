@@ -1,4 +1,4 @@
-#include "ggmodelcommands.h"
+#include "ggmodelpagecommands.h"
 #include "../model/ggeditmodel.h"
 #include <model/ggabstractfactory.h>
 #include <model/ggpage.h>
@@ -144,7 +144,7 @@ bool GGDeletePageCmd::doUndo()
 
     // Re-Apply to slots
     foreach (PCS s, m_slots) {
-        if (!s.slot.apply(s.page, s.conn)) {
+        if (!s.slot.connect(s.page, s.conn)) {
             // Try to remove again
             if (!m_model->unregisterPage(m_deletedPage->id())) {
                 Q_ASSERT_X(false, "GGDeletePageCmd::doUndo", "Re-Registering of connections to slots failed, and unregistering page again failed, too");
@@ -165,4 +165,4 @@ bool GGDeletePageCmd::doRedo()
     return true;
 }
 
-
+///////////////////////////

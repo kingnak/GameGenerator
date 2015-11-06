@@ -1,5 +1,5 @@
-#ifndef GGMODELCOMMANDS_H
-#define GGMODELCOMMANDS_H
+#ifndef GGMODELPAGECOMMANDS_H
+#define GGMODELPAGECOMMANDS_H
 
 #include "ggabstractmodelcommand.h"
 #include <model/ggconnectionslot.h>
@@ -65,4 +65,7 @@ private:
     QList<GGConnection *> m_affectedConnections;
 };
 
-#endif // GGMODELCOMMANDS_H
+///////////////////////////
+
+
+#endif // GGMODELPAGECOMMANDS_H

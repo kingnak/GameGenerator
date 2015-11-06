@@ -1,5 +1,6 @@
 #include "ggeditcommandfactory.h"
-#include "ggmodelcommands.h"
+#include "ggmodelpagecommands.h"
+#include "ggmodelconnectioncommands.h"
 
 GGEditCommandFactory::GGEditCommandFactory(GGEditModel *model)
     : m_model(model)
@@ -35,5 +36,20 @@ GGCreatePageCmd *GGEditCommandFactory::createDecisionPage()
 GGDeletePageCmd *GGEditCommandFactory::deletePage(GGPage *page)
 {
     return new GGDeletePageCmd(m_model, page);
+}
+
+GGCreateConnectionCmd *GGEditCommandFactory::createConnection(GGPage *src, GGPage *dest, GGConnectionSlot slot)
+{
+    return new GGCreateConnectionCmd(m_model, slot, src, dest, GGCreateConnectionCmd::Connection);
+}
+
+GGCreateConnectionCmd *GGEditCommandFactory::createLink(GGPage *src, GGPage *dest, GGConnectionSlot slot)
+{
+    return new GGCreateConnectionCmd(m_model, slot, src, dest, GGCreateConnectionCmd::Link);
+}
+
+GGDeleteConnectionCmd *GGEditCommandFactory::deleteConnection(GGConnection *conn)
+{
+    return new GGDeleteConnectionCmd(m_model, conn);
 }
 

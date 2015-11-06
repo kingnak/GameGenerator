@@ -12,19 +12,21 @@ CONFIG += staticlib
 
 SOURCES += ggmainwindow.cpp \
     model/ggeditmodel.cpp \
-    command/ggmodelcommands.cpp \
     command/ggeditcommandfactory.cpp \
     command/ggabstractcommand.cpp \
-    model/ggconnectionslot.cpp
+    model/ggconnectionslot.cpp \
+    command/ggmodelpagecommands.cpp \
+    command/ggmodelconnectioncommands.cpp
 
 HEADERS += ggmainwindow.h \
     model/ggeditmodel.h \
     command/ggabstractcommandfactory.h \
-    command/ggmodelcommands.h \
     command/ggeditcommandfactory.h \
     command/ggabstractcommand.h \
     command/ggabstractmodelcommand.h \
-    model/ggconnectionslot.h
+    model/ggconnectionslot.h \
+    command/ggmodelpagecommands.h \
+    command/ggmodelconnectioncommands.h
 unix {
     target.path = /usr/lib
     INSTALLS += target
