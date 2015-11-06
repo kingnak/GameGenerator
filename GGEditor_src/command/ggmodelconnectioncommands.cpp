@@ -7,10 +7,10 @@
 GGCreateConnectionCmd::GGCreateConnectionCmd(GGEditModel *model, GGConnectionSlot slot, GGPage *src, GGPage *dest, Type type)
 :   GGAbstractModelCommand(model),
     m_createdConn(NULL),
+    m_type(type),
     m_slot(slot),
     m_src(src),
-    m_dest(dest),
-    m_type(type)
+    m_dest(dest)
 {
 
 }

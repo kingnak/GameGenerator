@@ -12,6 +12,11 @@ public:
 
 private slots:
     void testCommandBasics();
+    void testCommandGroup_data();
+    void testCommandGroup();
+    void testCommandStack();
+    void testCommandStackWithFails();
+
     void testCreatePage();
     void testDeletePage();
     void testCreateConnection();

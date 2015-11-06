@@ -3,22 +3,26 @@
 #include <command/ggeditcommandfactory.h>
 #include <command/ggmodelpagecommands.h>
 #include <command/ggmodelconnectioncommands.h>
+#include <command/ggcommandstack.h>
+#include <command/ggcommandgroup.h>
 #include <model/ggeditmodel.h>
 #include <model/ggsimplefactory.h>
 #include <model/ggpage.h>
 #include <model/ggconnection.h>
 
+struct DummyCommand : public GGAbstractCommand {
+   DummyCommand(bool ret = true, QString desc = "Dummy") : GGAbstractCommand(), ret(ret), desc(desc) {}
+   bool ret;
+   QString desc;
+   QString description() const { return desc; }
+protected:
+    bool doExecute() { return ret ? true : setError(desc + " failed execute"); }
+    bool doUndo() { return ret ? true : setError(desc + " failed undo"); }
+    bool doRedo() { return ret ? true : setError(desc + " failed redo"); }
+};
+
 void GGEditor_BasicCommandTest::testCommandBasics()
 {
-    struct DummyCommand : public GGAbstractCommand {
-       DummyCommand(bool ret) : GGAbstractCommand(), ret(ret){}
-       bool ret;
-       QString description() const { return ""; }
-    protected:
-        bool doExecute() { return ret; }
-        bool doUndo() { return ret; }
-        bool doRedo() { return ret; }
-    };
 
     DummyCommand cmd(false);
 
@@ -48,6 +52,296 @@ void GGEditor_BasicCommandTest::testCommandBasics()
     QVERIFY2(cmd.state() == GGAbstractCommand::Executed, "Redone Command is not in Executed state");
     QVERIFY2(cmd.redo() == false, "Can Redo redone command");
     QVERIFY2(cmd.execute() == false, "Can execute redone command");
+}
+
+void GGEditor_BasicCommandTest::testCommandStack()
+{
+    QList<DummyCommand *> lst;
+    lst << new DummyCommand(true) << new DummyCommand(true) << new DummyCommand(true) << new DummyCommand(true);
+
+    GGCommandStack stk;
+    QVERIFY2(stk.lastCommand() == NULL, "Initial stack is wrong");
+    QVERIFY2(stk.undoCommand() == NULL, "Initial stack is wrong");
+    QVERIFY2(stk.redoCommand() == NULL, "Initial stack is wrong");
+    QVERIFY2(stk.getAllCommands().isEmpty(), "Initial stack is wrong");
+    QVERIFY2(stk.getUndoCommands().isEmpty(), "Initial stack is wrong");
+    QVERIFY2(stk.getRedoCommands().isEmpty(), "Initial stack is wrong");
+
+    QVERIFY2(stk.execute(lst[0]), "Error in execute 1st command");
+    QVERIFY2(stk.lastCommand() == lst[0], "Last wrong after 1st command");
+    QVERIFY2(stk.undoCommand() == lst[0], "Undo wrong after 1st command");
+    QVERIFY2(stk.redoCommand() == NULL, "Redo wrong after 1st command");
+
+    QVERIFY2(stk.execute(lst[1]), "Error in execute 2nd command");
+    QVERIFY2(stk.lastCommand() == lst[1], "Last wrong after 2nd command");
+    QVERIFY2(stk.undoCommand() == lst[1], "Undo wrong after 2nd command");
+    QVERIFY2(stk.redoCommand() == NULL, "Redo wrong after 2nd command");
+
+    QVERIFY2(stk.execute(lst[2]), "Error in execute 3rd command");
+    QVERIFY2(stk.lastCommand() == lst[2], "Last wrong after 3rd command");
+    QVERIFY2(stk.undoCommand() == lst[2], "Undo wrong after 3rd command");
+    QVERIFY2(stk.redoCommand() == NULL, "Redo wrong after 3rd command");
+
+    QVERIFY2(!stk.redo(), "Can Redo although none undone");
+
+    QVERIFY2(stk.undo(), "Cannot undo");
+    QVERIFY2(stk.lastCommand() == lst[2], "Wrong last after undo");
+    QVERIFY2(stk.undoCommand() == lst[1], "Wrong undo after undo");
+    QVERIFY2(stk.redoCommand() == lst[2], "Wrong redo after undo");
+
+    QVERIFY2(stk.getAllCommands().size() == 3, "Wrong size after undo");
+    QVERIFY2(stk.getRedoCommands().size() == 1, "Wrong redo size after undo");
+    QVERIFY2(stk.getRedoCommands()[0] == lst[2], "Wrong redo commands after undo");
+    QVERIFY2(stk.getUndoCommands().size() == 2, "Wrong undo size after undo");
+    QVERIFY2(stk.getUndoCommands()[0] == lst[1], "Wrong undo commands after undo");
+    QVERIFY2(stk.getUndoCommands()[1] == lst[0], "Wrong undo commands after undo");
+
+    QVERIFY2(stk.execute(lst[3]), "Cannot execute after undo");
+    QVERIFY2(stk.lastCommand() == lst[3], "Last wrong after 4th command");
+    QVERIFY2(stk.undoCommand() == lst[3], "Undo wrong after 4th command");
+    QVERIFY2(stk.redoCommand() == NULL, "Redo wrong after 4th command");
+
+
+    QVERIFY2(!stk.redo(), "Can Redo although purged");
+
+    QVERIFY2(stk.undo(), "Cannot undo");
+    QVERIFY2(stk.lastCommand() == lst[3], "Wrong last after undo");
+    QVERIFY2(stk.undoCommand() == lst[1], "Wrong undo after undo");
+    QVERIFY2(stk.redoCommand() == lst[3], "Wrong redo after undo");
+
+    QVERIFY2(stk.getAllCommands().size() == 3, "Wrong size after undo");
+    QVERIFY2(stk.getRedoCommands().size() == 1, "Wrong redo size after undo");
+    QVERIFY2(stk.getRedoCommands()[0] == lst[3], "Wrong redo commands after undo");
+    QVERIFY2(stk.getUndoCommands().size() == 2, "Wrong undo size after undo");
+    QVERIFY2(stk.getUndoCommands()[0] == lst[1], "Wrong undo commands after undo");
+    QVERIFY2(stk.getUndoCommands()[1] == lst[0], "Wrong undo commands after undo");
+
+    QVERIFY2(stk.redo(), "Cannot redo");
+    QVERIFY2(stk.lastCommand() == lst[3], "Last wrong after 4th command");
+    QVERIFY2(stk.undoCommand() == lst[3], "Undo wrong after 4th command");
+    QVERIFY2(stk.redoCommand() == NULL, "Redo wrong after 4th command");
+
+    /// UNDO ALL
+    QVERIFY2(stk.undo(), "Cannot undo");
+    QVERIFY2(stk.lastCommand() == lst[3], "Wrong last after undo");
+    QVERIFY2(stk.undoCommand() == lst[1], "Wrong undo after undo");
+    QVERIFY2(stk.redoCommand() == lst[3], "Wrong redo after undo");
+
+    QVERIFY2(stk.getAllCommands().size() == 3, "Wrong size after undo");
+    QVERIFY2(stk.getRedoCommands().size() == 1, "Wrong redo size after undo");
+    QVERIFY2(stk.getRedoCommands()[0] == lst[3], "Wrong redo commands after undo");
+    QVERIFY2(stk.getUndoCommands().size() == 2, "Wrong undo size after undo");
+    QVERIFY2(stk.getUndoCommands()[0] == lst[1], "Wrong undo commands after undo");
+    QVERIFY2(stk.getUndoCommands()[1] == lst[0], "Wrong undo commands after undo");
+
+
+    QVERIFY2(stk.undo(), "Cannot undo");
+    QVERIFY2(stk.lastCommand() == lst[1], "Wrong last after undo");
+    QVERIFY2(stk.undoCommand() == lst[0], "Wrong undo after undo");
+    QVERIFY2(stk.redoCommand() == lst[1], "Wrong redo after undo");
+
+    QVERIFY2(stk.getAllCommands().size() == 3, "Wrong size after undo");
+    QVERIFY2(stk.getRedoCommands().size() == 2, "Wrong redo size after undo");
+    QVERIFY2(stk.getRedoCommands()[0] == lst[1], "Wrong redo commands after undo");
+    QVERIFY2(stk.getRedoCommands()[1] == lst[3], "Wrong undo commands after undo");
+    QVERIFY2(stk.getUndoCommands().size() == 1, "Wrong undo size after undo");
+    QVERIFY2(stk.getUndoCommands()[0] == lst[0], "Wrong undo commands after undo");
+
+    QVERIFY2(stk.undo(), "Cannot undo");
+    QVERIFY2(stk.lastCommand() == lst[0], "Wrong last after undo");
+    QVERIFY2(stk.undoCommand() == NULL, "Wrong undo after undo");
+    QVERIFY2(stk.redoCommand() == lst[0], "Wrong redo after undo");
+
+    QVERIFY2(stk.getAllCommands().size() == 3, "Wrong size after undo");
+    QVERIFY2(stk.getRedoCommands().size() == 3, "Wrong redo size after undo");
+    QVERIFY2(stk.getRedoCommands()[0] == lst[0], "Wrong undo commands after undo");
+    QVERIFY2(stk.getRedoCommands()[1] == lst[1], "Wrong redo commands after undo");
+    QVERIFY2(stk.getRedoCommands()[2] == lst[3], "Wrong undo commands after undo");
+    QVERIFY2(stk.getUndoCommands().isEmpty(), "Wrong undo size after undo");
+
+    QVERIFY2(!stk.undo(), "Can undo although empty");
+
+    QVERIFY(stk.redo());
+    QVERIFY(stk.redo());
+    QVERIFY(stk.redo());
+    QVERIFY2(stk.lastCommand() == lst[3], "Last wrong after redoing all");
+    QVERIFY2(stk.undoCommand() == lst[3], "Undo wrong after redoing all");
+    QVERIFY2(stk.redoCommand() == NULL, "Redo wrong after redoing all");
+
+    QVERIFY2(stk.getAllCommands().size() == 3, "Wrong size after redoing all");
+    QVERIFY2(stk.getRedoCommands().isEmpty(), "Wrong redo size after redoing all");
+    QVERIFY2(stk.getUndoCommands().size() == 3, "Wrong undo size after redoing all");
+    QVERIFY2(stk.getUndoCommands()[0] == lst[3], "Wrong undo commands after redoing all");
+    QVERIFY2(stk.getUndoCommands()[1] == lst[1], "Wrong redo commands after redoing all");
+    QVERIFY2(stk.getUndoCommands()[2] == lst[0], "Wrong undo commands after redoing all");
+
+    QVERIFY(stk.undo());
+    QVERIFY(stk.undo());
+    QVERIFY(stk.undo());
+
+    QVERIFY2(stk.getAllCommands().size() == 3, "Wrong size after failed command");
+    QVERIFY2(stk.getUndoCommands().size() == 0, "Wrong redo size after failed command");
+    QVERIFY2(stk.getRedoCommands().size() == 3, "Wrong size after failed command");
+    QVERIFY2(stk.getRedoCommands()[0] == lst[0], "Wrong undo commands after redoing all");
+    QVERIFY2(stk.getRedoCommands()[1] == lst[1], "Wrong redo commands after redoing all");
+    QVERIFY2(stk.getRedoCommands()[2] == lst[3], "Wrong undo commands after redoing all");
+
+}
+
+void GGEditor_BasicCommandTest::testCommandStackWithFails()
+{
+    QList<DummyCommand *> lst;
+    lst << new DummyCommand(false) << new DummyCommand(false) << new DummyCommand(false);
+
+    GGCommandStack stk;
+    QVERIFY2(!stk.execute(lst[0], false), "Can execute failed");
+    QVERIFY2(stk.lastCommand() == NULL, "Last wrong after failed");
+    QVERIFY2(stk.redoCommand() == NULL, "Redo wrong after failed");
+    QVERIFY2(stk.undoCommand() == NULL, "Undo wrong after failed");
+    QVERIFY2(stk.getRedoCommands().isEmpty(), "Redo list wrong after failed");
+    QVERIFY2(stk.getUndoCommands().isEmpty(), "Undo list wrong after failed");
+
+    lst[0]->ret = true;
+    QVERIFY(stk.execute(lst[0]));
+
+    QVERIFY2(!stk.execute(lst[1], false), "Can execute failed");
+    QVERIFY2(stk.lastCommand() == lst[0], "Last wrong after failed");
+    QVERIFY2(stk.redoCommand() == NULL, "Redo wrong after failed");
+    QVERIFY2(stk.undoCommand() == lst[0], "Undo wrong after failed");
+    QVERIFY2(stk.getRedoCommands().isEmpty(), "Redo list wrong after failed");
+    QVERIFY2(stk.getUndoCommands().size() == 1, "Undo list wrong after failed");
+    QVERIFY2(stk.getUndoCommands()[0] == lst[0], "Undo list wrong after failed");
+
+    lst[1]->ret = true;
+    QVERIFY(stk.execute(lst[1]));
+
+    lst[1]->ret = false;
+    QVERIFY2(!stk.undo(), "Can undo failed");
+    // Stack not modified after failed undo Last correct was lst[1]
+    QVERIFY2(stk.lastCommand() == lst[1], "Last wrong after failed");
+    QVERIFY2(stk.redoCommand() == NULL, "Redo wrong after failed");
+    QVERIFY2(stk.undoCommand() == lst[1], "Undo wrong after failed");
+    QVERIFY2(stk.getRedoCommands().isEmpty(), "Redo list wrong after failed");
+    QVERIFY2(stk.getUndoCommands().size() == 2, "Undo list wrong after failed");
+    QVERIFY2(stk.getUndoCommands()[0] == lst[1], "Undo list wrong after failed");
+    QVERIFY2(stk.getUndoCommands()[1] == lst[0], "Undo list wrong after failed");
+
+    lst[1]->ret = true;
+    QVERIFY(stk.undo());
+
+    lst[1]->ret = false;
+
+    QVERIFY(stk.undo());
+    QVERIFY(stk.redo());
+
+    // Redoing will fail now
+    QVERIFY2(!stk.redo(), "Can redo failed");
+    // Stack not modified after failed redo Last correct was lst[0]
+    QVERIFY2(stk.lastCommand() == lst[0], "Last wrong after failed");
+    QVERIFY2(stk.redoCommand() == lst[1], "Redo wrong after failed");
+    QVERIFY2(stk.undoCommand() == lst[0], "Undo wrong after failed");
+    QVERIFY2(stk.getRedoCommands().size() == 1, "Redo list wrong after failed");
+    QVERIFY2(stk.getRedoCommands()[0] == lst[1], "Undo list wrong after failed");
+    QVERIFY2(stk.getUndoCommands().size() == 1, "Undo list wrong after failed");
+    QVERIFY2(stk.getUndoCommands()[0] == lst[0], "Undo list wrong after failed");
+
+    // must purge on failed execute
+    QVERIFY(!stk.execute(lst[2])); // lst[2] is not pushed on stack, delete it if failed!
+    QVERIFY(stk.lastCommand() == lst[0]);
+    QVERIFY(stk.redoCommand() == NULL);
+    QVERIFY(stk.undoCommand() == lst[0]);
+    QVERIFY(stk.getRedoCommands().isEmpty());
+    QVERIFY(stk.getUndoCommands().size() == 1);
+    QVERIFY(stk.getUndoCommands()[0] == lst[0]);
+}
+
+void GGEditor_BasicCommandTest::testCommandGroup_data()
+{
+    QTest::addColumn<QString>("failing");
+    QTest::newRow("first") << "first";
+    QTest::newRow("second") << "second";
+}
+
+void GGEditor_BasicCommandTest::testCommandGroup()
+{
+    QFETCH(QString, failing);
+
+    GGCommandGroup grp;
+    QVERIFY2(grp.commands().isEmpty(), "Initial wrong");
+
+    DummyCommand *d1 = new DummyCommand(true, "first");
+    grp.addCommand(d1);
+    QVERIFY2(grp.commands().size() == 1, "Wrong size after adding command");
+
+    DummyCommand *c = new DummyCommand(true, "tmp");
+    c->execute();
+    grp.addCommand(c);
+    QVERIFY2(grp.commands().size() == 1, "Wrong size after adding executed command");
+    delete c;
+
+    DummyCommand *d2 = new DummyCommand(true, "second");
+    grp.addCommand(d2);
+    QVERIFY(grp.commands().size() == 2);
+
+    if (failing == "first")
+        c = d1;
+    else if (failing == "second")
+        c = d2;
+    else
+        QFAIL("Wrong data");
+
+
+    c->ret = false;
+    QVERIFY2(!grp.execute(), "Can execute with failing command");
+    QVERIFY(grp.commands().size() == 2);
+    QVERIFY(grp.state() == GGAbstractCommand::NotExecuted);
+    QVERIFY(grp.commands()[0]->state() == GGAbstractCommand::NotExecuted);
+    QVERIFY(grp.commands()[1]->state() == GGAbstractCommand::NotExecuted);
+    QVERIFY(grp.error() == failing + " failed execute");
+
+    c->ret = true;
+    QVERIFY2(grp.execute(), "Cannot execute");
+    QVERIFY(grp.commands().size() == 2);
+    QVERIFY(grp.state() == GGAbstractCommand::Executed);
+    QVERIFY(grp.commands()[0]->state() == GGAbstractCommand::Executed);
+    QVERIFY(grp.commands()[1]->state() == GGAbstractCommand::Executed);
+    QVERIFY(grp.error().isEmpty());
+
+    DummyCommand cc(true);
+    grp.addCommand(&cc);
+    QVERIFY2(grp.commands().size() == 2, "Can add to executed group");
+
+    c->ret = false;
+    QVERIFY2(!grp.undo(), "Can undo with failed");
+    QVERIFY(grp.commands().size() == 2);
+    QVERIFY(grp.state() == GGAbstractCommand::Executed);
+    QVERIFY(grp.commands()[0]->state() == GGAbstractCommand::Executed);
+    QVERIFY(grp.commands()[1]->state() == GGAbstractCommand::Executed);
+    QVERIFY(grp.error() == failing + " failed undo");
+
+    c->ret = true;
+    QVERIFY2(grp.undo(), "Cannot undo");
+    QVERIFY(grp.commands().size() == 2);
+    QVERIFY(grp.state() == GGAbstractCommand::Undone);
+    QVERIFY(grp.commands()[0]->state() == GGAbstractCommand::Undone);
+    QVERIFY(grp.commands()[1]->state() == GGAbstractCommand::Undone);
+    QVERIFY(grp.error().isEmpty());
+
+    c->ret = false;
+    QVERIFY2(!grp.redo(), "Can redo with failed");
+    QVERIFY(grp.commands().size() == 2);
+    QVERIFY(grp.state() == GGAbstractCommand::Undone);
+    QVERIFY(grp.commands()[0]->state() == GGAbstractCommand::Undone);
+    QVERIFY(grp.commands()[1]->state() == GGAbstractCommand::Undone);
+    QVERIFY(grp.error() == failing + " failed redo");
+
+    c->ret = true;
+    QVERIFY2(grp.redo(), "Cannot redo");
+    QVERIFY(grp.commands().size() == 2);
+    QVERIFY(grp.state() == GGAbstractCommand::Executed);
+    QVERIFY(grp.commands()[0]->state() == GGAbstractCommand::Executed);
+    QVERIFY(grp.commands()[1]->state() == GGAbstractCommand::Executed);
+    QVERIFY(grp.error().isEmpty());
 }
 
 void GGEditor_BasicCommandTest::testCreatePage()

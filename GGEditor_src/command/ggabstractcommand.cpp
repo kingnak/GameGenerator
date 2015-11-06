@@ -7,6 +7,7 @@ bool GGAbstractCommand::execute()
         return setError("Command is not in NotExecuted state");
     }
 
+    m_error.clear();
     if (doExecute()) {
         m_state = Executed;
         return true;
@@ -21,6 +22,7 @@ bool GGAbstractCommand::undo()
         return setError("Command is not in Executed state");
     }
 
+    m_error.clear();
     if (doUndo()) {
         m_state = Undone;
         return true;
@@ -35,6 +37,7 @@ bool GGAbstractCommand::redo()
         return setError("Command is not in Undone state");
     }
 
+    m_error.clear();
     if (doRedo()) {
         m_state = Executed;
         return true;

@@ -8,7 +8,7 @@ int main(int argc, char *argv[])
     GGEditor_BasicModelTest tcBasicModel;
     GGEditor_BasicCommandTest tcBasicCommand;
 
-    QTest::setMainSourcePath(__FILE__);
+    //QTest::setMainSourcePath(__FILE__);
     int res = QTest::qExec(&tcBasicObject, argc, argv);
     res |= QTest::qExec(&tcBasicModel, argc, argv);
     res |= QTest::qExec(&tcBasicCommand, argc, argv);

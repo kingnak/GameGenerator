@@ -3,6 +3,8 @@
 
 #include <QString>
 
+class GGCommandGroup;
+
 class GGAbstractCommand
 {
 public:
@@ -35,6 +37,9 @@ protected:
 protected:
     CommandState m_state;
     QString m_error;
+
+    // Might require resetting state
+    friend class GGCommandGroup;
 };
 
 #endif // GGABSTRACTCOMMAND_H
