@@ -31,6 +31,16 @@ GGConnection *GGRuntimeModel::getConnection(GG::ConnectionID id)
     return m_connections.value(id);
 }
 
+QList<GGPage *> GGRuntimeModel::getPages()
+{
+    return m_pages.values();
+}
+
+QList<GGConnection *> GGRuntimeModel::getConnections()
+{
+    return m_connections.values();
+}
+
 bool GGRuntimeModel::registerPageWithId(GGPage *page)
 {
     if (!page || page->model()) {

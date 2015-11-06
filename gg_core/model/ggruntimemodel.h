@@ -15,6 +15,9 @@ public:
     GGPage *getPage(GG::PageID id);
     GGConnection *getConnection(GG::ConnectionID id);
 
+    QList<GGPage *> getPages();
+    QList<GGConnection *> getConnections();
+
     bool registerPageWithId(GGPage *page);
     bool registerConnectionWithId(GGConnection *conn);
 

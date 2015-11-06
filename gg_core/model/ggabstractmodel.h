@@ -20,6 +20,9 @@ public:
     virtual GGPage *getPage(GG::PageID id) = 0;
     virtual GGConnection *getConnection(GG::ConnectionID id) = 0;
 
+    virtual QList<GGPage *> getPages() = 0;
+    virtual QList<GGConnection *> getConnections() = 0;
+
     virtual bool registerPageWithId(GGPage *page) = 0;
     virtual bool registerConnectionWithId(GGConnection *conn) = 0;
 
