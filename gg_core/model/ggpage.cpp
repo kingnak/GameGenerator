@@ -1,5 +1,6 @@
 #include "ggpage.h"
 #include "ggconnection.h"
+#include "ggcontentelement.h"
 #include <QList>
 
 GGPage::GGPage()
@@ -73,6 +74,31 @@ GGContentPage::GGContentPage()
     : m_content(NULL)
 {
 
+}
+
+GGContentPage::~GGContentPage()
+{
+    delete m_content;
+}
+
+GGContentElement *GGContentPage::content()
+{
+    return m_content;
+}
+
+void GGContentPage::setContent(GGContentElement *cont)
+{
+    if (m_content != cont) {
+        delete m_content;
+    }
+    m_content = cont;
+}
+
+GGContentElement *GGContentPage::exchangeContent(GGContentElement *cont)
+{
+    GGContentElement *oldContent = m_content;
+    m_content = cont;
+    return oldContent;
 }
 
 /////////////////////////////////////////

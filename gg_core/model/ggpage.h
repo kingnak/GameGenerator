@@ -76,9 +76,11 @@ class GG_CORESHARED_EXPORT GGContentPage : public GGPage
 {
 public:
     GGContentPage();
+    ~GGContentPage();
 
     GGContentElement *content();
     void setContent(GGContentElement *cont);
+    GGContentElement *exchangeContent(GGContentElement *cont);
 
 protected:
     GGContentElement *m_content;
