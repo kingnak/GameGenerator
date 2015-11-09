@@ -174,38 +174,50 @@ GGMappedContentPage::GGMappedContentPage()
 
 bool GGMappedContentPage::removeConnection(GGConnection *connection)
 {
-    for (int i = 0; i < m_mappedConnections.size(); ++i) {
-        if (m_mappedConnections[i].connection() == connection) {
-            m_mappedConnections.removeAt(i);
+    for (int i = 0; i < m_mappedLinks.size(); ++i) {
+        if (m_mappedLinks[i].link().connection() == connection) {
+            // Make a copy, remove connection, and replace
+            GGLink l = m_mappedLinks[i].link();
+            l.setConnection(NULL);
+            m_mappedLinks[i].setLink(l);
             return true;
         }
     }
     return false;
 }
 
-QList<GGMappedConnection> GGMappedContentPage::getConnectionMap() const
+QList<GGMappedLink> GGMappedContentPage::getLinkMap() const
 {
-    return m_mappedConnections;
+    return m_mappedLinks;
 }
 
 QList<GGConnection *> GGMappedContentPage::getMappedConnections() const
 {
     QList<GGConnection *> conns;
-    foreach (GGMappedConnection mc, m_mappedConnections) {
-        if (mc.connection()) conns << mc.connection();
+    foreach (const GGMappedLink &mc, m_mappedLinks) {
+        if (mc.link().connection()) conns << mc.link().connection();
     }
     return conns;
 }
 
-void GGMappedContentPage::addMappedConnection(GGMappedConnection conn)
+void GGMappedContentPage::addMappedLink(GGMappedLink link)
 {
-    m_mappedConnections << conn;
+    m_mappedLinks << link;
 }
 
-bool GGMappedContentPage::setMappedConnection(int idx, GGMappedConnection conn)
+bool GGMappedContentPage::setMappedLink(int idx, GGMappedLink link)
 {
-    if (0 <= idx && idx <= m_mappedConnections.size()) {
-        m_mappedConnections[idx] = conn;
+    if (0 <= idx && idx <= m_mappedLinks.size()) {
+        m_mappedLinks[idx] = link;
+        return true;
+    }
+    return false;
+}
+
+bool GGMappedContentPage::removeMappedLink(int idx)
+{
+    if (0 <= idx && idx <= m_mappedLinks.size()) {
+        m_mappedLinks.removeAt(idx);
         return true;
     }
     return false;
@@ -223,16 +235,29 @@ int GGActionPage::type() const
     return Type;
 }
 
+GGLink GGActionPage::actionLink() const
+{
+    return m_actionLink;
+}
+
+void GGActionPage::setActionLink(GGLink link)
+{
+    m_actionLink = link;
+}
+
 bool GGActionPage::removeConnection(GGConnection *connection)
 {
-    // TODO: Check for action connection
+    if (m_actionLink.connection() == connection) {
+        m_actionLink.setConnection(NULL);
+        return true;
+    }
     return GGMappedContentPage::removeConnection(connection);
 }
 
 QList<GGConnection *> GGActionPage::getConnections() const
 {
     QList<GGConnection *> conns = this->getMappedConnections();
-    // TODO: add action connection
+    if (m_actionLink.connection()) conns << m_actionLink.connection();
     return conns;
 }
 
@@ -251,26 +276,53 @@ int GGDecisionPage::type() const
 
 QList<GGConnection *> GGDecisionPage::getDecisionConnections() const
 {
-    return m_decisionConns;
+    QList<GGConnection *> conns;
+    foreach (const GGLink &l, m_decisionLinks) {
+        if (l.connection()) conns << l.connection();
+    }
+    return conns;
 }
 
-void GGDecisionPage::addDecisionConnection(GGConnection *conn)
+void GGDecisionPage::addDecisionLink(GGLink link)
 {
-    // Allow null?
-    m_decisionConns << conn;
+    m_decisionLinks << link;
 }
 
-bool GGDecisionPage::setDecisionConnection(int idx, GGConnection *conn)
+bool GGDecisionPage::setDecisionLink(int idx, GGLink link)
 {
-    if (0 <= idx && idx <= m_decisionConns.size()) {
-        // Allow null?
-        m_decisionConns[idx] = conn;
+    if (0 <= idx && idx <= m_decisionLinks.size()) {
+        m_decisionLinks[idx] = link;
         return true;
     }
     return false;
 }
 
+bool GGDecisionPage::removeDecisionLink(int idx)
+{
+    if (0 <= idx && idx <= m_decisionLinks.size()) {
+        m_decisionLinks.removeAt(idx);
+        return true;
+    }
+    return false;
+}
+
+QList<GGLink> GGDecisionPage::getDecisionLinks() const
+{
+    return m_decisionLinks;
+}
+
 QList<GGConnection *> GGDecisionPage::getConnections() const
 {
     return getMappedConnections() + getDecisionConnections();
+}
+
+bool GGDecisionPage::removeConnection(GGConnection *connection)
+{
+    for (int i = 0; i < m_decisionLinks.size(); ++i) {
+        if (m_decisionLinks[i].connection() == connection) {
+            m_decisionLinks[i].setConnection(NULL);
+            return true;
+        }
+    }
+    return GGMappedContentPage::removeConnection(connection);
 }

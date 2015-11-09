@@ -40,12 +40,7 @@ GGDeletePageCmd *GGEditCommandFactory::deletePage(GGPage *page)
 
 GGCreateConnectionCmd *GGEditCommandFactory::createConnection(GGPage *src, GGPage *dest, GGConnectionSlot slot)
 {
-    return new GGCreateConnectionCmd(m_model, slot, src, dest, GGCreateConnectionCmd::Connection);
-}
-
-GGCreateConnectionCmd *GGEditCommandFactory::createLink(GGPage *src, GGPage *dest, GGConnectionSlot slot)
-{
-    return new GGCreateConnectionCmd(m_model, slot, src, dest, GGCreateConnectionCmd::Link);
+    return new GGCreateConnectionCmd(m_model, slot, src, dest);
 }
 
 GGDeleteConnectionCmd *GGEditCommandFactory::deleteConnection(GGConnection *conn)

@@ -27,7 +27,6 @@ public:
     virtual GGDecisionPage *createDecisionPage() = 0;
 
     virtual GGConnection *createConnection(GG::PageID src, GG::PageID dest) = 0;
-    virtual GGLink *createLink(GG::PageID src, GG::PageID dest) = 0;
 };
 
 #endif // GGABSTRACTFACTORY_H

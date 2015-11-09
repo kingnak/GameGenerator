@@ -36,9 +36,3 @@ GGConnection *GGSimpleFactory::createConnection(GG::PageID src, GG::PageID dest)
 {
     return new GGConnection(src, dest);
 }
-
-GGLink *GGSimpleFactory::createLink(GG::PageID src, GG::PageID dest)
-{
-    return new GGLink(src, dest);
-}
-

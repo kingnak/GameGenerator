@@ -30,7 +30,6 @@ public:
     virtual GGDeletePageCmd *deletePage(GGPage *page) = 0;
 
     virtual GGCreateConnectionCmd *createConnection(GGPage *src, GGPage *dest, GGConnectionSlot slot) = 0;
-    virtual GGCreateConnectionCmd *createLink(GGPage *src, GGPage *dest, GGConnectionSlot slot) = 0;
 
     virtual GGDeleteConnectionCmd *deleteConnection(GGConnection *conn) = 0;
 

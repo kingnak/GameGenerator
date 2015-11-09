@@ -10,11 +10,7 @@ class GGPage;
 class GGCreateConnectionCmd : public GGAbstractModelCommand
 {
 public:
-    enum Type {
-        Connection, Link
-    };
-
-    GGCreateConnectionCmd(GGEditModel *model, GGConnectionSlot slot, GGPage *src, GGPage *dest, Type type);
+    GGCreateConnectionCmd(GGEditModel *model, GGConnectionSlot slot, GGPage *src, GGPage *dest);
     ~GGCreateConnectionCmd();
 
     QString description() const;
@@ -28,7 +24,6 @@ protected:
 
 private:
     GGConnection *m_createdConn;
-    Type m_type;
     GGConnectionSlot m_slot;
     GGPage *m_src;
     GGPage *m_dest;

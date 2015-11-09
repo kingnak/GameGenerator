@@ -4,10 +4,9 @@
 #include <model/ggconnection.h>
 #include <model/ggpage.h>
 
-GGCreateConnectionCmd::GGCreateConnectionCmd(GGEditModel *model, GGConnectionSlot slot, GGPage *src, GGPage *dest, Type type)
+GGCreateConnectionCmd::GGCreateConnectionCmd(GGEditModel *model, GGConnectionSlot slot, GGPage *src, GGPage *dest)
 :   GGAbstractModelCommand(model),
     m_createdConn(NULL),
-    m_type(type),
     m_slot(slot),
     m_src(src),
     m_dest(dest)
@@ -37,14 +36,7 @@ bool GGCreateConnectionCmd::doExecute()
     Q_ASSERT(m_src && m_src->model() == m_model);
     Q_ASSERT(m_dest && m_dest->model() == m_model);
 
-    if (m_type == Connection) {
-        m_createdConn = m_model->factory()->createConnection(m_src->id(), m_dest->id());
-    } else if (m_type == Link) {
-        m_createdConn = m_model->factory()->createLink(m_src->id(), m_dest->id());
-    } else {
-        Q_ASSERT_X(false, "GGCreateConnectionCmd::doExecute", "Unknown Connection Type");
-        return setError("INTERNAL ERROR");
-    }
+    m_createdConn = m_model->factory()->createConnection(m_src->id(), m_dest->id());
 
     if (!m_model->registerNewConnection(m_createdConn)) {
         return setError("Cannot register connection");

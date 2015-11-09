@@ -19,7 +19,6 @@ public:
     GGDeletePageCmd *deletePage(GGPage *page);
 
     GGCreateConnectionCmd *createConnection(GGPage *src, GGPage *dest, GGConnectionSlot slot);
-    GGCreateConnectionCmd *createLink(GGPage *src, GGPage *dest, GGConnectionSlot slot);
 
     GGDeleteConnectionCmd *deleteConnection(GGConnection *conn);
 

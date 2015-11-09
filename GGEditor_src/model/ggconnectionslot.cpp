@@ -25,10 +25,13 @@ bool GGConnectionSlot::connect(GGPage *page, GGConnection *conn)
         { // Scope limit mcp
             GGMappedContentPage *mcp = ggpage_cast<GGActionPage*> (page);
             if (!mcp) mcp = ggpage_cast<GGDecisionPage*> (page);
-            if (m_idx < mcp->getConnectionMap().size()) {
-                GGMappedConnection mc = mcp->getConnectionMap()[m_idx];
-                mc.setConnection(conn);
-                mcp->setMappedConnection(m_idx, mc);
+            if (m_idx < mcp->getLinkMap().size()) {
+                // Must work on copies of Mapped Link and Link
+                GGMappedLink mc = mcp->getLinkMap()[m_idx];
+                GGLink l = mc.link();
+                l.setConnection(conn);
+                mc.setLink(l);
+                mcp->setMappedLink(m_idx, mc);
                 return true;
             } else {
                 return false;
@@ -48,7 +51,10 @@ bool GGConnectionSlot::connect(GGPage *page, GGConnection *conn)
         { // Scope limit dp
             GGDecisionPage *dp = ggpage_cast<GGDecisionPage*> (page);
             if (m_idx < dp->getDecisionConnections().size()) {
-                dp->setDecisionConnection(m_idx, conn);
+                // Must work on copy of Link
+                GGLink l = dp->getDecisionLinks()[m_idx];
+                l.setConnection(conn);
+                dp->setDecisionLink(m_idx, l);
                 return true;
             } else {
                 return false;

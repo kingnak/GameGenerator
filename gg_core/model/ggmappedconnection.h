@@ -6,19 +6,20 @@
 #include <QPoint>
 #include <QRect>
 #include <QVariant>
+#include "gglink.h"
 
 class GGConnection;
 
-class GG_CORESHARED_EXPORT GGMappedConnection
+class GG_CORESHARED_EXPORT GGMappedLink
 {
 public:
     enum Type {
         Rectangle, Ellipse, Polygon
     };
 
-    static GGMappedConnection rectangle(QRect r, GGConnection *conn);
-    static GGMappedConnection ellipse(QRect e, GGConnection *conn);
-    static GGMappedConnection polygon(QList<QPoint> p, GGConnection *conn);
+    static GGMappedLink rectangle(QRect r);
+    static GGMappedLink ellipse(QRect e);
+    static GGMappedLink polygon(QList<QPoint> p);
 
     Type type() const { return m_type; }
 
@@ -34,17 +35,16 @@ public:
     QRect ellipse() const;
     QList<QPoint> polygon() const;
 
-    void setConnection(GGConnection *conn) { m_connection = conn; }
-
-    GGConnection *connection() const { return m_connection; }
+    void setLink(GGLink link) { m_link = link; }
+    GGLink link() const { return m_link; }
 
 private:
-    GGMappedConnection(Type t, GGConnection *conn) : m_type(t), m_connection(conn) {}
+    GGMappedLink(Type t) : m_type(t)  {}
 
 private:
     Type m_type;
     QVariant m_data;
-    GGConnection *m_connection;
+    GGLink m_link;
 };
 
 #endif // GGMAPPEDCONNECTION_H

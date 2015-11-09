@@ -36,25 +36,4 @@ private:
     friend class GGAbstractModel;
 };
 
-//////////////////////////////////////////
-
-class GG_CORESHARED_EXPORT GGLink : public GGConnection
-{
-public:
-    GGLink(GG::PageID srcId, GG::PageID destId) : GGConnection(srcId, destId) {}
-
-    QString sceneName() const { return m_sceneName; }
-    QString name() const { return m_name; }
-
-    void setSceneName(QString sn) { m_sceneName = sn; }
-    void setName(QString n) { m_name = n; }
-
-    // TODO: Add action
-
-protected:
-    QString m_sceneName;
-    QString m_name;
-
-};
-
 #endif // GGCONNECTION_H

@@ -5,6 +5,7 @@
 #include <gg_definitions.h>
 #include <QString>
 #include "ggmappedconnection.h"
+#include "gglink.h"
 
 class GGConnection;
 class GGAbstractModel;
@@ -137,13 +138,14 @@ public:
 
     bool removeConnection(GGConnection *connection);
 
-    QList<GGMappedConnection> getConnectionMap() const;
     QList<GGConnection *> getMappedConnections() const;
-    void addMappedConnection(GGMappedConnection conn);
-    bool setMappedConnection(int idx, GGMappedConnection conn);
+    void addMappedLink(GGMappedLink link);
+    bool setMappedLink(int idx, GGMappedLink link);
+    bool removeMappedLink(int idx);
+    QList<GGMappedLink> getLinkMap() const;
 
 protected:
-    QList<GGMappedConnection> m_mappedConnections;
+    QList<GGMappedLink> m_mappedLinks;
 };
 
 //////////////////////////////////////////
@@ -158,10 +160,14 @@ public:
     };
     int type() const;
 
-    // TODO: Add action
+    GGLink actionLink() const;
+    void setActionLink(GGLink link);
 
     bool removeConnection(GGConnection *connection);
     QList<GGConnection *> getConnections() const;
+
+protected:
+    GGLink m_actionLink;
 };
 
 //////////////////////////////////////////
@@ -177,13 +183,16 @@ public:
     int type() const;
 
     QList<GGConnection *> getDecisionConnections() const;
-    void addDecisionConnection(GGConnection *conn);
-    bool setDecisionConnection(int idx, GGConnection *conn);
+    void addDecisionLink(GGLink link);
+    bool setDecisionLink(int idx, GGLink link);
+    bool removeDecisionLink(int idx);
+    QList<GGLink> getDecisionLinks() const;
 
     QList<GGConnection *> getConnections() const;
+    bool removeConnection(GGConnection *connection);
 
 protected:
-    QList<GGConnection *> m_decisionConns;
+    QList<GGLink> m_decisionLinks;
 };
 
 //////////////////////////////////////////

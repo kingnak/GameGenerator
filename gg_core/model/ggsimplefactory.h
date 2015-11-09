@@ -15,7 +15,6 @@ public:
     virtual GGDecisionPage *createDecisionPage();
 
     virtual GGConnection *createConnection(GG::PageID src, GG::PageID dest);
-    virtual GGLink *createLink(GG::PageID src, GG::PageID dest);
 };
 
 #endif // GGSIMPLEFACTORY_H
