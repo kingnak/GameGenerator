@@ -40,8 +40,7 @@ bool GGCreateConnectionCmd::doExecute()
     if (m_type == Connection) {
         m_createdConn = m_model->factory()->createConnection(m_src->id(), m_dest->id());
     } else if (m_type == Link) {
-        Q_ASSERT_X(false, "GGCreateConnectionCmd::doExecute", "Links not implemented yet");
-        return setError("INTERNAL ERROR");
+        m_createdConn = m_model->factory()->createLink(m_src->id(), m_dest->id());
     } else {
         Q_ASSERT_X(false, "GGCreateConnectionCmd::doExecute", "Unknown Connection Type");
         return setError("INTERNAL ERROR");

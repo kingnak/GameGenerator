@@ -19,15 +19,48 @@ bool GGConnectionSlot::connect(GGPage *page, GGConnection *conn)
         ggpage_cast<GGConditionPage*>(page)->setFalseConnection(conn);
         return true;
     case MappedConnection:
+        Q_ASSERT(ggpage_cast<GGActionPage*> (page) || ggpage_cast<GGDecisionPage*> (page));
+        Q_ASSERT(m_idx >= 0);
+
+        { // Scope limit mcp
+            GGMappedContentPage *mcp = ggpage_cast<GGActionPage*> (page);
+            if (!mcp) mcp = ggpage_cast<GGDecisionPage*> (page);
+            if (m_idx < mcp->getConnectionMap().size()) {
+                GGMappedConnection mc = mcp->getConnectionMap()[m_idx];
+                mc.setConnection(conn);
+                mcp->setMappedConnection(m_idx, mc);
+                return true;
+            } else {
+                return false;
+            }
+        }
+        Q_ASSERT_X(false, "GGConnectionSlot::connect", "Can never reach this");
+        return false;
     case ActionConnection:
+        Q_ASSERT(ggpage_cast<GGActionPage*> (page));
+        // TODO: Set action connection
+        Q_ASSERT_X(false, "GGConnectionSlot::connect", "Action connection not yet implemented");
+        return true;
     case DecisionConnection:
-        Q_ASSERT_X(false, "GGConnectionSlot::apply", "Connection type not yet implemented");
+        Q_ASSERT(ggpage_cast<GGDecisionPage*> (page));
+        Q_ASSERT(m_idx >= 0);
+
+        { // Scope limit dp
+            GGDecisionPage *dp = ggpage_cast<GGDecisionPage*> (page);
+            if (m_idx < dp->getDecisionConnections().size()) {
+                dp->setDecisionConnection(m_idx, conn);
+                return true;
+            } else {
+                return false;
+            }
+        }
+        Q_ASSERT_X(false, "GGConnectionSlot::connect", "Can never reach this");
         return false;
     case NoConnection:
-        Q_ASSERT_X(false, "GGConnectionSlot::apply", "No Connection type");
+        Q_ASSERT_X(false, "GGConnectionSlot::connect", "No Connection type");
         return false;
     default:
-        Q_ASSERT_X(false, "GGConnectionSlot::apply", "Invalid Connection type");
+        Q_ASSERT_X(false, "GGConnectionSlot::connect", "Invalid Connection type");
         return false;
     }
 }

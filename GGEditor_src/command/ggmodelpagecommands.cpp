@@ -27,9 +27,14 @@ bool GGCreatePageCmd::doExecute()
         m_createdPage = m_model->factory()->createEndPage();
         break;
     case ConditionPage:
+        m_createdPage = m_model->factory()->createConditionPage();
+        break;
     case ActionPage:
+        m_createdPage = m_model->factory()->createActionPage();
+        break;
     case DecisionPage:
-        return setError("Page Type not yet supported");
+        m_createdPage = m_model->factory()->createDecisionPage();
+        break;
     default:
         return setError("Unknown Page Type");
     }

@@ -183,6 +183,11 @@ bool GGMappedContentPage::removeConnection(GGConnection *connection)
     return false;
 }
 
+QList<GGMappedConnection> GGMappedContentPage::getConnectionMap() const
+{
+    return m_mappedConnections;
+}
+
 QList<GGConnection *> GGMappedContentPage::getMappedConnections() const
 {
     QList<GGConnection *> conns;

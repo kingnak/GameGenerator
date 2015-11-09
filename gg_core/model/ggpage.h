@@ -58,7 +58,6 @@ public:
     };
     int type() const;
 
-
     GGConnection *trueConnection() const;
     GGConnection *falseConnection() const;
 
@@ -101,7 +100,6 @@ public:
     enum {
         Type = 0x0001
     };
-
     int type() const;
 
     void setStartConnection(GGConnection *conn);
@@ -139,6 +137,7 @@ public:
 
     bool removeConnection(GGConnection *connection);
 
+    QList<GGMappedConnection> getConnectionMap() const;
     QList<GGConnection *> getMappedConnections() const;
     void addMappedConnection(GGMappedConnection conn);
     bool setMappedConnection(int idx, GGMappedConnection conn);
@@ -157,7 +156,6 @@ public:
     enum {
         Type = 0x0004
     };
-
     int type() const;
 
     // TODO: Add action
@@ -176,7 +174,6 @@ public:
     enum {
         Type = 0x0005
     };
-
     int type() const;
 
     QList<GGConnection *> getDecisionConnections() const;

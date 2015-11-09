@@ -8,10 +8,14 @@ class GG_CORESHARED_EXPORT GGSimpleFactory : public GGAbstractFactory
 public:
     GGSimpleFactory();
 
-    virtual GGStartPage *createStartPage();
+    virtual GGConditionPage *createConditionPage();
+    virtual GGStartPage *createStartPage() ;
     virtual GGEndPage *createEndPage();
+    virtual GGActionPage *createActionPage();
+    virtual GGDecisionPage *createDecisionPage();
 
     virtual GGConnection *createConnection(GG::PageID src, GG::PageID dest);
+    virtual GGLink *createLink(GG::PageID src, GG::PageID dest);
 };
 
 #endif // GGSIMPLEFACTORY_H
