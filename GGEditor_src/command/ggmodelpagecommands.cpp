@@ -43,10 +43,12 @@ bool GGCreatePageCmd::doExecute()
 
 bool GGCreatePageCmd::doUndo()
 {
-    // New page cannot have connections
-    if (!m_model->unregisterPage(m_createdPage->id())) {
+    // New page cannot have connections, but assert if not empty
+    QList<GGConnection *> affected;
+    if (!m_model->unregisterPage(m_createdPage->id(), &affected)) {
         return setError("Cannot unregister page");
     }
+    Q_ASSERT_X(affected.isEmpty(), "GGCreatePageCmd::doUndo", "Created page has connections!");
     return true;
 }
 
@@ -80,6 +82,7 @@ GGDeletePageCmd::~GGDeletePageCmd()
 {
     if (m_state == Executed) {
         delete m_deletedPage;
+        qDeleteAll(m_affectedConnections);
     }
 }
 
