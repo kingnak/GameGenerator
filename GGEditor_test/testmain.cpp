@@ -2,6 +2,10 @@
 #include "tst_ggeditor_basiccommandtest.cpp"
 #include "tst_ggeditor_basicobjecttest.cpp"
 
+#ifdef USE_VLD
+#include <vld.h>
+#endif
+
 int main(int argc, char *argv[])
 {
     GGEditor_BasicObjectTest tcBasicObject;

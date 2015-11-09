@@ -28,7 +28,6 @@ void GGEditor_BasicObjectTest::testPageCast()
     QVERIFY2(ggpage_cast<const GGEndPage*>(cp) == cp, "Cannot cast const EndPage to itself");
     QVERIFY2(ggpage_cast<const GGStartPage*>(cp) == 0, "Can cast const EndPage to StartPage");
     QVERIFY2(ggpage_cast<const GGConditionPage*>(cp) == 0, "Can cast const EndPage to ConditionPage");
-
     delete p;
 
     p = new GGConditionPage();
@@ -40,5 +39,6 @@ void GGEditor_BasicObjectTest::testPageCast()
     QVERIFY2(ggpage_cast<const GGConditionPage*>(cp) == cp, "Can cast const ConditionPage to itself");
     QVERIFY2(ggpage_cast<const GGEndPage*>(cp) == 0, "Cannot cast const ConditionPage to EndPage");
     QVERIFY2(ggpage_cast<const GGStartPage*>(cp) == 0, "Can cast const ConditionPage to StartPage");
+    delete p;
 }
 

@@ -34,3 +34,6 @@ unix {
     target.path = /usr/lib
     INSTALLS += target
 }
+
+include(../defaults.pri)
+

@@ -66,6 +66,10 @@ void GGEditor_BasicModelTest::testUnregisterStart()
     QVERIFY2(model->getConnection(c->id()) == NULL, "c is still in model");
     QVERIFY2(model->getPage(e->id()) == e, "e is no longer in the model");
     QVERIFY2(model->getPageIncommingConnections(e).size() == 0, "e has incomming connections");
+
+    // clean memory
+    delete s;
+    qDeleteAll(a);
 }
 
 void GGEditor_BasicModelTest::testUnregisterEnd()
@@ -83,6 +87,9 @@ void GGEditor_BasicModelTest::testUnregisterEnd()
 
     QVERIFY2(s->getConnections().isEmpty(), "s still has connection");
 
+    // clean memory
+    delete e;
+    qDeleteAll(a);
 }
 
 void GGEditor_BasicModelTest::testUnregisterConnection()
@@ -97,6 +104,9 @@ void GGEditor_BasicModelTest::testUnregisterConnection()
     QVERIFY2(model->getPageIncommingConnections(e).size() == 0, "e has incomming connections");
 
     QVERIFY2(s->getConnections().isEmpty(), "s still has connection");
+
+    // clean memory
+    delete c;
 }
 
 void GGEditor_BasicModelTest::testReregister()
@@ -130,6 +140,7 @@ void GGEditor_BasicModelTest::testReregister()
     QVERIFY2(s->getConnections().size() == 1, "s has no connection after reregistering c");
     QEXPECT_FAIL("", "Setting connections on pages will be done by Commands", Continue);
     QVERIFY2(s->getConnections().value(0) == c, "s has not c after reregistering c");
+    QVERIFY2(model->registerConnectionWithId(c), "Error in reregistering c after reregistering e");
     // HACK
     ((GGStartPage*)s)->setStartConnection(c);
 }

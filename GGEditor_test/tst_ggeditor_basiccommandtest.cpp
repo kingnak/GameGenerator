@@ -371,6 +371,8 @@ void GGEditor_BasicCommandTest::testCreatePage()
     QVERIFY2(cmd->undo(), qPrintable("Error undoing twice CreatePage command: " + cmd->error()));
     QVERIFY2(cmd->createdPage()->model() == NULL, "Created page is still associated with model after second undo");
     QVERIFY2(model.getPage(cmd->createdPage()->id()) == NULL, "Created Page is in model after second undo");
+
+    delete cmd;
 }
 
 void GGEditor_BasicCommandTest::testDeletePage()

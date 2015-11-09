@@ -42,3 +42,5 @@ else:unix: LIBS += -L$$OUT_PWD/../gg_core/ -lgg_core
 
 INCLUDEPATH += $$PWD/../gg_core
 DEPENDPATH += $$PWD/../gg_core
+
+include(../defaults.pri)

@@ -41,6 +41,8 @@ win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../gg_core/release/ -l
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../gg_core/debug/ -lgg_core
 else:unix: LIBS += -L$$OUT_PWD/../gg_core/ -lgg_core
 
+include(../defaults.pri)
+
 INCLUDEPATH += $$PWD/../gg_core
 DEPENDPATH += $$PWD/../gg_core
 
