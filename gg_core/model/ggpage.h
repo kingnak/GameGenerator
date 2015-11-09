@@ -4,6 +4,7 @@
 #include <gg_core_global.h>
 #include <gg_definitions.h>
 #include <QString>
+#include "ggmappedconnection.h"
 
 class GGConnection;
 class GGAbstractModel;
@@ -28,6 +29,8 @@ public:
 
     void setSceneName(QString sn) { m_sceneName = sn; }
     void setName(QString n) { m_name = n; }
+
+    // TODO: Entry Action (as own class between contentPage and mappedContenPage?)
 
     virtual QList<GGConnection *> getConnections() const = 0;
     virtual bool removeConnection(GGConnection *connection) = 0;
@@ -61,6 +64,8 @@ public:
 
     void setTrueConnection(GGConnection *t);
     void setFalseConnection(GGConnection *f);
+
+    // TODO: Condition
 
     QList<GGConnection *> getConnections() const;
     bool removeConnection(GGConnection *connection);
@@ -123,6 +128,65 @@ public:
 
     QList<GGConnection *> getConnections() const;
     bool removeConnection(GGConnection *connection);
+};
+
+//////////////////////////////////////////
+
+class GG_CORESHARED_EXPORT GGMappedContentPage : public GGConditionPage
+{
+public:
+    GGMappedContentPage();
+
+    bool removeConnection(GGConnection *connection);
+
+    QList<GGConnection *> getMappedConnections() const;
+    void addMappedConnection(GGMappedConnection conn);
+    bool setMappedConnection(int idx, GGMappedConnection conn);
+
+protected:
+    QList<GGMappedConnection> m_mappedConnections;
+};
+
+//////////////////////////////////////////
+
+class GG_CORESHARED_EXPORT GGActionPage : public GGMappedContentPage
+{
+public:
+    GGActionPage();
+
+    enum {
+        Type = 0x0004
+    };
+
+    int type() const;
+
+    // TODO: Add action
+
+    bool removeConnection(GGConnection *connection);
+    QList<GGConnection *> getConnections() const;
+};
+
+//////////////////////////////////////////
+
+class GG_CORESHARED_EXPORT GGDecisionPage : public GGMappedContentPage
+{
+public:
+    GGDecisionPage();
+
+    enum {
+        Type = 0x0005
+    };
+
+    int type() const;
+
+    QList<GGConnection *> getDecisionConnections() const;
+    void addDecisionConnection(GGConnection *conn);
+    bool setDecisionConnection(int idx, GGConnection *conn);
+
+    QList<GGConnection *> getConnections() const;
+
+protected:
+    QList<GGConnection *> m_decisionConns;
 };
 
 //////////////////////////////////////////

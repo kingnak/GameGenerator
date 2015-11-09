@@ -165,4 +165,107 @@ bool GGEndPage::removeConnection(GGConnection *connection)
     return false;
 }
 
+//////////////////////////////////////////
 
+GGMappedContentPage::GGMappedContentPage()
+{
+
+}
+
+bool GGMappedContentPage::removeConnection(GGConnection *connection)
+{
+    for (int i = 0; i < m_mappedConnections.size(); ++i) {
+        if (m_mappedConnections[i].connection() == connection) {
+            m_mappedConnections.removeAt(i);
+            return true;
+        }
+    }
+    return false;
+}
+
+QList<GGConnection *> GGMappedContentPage::getMappedConnections() const
+{
+    QList<GGConnection *> conns;
+    foreach (GGMappedConnection mc, m_mappedConnections) {
+        if (mc.connection()) conns << mc.connection();
+    }
+    return conns;
+}
+
+void GGMappedContentPage::addMappedConnection(GGMappedConnection conn)
+{
+    m_mappedConnections << conn;
+}
+
+bool GGMappedContentPage::setMappedConnection(int idx, GGMappedConnection conn)
+{
+    if (0 <= idx && idx <= m_mappedConnections.size()) {
+        m_mappedConnections[idx] = conn;
+        return true;
+    }
+    return false;
+}
+
+//////////////////////////////////////////
+
+GGActionPage::GGActionPage()
+{
+
+}
+
+int GGActionPage::type() const
+{
+    return Type;
+}
+
+bool GGActionPage::removeConnection(GGConnection *connection)
+{
+    // TODO: Check for action connection
+    return GGMappedContentPage::removeConnection(connection);
+}
+
+QList<GGConnection *> GGActionPage::getConnections() const
+{
+    QList<GGConnection *> conns = this->getMappedConnections();
+    // TODO: add action connection
+    return conns;
+}
+
+//////////////////////////////////////////
+
+
+GGDecisionPage::GGDecisionPage()
+{
+
+}
+
+int GGDecisionPage::type() const
+{
+    return Type;
+}
+
+QList<GGConnection *> GGDecisionPage::getDecisionConnections() const
+{
+    return m_decisionConns;
+}
+
+void GGDecisionPage::addDecisionConnection(GGConnection *conn)
+{
+    // Allow null?
+    m_decisionConns << conn;
+}
+
+bool GGDecisionPage::setDecisionConnection(int idx, GGConnection *conn)
+{
+    if (0 <= idx && idx <= m_decisionConns.size()) {
+        // Allow null?
+        m_decisionConns[idx] = conn;
+        return true;
+    }
+    return false;
+}
+
+QList<GGConnection *> GGDecisionPage::getConnections() const
+{
+    return getMappedConnections() + getDecisionConnections();
+}

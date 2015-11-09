@@ -17,7 +17,8 @@ SOURCES += \
     model/ggpage.cpp \
     model/ggruntimemodel.cpp \
     model/ggsimplefactory.cpp \
-    model/ggcontentelement.cpp
+    model/ggcontentelement.cpp \
+    model/ggmappedconnection.cpp
 
 HEADERS +=\
         gg_core_global.h \
@@ -28,7 +29,8 @@ HEADERS +=\
     gg_definitions.h \
     model/ggabstractfactory.h \
     model/ggsimplefactory.h \
-    model/ggcontentelement.h
+    model/ggcontentelement.h \
+    model/ggmappedconnection.h
 
 unix {
     target.path = /usr/lib
