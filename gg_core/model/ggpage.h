@@ -131,7 +131,7 @@ public:
 
 //////////////////////////////////////////
 
-class GG_CORESHARED_EXPORT GGMappedContentPage : public GGConditionPage
+class GG_CORESHARED_EXPORT GGMappedContentPage : public GGContentPage
 {
 public:
     GGMappedContentPage();
