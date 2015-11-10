@@ -20,7 +20,8 @@ SOURCES += \
     tst_ggeditor_basicmodeltest.cpp \
     testmain.cpp \
     tst_ggeditor_basiccommandtest.cpp \
-    tst_ggeditor_basicobjecttest.cpp
+    tst_ggeditor_basicobjecttest.cpp \
+    tst_ggeditor_connectionslottest.cpp
 
 DEFINES += SRCDIR=\\\"$$PWD/\\\"
 
@@ -49,4 +50,5 @@ DEPENDPATH += $$PWD/../gg_core
 HEADERS += \
     tst_ggeditor_basicmodeltest.h \
     tst_ggeditor_basiccommandtest.h \
-    tst_ggeditor_basicobjecttest.h
+    tst_ggeditor_basicobjecttest.h \
+    tst_ggeditor_connectionslottest.h

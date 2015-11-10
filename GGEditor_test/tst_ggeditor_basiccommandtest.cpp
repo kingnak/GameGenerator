@@ -21,6 +21,26 @@ protected:
     bool doRedo() { return ret ? true : setError(desc + " failed redo"); }
 };
 
+struct Incer : public DummyCommand {
+    Incer(int &i, bool ret = true, QString desc = "Incer") : DummyCommand(ret, desc), i(i) {}
+    int &i;
+protected:
+    bool doExecute() { if (DummyCommand::doExecute()) { i+=5; return true; } return false;  }
+    bool doUndo() { if (DummyCommand::doUndo()) { i-=5; return true; } return false; }
+    bool doRedo() { if (DummyCommand::doRedo()) { i+=5; return true; } return false; }
+};
+
+struct Doubler : public DummyCommand {
+    Doubler(int &i, bool ret = true, QString desc = "Doubler") : DummyCommand(ret, desc), i(i) {}
+    int &i;
+protected:
+    bool doExecute() { if (DummyCommand::doExecute()) { i*=2; return true; } return false;  }
+    bool doUndo() { if (DummyCommand::doUndo()) { i/=2; return true; } return false; }
+    bool doRedo() { if (DummyCommand::doRedo()) { i*=2; return true; } return false; }
+};
+
+////////////////////////////
+
 void GGEditor_BasicCommandTest::testCommandBasics()
 {
 
@@ -253,6 +273,121 @@ void GGEditor_BasicCommandTest::testCommandStackWithFails()
     QVERIFY(stk.getRedoCommands().isEmpty());
     QVERIFY(stk.getUndoCommands().size() == 1);
     QVERIFY(stk.getUndoCommands()[0] == lst[0]);
+}
+
+GGCommandGroup *getIncDoubleGroup(int &i)
+{
+    GGCommandGroup *grp = new GGCommandGroup;
+    Incer *ig = new Incer(i);
+    Doubler *dg = new Doubler(i);
+    grp->addCommand(ig);
+    grp->addCommand(dg);
+    return grp;
+}
+
+void setGrpDummyRet(GGCommandGroup *grp, int idx, bool ret)
+{
+    static_cast<DummyCommand*>(grp->commands()[idx])->ret = ret;
+}
+
+void GGEditor_BasicCommandTest::testCommandGroupOrder()
+{
+    int i = 10;
+
+    // Test with all success
+    GGCommandGroup *grp = getIncDoubleGroup(i);
+    QVERIFY(grp->execute());
+    QVERIFY2(i == 30, "Group Command execute sequence not correct");
+    QVERIFY(grp->undo());
+    QVERIFY2(i == 10, "Group Command undo sequence not correct");
+    QVERIFY(grp->redo());
+    QVERIFY2(i == 30, "Group Command redo sequence not correct");
+    delete grp;
+
+    // Test with first fail
+    grp = getIncDoubleGroup(i);
+    i = 10;
+    setGrpDummyRet(grp, 0, false);
+    QVERIFY(!grp->execute());
+    QVERIFY2(i == 10, "i changed after failing group execute");
+    // Let it work
+    setGrpDummyRet(grp, 0, true);
+    QVERIFY(grp->execute());
+    QVERIFY(i == 30);
+
+    setGrpDummyRet(grp, 0, false);
+    QVERIFY(!grp->undo());
+    QVERIFY2(i == 30, "i changed after failing group undo");
+    // Let it work
+    setGrpDummyRet(grp, 0, true);
+    QVERIFY(grp->undo());
+    QVERIFY(i == 10);
+
+    setGrpDummyRet(grp, 0, false);
+    QVERIFY(!grp->redo());
+    QVERIFY2(i == 10, "i changed after failing group redo");
+    // Let it work
+    setGrpDummyRet(grp, 0, true);
+    QVERIFY(grp->redo());
+    QVERIFY(i == 30);
+    delete grp;
+
+    // Test with second fail
+    grp = getIncDoubleGroup(i);
+    i = 10;
+    setGrpDummyRet(grp, 1, false);
+    QVERIFY(!grp->execute());
+    QVERIFY2(i == 10, "i changed after failing group execute");
+    // Let it work
+    setGrpDummyRet(grp, 1, true);
+    QVERIFY(grp->execute());
+    QVERIFY(i == 30);
+
+    setGrpDummyRet(grp, 1, false);
+    QVERIFY(!grp->undo());
+    QVERIFY2(i == 30, "i changed after failing group undo");
+    // Let it work
+    setGrpDummyRet(grp, 1, true);
+    QVERIFY(grp->undo());
+    QVERIFY(i == 10);
+
+    setGrpDummyRet(grp, 1, false);
+    QVERIFY(!grp->redo());
+    QVERIFY2(i == 10, "i changed after failing group redo");
+    // Let it work
+    setGrpDummyRet(grp, 1, true);
+    QVERIFY(grp->redo());
+    QVERIFY(i == 30);
+    delete grp;
+}
+
+void GGEditor_BasicCommandTest::testCommandStackOrder()
+{
+    int i = 10;
+    Incer *inc = new Incer(i);
+    Doubler *dbl = new Doubler(i);
+    GGCommandStack stk;
+
+    QVERIFY(stk.execute(inc));
+    QVERIFY(i == 15);
+    QVERIFY(stk.execute(dbl));
+    QVERIFY(i == 30);
+
+    QVERIFY(stk.undo());
+    QVERIFY(i == 15);
+    QVERIFY(stk.undo());
+    QVERIFY(i == 10);
+
+    QVERIFY(stk.redo());
+    QVERIFY(i == 15);
+    QVERIFY(stk.redo());
+    QVERIFY(i == 30);
+
+    QVERIFY(stk.undo());
+    QVERIFY(stk.execute(new Incer(i)));
+    QVERIFY(i == 20);
+    QVERIFY(!stk.redo());
+    QVERIFY(i == 20);
 }
 
 void GGEditor_BasicCommandTest::testCommandGroup_data()

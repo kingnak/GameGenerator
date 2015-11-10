@@ -1,5 +1,9 @@
 #include "tst_ggeditor_basicobjecttest.h"
 #include <model/ggpage.h>
+#include <model/ggconnectionslot.h>
+#include <model/ggeditmodel.h>
+#include <model/ggconnection.h>
+#include <model/ggsimplefactory.h>
 
 GGEditor_BasicObjectTest::GGEditor_BasicObjectTest()
 {
@@ -84,3 +88,27 @@ void GGEditor_BasicObjectTest::testPageCast()
     delete p;
 }
 
+void GGEditor_BasicObjectTest::testConnectionSlot()
+{
+    GGEditModel m(new GGSimpleFactory);
+    GGStartPage *s = m.factory()->createStartPage();
+    GGEndPage *e = m.factory()->createEndPage();
+    m.registerNewPage(s);
+    m.registerNewPage(e);
+
+    GGConnection *c1 = m.factory()->createConnection(s->id(), e->id());
+    GGConnection *o;
+
+    m.registerNewConnection(c1);
+    GGConnectionSlot sl(GGConnectionSlot::StartConnection);
+    sl.connect(s, c1, &o);
+
+    QVERIFY2(s->getConnections().value(0) == c1, "Connection not set after connect");
+    QVERIFY2(o == NULL, "Got an old connection when there was none");
+
+    GGConnection *c2 = m.factory()->createConnection(s->id(), e->id());
+    m.registerNewConnection(c2);
+    sl.connect(s, c2, &o);
+    QVERIFY2(s->getConnections().value(0) == c2, "Connection not replaced after connect");
+    QVERIFY2(o == c1, "Did not get old connection");
+}

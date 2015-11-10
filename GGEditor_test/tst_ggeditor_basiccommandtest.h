@@ -17,6 +17,9 @@ private slots:
     void testCommandStack();
     void testCommandStackWithFails();
 
+    void testCommandGroupOrder();
+    void testCommandStackOrder();
+
     void testCreatePage();
     void testDeletePage();
     void testCreateConnection();
