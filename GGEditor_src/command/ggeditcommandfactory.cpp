@@ -43,6 +43,11 @@ GGCreateConnectionCmd *GGEditCommandFactory::createConnection(GGPage *src, GGPag
     return new GGCreateConnectionCmd(m_model, slot, src, dest);
 }
 
+GGExchangeConnectionCmd *GGEditCommandFactory::exchangeConnection(GGPage *src, GGPage *dest, GGConnectionSlot slot)
+{
+    return new GGExchangeConnectionCmd(m_model, src, dest, slot);
+}
+
 GGDeleteConnectionCmd *GGEditCommandFactory::deleteConnection(GGConnection *conn)
 {
     return new GGDeleteConnectionCmd(m_model, conn);

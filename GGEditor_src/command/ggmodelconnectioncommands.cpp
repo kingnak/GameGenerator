@@ -1,4 +1,5 @@
 #include "ggmodelconnectioncommands.h"
+#include "ggcommandgroup.h"
 #include <model/ggeditmodel.h>
 #include <model/ggabstractfactory.h>
 #include <model/ggconnection.h>
@@ -153,3 +154,65 @@ bool GGDeleteConnectionCmd::doRedo()
     return true;
 }
 
+///////////////////////////
+
+GGExchangeConnectionCmd::GGExchangeConnectionCmd(GGEditModel *model, GGPage *src, GGPage *dest, GGConnectionSlot slot)
+    : GGAbstractModelCommand(model),
+      m_src(src),
+      m_dest(dest),
+      m_del(NULL),
+      m_cre(NULL),
+      m_grp(NULL),
+      m_slot(slot)
+{
+
+}
+
+GGExchangeConnectionCmd::~GGExchangeConnectionCmd()
+{
+    delete m_grp;
+}
+
+QString GGExchangeConnectionCmd::description() const
+{
+    return "Exchange Connection";
+}
+
+GGConnection *GGExchangeConnectionCmd::newConnection()
+{
+    if (m_cre) return m_cre->createdConnection();
+    return NULL;
+}
+
+GGConnection *GGExchangeConnectionCmd::oldConnection()
+{
+    if (m_del) return m_del->deletedConnection();
+    return NULL;
+}
+
+bool GGExchangeConnectionCmd::doExecute()
+{
+    m_grp = new GGCommandGroup;
+    GGConnection *oldConn = m_slot.getExistingConnection(m_src);
+    if (oldConn) {
+        m_del = new GGDeleteConnectionCmd(m_model, oldConn);
+        m_grp->addCommand(m_del);
+    }
+
+    if (m_dest) {
+        m_cre = new GGCreateConnectionCmd(m_model, m_slot, m_src, m_dest);
+        m_grp->addCommand(m_cre);
+    }
+
+    return m_grp->execute();
+}
+
+bool GGExchangeConnectionCmd::doUndo()
+{
+    return m_grp->undo();
+}
+
+bool GGExchangeConnectionCmd::doRedo()
+{
+    return m_grp->redo();
+}

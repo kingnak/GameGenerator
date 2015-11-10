@@ -19,7 +19,7 @@ public:
     GGDeletePageCmd *deletePage(GGPage *page);
 
     GGCreateConnectionCmd *createConnection(GGPage *src, GGPage *dest, GGConnectionSlot slot);
-
+    GGExchangeConnectionCmd *exchangeConnection(GGPage *src, GGPage *dest, GGConnectionSlot slot);
     GGDeleteConnectionCmd *deleteConnection(GGConnection *conn);
 
 private:

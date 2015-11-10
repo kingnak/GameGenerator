@@ -17,13 +17,14 @@ public:
         DecisionConnection
     };
 
-    GGConnectionSlot(SlotType type, int index = 0)
+    GGConnectionSlot(SlotType type, int index = -1)
         : m_type(type), m_idx(index) {}
 
     SlotType type() const { return m_type; }
     int index() const { return m_idx; }
 
     bool connect(GGPage *page, GGConnection *conn, GGConnection **oldConnection = 0);
+    GGConnection *getExistingConnection(GGPage *page);
 
     static GGConnectionSlot findConnection(const GGPage *page, const GGConnection *conn);
 

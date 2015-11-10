@@ -12,6 +12,7 @@ class GGCreatePageCmd;
 class GGDeletePageCmd;
 class GGCreateConnectionCmd;
 class GGDeleteConnectionCmd;
+class GGExchangeConnectionCmd;
 
 class GGAbstractCommandFactory
 {
@@ -30,7 +31,7 @@ public:
     virtual GGDeletePageCmd *deletePage(GGPage *page) = 0;
 
     virtual GGCreateConnectionCmd *createConnection(GGPage *src, GGPage *dest, GGConnectionSlot slot) = 0;
-
+    virtual GGExchangeConnectionCmd *exchangeConnection(GGPage *src, GGPage *dest, GGConnectionSlot slot) = 0;
     virtual GGDeleteConnectionCmd *deleteConnection(GGConnection *conn) = 0;
 
     static inline bool oneShotCommand(GGAbstractCommand *cmd, QString *error = NULL);

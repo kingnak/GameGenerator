@@ -6,6 +6,7 @@
 
 class GGConnection;
 class GGPage;
+class GGCommandGroup;
 
 class GGCreateConnectionCmd : public GGAbstractModelCommand
 {
@@ -52,5 +53,30 @@ private:
 };
 
 ///////////////////////////
+
+class GGExchangeConnectionCmd : public GGAbstractModelCommand
+{
+public:
+    GGExchangeConnectionCmd(GGEditModel *model, GGPage *src, GGPage *dest, GGConnectionSlot slot);
+    ~GGExchangeConnectionCmd();
+
+    QString description() const;
+
+    GGConnection *newConnection();
+    GGConnection *oldConnection();
+
+protected:
+    bool doExecute();
+    bool doUndo();
+    bool doRedo();
+
+private:
+    GGPage *m_src;
+    GGPage *m_dest;
+    GGDeleteConnectionCmd *m_del;
+    GGCreateConnectionCmd *m_cre;
+    GGCommandGroup *m_grp;
+    GGConnectionSlot m_slot;
+};
 
 #endif // GGCMODELCONNECTIONCOMMMANDS_H

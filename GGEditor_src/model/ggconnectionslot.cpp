@@ -43,7 +43,7 @@ bool GGConnectionSlot::connect(GGPage *page, GGConnection *conn, GGConnection **
             if (!mcp) mcp = ggpage_cast<GGDecisionPage*> (page);
             if (!mcp) return false;
 
-            if (m_idx < mcp->getLinkMap().size()) {
+            if (0 <= m_idx && m_idx < mcp->getLinkMap().size()) {
                 // Must work on copies of Mapped Link and Link
                 GGMappedLink mc = mcp->getLinkMap()[m_idx];
                 GGLink l = mc.link();
@@ -72,7 +72,7 @@ bool GGConnectionSlot::connect(GGPage *page, GGConnection *conn, GGConnection **
         Q_ASSERT(ggpage_cast<GGDecisionPage*> (page));
         Q_ASSERT(m_idx >= 0);
         if (GGDecisionPage *dp = ggpage_cast<GGDecisionPage*> (page)) {
-            if (m_idx < dp->getDecisionConnections().size()) {
+            if (0 <= m_idx && m_idx < dp->getDecisionConnections().size()) {
                 // Must work on copy of Link
                 GGLink l = dp->getDecisionLinks()[m_idx];
                 *oldConnection = l.connection();
@@ -91,6 +91,15 @@ bool GGConnectionSlot::connect(GGPage *page, GGConnection *conn, GGConnection **
         Q_ASSERT_X(false, "GGConnectionSlot::connect", "Invalid Connection type");
         return false;
     }
+}
+
+GGConnection *GGConnectionSlot::getExistingConnection(GGPage *page)
+{
+    // Set to NULL and back
+    GGConnection *ret = NULL;
+    this->connect(page, NULL, &ret);
+    if (ret) this->connect(page, ret);
+    return ret;
 }
 
 GGConnectionSlot GGConnectionSlot::findConnection(const GGPage *page, const GGConnection *conn)
