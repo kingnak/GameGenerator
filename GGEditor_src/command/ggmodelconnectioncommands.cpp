@@ -42,11 +42,23 @@ bool GGCreateConnectionCmd::doExecute()
         return setError("Cannot register connection");
     }
 
-    if (!m_slot.connect(m_src, m_createdConn)) {
+    GGConnection *oldConn;
+    if (!m_slot.connect(m_src, m_createdConn, &oldConn)) {
         if (!m_model->unregisterConnection(m_createdConn->id())) {
             Q_ASSERT_X(false, "GGCreateConnectionCmd::doExecute", "Cannot unregister connection after failing to set connection slot");
         }
         return setError("Cannot set Connection in source page");
+    }
+
+    if (oldConn) {
+        // THERE WAS A CONNECTION!
+        if (!m_slot.connect(m_src, oldConn)) {
+            Q_ASSERT_X(false, "GGCreateConnectionCmd::doExecute", "Cannot reconnect old connection on createConnectionCmd");
+        }
+        if (!m_model->unregisterConnection(m_createdConn->id())) {
+            Q_ASSERT_X(false, "GGCreateConnectionCmd::doExecute", "Cannot unregister connection after failing to set connection slot");
+        }
+        return setError("Page already had a connection");
     }
 
     return true;
