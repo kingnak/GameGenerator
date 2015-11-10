@@ -16,6 +16,7 @@ public:
     enum Type {
         Rectangle, Ellipse, Polygon
     };
+    GGMappedLink() : m_type(Rectangle) {}
 
     static GGMappedLink rectangle(QRect r);
     static GGMappedLink ellipse(QRect e);
