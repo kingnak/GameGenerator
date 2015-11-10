@@ -23,7 +23,7 @@ public:
     SlotType type() const { return m_type; }
     int index() const { return m_idx; }
 
-    bool connect(GGPage *page, GGConnection *conn);
+    bool connect(GGPage *page, GGConnection *conn, GGConnection **oldConnection = 0);
 
     static GGConnectionSlot findConnection(const GGPage *page, const GGConnection *conn);
 

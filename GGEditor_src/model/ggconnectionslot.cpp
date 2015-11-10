@@ -3,21 +3,37 @@
 #include <model/ggconnection.h>
 #include <QList>
 
-bool GGConnectionSlot::connect(GGPage *page, GGConnection *conn)
+bool GGConnectionSlot::connect(GGPage *page, GGConnection *conn, GGConnection **oldConnection)
 {
+    GGConnection *dummy_old = NULL;
+    if (!oldConnection) oldConnection = &dummy_old;
+    *oldConnection = NULL;
+
     switch (m_type) {
     case StartConnection:
         Q_ASSERT(ggpage_cast<GGStartPage*>(page));
-        ggpage_cast<GGStartPage*>(page)->setStartConnection(conn);
-        return true;
+        if (GGStartPage *sp = ggpage_cast<GGStartPage*>(page)) {
+            *oldConnection = sp->startConnection();
+            sp->setStartConnection(conn);
+            return true;
+        }
+        return false;
     case TrueConnection:
         Q_ASSERT(ggpage_cast<GGConditionPage*>(page));
-        ggpage_cast<GGConditionPage*>(page)->setTrueConnection(conn);
-        return true;
+        if (GGConditionPage *cp = ggpage_cast<GGConditionPage*>(page)) {
+            *oldConnection = cp->trueConnection();
+            cp->setTrueConnection(conn);
+            return true;
+        }
+        return false;
     case FalseConnection:
         Q_ASSERT(ggpage_cast<GGConditionPage*>(page));
-        ggpage_cast<GGConditionPage*>(page)->setFalseConnection(conn);
-        return true;
+        if (GGConditionPage *cp = ggpage_cast<GGConditionPage*>(page)) {
+            *oldConnection = cp->falseConnection();
+            cp->setFalseConnection(conn);
+            return true;
+        }
+        return false;
     case MappedConnection:
         Q_ASSERT(ggpage_cast<GGActionPage*> (page) || ggpage_cast<GGDecisionPage*> (page));
         Q_ASSERT(m_idx >= 0);
@@ -25,10 +41,13 @@ bool GGConnectionSlot::connect(GGPage *page, GGConnection *conn)
         { // Scope limit mcp
             GGMappedContentPage *mcp = ggpage_cast<GGActionPage*> (page);
             if (!mcp) mcp = ggpage_cast<GGDecisionPage*> (page);
+            if (!mcp) return false;
+
             if (m_idx < mcp->getLinkMap().size()) {
                 // Must work on copies of Mapped Link and Link
                 GGMappedLink mc = mcp->getLinkMap()[m_idx];
                 GGLink l = mc.link();
+                *oldConnection = l.connection();
                 l.setConnection(conn);
                 mc.setLink(l);
                 mcp->setMappedLink(m_idx, mc);
@@ -41,18 +60,22 @@ bool GGConnectionSlot::connect(GGPage *page, GGConnection *conn)
         return false;
     case ActionConnection:
         Q_ASSERT(ggpage_cast<GGActionPage*> (page));
-        // TODO: Set action connection
-        Q_ASSERT_X(false, "GGConnectionSlot::connect", "Action connection not yet implemented");
-        return true;
+        if (GGActionPage *ap = ggpage_cast<GGActionPage*> (page)) {
+            GGLink l = ap->actionLink();
+            *oldConnection = l.connection();
+            l.setConnection(conn);
+            ap->setActionLink(l);
+            return true;
+        }
+        return false;
     case DecisionConnection:
         Q_ASSERT(ggpage_cast<GGDecisionPage*> (page));
         Q_ASSERT(m_idx >= 0);
-
-        { // Scope limit dp
-            GGDecisionPage *dp = ggpage_cast<GGDecisionPage*> (page);
+        if (GGDecisionPage *dp = ggpage_cast<GGDecisionPage*> (page)) {
             if (m_idx < dp->getDecisionConnections().size()) {
                 // Must work on copy of Link
                 GGLink l = dp->getDecisionLinks()[m_idx];
+                *oldConnection = l.connection();
                 l.setConnection(conn);
                 dp->setDecisionLink(m_idx, l);
                 return true;
@@ -60,7 +83,6 @@ bool GGConnectionSlot::connect(GGPage *page, GGConnection *conn)
                 return false;
             }
         }
-        Q_ASSERT_X(false, "GGConnectionSlot::connect", "Can never reach this");
         return false;
     case NoConnection:
         Q_ASSERT_X(false, "GGConnectionSlot::connect", "No Connection type");
@@ -106,6 +128,35 @@ GGConnectionSlot GGConnectionSlot::findConnection(const GGPage *page, const GGCo
         return GGConnectionSlot(NoConnection);
     }
 
-    Q_ASSERT_X(false, "GGConnectionSlot::findConnection", "TODO: Implement other page types");
+    const GGActionPage *ap = ggpage_cast<const GGActionPage*> (page);
+    const GGDecisionPage *dp = ggpage_cast<const GGDecisionPage*> (page);
+    const GGMappedContentPage *mcp = ap ? static_cast<const GGMappedContentPage *> (ap) : dp;
+    if (mcp) {
+        // Const cast ok, as we don't access the value
+        int idx = mcp->getMappedConnections().indexOf(const_cast<GGConnection *> (conn));
+        if (idx >= 0) {
+            return GGConnectionSlot(MappedConnection, idx);
+        }
+    }
+
+    if (ap) {
+        if (conn == ap->actionLink().connection()) {
+            return GGConnectionSlot(ActionConnection);
+        }
+        Q_ASSERT_X(false, "GGConnectionSlot::findConnection", "Connection is neither mapped nor action connection for action page");
+        return GGConnectionSlot(NoConnection);
+    }
+
+    if (dp) {
+        // Const cast ok, as we don't access the value
+        int idx = dp->getDecisionConnections().indexOf(const_cast<GGConnection *> (conn));
+        if (idx >= 0) {
+            return GGConnectionSlot(DecisionConnection, idx);
+        }
+        Q_ASSERT_X(false, "GGConnectionSlot::findConnection", "Connection is neither mapped nor decision connection for decision page");
+        return GGConnectionSlot(NoConnection);
+    }
+
+    Q_ASSERT_X(false, "GGConnectionSlot::findConnection", "Cannot determine connection slot");
     return GGConnectionSlot(NoConnection);
 }
