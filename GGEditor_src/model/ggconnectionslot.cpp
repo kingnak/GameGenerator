@@ -72,7 +72,7 @@ bool GGConnectionSlot::connect(GGPage *page, GGConnection *conn, GGConnection **
         Q_ASSERT(ggpage_cast<GGDecisionPage*> (page));
         Q_ASSERT(m_idx >= 0);
         if (GGDecisionPage *dp = ggpage_cast<GGDecisionPage*> (page)) {
-            if (0 <= m_idx && m_idx < dp->getDecisionConnections().size()) {
+            if (0 <= m_idx && m_idx < dp->getDecisionLinks().size()) {
                 // Must work on copy of Link
                 GGLink l = dp->getDecisionLinks()[m_idx];
                 *oldConnection = l.connection();
