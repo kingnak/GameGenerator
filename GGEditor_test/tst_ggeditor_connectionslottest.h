@@ -28,6 +28,7 @@ private slots:
     void testActionConnection();
     void testMappedConnection_data();
     void testMappedConnection();
+    void testDecisionConnection();
 
 private:
     GGEditModel *m_model;

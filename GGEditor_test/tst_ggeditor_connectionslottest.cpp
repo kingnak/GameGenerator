@@ -143,56 +143,60 @@ void GGEditor_ConnectionSlotTest::testMappedConnection()
 
     QVERIFY2(!m_stack->execute(m_cmdFac->createConnection(mcp, m_e, GGConnectionSlot(GGConnectionSlot::MappedConnection, 0))), "Can set MappedConnection without link");
     mcp->addMappedLink(GGMappedLink::rectangle(QRect()));
+    mcp->addMappedLink(GGMappedLink::rectangle(QRect()));
     QVERIFY2(m_stack->execute(m_cmdFac->createConnection(mcp, m_e, GGConnectionSlot(GGConnectionSlot::MappedConnection, 0))), "Cannot set MappedConnection");
     GGConnection *c1 = static_cast<GGCreateConnectionCmd*> (m_stack->undoCommand())->createdConnection();
     QVERIFY2(mcp->getLinkMap().value(0).link().connection() == c1, "Link's connection is wrong after setting MappedConnection");
+    QVERIFY2(mcp->getLinkMap().value(1).link().connection() == 0, "Wrong link set in MappedConnection");
     QVERIFY(m_stack->undo());
     QVERIFY2(mcp->getLinkMap().value(0).link().connection() == 0, "Link's connection is still set after undoing setting MappedConnection");
+    QVERIFY2(mcp->getLinkMap().value(1).link().connection() == 0, "Wrong link set in MappedConnection");
     QVERIFY(m_stack->redo());
     QVERIFY2(mcp->getLinkMap().value(0).link().connection() == c1, "Link's connection is wrong after redoing setting MappedConnection");
+    QVERIFY2(mcp->getLinkMap().value(1).link().connection() == 0, "Wrong link set in MappedConnection");
+
+    QVERIFY2(m_stack->execute(m_cmdFac->createConnection(mcp, m_c, GGConnectionSlot(GGConnectionSlot::MappedConnection, 1))), "Cannot set MappedConnection");
+    GGConnection *c2 = static_cast<GGCreateConnectionCmd*> (m_stack->undoCommand())->createdConnection();
+    QVERIFY2(mcp->getLinkMap().value(1).link().connection() == c2, "Link's connection is wrong after setting MappedConnection");
+    QVERIFY2(mcp->getLinkMap().value(0).link().connection() == c1, "Wrong link set in MappedConnection");
+    QVERIFY(m_stack->undo());
+    QVERIFY2(mcp->getLinkMap().value(1).link().connection() == 0, "Link's connection is still set after undoing setting MappedConnection");
+    QVERIFY2(mcp->getLinkMap().value(0).link().connection() == c1, "Wrong link set in MappedConnection");
+    QVERIFY(m_stack->redo());
+    QVERIFY2(mcp->getLinkMap().value(1).link().connection() == c2, "Link's connection is wrong after redoing setting MappedConnection");
+    QVERIFY2(mcp->getLinkMap().value(0).link().connection() == c1, "Wrong link set in MappedConnection");
+
+    QVERIFY2(mcp->getLinkMap().value(0).link().connection() == mcp->getMappedConnections().value(0), "Link's connection is not same as mapped connection");
+    QVERIFY2(mcp->getLinkMap().value(1).link().connection() == mcp->getMappedConnections().value(1), "Link's connection is not same as mapped connection");
 }
 
-/*
-void GGEditor_ConnectionSlotTest::t(){
+void GGEditor_ConnectionSlotTest::testDecisionConnection()
+{
+    QVERIFY2(!m_stack->execute(m_cmdFac->createConnection(m_d, m_e, GGConnectionSlot(GGConnectionSlot::DecisionConnection, 0))), "Can set DecisionConnection without link");
+    m_d->addDecisionLink(GGLink());
+    m_d->addDecisionLink(GGLink());
+    QVERIFY2(m_stack->execute(m_cmdFac->createConnection(m_d, m_e, GGConnectionSlot(GGConnectionSlot::DecisionConnection, 0))), "Cannot set DecisionConnection");
+    GGConnection *c1 = static_cast<GGCreateConnectionCmd*> (m_stack->undoCommand())->createdConnection();
+    QVERIFY2(m_d->getDecisionConnections().value(0) == c1, "Link's connection is wrong after setting DecisionConnection");
+    QVERIFY2(m_d->getDecisionConnections().value(1) == 0, "Wrong link set in DecisionConnection");
+    QVERIFY(m_stack->undo());
+    QVERIFY2(m_d->getDecisionConnections().value(0) == 0, "Link's connection is still set after undoing setting DecisionConnection");
+    QVERIFY2(m_d->getDecisionConnections().value(1) == 0, "Wrong link set in DecisionConnection");
+    QVERIFY(m_stack->redo());
+    QVERIFY2(m_d->getDecisionConnections().value(0) == c1, "Link's connection is wrong after redoing setting DecisionConnection");
+    QVERIFY2(m_d->getDecisionConnections().value(1) == 0, "Wrong link set in DecisionConnection");
 
-    // Check end page (cannot have outgoing)
-    QVERIFY2(!stk.execute(m_cmdFac->createConnection(e, d, GGConnectionSlot::TrueConnection)), "Can connect end page");
-    QVERIFY2(e->getConnections().isEmpty(), "EndPage has outgoing connection");
-    QVERIFY2(m_model->getPageIncommingConnections(d).isEmpty(), "Page has incomming connection after connecting wrongly from EndPage");
+    QVERIFY2(m_stack->execute(m_cmdFac->createConnection(m_d, m_c, GGConnectionSlot(GGConnectionSlot::DecisionConnection, 1))), "Cannot set DecisionConnection");
+    GGConnection *c2 = static_cast<GGCreateConnectionCmd*> (m_stack->undoCommand())->createdConnection();
+    QVERIFY2(m_d->getDecisionConnections().value(1) == c2, "Link's connection is wrong after setting DecisionConnection");
+    QVERIFY2(m_d->getDecisionConnections().value(0) == c1, "Wrong link set in DecisionConnection");
+    QVERIFY(m_stack->undo());
+    QVERIFY2(m_d->getDecisionConnections().value(1) == 0, "Link's connection is still set after undoing setting DecisionConnection");
+    QVERIFY2(m_d->getDecisionConnections().value(0) == c1, "Wrong link set in DecisionConnection");
+    QVERIFY(m_stack->redo());
+    QVERIFY2(m_d->getDecisionConnections().value(1) == c2, "Link's connection is wrong after redoing setting DecisionConnection");
+    QVERIFY2(m_d->getDecisionConnections().value(0) == c1, "Wrong link set in DecisionConnection");
 
-    // Check Condition correct
-    QVERIFY2(stk.execute(m_cmdFac->createConnection(c, a, GGConnectionSlot::TrueConnection)), "Cannot set True Connection");
-    QVERIFY2(stk.execute(m_cmdFac->createConnection(c, e, GGConnectionSlot::FalseConnection)), "Cannot set False Connection");
-    cn = static_cast<GGCreateConnectionCmd *> (stk.getUndoCommands()[1])->createdConnection();
-    QVERIFY2(cn->source() == c && cn->destination() == a, "Src/Dest wrong for True page connection");
-    QVERIFY2(c->trueConnection() == cn, "True connection not correct");
-    QVERIFY2(m_model->getPageIncommingConnections(a).value(0) == cn, "Incomming not correct after setting True Connection");
-    cn = static_cast<GGCreateConnectionCmd *> (stk.getUndoCommands()[0])->createdConnection();
-    QVERIFY2(cn->source() == c && cn->destination() == e, "Src/Dest wrong for False page connection");
-    QVERIFY2(c->falseConnection() == cn, "False connection not correct");
-    QVERIFY2(m_model->getPageIncommingConnections(e).value(0) == cn, "Incomming not correct after setting False Connection");
-    stk.undo();
-    QVERIFY2(c->falseConnection() == 0, "False connection not unset with undo");
-    QVERIFY2(m_model->getPageIncommingConnections(e).isEmpty(), "Incomming not unset correct after undo False Connection");
-    stk.redo();
-    QVERIFY2(c->falseConnection() == cn, "False connection not correct after redo");
-    QVERIFY2(m_model->getPageIncommingConnections(e).value(0) == cn, "Incomming not correct after redo setting False Connection");
-
-    // Try reset FALSE. This should not work with CreateConnection Command!
-    int oldDinCount = m_model->getPageIncommingConnections(d).size();
-    QVERIFY2(!stk.execute(m_cmdFac->createConnection(c, d, GGConnectionSlot::FalseConnection)), "Create connection on already connected slot succeeded");
-    QVERIFY2(cn->source() == c && cn->destination() == e, "Src/Dest wrong for True page connection after re-setting");
-    QVERIFY2(c->falseConnection() == cn, "False connection changed");
-    QVERIFY2(m_model->getPageIncommingConnections(e).value(0) == cn, "Incomming reset after failing re-setting False connection on old page");
-    QVERIFY2(m_model->getPageIncommingConnections(d).size() == oldDinCount, "Incomming reset after failing re-setting False connection on old page");
-
-    // Try reset FALSE. This must work with ExchangeConnection Command
-    QVERIFY2(stk.execute(m_cmdFac->exchangeConnection(c, d, GGConnectionSlot::FalseConnection)), "Cannot exchange connection");
-    QVERIFY2(c->falseConnection() != cn, "Old False Connection still set");
-    QVERIFY2(m_model->getPageIncommingConnections(e).size() == 0, "Old destination still has incomming");
-    QVERIFY2(static_cast<GGExchangeConnectionCmd*>(stk.undoCommand())->oldConnection() == cn, "Old connection is not the old False connection");
-
-
-
+    QVERIFY2(m_d->getDecisionLinks().value(0).connection() == m_d->getDecisionConnections().value(0), "Link's connection is not same as decision connection");
+    QVERIFY2(m_d->getDecisionLinks().value(1).connection() == m_d->getDecisionConnections().value(1), "Link's connection is not same as decision connection");
 }
-*/
