@@ -25,6 +25,8 @@ protected:
     GGAbstractFactory *m_factory;
     QMap<GG::PageID, GGPage *> m_pages;
     QMap<GG::ConnectionID, GGConnection *> m_connections;
+
+    bool m_blockSignals;
 };
 
 #endif // GGRUNTIMEMODEL_H

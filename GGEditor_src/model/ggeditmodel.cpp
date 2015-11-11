@@ -18,6 +18,7 @@ bool GGEditModel::registerNewPage(GGPage *page)
     setPageId(page, m_nextPageId++);
     m_pages[page->id()] = page;
 
+    emit pageRegistered(page);
     return true;
 }
 
@@ -47,15 +48,19 @@ bool GGEditModel::registerNewConnection(GGConnection *conn)
     // Store incomming connection
     m_incommingConns[conn->destinationId()] << conn->id();
 
+    emit connectionRegistered(conn);
     return true;
 }
 
 bool GGEditModel::registerConnectionWithId(GGConnection *conn)
 {
+    m_blockSignals = true;
     bool ret = GGRuntimeModel::registerConnectionWithId(conn);
+    m_blockSignals = false;
     if (ret) {
         // Store incomming connection
         m_incommingConns[conn->destinationId()] << conn->id();
+        emit connectionRegistered(conn);
     }
     return ret;
 }
@@ -79,6 +84,8 @@ GGPage *GGEditModel::unregisterPage(GG::PageID id, QList<GGConnection *> *affect
     m_pages.remove(id);
     unsetModel(ret);
     if (affectedConnections) *affectedConnections = aConns;
+
+    emit pageUnregistered(id, ret);
     return ret;
 }
 
@@ -94,6 +101,8 @@ GGConnection *GGEditModel::unregisterConnection(GG::ConnectionID id)
     m_incommingConns[ret->destinationId()].remove(ret->id());
     m_connections.remove(id);
     unsetModel(ret);
+
+    emit connectionUnRegistered(id, ret);
     return ret;
 }
 

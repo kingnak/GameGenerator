@@ -3,18 +3,18 @@
 
 #include <gg_core_global.h>
 #include <gg_definitions.h>
+#include <QObject>
 
 class GGPage;
 class GGConnection;
 class GGAbstractFactory;
 
-class GG_CORESHARED_EXPORT GGAbstractModel
+class GG_CORESHARED_EXPORT GGAbstractModel : public QObject
 {
-    Q_DISABLE_COPY(GGAbstractModel)
+    Q_OBJECT
 
 public:
-    GGAbstractModel() {}
-    virtual ~GGAbstractModel() {}
+    explicit GGAbstractModel(QObject *parent = 0) : QObject(parent) {}
     virtual GGAbstractFactory *factory() = 0;
 
     virtual GGPage *getPage(GG::PageID id) = 0;
@@ -25,6 +25,15 @@ public:
 
     virtual bool registerPageWithId(GGPage *page) = 0;
     virtual bool registerConnectionWithId(GGConnection *conn) = 0;
+
+    virtual void notifyPageUpdate(GG::PageID id);
+
+signals:
+    void pageRegistered(GGPage *page);
+    void pageUnregistered(GG::PageID id, GGPage *page);
+    void connectionRegistered(GGConnection *conn);
+    void connectionUnRegistered(GG::ConnectionID id, GGConnection *conn);
+    void pageUpdated(GGPage *page);
 
 protected:
     void setPageId(GGPage *page, GG::PageID id);

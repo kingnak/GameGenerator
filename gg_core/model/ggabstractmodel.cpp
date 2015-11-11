@@ -2,6 +2,13 @@
 #include "ggpage.h"
 #include "ggconnection.h"
 
+void GGAbstractModel::notifyPageUpdate(GG::PageID id)
+{
+    if (GGPage *p = getPage(id)) {
+        emit pageUpdated(p);
+    }
+}
+
 void GGAbstractModel::setPageId(GGPage *page, GG::PageID id)
 {
     Q_ASSERT(page->m_model == NULL || page->m_model == this);

@@ -1,6 +1,7 @@
 #include "ggpage.h"
 #include "ggconnection.h"
 #include "ggcontentelement.h"
+#include "ggabstractmodel.h"
 #include <QList>
 
 GGPage::GGPage()
@@ -12,6 +13,27 @@ GGPage::GGPage()
 
 GGPage::~GGPage()
 {
+}
+
+void GGPage::setSceneName(QString sn)
+{
+    if (sn != m_sceneName) {
+        m_sceneName = sn;
+        notifyChanged();
+    }
+}
+
+void GGPage::setName(QString n)
+{
+    if (n != m_sceneName) {
+        m_name = n;
+        notifyChanged();
+    }
+}
+
+void GGPage::notifyChanged()
+{
+    if (m_model) m_model->notifyPageUpdate(m_id);
 }
 
 /////////////////////////////////////////
@@ -39,12 +61,18 @@ GGConnection *GGConditionPage::falseConnection() const
 
 void GGConditionPage::setTrueConnection(GGConnection *t)
 {
-    m_true = t;
+    if (t != m_true) {
+        m_true = t;
+        notifyChanged();
+    }
 }
 
 void GGConditionPage::setFalseConnection(GGConnection *f)
 {
-    m_false = f;
+    if (f != m_false) {
+        m_false = f;
+        notifyChanged();
+    }
 }
 
 QList<GGConnection *> GGConditionPage::getConnections() const
@@ -60,10 +88,12 @@ bool GGConditionPage::removeConnection(GGConnection *connection)
     Q_ASSERT(connection && connection->source() == this);
     if (connection == m_true) {
         m_true = NULL;
+        notifyChanged();
         return true;
     }
     if (connection == m_false) {
         m_false = NULL;
+        notifyChanged();
         return true;
     }
     return false;
@@ -90,15 +120,20 @@ void GGContentPage::setContent(GGContentElement *cont)
 {
     if (m_content != cont) {
         delete m_content;
+        m_content = cont;
+        notifyChanged();
     }
-    m_content = cont;
 }
 
 GGContentElement *GGContentPage::exchangeContent(GGContentElement *cont)
 {
-    GGContentElement *oldContent = m_content;
-    m_content = cont;
-    return oldContent;
+    if (m_content != cont) {
+        GGContentElement *oldContent = m_content;
+        m_content = cont;
+        notifyChanged();
+        return oldContent;
+    }
+    return cont;
 }
 
 /////////////////////////////////////////
@@ -116,7 +151,10 @@ int GGStartPage::type() const
 
 void GGStartPage::setStartConnection(GGConnection *conn)
 {
-    m_conn = conn;
+    if (conn != m_conn) {
+        m_conn = conn;
+        notifyChanged();
+    }
 }
 
 GGConnection *GGStartPage::startConnection() const
@@ -137,6 +175,7 @@ bool GGStartPage::removeConnection(GGConnection *connection)
     Q_ASSERT(connection && connection->source() == this);
     if (connection == m_conn) {
         m_conn = NULL;
+        notifyChanged();
         return true;
     }
     return false;
@@ -174,12 +213,14 @@ GGMappedContentPage::GGMappedContentPage()
 
 bool GGMappedContentPage::removeConnection(GGConnection *connection)
 {
+    Q_ASSERT(connection && connection->source() == this);
     for (int i = 0; i < m_mappedLinks.size(); ++i) {
         if (m_mappedLinks[i].link().connection() == connection) {
             // Make a copy, remove connection, and replace
             GGLink l = m_mappedLinks[i].link();
             l.setConnection(NULL);
             m_mappedLinks[i].setLink(l);
+            notifyChanged();
             return true;
         }
     }
@@ -203,12 +244,14 @@ QList<GGConnection *> GGMappedContentPage::getMappedConnections() const
 void GGMappedContentPage::addMappedLink(GGMappedLink link)
 {
     m_mappedLinks << link;
+    notifyChanged();
 }
 
 bool GGMappedContentPage::setMappedLink(int idx, GGMappedLink link)
 {
     if (0 <= idx && idx <= m_mappedLinks.size()) {
         m_mappedLinks[idx] = link;
+        notifyChanged();
         return true;
     }
     return false;
@@ -218,6 +261,7 @@ bool GGMappedContentPage::removeMappedLink(int idx)
 {
     if (0 <= idx && idx <= m_mappedLinks.size()) {
         m_mappedLinks.removeAt(idx);
+        notifyChanged();
         return true;
     }
     return false;
@@ -243,12 +287,15 @@ GGLink GGActionPage::actionLink() const
 void GGActionPage::setActionLink(GGLink link)
 {
     m_actionLink = link;
+    notifyChanged();
 }
 
 bool GGActionPage::removeConnection(GGConnection *connection)
 {
+    Q_ASSERT(connection && connection->source() == this);
     if (m_actionLink.connection() == connection) {
         m_actionLink.setConnection(NULL);
+        notifyChanged();
         return true;
     }
     return GGMappedContentPage::removeConnection(connection);
@@ -286,12 +333,14 @@ QList<GGConnection *> GGDecisionPage::getDecisionConnections() const
 void GGDecisionPage::addDecisionLink(GGLink link)
 {
     m_decisionLinks << link;
+    notifyChanged();
 }
 
 bool GGDecisionPage::setDecisionLink(int idx, GGLink link)
 {
     if (0 <= idx && idx <= m_decisionLinks.size()) {
         m_decisionLinks[idx] = link;
+        notifyChanged();
         return true;
     }
     return false;
@@ -301,6 +350,7 @@ bool GGDecisionPage::removeDecisionLink(int idx)
 {
     if (0 <= idx && idx <= m_decisionLinks.size()) {
         m_decisionLinks.removeAt(idx);
+        notifyChanged();
         return true;
     }
     return false;
@@ -318,9 +368,11 @@ QList<GGConnection *> GGDecisionPage::getConnections() const
 
 bool GGDecisionPage::removeConnection(GGConnection *connection)
 {
+    Q_ASSERT(connection && connection->source() == this);
     for (int i = 0; i < m_decisionLinks.size(); ++i) {
         if (m_decisionLinks[i].connection() == connection) {
             m_decisionLinks[i].setConnection(NULL);
+            notifyChanged();
             return true;
         }
     }

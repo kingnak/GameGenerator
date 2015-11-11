@@ -28,8 +28,8 @@ public:
     QString name() const { return m_name; }
     GGAbstractModel *model() const { return m_model; }
 
-    void setSceneName(QString sn) { m_sceneName = sn; }
-    void setName(QString n) { m_name = n; }
+    void setSceneName(QString sn);
+    void setName(QString n);
 
     // TODO: Entry Action (as own class between contentPage and mappedContenPage?)
 
@@ -39,6 +39,9 @@ public:
 private:
     GG::PageID m_id;
     GGAbstractModel *m_model;
+
+protected:
+    void notifyChanged();
 
 protected:
     QString m_sceneName;
