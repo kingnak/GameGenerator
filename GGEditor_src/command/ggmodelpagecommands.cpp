@@ -379,61 +379,110 @@ QString GGMappedLinkCmd::description() const
 
 bool GGMappedLinkCmd::doExecute()
 {
+    Q_ASSERT_X(!m_new.link().connection() || m_new.link().connection() == m_model->getConnection(m_new.link().connection()->id()), "GGMappedLinkCmd::doExecute(Add)", "New link is not registered in model");
     if (m_type != Add) {
         Q_ASSERT(0 <= m_idx && m_idx < m_page->getLinkMap().size());
         m_old = m_page->getLinkMap().value(m_idx);
+        // Same as Redo
+        return doRedo();
+    } else {
+        m_idx = m_page->getLinkMap().size();
+        m_page->addMappedLink(m_new);
+        return true;
     }
-    return doSet(m_new, m_old);
 }
 
 bool GGMappedLinkCmd::doUndo()
 {
-    return doSet(m_old, m_new);
+    switch (m_type) {
+    case Add:
+        if (!m_page->removeMappedLink(m_idx)) {
+            return setError("Cannot remove mapped link");
+        }
+        if (m_new.link().connection()) {
+            bool ret = m_model->unregisterConnection(m_new.link().connection()->id());
+            Q_ASSERT(ret);
+            Q_UNUSED(ret);
+        }
+        return true;
+
+    case Remove:
+        if (!m_page->insertMappedLink(m_idx, m_old)) {
+            return setError("Cannot insert mapped link");
+        }
+        if (m_old.link().connection()) {
+            bool ret = m_model->registerConnectionWithId(m_old.link().connection());
+            Q_ASSERT(ret);
+            Q_UNUSED(ret);
+        }
+        return true;
+
+    case Set:
+        if (!m_page->setMappedLink(m_idx, m_old)) {
+            return setError("Cannot set mapped link");
+        } else {
+            // Connection is unaffected. Simply copy back to old
+            GGLink ol = m_old.link();
+            GGLink nl = m_new.link();
+            ol.setConnection(nl.connection());
+            nl.setConnection(NULL);
+            m_old.setLink(ol);
+            m_new.setLink(nl);
+            return true;
+        }
+
+    default:
+        Q_ASSERT(false);
+        qFatal("Unknown DecisionLinkCmd Type");
+        return false;
+    }
 }
 
 bool GGMappedLinkCmd::doRedo()
 {
-    return doSet(m_new, m_old);
-}
-
-bool GGMappedLinkCmd::doSet(GGMappedLink n, GGMappedLink o)
-{
     switch (m_type) {
     case Add:
-        Q_ASSERT_X(!n.link().connection() || n.link().connection() == m_model->getConnection(n.link().connection()->id()), "GGMappedConnectionCmd::doSet Add", "New link's connection is not registered in the model");
-        m_page->addMappedLink(n);
+        if (m_new.link().connection()) {
+            if (!m_model->registerConnectionWithId(m_new.link().connection())) {
+                Q_ASSERT(false);
+                return setError("Cannot register connection");
+            }
+        }
+        m_page->addMappedLink(m_new);
         return true;
+
     case Remove:
         if (!m_page->removeMappedLink(m_idx)) {
             return setError("Cannot remove mapped link");
         }
-        if (o.link().connection()) {
-            bool ret = m_model->unregisterConnection(o.link().connection()->id());
+        if (m_old.link().connection()) {
+            bool ret = m_model->unregisterConnection(m_old.link().connection()->id());
             Q_ASSERT(ret);
             Q_UNUSED(ret);
         }
         return true;
+
     case Set:
-        Q_ASSERT_X(!n.link().connection() || n.link().connection() == m_model->getConnection(n.link().connection()->id()), "GGMappedConnectionCmd::doSet Set", "New link's connection is not registered in the model");
-        if (o.link().connection()) {
-            bool ret = m_model->unregisterConnection(o.link().connection()->id());
-            Q_ASSERT(ret);
-            Q_UNUSED(ret);
+        if (!m_page->setMappedLink(m_idx, m_new)) {
+            return setError("Cannot set decision link");
+        } else {
+            // Connection is unaffected. Simply copy again to new
+            GGLink ol = m_old.link();
+            GGLink nl = m_new.link();
+            nl.setConnection(ol.connection());
+            ol.setConnection(NULL);
+            m_old.setLink(ol);
+            m_new.setLink(nl);
+            return true;
         }
-        if (!m_page->setMappedLink(m_idx, n)) {
-            return setError("Cannot set mapped link");
-        }
-        if (n.link().connection()) {
-            bool ret = m_model->registerConnectionWithId(n.link().connection());
-            Q_ASSERT(ret);
-            Q_UNUSED(ret);
-        }
-        return true;
+
     default:
-        qFatal("GMappedConnectionCmd::doSet: Unknown Type");
+        Q_ASSERT(false);
+        qFatal("Unknown MappedLinkCmd Type");
         return false;
     }
 }
+
 
 ///////////////////////////
 
@@ -459,58 +508,96 @@ QString GGDecisionLinkCmd::description() const
 
 bool GGDecisionLinkCmd::doExecute()
 {
+    Q_ASSERT_X(!m_new.connection() || m_new.connection() == m_model->getConnection(m_new.connection()->id()), "GGDecisionLinkCmd::doExecute(Add)", "New link is not registered in model");
     if (m_type != Add) {
         Q_ASSERT(0 <= m_idx && m_idx < m_page->getDecisionLinks().size());
         m_old = m_page->getDecisionLinks().value(m_idx);
+        // Same as Redo
+        return doRedo();
+    } else {
+        m_idx = m_page->getDecisionLinks().size();
+        m_page->addDecisionLink(m_new);
+        return true;
     }
-    return doSet(m_new, m_old);
 }
 
 bool GGDecisionLinkCmd::doUndo()
 {
-    return doSet(m_old, m_new);
+    switch (m_type) {
+    case Add:
+        if (!m_page->removeDecisionLink(m_idx)) {
+            return setError("Cannot remove decision link");
+        }
+        if (m_new.connection()) {
+            bool ret = m_model->unregisterConnection(m_new.connection()->id());
+            Q_ASSERT(ret);
+            Q_UNUSED(ret);
+        }
+        return true;
+
+    case Remove:
+        if (!m_page->insertDecisionLink(m_idx, m_old)) {
+            return setError("Cannot insert decision link");
+        }
+        if (m_old.connection()) {
+            bool ret = m_model->registerConnectionWithId(m_old.connection());
+            Q_ASSERT(ret);
+            Q_UNUSED(ret);
+        }
+        return true;
+
+    case Set:
+        if (!m_page->setDecisionLink(m_idx, m_old)) {
+            return setError("Cannot set decision link");
+        }
+        // Connection is unaffected. Simply copy back to old
+        m_old.setConnection(m_new.connection());
+        m_new.setConnection(NULL);
+        return true;
+
+    default:
+        Q_ASSERT(false);
+        qFatal("Unknown DecisionLinkCmd Type");
+        return false;
+    }
 }
 
 bool GGDecisionLinkCmd::doRedo()
 {
-    return doSet(m_new, m_old);
-}
-
-bool GGDecisionLinkCmd::doSet(GGLink n, GGLink o)
-{
     switch (m_type) {
     case Add:
-        Q_ASSERT_X(!n.connection() || n.connection() == m_model->getConnection(n.connection()->id()), "GGDecisionLinkCmd::doSet Add", "New link's connection is not registered in the model");
-        m_page->addDecisionLink(n);
+        if (m_new.connection()) {
+            if (!m_model->registerConnectionWithId(m_new.connection())) {
+                Q_ASSERT(false);
+                return setError("Cannot register connection");
+            }
+        }
+        m_page->addDecisionLink(m_new);
         return true;
+
     case Remove:
         if (!m_page->removeDecisionLink(m_idx)) {
             return setError("Cannot remove decision link");
         }
-        if (o.connection()) {
-            bool ret = m_model->unregisterConnection(o.connection()->id());
+        if (m_old.connection()) {
+            bool ret = m_model->unregisterConnection(m_old.connection()->id());
             Q_ASSERT(ret);
             Q_UNUSED(ret);
         }
         return true;
+
     case Set:
-        Q_ASSERT_X(!n.connection() || n.connection() == m_model->getConnection(n.connection()->id()), "GGDecisionLinkCmd::doSet Set", "New link's connection is not registered in the model");
-        if (o.connection()) {
-            bool ret = m_model->unregisterConnection(o.connection()->id());
-            Q_ASSERT(ret);
-            Q_UNUSED(ret);
-        }
-        if (!m_page->setDecisionLink(m_idx, n)) {
+        if (!m_page->setDecisionLink(m_idx, m_new)) {
             return setError("Cannot set decision link");
         }
-        if (n.connection()) {
-            bool ret = m_model->registerConnectionWithId(n.connection());
-            Q_ASSERT(ret);
-            Q_UNUSED(ret);
-        }
+        // Connection is unaffected. Simply copy again to new
+        m_new.setConnection(m_old.connection());
+        m_old.setConnection(NULL);
         return true;
+
     default:
-        qFatal("GGDecisionLinkCmd::doSet: Unknown Type");
+        Q_ASSERT(false);
+        qFatal("Unknown DecisionLinkCmd Type");
         return false;
     }
 }

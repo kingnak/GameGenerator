@@ -147,6 +147,7 @@ public:
 
     QList<GGConnection *> getMappedConnections() const;
     void addMappedLink(GGMappedLink link);
+    bool insertMappedLink(int idx, GGMappedLink link);
     bool setMappedLink(int idx, GGMappedLink link);
     bool removeMappedLink(int idx);
     QList<GGMappedLink> getLinkMap() const;
@@ -191,6 +192,7 @@ public:
 
     QList<GGConnection *> getDecisionConnections() const;
     void addDecisionLink(GGLink link);
+    bool insertDecisionLink(int idx, GGLink link);
     bool setDecisionLink(int idx, GGLink link);
     bool removeDecisionLink(int idx);
     QList<GGLink> getDecisionLinks() const;

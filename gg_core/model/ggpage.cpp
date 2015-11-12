@@ -255,6 +255,16 @@ void GGMappedContentPage::addMappedLink(GGMappedLink link)
     notifyChanged();
 }
 
+bool GGMappedContentPage::insertMappedLink(int idx, GGMappedLink link)
+{
+    if (0 <= idx && idx <= m_mappedLinks.size()) {
+        m_mappedLinks.insert(idx, link);
+        notifyChanged();
+        return true;
+    }
+    return false;
+}
+
 bool GGMappedContentPage::setMappedLink(int idx, GGMappedLink link)
 {
     if (0 <= idx && idx <= m_mappedLinks.size()) {
@@ -342,6 +352,16 @@ void GGDecisionPage::addDecisionLink(GGLink link)
 {
     m_decisionLinks << link;
     notifyChanged();
+}
+
+bool GGDecisionPage::insertDecisionLink(int idx, GGLink link)
+{
+    if (0 <= idx && idx <= m_decisionLinks.size()) {
+        m_decisionLinks.insert(idx, link);
+        notifyChanged();
+        return true;
+    }
+    return false;
 }
 
 bool GGDecisionPage::setDecisionLink(int idx, GGLink link)
