@@ -3,7 +3,7 @@
 #include <model/ggconnection.h>
 #include <QList>
 
-bool GGConnectionSlot::connect(GGPage *page, GGConnection *conn, GGConnection **oldConnection)
+bool GGConnectionSlot::doConnectTest(bool doSet, GGPage *page, GGConnection *conn, GGConnection **oldConnection)
 {
     GGConnection *dummy_old = NULL;
     if (!oldConnection) oldConnection = &dummy_old;
@@ -14,7 +14,7 @@ bool GGConnectionSlot::connect(GGPage *page, GGConnection *conn, GGConnection **
         Q_ASSERT(ggpage_cast<GGStartPage*>(page));
         if (GGStartPage *sp = ggpage_cast<GGStartPage*>(page)) {
             *oldConnection = sp->startConnection();
-            sp->setStartConnection(conn);
+            if (doSet) sp->setStartConnection(conn);
             return true;
         }
         return false;
@@ -22,7 +22,7 @@ bool GGConnectionSlot::connect(GGPage *page, GGConnection *conn, GGConnection **
         Q_ASSERT(ggpage_cast<GGConditionPage*>(page));
         if (GGConditionPage *cp = ggpage_cast<GGConditionPage*>(page)) {
             *oldConnection = cp->trueConnection();
-            cp->setTrueConnection(conn);
+            if (doSet) cp->setTrueConnection(conn);
             return true;
         }
         return false;
@@ -30,7 +30,7 @@ bool GGConnectionSlot::connect(GGPage *page, GGConnection *conn, GGConnection **
         Q_ASSERT(ggpage_cast<GGConditionPage*>(page));
         if (GGConditionPage *cp = ggpage_cast<GGConditionPage*>(page)) {
             *oldConnection = cp->falseConnection();
-            cp->setFalseConnection(conn);
+            if (doSet) cp->setFalseConnection(conn);
             return true;
         }
         return false;
@@ -48,9 +48,11 @@ bool GGConnectionSlot::connect(GGPage *page, GGConnection *conn, GGConnection **
                 GGMappedLink mc = mcp->getLinkMap()[m_idx];
                 GGLink l = mc.link();
                 *oldConnection = l.connection();
-                l.setConnection(conn);
-                mc.setLink(l);
-                mcp->setMappedLink(m_idx, mc);
+                if (doSet) {
+                    l.setConnection(conn);
+                    mc.setLink(l);
+                    mcp->setMappedLink(m_idx, mc);
+                }
                 return true;
             } else {
                 return false;
@@ -63,8 +65,10 @@ bool GGConnectionSlot::connect(GGPage *page, GGConnection *conn, GGConnection **
         if (GGActionPage *ap = ggpage_cast<GGActionPage*> (page)) {
             GGLink l = ap->actionLink();
             *oldConnection = l.connection();
-            l.setConnection(conn);
-            ap->setActionLink(l);
+            if (doSet) {
+                l.setConnection(conn);
+                ap->setActionLink(l);
+            }
             return true;
         }
         return false;
@@ -76,8 +80,10 @@ bool GGConnectionSlot::connect(GGPage *page, GGConnection *conn, GGConnection **
                 // Must work on copy of Link
                 GGLink l = dp->getDecisionLinks()[m_idx];
                 *oldConnection = l.connection();
-                l.setConnection(conn);
-                dp->setDecisionLink(m_idx, l);
+                if (doSet) {
+                    l.setConnection(conn);
+                    dp->setDecisionLink(m_idx, l);
+                }
                 return true;
             } else {
                 return false;
@@ -93,13 +99,21 @@ bool GGConnectionSlot::connect(GGPage *page, GGConnection *conn, GGConnection **
     }
 }
 
+bool GGConnectionSlot::connect(GGPage *page, GGConnection *conn, GGConnection **oldConnection)
+{
+    return doConnectTest(true, page, conn, oldConnection);
+}
+
 GGConnection *GGConnectionSlot::getExistingConnection(GGPage *page)
 {
-    // Set to NULL and back
     GGConnection *ret = NULL;
-    this->connect(page, NULL, &ret);
-    if (ret) this->connect(page, ret);
+    this->doConnectTest(false, page, NULL, &ret);
     return ret;
+}
+
+bool GGConnectionSlot::canConnect(GGPage *page)
+{
+    return doConnectTest(false, page, NULL);
 }
 
 GGConnectionSlot GGConnectionSlot::findConnection(const GGPage *page, const GGConnection *conn)

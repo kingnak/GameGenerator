@@ -25,8 +25,12 @@ public:
 
     bool connect(GGPage *page, GGConnection *conn, GGConnection **oldConnection = 0);
     GGConnection *getExistingConnection(GGPage *page);
+    bool canConnect(GGPage *page);
 
     static GGConnectionSlot findConnection(const GGPage *page, const GGConnection *conn);
+
+private:
+    bool doConnectTest(bool doSet, GGPage *page, GGConnection *conn, GGConnection **oldConnection = 0);
 
 private:
     SlotType m_type;
