@@ -12,6 +12,7 @@ public:
 private slots:
     void testPageCast();
     void testConnectionSlot();
+    void testConnectionSlotCanConnect();
 };
 
 #endif // GGEDITOR_BASICOBJECTTEST_H
