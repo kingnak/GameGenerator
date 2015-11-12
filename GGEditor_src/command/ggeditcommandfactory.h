@@ -22,6 +22,22 @@ public:
     GGExchangeConnectionCmd *exchangeConnection(GGPage *src, GGPage *dest, GGConnectionSlot slot);
     GGDeleteConnectionCmd *deleteConnection(GGConnection *conn);
 
+    GGSetPageStringCmd *setPageName(GGPage *p, QString name);
+    GGSetPageStringCmd *setPageScene(GGPage *p, QString sceneName);
+    GGSetPageStringCmd *setPageCaption(GGContentPage *p, QString caption);
+
+    GGExchangeContentCmd *exchangeContent(GGContentPage *p, GGContentElement *elem);
+
+    GGSetActionLinkCmd *setActionLink(GGActionPage *p, const GGLink &lnk);
+
+    GGMappedLinkCmd *addMappedLink(GGMappedContentPage *p);
+    GGMappedLinkCmd *removeMappedLink(GGMappedContentPage *p, int idx);
+    GGMappedLinkCmd *setMappedLink(GGMappedContentPage *p, int idx, const GGMappedLink &lnk);
+
+    GGDecisionLinkCmd *addDecisionLink(GGDecisionPage *p);
+    GGDecisionLinkCmd *removeDecisionLink(GGDecisionPage *p, int idx);
+    GGDecisionLinkCmd *setDecisionLink(GGDecisionPage *p, int idx, const GGLink &lnk);
+
 private:
     GGEditModel *m_model;
 };
