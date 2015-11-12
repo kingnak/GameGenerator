@@ -29,6 +29,8 @@ private:
 
     GG::PageID m_nextPageId;
     GG::ConnectionID m_nextConnId;
+
+    GGPage *m_unregisteringPage;
 };
 
 #endif // GGEDITMODEL_H

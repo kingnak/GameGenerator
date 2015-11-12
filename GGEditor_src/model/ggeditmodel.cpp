@@ -3,7 +3,7 @@
 #include <model/ggconnection.h>
 
 GGEditModel::GGEditModel(GGAbstractFactory *factory)
-    : GGRuntimeModel(factory), m_nextPageId(0), m_nextConnId(0)
+    : GGRuntimeModel(factory), m_nextPageId(0), m_nextConnId(0), m_unregisteringPage(NULL)
 {
 
 }
@@ -54,9 +54,12 @@ bool GGEditModel::registerNewConnection(GGConnection *conn)
 
 bool GGEditModel::registerConnectionWithId(GGConnection *conn)
 {
-    m_blockSignals = true;
+    // Don't emit the connectionRegistered signal by base class.
+    // We emit it ourself, after inserting it in the incomming conn map.
+    this->blockSignals(true);
     bool ret = GGRuntimeModel::registerConnectionWithId(conn);
-    m_blockSignals = false;
+    this->blockSignals(false);
+
     if (ret) {
         // Store incomming connection
         m_incommingConns[conn->destinationId()] << conn->id();
@@ -77,9 +80,12 @@ GGPage *GGEditModel::unregisterPage(GG::PageID id, QList<GGConnection *> *affect
     // Get all outgoing and incomming conns and remove them
     aConns = ret->getConnections();
     aConns += this->getPageIncommingConnections(ret);
+    // Don't emit change signals for the page being removed
+    m_unregisteringPage = ret;
     foreach (GGConnection *c, aConns) {
         unregisterConnection(c->id());
     }
+    m_unregisteringPage = NULL;
 
     m_pages.remove(id);
     unsetModel(ret);
@@ -96,7 +102,14 @@ GGConnection *GGEditModel::unregisterConnection(GG::ConnectionID id)
     }
     GGConnection *ret = m_connections[id];
     // Remove from source
-    ret->source()->removeConnection(ret);
+    // If source is being unregistered, don't emit change signal
+    if (ret->source() == m_unregisteringPage) {
+        this->blockSignals(true);
+        ret->source()->removeConnection(ret);
+        this->blockSignals(false);
+    } else {
+        ret->source()->removeConnection(ret);
+    }
     // Remove from incomming connections
     m_incommingConns[ret->destinationId()].remove(ret->id());
     m_connections.remove(id);

@@ -4,7 +4,7 @@
 #include "ggabstractfactory.h"
 
 GGRuntimeModel::GGRuntimeModel(GGAbstractFactory *factory)
-    : m_factory(factory), m_blockSignals(false)
+    : m_factory(factory)
 {
 
 }
@@ -55,7 +55,7 @@ bool GGRuntimeModel::registerPageWithId(GGPage *page)
     setPageId(page, page->id());
     m_pages[page->id()] = page;
 
-    if (!m_blockSignals) emit pageRegistered(page);
+    emit pageRegistered(page);
     return true;
 }
 
@@ -86,6 +86,6 @@ bool GGRuntimeModel::registerConnectionWithId(GGConnection *conn)
     setConnectionId(conn, conn->id());
     m_connections[conn->id()] = conn;
 
-    if (!m_blockSignals) emit connectionRegistered(conn);
+    emit connectionRegistered(conn);
     return true;
 }
