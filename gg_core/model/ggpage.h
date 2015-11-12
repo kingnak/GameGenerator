@@ -4,7 +4,7 @@
 #include <gg_core_global.h>
 #include <gg_definitions.h>
 #include <QString>
-#include "ggmappedconnection.h"
+#include "ggmappedlink.h"
 #include "gglink.h"
 
 class GGConnection;
@@ -86,11 +86,15 @@ public:
     GGContentPage();
     ~GGContentPage();
 
+    QString caption() const { return m_caption; }
+    void setCaption(QString cap);
+
     GGContentElement *content();
     void setContent(GGContentElement *cont);
     GGContentElement *exchangeContent(GGContentElement *cont);
 
 protected:
+    QString m_caption;
     GGContentElement *m_content;
 };
 

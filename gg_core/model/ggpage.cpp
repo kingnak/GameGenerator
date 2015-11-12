@@ -111,6 +111,14 @@ GGContentPage::~GGContentPage()
     delete m_content;
 }
 
+void GGContentPage::setCaption(QString cap)
+{
+    if (m_caption != cap) {
+        m_caption = cap;
+        notifyChanged();
+    }
+}
+
 GGContentElement *GGContentPage::content()
 {
     return m_content;

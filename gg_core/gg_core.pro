@@ -18,8 +18,8 @@ SOURCES += \
     model/ggruntimemodel.cpp \
     model/ggsimplefactory.cpp \
     model/ggcontentelement.cpp \
-    model/ggmappedconnection.cpp \
-    model/gglink.cpp
+    model/gglink.cpp \
+    model/ggmappedlink.cpp
 
 HEADERS +=\
         gg_core_global.h \
@@ -31,8 +31,8 @@ HEADERS +=\
     model/ggabstractfactory.h \
     model/ggsimplefactory.h \
     model/ggcontentelement.h \
-    model/ggmappedconnection.h \
-    model/gglink.h
+    model/gglink.h \
+    model/ggmappedlink.h
 
 unix {
     target.path = /usr/lib

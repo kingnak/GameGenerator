@@ -1,5 +1,5 @@
-#ifndef GGMAPPEDCONNECTION_H
-#define GGMAPPEDCONNECTION_H
+#ifndef GGMAPPEDLINK_H
+#define GGMAPPEDLINK_H
 
 #include "gg_core_global.h"
 #include <QList>
@@ -48,4 +48,4 @@ private:
     GGLink m_link;
 };
 
-#endif // GGMAPPEDCONNECTION_H
+#endif // GGMAPPEDLINK_H

@@ -1,4 +1,4 @@
-#include "ggmappedconnection.h"
+#include "ggmappedlink.h"
 
 
 GGMappedLink GGMappedLink::rectangle(QRect r)
