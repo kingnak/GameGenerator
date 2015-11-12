@@ -37,29 +37,26 @@ bool GGCreateConnectionCmd::doExecute()
     Q_ASSERT(m_src && m_src->model() == m_model);
     Q_ASSERT(m_dest && m_dest->model() == m_model);
 
+    if (!m_slot.canConnect(m_src)) {
+        return setError("Cannot set connection on page");
+    }
+
+    GGConnection *oldConn = m_slot.getExistingConnection(m_src);
+    if (oldConn) {
+        return setError("Page already has a connection");
+    }
+
     m_createdConn = m_model->factory()->createConnection(m_src->id(), m_dest->id());
 
     if (!m_model->registerNewConnection(m_createdConn)) {
         return setError("Cannot register connection");
     }
 
-    GGConnection *oldConn;
-    if (!m_slot.connect(m_src, m_createdConn, &oldConn)) {
+    if (!m_slot.connect(m_src, m_createdConn)) {
         if (!m_model->unregisterConnection(m_createdConn->id())) {
             Q_ASSERT_X(false, "GGCreateConnectionCmd::doExecute", "Cannot unregister connection after failing to set connection slot");
         }
         return setError("Cannot set Connection in source page");
-    }
-
-    if (oldConn) {
-        // THERE WAS A CONNECTION!
-        if (!m_slot.connect(m_src, oldConn)) {
-            Q_ASSERT_X(false, "GGCreateConnectionCmd::doExecute", "Cannot reconnect old connection on createConnectionCmd");
-        }
-        if (!m_model->unregisterConnection(m_createdConn->id())) {
-            Q_ASSERT_X(false, "GGCreateConnectionCmd::doExecute", "Cannot unregister connection after failing to set connection slot");
-        }
-        return setError("Page already had a connection");
     }
 
     return true;
