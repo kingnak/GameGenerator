@@ -27,13 +27,10 @@ class GGSetActionLinkCmd;
 class GGMappedLinkCmd;
 class GGDecisionLinkCmd;
 
-class GGAbstractModelCommandFactory
+class GGAbstractModelCommandFactory : public GGAbstractCommandFactory
 {
-    Q_DISABLE_COPY(GGAbstractModelCommandFactory)
-
 public:
     GGAbstractModelCommandFactory() {}
-    virtual ~GGAbstractModelCommandFactory() {}
 
     virtual GGCreatePageCmd *createStartPage() = 0;
     virtual GGCreatePageCmd *createEndPage() = 0;
@@ -62,18 +59,6 @@ public:
     virtual GGDecisionLinkCmd *addDecisionLink(GGDecisionPage *p) = 0;
     virtual GGDecisionLinkCmd *removeDecisionLink(GGDecisionPage *p, int idx) = 0;
     virtual GGDecisionLinkCmd *setDecisionLink(GGDecisionPage *p, int idx, const GGLink &lnk) = 0;
-
-
-    static inline bool oneShotCommand(GGAbstractCommand *cmd, QString *error = NULL);
-
 };
-
-bool GGAbstractModelCommandFactory::oneShotCommand(GGAbstractCommand *cmd, QString *error)
-{
-    bool ret = cmd->execute();
-    if (!ret && error) *error = cmd->error();
-    delete cmd;
-    return ret;
-}
 
 #endif // GGABSTRACTMODELCOMMANDFACTORY_H

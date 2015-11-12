@@ -99,8 +99,8 @@ void GGEditor_ModelCommandTest::testDeletePage()
 
 void GGEditor_ModelCommandTest::testCreateConnection()
 {
-    GGAbstractModelCommandFactory::oneShotCommand(m_fac->createStartPage());
-    GGAbstractModelCommandFactory::oneShotCommand(m_fac->createEndPage());
+    GGAbstractCommandFactory::oneShotCommand(m_fac->createStartPage());
+    GGAbstractCommandFactory::oneShotCommand(m_fac->createEndPage());
 
     GGPage *s = m_model->getPages()[0];
     GGPage *e = m_model->getPages()[1];
@@ -134,12 +134,12 @@ void GGEditor_ModelCommandTest::testCreateConnection()
 
 void GGEditor_ModelCommandTest::testDeleteConnection()
 {
-    GGAbstractModelCommandFactory::oneShotCommand(m_fac->createStartPage());
-    GGAbstractModelCommandFactory::oneShotCommand(m_fac->createEndPage());
+    GGAbstractCommandFactory::oneShotCommand(m_fac->createStartPage());
+    GGAbstractCommandFactory::oneShotCommand(m_fac->createEndPage());
     GGPage *s = m_model->getPages()[0];
     GGPage *e = m_model->getPages()[1];
 
-    GGAbstractModelCommandFactory::oneShotCommand(m_fac->createConnection(s, e, GGConnectionSlot::StartConnection));
+    GGAbstractCommandFactory::oneShotCommand(m_fac->createConnection(s, e, GGConnectionSlot::StartConnection));
     GGConnection *c = m_model->getConnections()[0];
     m_sc->reset();
 
@@ -171,12 +171,12 @@ void GGEditor_ModelCommandTest::testDeleteConnection()
 
 void GGEditor_ModelCommandTest::testDeletePageWithConnection()
 {
-    GGAbstractModelCommandFactory::oneShotCommand(m_fac->createStartPage());
-    GGAbstractModelCommandFactory::oneShotCommand(m_fac->createEndPage());
+    GGAbstractCommandFactory::oneShotCommand(m_fac->createStartPage());
+    GGAbstractCommandFactory::oneShotCommand(m_fac->createEndPage());
     GGStartPage *p1 = ggpage_cast<GGStartPage*> (m_model->getPages()[0]);
     GGPage *p2 = m_model->getPages()[1];
 
-    GGAbstractModelCommandFactory::oneShotCommand(m_fac->createConnection(p1, p2, GGConnectionSlot::StartConnection));
+    GGAbstractCommandFactory::oneShotCommand(m_fac->createConnection(p1, p2, GGConnectionSlot::StartConnection));
     GGConnection *c = m_model->getConnections()[0];
 
     m_sc->reset();

@@ -18,11 +18,11 @@ void GGEditor_ConnectionSlotTest::init()
     m_stack = new GGCommandStack;
     m_sc = new ModelSignalChecker(m_model);
 
-    GGAbstractModelCommandFactory::oneShotCommand(m_cmdFac->createStartPage());
-    GGAbstractModelCommandFactory::oneShotCommand(m_cmdFac->createEndPage());
-    GGAbstractModelCommandFactory::oneShotCommand(m_cmdFac->createConditionPage());
-    GGAbstractModelCommandFactory::oneShotCommand(m_cmdFac->createActionPage());
-    GGAbstractModelCommandFactory::oneShotCommand(m_cmdFac->createDecisionPage());
+    GGAbstractCommandFactory::oneShotCommand(m_cmdFac->createStartPage());
+    GGAbstractCommandFactory::oneShotCommand(m_cmdFac->createEndPage());
+    GGAbstractCommandFactory::oneShotCommand(m_cmdFac->createConditionPage());
+    GGAbstractCommandFactory::oneShotCommand(m_cmdFac->createActionPage());
+    GGAbstractCommandFactory::oneShotCommand(m_cmdFac->createDecisionPage());
 
     m_s = ggpage_cast<GGStartPage*> (m_model->getPages()[0]);
     m_e = ggpage_cast<GGEndPage*> (m_model->getPages()[1]);

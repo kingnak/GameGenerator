@@ -37,4 +37,26 @@ protected:
     QString m_error;
 };
 
+//////////////////////////
+
+class GGAbstractCommandFactory
+{
+    Q_DISABLE_COPY(GGAbstractCommandFactory)
+protected:
+    GGAbstractCommandFactory() {}
+
+public:
+    virtual ~GGAbstractCommandFactory() {}
+
+    static inline bool oneShotCommand(GGAbstractCommand *cmd, QString *error = NULL);
+};
+
+bool GGAbstractCommandFactory::oneShotCommand(GGAbstractCommand *cmd, QString *error)
+{
+    bool ret = cmd->execute();
+    if (!ret && error) *error = cmd->error();
+    delete cmd;
+    return ret;
+}
+
 #endif // GGABSTRACTCOMMAND_H
