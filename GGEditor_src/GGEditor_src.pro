@@ -22,7 +22,6 @@ SOURCES += ggmainwindow.cpp \
 
 HEADERS += ggmainwindow.h \
     model/ggeditmodel.h \
-    command/ggabstractcommandfactory.h \
     command/ggeditcommandfactory.h \
     command/ggabstractcommand.h \
     command/ggabstractmodelcommand.h \
@@ -30,7 +29,8 @@ HEADERS += ggmainwindow.h \
     command/ggmodelpagecommands.h \
     command/ggmodelconnectioncommands.h \
     command/ggcommandstack.h \
-    command/ggcommandgroup.h
+    command/ggcommandgroup.h \
+    command/ggabstractmodelcommandfactory.h
 unix {
     target.path = /usr/lib
     INSTALLS += target

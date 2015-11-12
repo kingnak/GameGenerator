@@ -1,11 +1,11 @@
 #ifndef GGEDITCOMMANDFACTORY_H
 #define GGEDITCOMMANDFACTORY_H
 
-#include "ggabstractcommandfactory.h"
+#include "ggabstractmodelcommandfactory.h"
 
 class GGEditModel;
 
-class GGEditCommandFactory : public GGAbstractCommandFactory
+class GGEditCommandFactory : public GGAbstractModelCommandFactory
 {
 public:
     GGEditCommandFactory(GGEditModel *model);

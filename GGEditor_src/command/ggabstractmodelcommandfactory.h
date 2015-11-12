@@ -1,5 +1,5 @@
-#ifndef GGABSTRACTCOMMANDFACTORY_H
-#define GGABSTRACTCOMMANDFACTORY_H
+#ifndef GGABSTRACTMODELCOMMANDFACTORY_H
+#define GGABSTRACTMODELCOMMANDFACTORY_H
 
 #include <QtGlobal>
 #include <QString>
@@ -14,13 +14,13 @@ class GGCreateConnectionCmd;
 class GGDeleteConnectionCmd;
 class GGExchangeConnectionCmd;
 
-class GGAbstractCommandFactory
+class GGAbstractModelCommandFactory
 {
-    Q_DISABLE_COPY(GGAbstractCommandFactory)
+    Q_DISABLE_COPY(GGAbstractModelCommandFactory)
 
 public:
-    GGAbstractCommandFactory() {}
-    virtual ~GGAbstractCommandFactory() {}
+    GGAbstractModelCommandFactory() {}
+    virtual ~GGAbstractModelCommandFactory() {}
 
     virtual GGCreatePageCmd *createStartPage() = 0;
     virtual GGCreatePageCmd *createEndPage() = 0;
@@ -34,11 +34,13 @@ public:
     virtual GGExchangeConnectionCmd *exchangeConnection(GGPage *src, GGPage *dest, GGConnectionSlot slot) = 0;
     virtual GGDeleteConnectionCmd *deleteConnection(GGConnection *conn) = 0;
 
+
+
     static inline bool oneShotCommand(GGAbstractCommand *cmd, QString *error = NULL);
 
 };
 
-bool GGAbstractCommandFactory::oneShotCommand(GGAbstractCommand *cmd, QString *error)
+bool GGAbstractModelCommandFactory::oneShotCommand(GGAbstractCommand *cmd, QString *error)
 {
     bool ret = cmd->execute();
     if (!ret && error) *error = cmd->error();
@@ -46,4 +48,4 @@ bool GGAbstractCommandFactory::oneShotCommand(GGAbstractCommand *cmd, QString *e
     return ret;
 }
 
-#endif // GGABSTRACTCOMMANDFACTORY_H
+#endif // GGABSTRACTMODELCOMMANDFACTORY_H
