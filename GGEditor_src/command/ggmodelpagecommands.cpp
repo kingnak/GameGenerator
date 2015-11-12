@@ -210,7 +210,7 @@ bool GGSetPageStringCmd::doUndo()
 
 bool GGSetPageStringCmd::doRedo()
 {
-    if (!doSet(m_old)) {
+    if (!doSet(m_new)) {
         return setError("Cannot set" + cmdDesc());
     }
     return true;
@@ -265,10 +265,12 @@ GGExchangeContentCmd::GGExchangeContentCmd(GGEditModel *model, GGContentPage *pa
 
 GGExchangeContentCmd::~GGExchangeContentCmd()
 {
-    if (state() != Undone) {
-        delete m_old;
-    } else {
-        delete m_new;
+    if (m_old != m_new) {
+        if (state() != Undone) {
+            delete m_old;
+        } else {
+            delete m_new;
+        }
     }
 }
 
@@ -279,20 +281,19 @@ QString GGExchangeContentCmd::description() const
 
 bool GGExchangeContentCmd::doExecute()
 {
-    m_old = m_page->content();
-    m_page->setContent(m_new);
+    m_old = m_page->exchangeContent(m_new);
     return true;
 }
 
 bool GGExchangeContentCmd::doUndo()
 {
-    m_page->setContent(m_old);
+    m_page->exchangeContent(m_old);
     return true;
 }
 
 bool GGExchangeContentCmd::doRedo()
 {
-    m_page->setContent(m_new);
+    m_page->exchangeContent(m_new);
     return true;
 }
 
@@ -311,46 +312,27 @@ QString GGSetActionLinkCmd::description() const
 
 bool GGSetActionLinkCmd::doExecute()
 {
-    Q_ASSERT_X(!m_new.connection() || m_model->getConnection(m_new.connection()->id()) == m_new.connection(), "GGSetActionLinkCmd::doExecute", "New Link's connection is not registered in model");
-
-    m_old = m_page->actionLink();
-    if (m_old.connection()) {
-        bool ret = m_model->unregisterConnection(m_old.connection()->id());
-        Q_ASSERT(ret);
-        Q_UNUSED(ret);
+    Q_ASSERT_X(!m_new.connection(), "GGSetActionLinkCmd::doExecute", "New Link has a connection");
+    if (m_new.connection()) {
+        return setError("New Link has a connection");
     }
-    m_page->setActionLink(m_new);
-    return true;
+    m_old = m_page->actionLink();
+
+    return doRedo();
 }
 
 bool GGSetActionLinkCmd::doUndo()
 {
-    if (m_new.connection()) {
-        bool ret = m_model->unregisterConnection(m_new.connection()->id());
-        Q_ASSERT(ret);
-        Q_UNUSED(ret);
-    }
-    if (m_old.connection()) {
-        bool ret = m_model->registerConnectionWithId(m_old.connection());
-        Q_ASSERT(ret);
-        Q_UNUSED(ret);
-    }
+    m_old.setConnection(m_new.connection());
+    m_new.setConnection(NULL);
     m_page->setActionLink(m_old);
     return true;
 }
 
 bool GGSetActionLinkCmd::doRedo()
 {
-    if (m_old.connection()) {
-       bool ret = m_model->unregisterConnection(m_old.connection()->id());
-       Q_ASSERT(ret);
-       Q_UNUSED(ret);
-    }
-    if (m_new.connection()) {
-        bool ret = m_model->registerConnectionWithId(m_new.connection());
-        Q_ASSERT(ret);
-        Q_UNUSED(ret);
-    }
+    m_new.setConnection(m_old.connection());
+    m_old.setConnection(NULL);
     m_page->setActionLink(m_new);
     return true;
 }
@@ -379,7 +361,10 @@ QString GGMappedLinkCmd::description() const
 
 bool GGMappedLinkCmd::doExecute()
 {
-    Q_ASSERT_X(!m_new.link().connection() || m_new.link().connection() == m_model->getConnection(m_new.link().connection()->id()), "GGMappedLinkCmd::doExecute(Add)", "New link is not registered in model");
+    Q_ASSERT_X(!m_new.link().connection(), "GGMappedLinkCmd::doExecute", "New link has a connection");
+    if (m_new.link().connection()) {
+        return setError("New link has a connection");
+    }
     if (m_type != Add) {
         Q_ASSERT(0 <= m_idx && m_idx < m_page->getLinkMap().size());
         m_old = m_page->getLinkMap().value(m_idx);
@@ -399,11 +384,15 @@ bool GGMappedLinkCmd::doUndo()
         if (!m_page->removeMappedLink(m_idx)) {
             return setError("Cannot remove mapped link");
         }
+        Q_ASSERT(!m_new.link().connection());
+        /*
+         * New links never have connections
         if (m_new.link().connection()) {
             bool ret = m_model->unregisterConnection(m_new.link().connection()->id());
             Q_ASSERT(ret);
             Q_UNUSED(ret);
         }
+        */
         return true;
 
     case Remove:
@@ -442,12 +431,16 @@ bool GGMappedLinkCmd::doRedo()
 {
     switch (m_type) {
     case Add:
+        /*
+         * New Links never have connection
         if (m_new.link().connection()) {
             if (!m_model->registerConnectionWithId(m_new.link().connection())) {
                 Q_ASSERT(false);
                 return setError("Cannot register connection");
             }
         }
+        */
+        Q_ASSERT(!m_new.link().connection());
         m_page->addMappedLink(m_new);
         return true;
 
@@ -508,7 +501,10 @@ QString GGDecisionLinkCmd::description() const
 
 bool GGDecisionLinkCmd::doExecute()
 {
-    Q_ASSERT_X(!m_new.connection() || m_new.connection() == m_model->getConnection(m_new.connection()->id()), "GGDecisionLinkCmd::doExecute(Add)", "New link is not registered in model");
+    Q_ASSERT_X(!m_new.connection(), "GGDecisionLinkCmd::doExecute", "New link has a connection");
+    if (m_new.connection()) {
+        return setError("New link has a connection");
+    }
     if (m_type != Add) {
         Q_ASSERT(0 <= m_idx && m_idx < m_page->getDecisionLinks().size());
         m_old = m_page->getDecisionLinks().value(m_idx);
@@ -528,11 +524,15 @@ bool GGDecisionLinkCmd::doUndo()
         if (!m_page->removeDecisionLink(m_idx)) {
             return setError("Cannot remove decision link");
         }
+        /*
+         * New never has connection
         if (m_new.connection()) {
             bool ret = m_model->unregisterConnection(m_new.connection()->id());
             Q_ASSERT(ret);
             Q_UNUSED(ret);
         }
+        */
+        Q_ASSERT(!m_new.connection());
         return true;
 
     case Remove:
@@ -566,12 +566,16 @@ bool GGDecisionLinkCmd::doRedo()
 {
     switch (m_type) {
     case Add:
+        /*
+         * New never has connection
         if (m_new.connection()) {
             if (!m_model->registerConnectionWithId(m_new.connection())) {
                 Q_ASSERT(false);
                 return setError("Cannot register connection");
             }
         }
+        */
+        Q_ASSERT(!m_new.connection());
         m_page->addDecisionLink(m_new);
         return true;
 
