@@ -25,7 +25,7 @@ void GGPage::setSceneName(QString sn)
 
 void GGPage::setName(QString n)
 {
-    if (n != m_sceneName) {
+    if (n != m_name) {
         m_name = n;
         notifyChanged();
     }
