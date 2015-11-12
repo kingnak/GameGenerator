@@ -40,6 +40,8 @@ bool GGCreatePageCmd::doExecute()
     }
 
     if (!m_model->registerNewPage(m_createdPage)) {
+        delete m_createdPage;
+        m_createdPage = NULL;
         return setError("Cannot register page");
     }
 

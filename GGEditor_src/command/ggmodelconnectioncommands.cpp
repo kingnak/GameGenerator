@@ -49,6 +49,8 @@ bool GGCreateConnectionCmd::doExecute()
     m_createdConn = m_model->factory()->createConnection(m_src->id(), m_dest->id());
 
     if (!m_model->registerNewConnection(m_createdConn)) {
+        delete m_createdConn;
+        m_createdConn = NULL;
         return setError("Cannot register connection");
     }
 
@@ -56,6 +58,8 @@ bool GGCreateConnectionCmd::doExecute()
         if (!m_model->unregisterConnection(m_createdConn->id())) {
             Q_ASSERT_X(false, "GGCreateConnectionCmd::doExecute", "Cannot unregister connection after failing to set connection slot");
         }
+        delete m_createdConn;
+        m_createdConn = NULL;
         return setError("Cannot set Connection in source page");
     }
 
