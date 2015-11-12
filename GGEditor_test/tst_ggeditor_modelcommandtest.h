@@ -1,7 +1,7 @@
 #ifndef TST_GGEDITOR_MODELCOMMANDTEST_H
 #define TST_GGEDITOR_MODELCOMMANDTEST_H
 
-#include <QObject>
+#include <QtTest>
 
 class GGEditModel;
 class GGEditCommandFactory;
@@ -25,10 +25,12 @@ private slots:
 
     void testDeletePageWithConnection();
 
+    void testSimpleSetterCommands();
+
 private:
     GGEditModel *m_model;
     GGEditCommandFactory *m_fac;
-    //GGCommandStack *m_stk;
+    GGCommandStack *m_stk;
     ModelSignalChecker *m_sc;
 };
 

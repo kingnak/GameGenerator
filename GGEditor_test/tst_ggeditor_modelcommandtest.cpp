@@ -9,6 +9,7 @@
 #include <model/ggsimplefactory.h>
 #include <model/ggpage.h>
 #include <model/ggconnection.h>
+#include <model/ggcontentelement.h>
 #include "modelsignalchecker.h"
 
 GGEditor_ModelCommandTest::GGEditor_ModelCommandTest(QObject *parent) : QObject(parent)
@@ -20,14 +21,14 @@ void GGEditor_ModelCommandTest::init()
 {
     m_model = new GGEditModel(new GGSimpleFactory);
     m_fac = new GGEditCommandFactory(m_model);
-    //m_stk = new GGCommandStack;
+    m_stk = new GGCommandStack;
     m_sc = new ModelSignalChecker(m_model);
 }
 
 void GGEditor_ModelCommandTest::cleanup()
 {
     delete m_sc;
-    //delete m_stk;
+    delete m_stk;
     delete m_fac;
     delete m_model;
 }
@@ -236,4 +237,102 @@ void GGEditor_ModelCommandTest::testDeletePageWithConnection()
     QVERIFY2(m_model->getConnection(c->id()) == c, "Connection is still in model after second undo delete dest");
     QVERIFY2(p1->startConnection() == c, "Start Connection not set correctly after second undo delete dest");
     delete cmd;
+}
+
+void GGEditor_ModelCommandTest::testSimpleSetterCommands()
+{
+    GGAbstractCommandFactory::oneShotCommand(m_fac->createActionPage());
+    GGActionPage *p = ggpage_cast<GGActionPage *> (m_model->getPages()[0]);
+    m_sc->reset();
+
+    QVERIFY2(m_stk->execute(m_fac->setPageName(p, "name")), "Cannot set page name");
+    VERIFYSIG(m_sc, "Set Name", 0, 0, 0, 0, 1);
+    QCOMPARE(p->name(), QString("name"));
+    QVERIFY2(m_stk->undo(), "Cannot undo set page name");
+    VERIFYSIG(m_sc, "Undo Set Name", 0, 0, 0, 0, 1);
+    QCOMPARE(p->name(), QString());
+    QVERIFY2(m_stk->redo(), "Cannot undo set page name");
+    VERIFYSIG(m_sc, "Redo Set Name", 0, 0, 0, 0, 1);
+    QCOMPARE(p->name(), QString("name"));
+    QVERIFY2(m_stk->execute(m_fac->setPageName(p, "name")), "Cannot set page name");
+    VERIFYSIGNULL(m_sc, "Setting same name resulted in signal");
+
+    QVERIFY2(m_stk->execute(m_fac->setPageScene(p, "scene")), "Cannot set page scene");
+    VERIFYSIG(m_sc, "Set scene", 0, 0, 0, 0, 1);
+    QCOMPARE(p->sceneName(), QString("scene"));
+    QVERIFY2(m_stk->undo(), "Cannot undo set page scene");
+    VERIFYSIG(m_sc, "Undo Set scene", 0, 0, 0, 0, 1);
+    QCOMPARE(p->sceneName(), QString());
+    QVERIFY2(m_stk->redo(), "Cannot undo set page scene");
+    VERIFYSIG(m_sc, "Redo Set scene", 0, 0, 0, 0, 1);
+    QCOMPARE(p->sceneName(), QString("scene"));
+    QVERIFY2(m_stk->execute(m_fac->setPageScene(p, "scene")), "Cannot set page scene");
+    VERIFYSIGNULL(m_sc, "Setting same scene resulted in signal");
+
+    QVERIFY2(m_stk->execute(m_fac->setPageCaption(p, "caption")), "Cannot set page caption");
+    VERIFYSIG(m_sc, "Set caption", 0, 0, 0, 0, 1);
+    QCOMPARE(p->caption(), QString("caption"));
+    QVERIFY2(m_stk->undo(), "Cannot undo set page caption");
+    VERIFYSIG(m_sc, "Undo Set caption", 0, 0, 0, 0, 1);
+    QCOMPARE(p->caption(), QString());
+    QVERIFY2(m_stk->redo(), "Cannot undo set page caption");
+    VERIFYSIG(m_sc, "Redo Set caption", 0, 0, 0, 0, 1);
+    QCOMPARE(p->caption(), QString("caption"));
+    QVERIFY2(m_stk->execute(m_fac->setPageCaption(p, "caption")), "Cannot set page caption");
+    VERIFYSIGNULL(m_sc, "Setting same caption resulted in signal");
+
+    GGLink l;
+    l.setName("link");
+    QVERIFY2(m_stk->execute(m_fac->setActionLink(p, l)), "Cannot set action link");
+    VERIFYSIG(m_sc, "Set action link", 0, 0, 0, 0, 1);
+    QCOMPARE(p->actionLink().name(), QString("link"));
+    QVERIFY2(m_stk->undo(), "Cannot undo set page action link");
+    VERIFYSIG(m_sc, "Undo Set action link", 0, 0, 0, 0, 1);
+    QCOMPARE(p->actionLink().name(), QString());
+    QVERIFY2(m_stk->redo(), "Cannot undo set page action link");
+    VERIFYSIG(m_sc, "Redo Set action link", 0, 0, 0, 0, 1);
+    QCOMPARE(p->actionLink().name(), QString("link"));
+
+    m_stk->execute(m_fac->createEndPage());
+    GGPage *e = static_cast<GGCreatePageCmd*> (m_stk->undoCommand())->createdPage();
+    m_stk->execute(m_fac->createConnection(p, e, GGConnectionSlot::ActionConnection));
+    GGConnection *c = static_cast<GGCreateConnectionCmd*> (m_stk->undoCommand())->createdConnection();
+    QVERIFY2(p->actionLink().connection() == c, "Connection not set in link");
+
+    m_sc->reset();
+    QVERIFY2(m_stk->execute(m_fac->setActionLink(p, l)), "Cannot set action link when connection is there");
+    VERIFYSIG(m_sc, "Set action link with existing connection", 0, 0, 0, 0, 1);
+    QVERIFY2(p->actionLink().connection() == c, "Connection not set in new link");
+    m_stk->undo();
+    VERIFYSIG(m_sc, "Undo Set action link with existing connection", 0, 0, 0, 0, 1);
+    QVERIFY2(p->actionLink().connection() == c, "Connection not set in new link after undo");
+    m_stk->redo();
+    VERIFYSIG(m_sc, "Redo Set action link with existing connection", 0, 0, 0, 0, 1);
+    QVERIFY2(p->actionLink().connection() == c, "Connection not set in new link after redo");
+
+    GGContentElement *e1 = new GGImageContent;
+    QVERIFY2(m_stk->execute(m_fac->exchangeContent(p, e1)), "Cannot set content");
+    VERIFYSIG(m_sc, "Set content", 0, 0, 0, 0, 1);
+    QVERIFY2(p->content() == e1, "Content not set");
+    QVERIFY2(m_stk->undo(), "Cannot undo set content");
+    VERIFYSIG(m_sc, "Undo Set content", 0, 0, 0, 0, 1);
+    QVERIFY2(p->content() == NULL, "Content still set");
+    QVERIFY2(m_stk->redo(), "Cannot redo set content");
+    VERIFYSIG(m_sc, "Redo Set content", 0, 0, 0, 0, 1);
+    QVERIFY2(p->content() == e1, "Content not set");
+
+    GGContentElement *e2 = new GGImageContent;
+    QVERIFY2(m_stk->execute(m_fac->exchangeContent(p, e2)), "Cannot set content");
+    VERIFYSIG(m_sc, "Exchange content", 0, 0, 0, 0, 1);
+    QVERIFY2(p->content() == e2, "Content not updated");
+    QVERIFY2(m_stk->undo(), "Cannot undo set content");
+    VERIFYSIG(m_sc, "Undo Set content", 0, 0, 0, 0, 1);
+    QVERIFY2(p->content() == e1, "Content still set");
+    QVERIFY2(m_stk->redo(), "Cannot redo set content");
+    VERIFYSIG(m_sc, "Redo Set content", 0, 0, 0, 0, 1);
+    QVERIFY2(p->content() == e2, "Content not set");
+
+    QVERIFY2(m_stk->execute(m_fac->exchangeContent(p, e2)), "Cannot set content");
+    VERIFYSIGNULL(m_sc, "Setting same content resulted in signal");
+
 }
