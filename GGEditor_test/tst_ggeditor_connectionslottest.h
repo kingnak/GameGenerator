@@ -11,6 +11,7 @@ class GGEndPage;
 class GGConditionPage;
 class GGActionPage;
 class GGDecisionPage;
+class ModelSignalChecker;
 
 class GGEditor_ConnectionSlotTest : public QObject
 {
@@ -39,6 +40,7 @@ private:
     GGConditionPage *m_c;
     GGActionPage *m_a;
     GGDecisionPage *m_d;
+    ModelSignalChecker *m_sc;
 };
 
 #endif // TST_GGEDITOR_CONNECTIONSLOTTEST_H

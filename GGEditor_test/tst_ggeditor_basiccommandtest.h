@@ -20,12 +20,7 @@ private slots:
     void testCommandGroupOrder();
     void testCommandStackOrder();
 
-    void testCreatePage();
-    void testDeletePage();
-    void testCreateConnection();
-    void testDeleteConnection();
 
-    void testDeletePageWithConnection();
 };
 
 #endif // TST_GGEDITOR_BASICCOMMANDTEST_H

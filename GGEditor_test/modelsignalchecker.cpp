@@ -14,12 +14,58 @@ ModelSignalChecker::ModelSignalChecker(GGAbstractModel *m, QObject *parent) :
 
 void ModelSignalChecker::verify(QString s, int pr, int pu, int cr, int cu, int pc, bool r)
 {
-    QVERIFY2(m_pr == pr, qPrintable(QString("%3: Expected %1 page registrations, got %2").arg(pr).arg(m_pr).arg(s)));
-    QVERIFY2(m_pu == pu, qPrintable(QString("%3: Expected %1 page unregistrations, got %2").arg(pu).arg(m_pu).arg(s)));
-    QVERIFY2(m_cr == cr, qPrintable(QString("%3: Expected %1 connection registrations, got %2").arg(cr).arg(m_cr).arg(s)));
-    QVERIFY2(m_cu == cu, qPrintable(QString("%3: Expected %1 connection unregistrations, got %2").arg(cu).arg(m_cu).arg(s)));
-    QVERIFY2(m_pc == pc, qPrintable(QString("%3: Expected %1 page changes, got %2").arg(pc).arg(m_pc).arg(s)));
+    VERIFYSIGR(this, s, pr, pu, cr, cu, pc, r);
+}
+/*
+#define QVERIFY2(statement, description) \
+do {\
+    if (statement) {\
+        if (!QTest::qVerify(true, #statement, (description), __FILE__, __LINE__))\
+            return;\
+    } else {\
+        if (!QTest::qVerify(false, #statement, (description), __FILE__, __LINE__))\
+            return;\
+    }\
+} while (0)
+*/
+
+
+bool ModelSignalChecker::verifyFL(QString s, QString f, int l, int pr, int pu, int cr, int cu, int pc, bool r)
+{
+    bool ok = true;
+#define LOCVERIFY(statement, description, file, line) \
+    do {\
+        if (statement) {\
+            QTest::qVerify(true, #statement, (description), file, line);\
+        } else { \
+            QTest::qVerify(false, #statement, (description), file, line);\
+            ok = false; \
+        }\
+    } while(0)
+
+
+
+    int lpr = m_pr, lpu = m_pu, lcr = m_cr, lcu = m_cu, lpc = m_pc;
     if (r) reset();
+    LOCVERIFY(lpr == pr, qPrintable(QString("%3: Expected %1 page registrations, got %2").arg(pr).arg(lpr).arg(s)), qPrintable(f), l);
+    LOCVERIFY(lpu == pu, qPrintable(QString("%3: Expected %1 page unregistrations, got %2").arg(pu).arg(lpu).arg(s)), qPrintable(f), l);
+    LOCVERIFY(lcr == cr, qPrintable(QString("%3: Expected %1 connection registrations, got %2").arg(cr).arg(lcr).arg(s)), qPrintable(f), l);
+    LOCVERIFY(lcu == cu, qPrintable(QString("%3: Expected %1 connection unregistrations, got %2").arg(cu).arg(lcu).arg(s)), qPrintable(f), l);
+    LOCVERIFY(lpc == pc, qPrintable(QString("%3: Expected %1 page changes, got %2").arg(pc).arg(lpc).arg(s)), qPrintable(f), l);
+    /*
+    QVERIFY2(lpr == pr, qPrintable(QString("%3: Expected %1 page registrations, got %2").arg(pr).arg(lpr).arg(s)));
+    QVERIFY2(lpu == pu, qPrintable(QString("%3: Expected %1 page unregistrations, got %2").arg(pu).arg(lpu).arg(s)));
+    QVERIFY2(lcr == cr, qPrintable(QString("%3: Expected %1 connection registrations, got %2").arg(cr).arg(lcr).arg(s)));
+    QVERIFY2(lcu == cu, qPrintable(QString("%3: Expected %1 connection unregistrations, got %2").arg(cu).arg(lcu).arg(s)));
+    QVERIFY2(lpc == pc, qPrintable(QString("%3: Expected %1 page changes, got %2").arg(pc).arg(lpc).arg(s)));
+    */
+#undef LOCVERIFY
+    return ok;
+}
+
+void ModelSignalChecker::verifyNull(QString s, bool r)
+{
+    verify(s, 0,0,0,0,0, r);
 }
 
 void ModelSignalChecker::reset()

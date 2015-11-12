@@ -22,7 +22,8 @@ SOURCES += \
     tst_ggeditor_basiccommandtest.cpp \
     tst_ggeditor_basicobjecttest.cpp \
     tst_ggeditor_connectionslottest.cpp \
-    modelsignalchecker.cpp
+    modelsignalchecker.cpp \
+    tst_ggeditor_modelcommandtest.cpp
 
 DEFINES += SRCDIR=\\\"$$PWD/\\\"
 
@@ -53,4 +54,5 @@ HEADERS += \
     tst_ggeditor_basiccommandtest.h \
     tst_ggeditor_basicobjecttest.h \
     tst_ggeditor_connectionslottest.h \
-    modelsignalchecker.h
+    modelsignalchecker.h \
+    tst_ggeditor_modelcommandtest.h
