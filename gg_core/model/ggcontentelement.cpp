@@ -11,6 +11,16 @@ void GGAudioContent::setAudioFilePath(QString path)
     m_audioFilePath = path;
 }
 
+GGAudioContent::PlaybackMode GGAudioContent::playbackMode() const
+{
+    return m_mode;
+}
+
+void GGAudioContent::setPlaybackMode(GGAudioContent::PlaybackMode mode)
+{
+    m_mode = mode;
+}
+
 ///////////////////////////////////////////////
 
 QString GGTextContent::textContent() const

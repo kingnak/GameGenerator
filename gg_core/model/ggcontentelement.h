@@ -19,14 +19,22 @@ public:
 
 class GG_CORESHARED_EXPORT GGAudioContent : public GGContentElement
 {
-protected:
-    GGAudioContent() {}
 public:
+    enum PlaybackMode {
+        Once, Looped
+    };
+
     QString audioFilePath() const;
     void setAudioFilePath(QString path);
+    PlaybackMode playbackMode() const;
+    void setPlaybackMode(PlaybackMode mode);
+
+protected:
+    GGAudioContent(PlaybackMode mode = Looped) : m_mode(mode) {}
 
 protected:
     QString m_audioFilePath;
+    PlaybackMode m_mode;
 };
 
 ///////////////////////////////////////////////
