@@ -11,7 +11,7 @@ class ModelSignalChecker : public QObject
 public:
     explicit ModelSignalChecker(GGAbstractModel *m, QObject *parent = 0);
 
-    bool verify(QString s, int pr, int pu, int cr, int cu, int pc, bool r = true);
+    void verify(QString s, int pr, int pu, int cr, int cu, int pc, bool r = true);
     void reset();
 
 private slots:

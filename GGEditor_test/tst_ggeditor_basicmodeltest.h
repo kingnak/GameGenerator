@@ -8,6 +8,8 @@
 #include <model/ggpage.h>
 #include <model/ggconnection.h>
 
+class ModelSignalChecker;
+
 class GGEditor_BasicModelTest : public QObject
 {
     Q_OBJECT
@@ -35,6 +37,7 @@ private:
     GGPage *s, *e;
     GGConnection *c;
     bool m_warnedAboutConnectionHack;
+    ModelSignalChecker *sc;
 };
 
 #endif // TST_GGEDITOR_BASICMODELTEST_H

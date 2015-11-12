@@ -1,4 +1,5 @@
 #include "tst_ggeditor_basicmodeltest.h"
+#include "modelsignalchecker.h"
 
 GGEditor_BasicModelTest::GGEditor_BasicModelTest()
 {
@@ -12,6 +13,8 @@ void GGEditor_BasicModelTest::initTestCase()
 void GGEditor_BasicModelTest::init()
 {
     model = new GGEditModel(new GGSimpleFactory);
+    sc = new ModelSignalChecker(model);
+
     s = model->factory()->createStartPage();
     e = model->factory()->createEndPage();
 
@@ -28,6 +31,7 @@ void GGEditor_BasicModelTest::init()
 
 void GGEditor_BasicModelTest::cleanup()
 {
+    delete sc;
     delete model;
 }
 
@@ -37,6 +41,8 @@ void GGEditor_BasicModelTest::cleanupTestCase()
 
 void GGEditor_BasicModelTest::testRegister()
 {
+    sc->verify("Initial Model", 2, 0, 1, 0, 1);
+
     QVERIFY2(model->getPage(s->id()) == s, "getPage(s->id()) is not s");
     QVERIFY2(model->getPage(e->id()) == e, "getPage(e->id()) is not e");
     QVERIFY2(model->getPage(GG::InvalidPageId) == NULL, "getPage(GG::InvalidPageId) is not NULL");
@@ -51,12 +57,18 @@ void GGEditor_BasicModelTest::testRegister()
     QVERIFY2(model->getPageIncommingConnections(s).size() == 0, "s has incomming connections");
     QVERIFY2(model->getPageIncommingConnections(e).size() == 1, "e has wrong # of incomming connections");
     QVERIFY2(model->getPageIncommingConnections(e).contains(c), "incomming connection for e is not c");
+
+    sc->verify("After initial Model checks", 0,0,0,0,0);
 }
 
 void GGEditor_BasicModelTest::testUnregisterStart()
 {
     QList<GGConnection *> a;
+    sc->reset();
     QVERIFY2(model->unregisterPage(s->id(), &a), "Error in unregister");
+    // also unregistered s->e connection, and removed from s
+    sc->verify("Unregister start", 0,1,0,1,1);
+
     QVERIFY2(a.size() == 1, "Wrong # of affected connections");
     QVERIFY2(a.value(0) == c, "c is not affected");
     QVERIFY2(s->id() != GG::InvalidPageId, "s->id() is invalid");

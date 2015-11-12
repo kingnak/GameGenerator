@@ -12,7 +12,7 @@ ModelSignalChecker::ModelSignalChecker(GGAbstractModel *m, QObject *parent) :
     connect(m, SIGNAL(pageUpdated(GGPage*)), this, SLOT(pageCh()));
 }
 
-bool ModelSignalChecker::verify(QString s, int pr, int pu, int cr, int cu, int pc, bool r)
+void ModelSignalChecker::verify(QString s, int pr, int pu, int cr, int cu, int pc, bool r)
 {
     QVERIFY2(m_pr == pr, qPrintable(QString("%3: Expected %1 page registrations, got %2").arg(pr).arg(m_pr).arg(s)));
     QVERIFY2(m_pu == pu, qPrintable(QString("%3: Expected %1 page unregistrations, got %2").arg(pu).arg(m_pu).arg(s)));
