@@ -18,7 +18,10 @@ SOURCES += ggmainwindow.cpp \
     command/ggmodelpagecommands.cpp \
     command/ggmodelconnectioncommands.cpp \
     command/ggcommandstack.cpp \
-    command/ggcommandgroup.cpp
+    command/ggcommandgroup.cpp \
+    viewmodel/ggviewmodel.cpp \
+    viewmodel/ggviewpage.cpp \
+    ggviewconnection.cpp
 
 HEADERS += ggmainwindow.h \
     model/ggeditmodel.h \
@@ -30,7 +33,10 @@ HEADERS += ggmainwindow.h \
     command/ggmodelconnectioncommands.h \
     command/ggcommandstack.h \
     command/ggcommandgroup.h \
-    command/ggabstractmodelcommandfactory.h
+    command/ggabstractmodelcommandfactory.h \
+    viewmodel/ggviewmodel.h \
+    viewmodel/ggviewpage.h \
+    ggviewconnection.h
 unix {
     target.path = /usr/lib
     INSTALLS += target
