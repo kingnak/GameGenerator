@@ -8,6 +8,8 @@ GGViewModel::GGViewModel(GGEditModel *model, QObject *parent)
       m_model(model)
 {
     Q_ASSERT(m_model);
+    qRegisterMetaType<GG::PageID>("GG::PageID");
+    qRegisterMetaType<GG::ConnectionID>("GG::ConnectionID");
     connect(m_model, SIGNAL(pageRegistered(GGPage*)), this, SLOT(regPage(GGPage*)), Qt::QueuedConnection);
     connect(m_model, SIGNAL(pageUnregistered(GG::PageID,GGPage*)), this, SLOT(unregPage(GG::PageID,GGPage*)), Qt::QueuedConnection);
     connect(m_model, SIGNAL(connectionRegistered(GGConnection*)), this, SLOT(regConn(GGConnection*)), Qt::QueuedConnection);
@@ -20,6 +22,28 @@ GGViewModel::~GGViewModel()
     qDeleteAll(m_connectionMap.values());
     qDeleteAll(m_pageRec.values());
     qDeleteAll(m_connectionRec.values());
+}
+
+GGViewPage *GGViewModel::getViewPageForPage(GGPage *page)
+{
+    return m_pageMap.value(page);
+}
+
+GGViewConnection *GGViewModel::getViewConectionForConnection(GGConnection *conn)
+{
+    return m_connectionMap.value(conn);
+}
+
+bool GGViewModel::registerPage(GGViewPage *page)
+{
+    Q_ASSERT(page);
+    Q_ASSERT(!m_pageMap.contains(page->page()));
+    if (m_pageMap.contains(page->page())) {
+        return false;
+    }
+    m_pageRec.remove(page->page());
+    m_pageMap[page->page()] = page;
+    return true;
 }
 
 void GGViewModel::purgeRecycledPage(GGPage *page)

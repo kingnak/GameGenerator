@@ -18,6 +18,13 @@ public:
     explicit GGViewModel(GGEditModel *model, QObject *parent = 0);
     ~GGViewModel();
 
+    GGEditModel *editModel() { return m_model; }
+
+    GGViewPage *getViewPageForPage(GGPage *page);
+    GGViewConnection *getViewConectionForConnection(GGConnection *conn);
+
+    bool registerPage(GGViewPage *page);
+
     void purgeRecycledPage(GGPage *page);
     void purgeRecycledConnection(GGConnection *conn);
 
