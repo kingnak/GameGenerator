@@ -21,7 +21,7 @@ SOURCES += ggmainwindow.cpp \
     command/ggcommandgroup.cpp \
     viewmodel/ggviewmodel.cpp \
     viewmodel/ggviewpage.cpp \
-    ggviewconnection.cpp \
+    viewmodel/ggviewconnection.cpp \
     viewcommand/ggviewcommands.cpp \
     viewcommand/ggviewcommandfactory.cpp
 
@@ -38,7 +38,7 @@ HEADERS += ggmainwindow.h \
     command/ggabstractmodelcommandfactory.h \
     viewmodel/ggviewmodel.h \
     viewmodel/ggviewpage.h \
-    ggviewconnection.h \
+    viewmodel/ggviewconnection.h \
     viewcommand/ggviewcommands.h \
     viewcommand/ggviewcommandfactory.h
 unix {
