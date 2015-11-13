@@ -336,3 +336,128 @@ void GGEditor_ModelCommandTest::testSimpleSetterCommands()
     VERIFYSIGNULL(m_sc, "Setting same content resulted in signal");
 
 }
+
+void GGEditor_ModelCommandTest::testMappedLinkCommands()
+{
+    GGAbstractCommandFactory::oneShotCommand(m_fac->createActionPage());
+    GGAbstractCommandFactory::oneShotCommand(m_fac->createEndPage());
+    GGMappedContentPage *p = ggpage_cast<GGActionPage *> (m_model->getPages()[0]);
+    GGPage *e1 = m_model->getPages()[1];
+    m_sc->reset();
+
+    QVERIFY2(!m_stk->execute(m_fac->setMappedLink(p, 0, GGMappedLink::rectangle(QRect()))), "Can set mapped link that doesn't exist");
+    VERIFYSIGNULL(m_sc, "Setting invalid mapped link resulted in signal");
+
+    QVERIFY2(m_stk->execute(m_fac->addMappedLink(p)), "Cannot add mapped link");
+    VERIFYSIG(m_sc, "Add mapped link", 0, 0, 0, 0, 1);
+    QVERIFY(p->getLinkMap().size() == 1);
+
+    GGMappedLink ml = GGMappedLink::rectangle(QRect());
+    GGLink l;
+    GGConnection *conn = m_model->factory()->createConnection(p->id(), e1->id());
+    l.setConnection(conn);
+    ml.setLink(l);
+    QVERIFY2(!m_stk->execute(m_fac->setMappedLink(p, 0, ml)), "Can set mapped link with connection");
+    VERIFYSIGNULL(m_sc, "Setting mapped link with connection resulted in signal");
+    // Prevent later bugs by reusing these
+    l.setConnection(NULL);
+    ml = GGMappedLink::rectangle(QRect());
+    delete conn;
+    conn = NULL;
+
+    QVERIFY2(m_stk->undo(), "Cannot undo adding mapped link");
+    VERIFYSIG(m_sc, "Undo Add mapped link", 0, 0, 0, 0, 1);
+    QVERIFY(p->getLinkMap().isEmpty());
+    QVERIFY2(m_stk->redo(), "Cannot redo adding mapped link");
+    VERIFYSIG(m_sc, "Redo Add mapped link", 0, 0, 0, 0, 1);
+    QVERIFY(p->getLinkMap().size() == 1);
+
+    QVERIFY2(m_stk->execute(m_fac->createConnection(p, e1, GGConnectionSlot(GGConnectionSlot::MappedConnection, 0))), "Cannot set Mapped connection");
+    VERIFYSIG(m_sc, "Create Mapped connection", 0, 0, 1, 0, 1);
+    QVERIFY2(p->getLinkMap()[0].link().connection() != NULL, "No connection set in mapped link");
+    QVERIFY2(m_stk->undo(), "Cannot undo set Mapped connection");
+    VERIFYSIG(m_sc, "Undo Create Mapped connection", 0, 0, 0, 1, 1);
+    QVERIFY2(p->getLinkMap()[0].link().connection() == NULL, "connection still set in mapped link after undo");
+    QVERIFY2(m_stk->redo(), "Cannot redo set Mapped connection");
+    VERIFYSIG(m_sc, "Redo Create Mapped connection", 0, 0, 1, 0, 1);
+    QVERIFY2(p->getLinkMap()[0].link().connection() != NULL, "No connection set in mapped link after redo");
+
+    // RESET
+    QVERIFY2(m_stk->execute(m_fac->setMappedLink(p, 0, GGMappedLink::rectangle(QRect()))), "Cannot reset mapped link");
+    VERIFYSIG(m_sc, "Reset mapped link", 0, 0, 0, 0, 1);
+    QVERIFY2(p->getLinkMap()[0].link().connection() != NULL, "No connection set in mapped link after reset");
+    QVERIFY2(m_stk->undo(), "Cannot undo reset mapped link");
+    VERIFYSIG(m_sc, "Undo Reset mapped link", 0, 0, 0, 0, 1);
+    QVERIFY2(p->getLinkMap()[0].link().connection() != NULL, "No connection set in mapped link after undo reset");
+    QVERIFY2(m_stk->redo(), "Cannot redo reset mapped link");
+    VERIFYSIG(m_sc, "Redo Reset mapped link", 0, 0, 0, 0, 1);
+    QVERIFY2(p->getLinkMap()[0].link().connection() != NULL, "No connection set in mapped link after redo reset");
+
+    // REMOVE
+    QVERIFY2(!m_stk->execute(m_fac->removeMappedLink(p, 1)), "Can remove nonexisting mapped link");
+    VERIFYSIGNULL(m_sc, "Remove nonexisting mapped link");
+
+    QVERIFY2(m_stk->execute(m_fac->removeMappedLink(p, 0)), "Cannot remove mapped link");
+    VERIFYSIG(m_sc, "Remove mapped link", 0, 0, 0, 1, 1);
+}
+
+void GGEditor_ModelCommandTest::testDecisionLinkCommands()
+{
+    GGAbstractCommandFactory::oneShotCommand(m_fac->createDecisionPage());
+    GGAbstractCommandFactory::oneShotCommand(m_fac->createEndPage());
+    GGDecisionPage *p = ggpage_cast<GGDecisionPage *> (m_model->getPages()[0]);
+    GGPage *e1 = m_model->getPages()[1];
+    m_sc->reset();
+
+    QVERIFY2(!m_stk->execute(m_fac->setDecisionLink(p, 0, GGLink())), "Can set decision link that doesn't exist");
+    VERIFYSIGNULL(m_sc, "Setting invalid decision link resulted in signal");
+
+    QVERIFY2(m_stk->execute(m_fac->addDecisionLink(p)), "Cannot add decision link");
+    VERIFYSIG(m_sc, "Add decision link", 0, 0, 0, 0, 1);
+    QVERIFY(p->getDecisionLinks().size() == 1);
+
+    GGLink l;
+    GGConnection *conn = m_model->factory()->createConnection(p->id(), e1->id());
+    l.setConnection(conn);
+    QVERIFY2(!m_stk->execute(m_fac->setDecisionLink(p, 0, l)), "Can set decision link with connection");
+    VERIFYSIGNULL(m_sc, "Setting decision link with connection resulted in signal");
+    // Prevent later bugs by reusing these
+    l.setConnection(NULL);
+    delete conn;
+    conn = NULL;
+
+    QVERIFY2(m_stk->undo(), "Cannot undo adding decision link");
+    VERIFYSIG(m_sc, "Undo Add decision link", 0, 0, 0, 0, 1);
+    QVERIFY(p->getDecisionLinks().isEmpty());
+    QVERIFY2(m_stk->redo(), "Cannot redo adding decision link");
+    VERIFYSIG(m_sc, "Redo Add decision link", 0, 0, 0, 0, 1);
+    QVERIFY(p->getDecisionLinks().size() == 1);
+
+    QVERIFY2(m_stk->execute(m_fac->createConnection(p, e1, GGConnectionSlot(GGConnectionSlot::DecisionConnection, 0))), "Cannot set decision connection");
+    VERIFYSIG(m_sc, "Create decision connection", 0, 0, 1, 0, 1);
+    QVERIFY2(p->getDecisionLinks()[0].connection() != NULL, "No connection set in decision link");
+    QVERIFY2(m_stk->undo(), "Cannot undo set decision connection");
+    VERIFYSIG(m_sc, "Undo Create decision connection", 0, 0, 0, 1, 1);
+    QVERIFY2(p->getDecisionLinks()[0].connection() == NULL, "connection still set in decision link after undo");
+    QVERIFY2(m_stk->redo(), "Cannot redo set decision connection");
+    VERIFYSIG(m_sc, "Redo Create decision connection", 0, 0, 1, 0, 1);
+    QVERIFY2(p->getDecisionLinks()[0].connection() != NULL, "No connection set in decision link after redo");
+
+    // RESET
+    QVERIFY2(m_stk->execute(m_fac->setDecisionLink(p, 0, GGLink())), "Cannot reset decision link");
+    VERIFYSIG(m_sc, "Reset decision link", 0, 0, 0, 0, 1);
+    QVERIFY2(p->getDecisionLinks()[0].connection() != NULL, "No connection set in decision link after reset");
+    QVERIFY2(m_stk->undo(), "Cannot undo reset decision link");
+    VERIFYSIG(m_sc, "Undo Reset decision link", 0, 0, 0, 0, 1);
+    QVERIFY2(p->getDecisionLinks()[0].connection() != NULL, "No connection set in decision link after undo reset");
+    QVERIFY2(m_stk->redo(), "Cannot redo reset decision link");
+    VERIFYSIG(m_sc, "Redo Reset decision link", 0, 0, 0, 0, 1);
+    QVERIFY2(p->getDecisionLinks()[0].connection() != NULL, "No connection set in decision link after redo reset");
+
+    // REMOVE
+    QVERIFY2(!m_stk->execute(m_fac->removeDecisionLink(p, 1)), "Can remove nonexisting decision link");
+    VERIFYSIGNULL(m_sc, "Remove nonexisting decision link");
+
+    QVERIFY2(m_stk->execute(m_fac->removeDecisionLink(p, 0)), "Cannot remove decision link");
+    VERIFYSIG(m_sc, "Remove decision link", 0, 0, 0, 1, 1);
+}

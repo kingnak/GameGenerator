@@ -26,6 +26,8 @@ private slots:
     void testDeletePageWithConnection();
 
     void testSimpleSetterCommands();
+    void testMappedLinkCommands();
+    void testDecisionLinkCommands();
 
 private:
     GGEditModel *m_model;
