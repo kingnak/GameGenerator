@@ -4,7 +4,7 @@
 #include <model/ggeditmodel.h>
 #include <model/ggconnection.h>
 #include <model/ggsimplefactory.h>
-#include "modelsignalchecker.h"
+#include "testsignalchecker.h"
 
 GGEditor_BasicObjectTest::GGEditor_BasicObjectTest()
 {

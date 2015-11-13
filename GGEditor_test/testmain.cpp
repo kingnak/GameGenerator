@@ -4,13 +4,14 @@
 #include "tst_ggeditor_connectionslottest.cpp"
 #include "tst_ggeditor_modelcommandtest.cpp"
 #include "tst_ggeditor_viewcommandtest.cpp"
+
 #ifdef USE_VLD
 #include <vld.h>
 #endif
 
 int main(int argc, char *argv[])
 {
-    QCoreApplication app(argc, argv);
+    //QCoreApplication app(argc, argv);
 
     GGEditor_BasicObjectTest tcBasicObject;
     GGEditor_BasicModelTest tcBasicModel;

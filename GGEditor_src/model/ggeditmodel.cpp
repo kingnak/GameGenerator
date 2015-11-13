@@ -115,7 +115,7 @@ GGConnection *GGEditModel::unregisterConnection(GG::ConnectionID id)
     m_connections.remove(id);
     unsetModel(ret);
 
-    emit connectionUnRegistered(id, ret);
+    emit connectionUnregistered(id, ret);
     return ret;
 }
 

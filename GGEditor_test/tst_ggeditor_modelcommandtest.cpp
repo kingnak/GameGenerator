@@ -10,7 +10,7 @@
 #include <model/ggpage.h>
 #include <model/ggconnection.h>
 #include <model/ggcontentelement.h>
-#include "modelsignalchecker.h"
+#include "testsignalchecker.h"
 
 GGEditor_ModelCommandTest::GGEditor_ModelCommandTest(QObject *parent) : QObject(parent)
 {

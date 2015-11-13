@@ -9,7 +9,7 @@
 #include <command/ggmodelconnectioncommands.h>
 #include <command/ggeditcommandfactory.h>
 #include <command/ggcommandstack.h>
-#include "modelsignalchecker.h"
+#include "testsignalchecker.h"
 
 void GGEditor_ConnectionSlotTest::init()
 {

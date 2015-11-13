@@ -1,5 +1,5 @@
 #include "tst_ggeditor_basicmodeltest.h"
-#include "modelsignalchecker.h"
+#include "testsignalchecker.h"
 
 GGEditor_BasicModelTest::GGEditor_BasicModelTest()
 {

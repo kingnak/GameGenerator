@@ -32,7 +32,7 @@ signals:
     void pageRegistered(GGPage *page);
     void pageUnregistered(GG::PageID id, GGPage *page);
     void connectionRegistered(GGConnection *conn);
-    void connectionUnRegistered(GG::ConnectionID id, GGConnection *conn);
+    void connectionUnregistered(GG::ConnectionID id, GGConnection *conn);
     void pageUpdated(GGPage *page);
 
 protected:

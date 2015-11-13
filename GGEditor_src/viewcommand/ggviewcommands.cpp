@@ -16,11 +16,16 @@ bool GGCreateViewPageCmd::doExecute()
     if (!m_cmd->execute()) {
         return setError(m_cmd->error());
     }
+    /* This is required if using QueuedConnections
     if (!m_model->registerPage(new GGViewPage(m_cmd->createdPage(), m_model, m_bounds))) {
         bool ret = m_cmd->undo();
         Q_ASSERT(ret);
         Q_UNUSED(ret);
         return setError("Cannot register page");
     }
+    */
+    GGViewPage *vp = m_model->getViewPageForPage(m_cmd->createdPage());
+    Q_ASSERT(vp);
+    vp->setBounds(m_bounds);
     return true;
 }

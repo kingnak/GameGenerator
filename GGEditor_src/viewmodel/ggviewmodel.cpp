@@ -10,10 +10,10 @@ GGViewModel::GGViewModel(GGEditModel *model, QObject *parent)
     Q_ASSERT(m_model);
     qRegisterMetaType<GG::PageID>("GG::PageID");
     qRegisterMetaType<GG::ConnectionID>("GG::ConnectionID");
-    connect(m_model, SIGNAL(pageRegistered(GGPage*)), this, SLOT(regPage(GGPage*)), Qt::QueuedConnection);
-    connect(m_model, SIGNAL(pageUnregistered(GG::PageID,GGPage*)), this, SLOT(unregPage(GG::PageID,GGPage*)), Qt::QueuedConnection);
-    connect(m_model, SIGNAL(connectionRegistered(GGConnection*)), this, SLOT(regConn(GGConnection*)), Qt::QueuedConnection);
-    connect(m_model, SIGNAL(connectionUnRegistered(GG::ConnectionID,GGConnection*)), this, SLOT(unregConn(GG::ConnectionID,GGConnection*)), Qt::QueuedConnection);
+    connect(m_model, SIGNAL(pageRegistered(GGPage*)), this, SLOT(regPage(GGPage*)));
+    connect(m_model, SIGNAL(pageUnregistered(GG::PageID,GGPage*)), this, SLOT(unregPage(GG::PageID,GGPage*)));
+    connect(m_model, SIGNAL(connectionRegistered(GGConnection*)), this, SLOT(regConn(GGConnection*)));
+    connect(m_model, SIGNAL(connectionUnregistered(GG::ConnectionID,GGConnection*)), this, SLOT(unregConn(GG::ConnectionID,GGConnection*)));
 }
 
 GGViewModel::~GGViewModel()
@@ -67,13 +67,13 @@ void GGViewModel::regPage(GGPage *page)
 {
     GGViewPage *vp = NULL;
     // Page known?
-    if (vp = m_pageMap.value(page)) {
+    if ((vp = m_pageMap.value(page))) {
         // TODO: emit signal?
         emit viewPageRegistered(vp);
         return;
     }
     // Page recycled?
-    if (vp = m_pageRec.take(page)) {
+    if ((vp = m_pageRec.take(page))) {
         m_pageMap[page] = vp;
         // TODO: emit signal?
         emit viewPageRegistered(vp);
@@ -103,13 +103,13 @@ void GGViewModel::regConn(GGConnection *conn)
 {
     GGViewConnection *vc = NULL;
     // Connection known?
-    if (vc = m_connectionMap.value(conn)) {
+    if ((vc = m_connectionMap.value(conn))) {
         // TODO: emit signal?
         emit viewConnectionRegistered(vc);
         return;
     }
     // Connection recycled?
-    if (vc = m_connectionRec.take(conn)) {
+    if ((vc = m_connectionRec.take(conn))) {
         m_connectionMap[conn] = vc;
         // TODO: emit signal?
         emit viewConnectionRegistered(vc);
