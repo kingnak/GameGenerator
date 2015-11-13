@@ -3,8 +3,9 @@
 #include "ggconnection.h"
 #include "ggabstractfactory.h"
 
-GGRuntimeModel::GGRuntimeModel(GGAbstractFactory *factory)
-    : m_factory(factory)
+GGRuntimeModel::GGRuntimeModel(GGAbstractFactory *factory, QObject *parent)
+    : GGAbstractModel(parent),
+      m_factory(factory)
 {
 
 }

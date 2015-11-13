@@ -7,7 +7,7 @@
 class GG_CORESHARED_EXPORT GGRuntimeModel : public GGAbstractModel
 {
 public:
-    GGRuntimeModel(GGAbstractFactory *factory);
+    explicit GGRuntimeModel(GGAbstractFactory *factory, QObject *parent = 0);
     ~GGRuntimeModel();
 
     GGAbstractFactory *factory();
