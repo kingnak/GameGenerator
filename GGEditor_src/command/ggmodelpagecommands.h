@@ -149,6 +149,7 @@ public:
         Add, Remove, Set
     };
     GGMappedLinkCmd(GGEditModel *model, GGMappedContentPage *page, GGMappedLink lnk, Type type, int idx);
+    ~GGMappedLinkCmd();
 
     QString description() const;
 
@@ -177,6 +178,7 @@ public:
         Add, Remove, Set
     };
     GGDecisionLinkCmd(GGEditModel *model, GGDecisionPage *page, GGLink lnk, Type type, int idx);
+    ~GGDecisionLinkCmd();
 
     QString description() const;
 

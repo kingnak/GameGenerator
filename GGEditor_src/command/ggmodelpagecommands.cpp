@@ -349,6 +349,15 @@ GGMappedLinkCmd::GGMappedLinkCmd(GGEditModel *model, GGMappedContentPage *page, 
 
 }
 
+GGMappedLinkCmd::~GGMappedLinkCmd()
+{
+    if (m_type == Remove) {
+        if (m_state == Executed) {
+            delete m_old.link().connection();
+        }
+    }
+}
+
 QString GGMappedLinkCmd::description() const
 {
     switch (m_type) {
@@ -407,18 +416,24 @@ bool GGMappedLinkCmd::doUndo()
         return true;
 
     case Set:
+    {
+        // Connection is unaffected. Simply copy back to old
+        GGLink ol = m_old.link();
+        GGLink nl = m_new.link();
+        ol.setConnection(nl.connection());
+        m_old.setLink(ol);
         if (!m_page->setMappedLink(m_idx, m_old)) {
+            // Unset in old
+            ol.setConnection(NULL);
+            m_old.setLink(ol);
             return setError("Cannot set mapped link");
         } else {
-            // Connection is unaffected. Simply copy back to old
-            GGLink ol = m_old.link();
-            GGLink nl = m_new.link();
-            ol.setConnection(nl.connection());
+            // Unset in new
             nl.setConnection(NULL);
-            m_old.setLink(ol);
             m_new.setLink(nl);
             return true;
         }
+    }
 
     default:
         Q_ASSERT(false);
@@ -456,19 +471,24 @@ bool GGMappedLinkCmd::doRedo()
         return true;
 
     case Set:
+    {
+        // Connection is unaffected. Simply copy again to new
+        GGLink ol = m_old.link();
+        GGLink nl = m_new.link();
+        nl.setConnection(ol.connection());
+        m_new.setLink(nl);
         if (!m_page->setMappedLink(m_idx, m_new)) {
+            // Unset in new
+            nl.setConnection(NULL);
+            m_new.setLink(nl);
             return setError("Cannot set decision link");
         } else {
-            // Connection is unaffected. Simply copy again to new
-            GGLink ol = m_old.link();
-            GGLink nl = m_new.link();
-            nl.setConnection(ol.connection());
+            // Remove from old
             ol.setConnection(NULL);
             m_old.setLink(ol);
-            m_new.setLink(nl);
             return true;
         }
-
+    }
     default:
         Q_ASSERT(false);
         qFatal("Unknown MappedLinkCmd Type");
@@ -487,6 +507,15 @@ GGDecisionLinkCmd::GGDecisionLinkCmd(GGEditModel *model, GGDecisionPage *page, G
       m_idx(idx)
 {
 
+}
+
+GGDecisionLinkCmd::~GGDecisionLinkCmd()
+{
+    if (m_type == Remove) {
+        if (m_state == Executed) {
+            delete m_old.connection();
+        }
+    }
 }
 
 QString GGDecisionLinkCmd::description() const
@@ -547,11 +576,12 @@ bool GGDecisionLinkCmd::doUndo()
         return true;
 
     case Set:
-        if (!m_page->setDecisionLink(m_idx, m_old)) {
-            return setError("Cannot set decision link");
-        }
         // Connection is unaffected. Simply copy back to old
         m_old.setConnection(m_new.connection());
+        if (!m_page->setDecisionLink(m_idx, m_old)) {
+            m_old.setConnection(NULL);
+            return setError("Cannot set decision link");
+        }
         m_new.setConnection(NULL);
         return true;
 
@@ -591,11 +621,12 @@ bool GGDecisionLinkCmd::doRedo()
         return true;
 
     case Set:
-        if (!m_page->setDecisionLink(m_idx, m_new)) {
-            return setError("Cannot set decision link");
-        }
         // Connection is unaffected. Simply copy again to new
         m_new.setConnection(m_old.connection());
+        if (!m_page->setDecisionLink(m_idx, m_new)) {
+            m_new.setConnection(NULL);
+            return setError("Cannot set decision link");
+        }
         m_old.setConnection(NULL);
         return true;
 
