@@ -267,7 +267,7 @@ bool GGMappedContentPage::insertMappedLink(int idx, GGMappedLink link)
 
 bool GGMappedContentPage::setMappedLink(int idx, GGMappedLink link)
 {
-    if (0 <= idx && idx <= m_mappedLinks.size()) {
+    if (0 <= idx && idx < m_mappedLinks.size()) {
         m_mappedLinks[idx] = link;
         notifyChanged();
         return true;
@@ -277,7 +277,7 @@ bool GGMappedContentPage::setMappedLink(int idx, GGMappedLink link)
 
 bool GGMappedContentPage::removeMappedLink(int idx)
 {
-    if (0 <= idx && idx <= m_mappedLinks.size()) {
+    if (0 <= idx && idx < m_mappedLinks.size()) {
         m_mappedLinks.removeAt(idx);
         notifyChanged();
         return true;
@@ -366,7 +366,7 @@ bool GGDecisionPage::insertDecisionLink(int idx, GGLink link)
 
 bool GGDecisionPage::setDecisionLink(int idx, GGLink link)
 {
-    if (0 <= idx && idx <= m_decisionLinks.size()) {
+    if (0 <= idx && idx < m_decisionLinks.size()) {
         m_decisionLinks[idx] = link;
         notifyChanged();
         return true;
@@ -376,7 +376,7 @@ bool GGDecisionPage::setDecisionLink(int idx, GGLink link)
 
 bool GGDecisionPage::removeDecisionLink(int idx)
 {
-    if (0 <= idx && idx <= m_decisionLinks.size()) {
+    if (0 <= idx && idx < m_decisionLinks.size()) {
         m_decisionLinks.removeAt(idx);
         notifyChanged();
         return true;
