@@ -4,6 +4,7 @@
 #include <command/ggabstractcommand.h>
 #include <command/ggmodelpagecommands.h>
 
+class GGViewPage;
 class GGViewModel;
 
 class GGAbstractViewCommand : public GGAbstractCommand
@@ -39,6 +40,20 @@ protected:
 
 /////////////////////////
 
+template<typename CMD>
+bool GGAbstractViewForwardCommand<CMD>::doUndo() {
+    if (!m_cmd->undo()) return setError(m_cmd->error());
+    return true;
+}
+
+template<typename CMD>
+bool GGAbstractViewForwardCommand<CMD>::doRedo() {
+    if (!m_cmd->redo()) return setError(m_cmd->error());
+    return true;
+}
+
+/////////////////////////
+
 class GGCreateViewPageCmd : public GGAbstractViewForwardCommand<GGCreatePageCmd>
 {
 public:
@@ -53,16 +68,13 @@ private:
 
 /////////////////////////
 
-template<typename CMD>
-bool GGAbstractViewForwardCommand<CMD>::doUndo() {
-    if (!m_cmd->undo()) return setError(m_cmd->error());
-    return true;
-}
+class GGDeleteViewPageCmd : public GGAbstractViewForwardCommand<GGDeletePageCmd>
+{
+public:
+    GGDeleteViewPageCmd(GGViewModel *model, GGViewPage *page);
 
-template<typename CMD>
-bool GGAbstractViewForwardCommand<CMD>::doRedo() {
-    if (!m_cmd->redo()) return setError(m_cmd->error());
-    return true;
-}
+protected:
+    bool doExecute();
+};
 
 #endif // GGVIEWCOMMANDS_H

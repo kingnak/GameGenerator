@@ -29,3 +29,19 @@ bool GGCreateViewPageCmd::doExecute()
     vp->setBounds(m_bounds);
     return true;
 }
+
+/////////////////////////
+
+GGDeleteViewPageCmd::GGDeleteViewPageCmd(GGViewModel *model, GGViewPage *page)
+    : GGAbstractViewForwardCommand(model)
+{
+    m_cmd = new GGDeletePageCmd(model->editModel(), page->page());
+}
+
+bool GGDeleteViewPageCmd::doExecute()
+{
+    if (!m_cmd->execute()) {
+        return setError(m_cmd->error());
+    }
+    return true;
+}
