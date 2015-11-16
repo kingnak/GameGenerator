@@ -1,6 +1,7 @@
 #include "ggviewcommands.h"
 #include <viewmodel/ggviewmodel.h>
 #include <viewmodel/ggviewpage.h>
+#include <viewmodel/ggviewconnection.h>
 #include <model/ggeditmodel.h>
 #include <command/ggabstractmodelcommandfactory.h>
 #include <model/ggpage.h>
@@ -85,4 +86,28 @@ GGViewDecisionLinkCmd::GGViewDecisionLinkCmd(GGViewModel *model, GGViewPage *pag
     GGDecisionPage *p = GG::as<GGDecisionPage> (page->page());
     Q_ASSERT_X(p, "GGViewDecisionLinkCmd::GGViewDecisionLinkCmd", "Page must be decision page");
     if (p) m_cmd = new GGDecisionLinkCmd(model->editModel(), p, lnk, type, idx);
+}
+
+/////////////////////////
+
+GGCreateViewConnectionCmd::GGCreateViewConnectionCmd(GGViewModel *model, GGConnectionSlot slot, GGViewPage *src, GGViewPage *dest)
+    : GGAbstractViewForwardCommand(model)
+{
+    m_cmd = new GGCreateConnectionCmd(model->editModel(), slot, src->page(), dest->page());
+}
+
+/////////////////////////
+
+GGDeleteViewConnectionCmd::GGDeleteViewConnectionCmd(GGViewModel *model, GGViewConnection *conn)
+    : GGAbstractViewForwardCommand(model)
+{
+    m_cmd = new GGDeleteConnectionCmd(model->editModel(), conn->connection());
+}
+
+/////////////////////////
+
+GGExchangeViewConnectionCmd::GGExchangeViewConnectionCmd(GGViewModel *model, GGConnectionSlot slot, GGViewPage *src, GGViewPage *dest)
+    : GGAbstractViewForwardCommand(model)
+{
+    m_cmd = new GGExchangeConnectionCmd(model->editModel(), src->page(), dest->page(), slot);
 }

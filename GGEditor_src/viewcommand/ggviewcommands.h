@@ -3,8 +3,10 @@
 
 #include <command/ggabstractcommand.h>
 #include <command/ggmodelpagecommands.h>
+#include <command/ggmodelconnectioncommands.h>
 
 class GGViewPage;
+class GGViewConnection;
 class GGViewModel;
 
 class GGAbstractViewCommand : public GGAbstractCommand
@@ -119,6 +121,33 @@ class GGViewDecisionLinkCmd : public GGAbstractViewForwardCommand<GGDecisionLink
 {
 public:
     GGViewDecisionLinkCmd(GGViewModel *model, GGViewPage *page, GGLink lnk, GGDecisionLinkCmd::Type type, int idx);
+};
+
+/////////////////////////
+
+class GGCreateViewConnectionCmd : public GGAbstractViewForwardCommand<GGCreateConnectionCmd>
+{
+public:
+    GGCreateViewConnectionCmd(GGViewModel *model, GGConnectionSlot slot, GGViewPage *src, GGViewPage *dest);
+protected:
+    // Maybe in future needed
+    //bool doExecute();
+};
+
+/////////////////////////
+
+class GGDeleteViewConnectionCmd : public GGAbstractViewForwardCommand<GGDeleteConnectionCmd>
+{
+public:
+    GGDeleteViewConnectionCmd(GGViewModel *model, GGViewConnection *conn);
+};
+
+/////////////////////////
+
+class GGExchangeViewConnectionCmd : public GGAbstractViewForwardCommand<GGExchangeConnectionCmd>
+{
+public:
+    GGExchangeViewConnectionCmd(GGViewModel *model, GGConnectionSlot slot, GGViewPage *src, GGViewPage *dest);
 };
 
 #endif // GGVIEWCOMMANDS_H
