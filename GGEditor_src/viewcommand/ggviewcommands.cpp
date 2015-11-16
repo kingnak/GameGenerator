@@ -3,6 +3,7 @@
 #include <viewmodel/ggviewpage.h>
 #include <model/ggeditmodel.h>
 #include <command/ggabstractmodelcommandfactory.h>
+#include <model/ggpage.h>
 
 GGCreateViewPageCmd::GGCreateViewPageCmd(GGViewModel *model, GGCreatePageCmd::PageType type, QRect bounds)
     : GGAbstractViewForwardCommand(model),
@@ -38,10 +39,50 @@ GGDeleteViewPageCmd::GGDeleteViewPageCmd(GGViewModel *model, GGViewPage *page)
     m_cmd = new GGDeletePageCmd(model->editModel(), page->page());
 }
 
-bool GGDeleteViewPageCmd::doExecute()
+/////////////////////////
+
+GGSetViewPageStringCmd::GGSetViewPageStringCmd(GGViewModel *model, GGViewPage *page, QString str, GGSetPageStringCmd::Type type)
+    : GGAbstractViewForwardCommand(model)
 {
-    if (!m_cmd->execute()) {
-        return setError(m_cmd->error());
-    }
-    return true;
+    m_cmd = new GGSetPageStringCmd(model->editModel(), page->page(), str, type);
+}
+
+/////////////////////////
+
+GGExchangeViewContentCmd::GGExchangeViewContentCmd(GGViewModel *model, GGViewPage *page, GGContentElement *elem)
+    : GGAbstractViewForwardCommand(model)
+{
+    GGContentPage *p = GG::as<GGContentPage> (page->page());
+    Q_ASSERT_X(p, "GGExchangeViewContentCmd::GGExchangeViewContentCmd", "Page must be content page");
+    if (p) m_cmd = new GGExchangeContentCmd(model->editModel(), p, elem);
+}
+
+/////////////////////////
+
+GGSetViewActionLinkCmd::GGSetViewActionLinkCmd(GGViewModel *model, GGViewPage *page, GGLink lnk)
+    : GGAbstractViewForwardCommand(model)
+{
+    GGActionPage *p = ggpage_cast<GGActionPage *> (page->page());
+    Q_ASSERT_X(p, "GGSetViewActionLinkCmd::GGSetViewActionLinkCmd", "Page must be action page");
+    if (p) m_cmd = new GGSetActionLinkCmd(model->editModel(), p, lnk);
+}
+
+/////////////////////////
+
+GGViewMappedLinkCmd::GGViewMappedLinkCmd(GGViewModel *model, GGViewPage *page, GGMappedLink lnk, GGMappedLinkCmd::Type type, int idx)
+    : GGAbstractViewForwardCommand(model)
+{
+    GGMappedContentPage *p = GG::as<GGMappedContentPage> (page->page());
+    Q_ASSERT_X(p, "GGViewMappedLinkCmd::GGViewMappedLinkCmd", "Page must be mappedcontent page");
+    if (p) m_cmd = new GGMappedLinkCmd(model->editModel(), p, lnk, type, idx);
+}
+
+/////////////////////////
+
+GGViewDecisionLinkCmd::GGViewDecisionLinkCmd(GGViewModel *model, GGViewPage *page, GGLink lnk, GGDecisionLinkCmd::Type type, int idx)
+    : GGAbstractViewForwardCommand(model)
+{
+    GGDecisionPage *p = GG::as<GGDecisionPage> (page->page());
+    Q_ASSERT_X(p, "GGViewDecisionLinkCmd::GGViewDecisionLinkCmd", "Page must be decision page");
+    if (p) m_cmd = new GGDecisionLinkCmd(model->editModel(), p, lnk, type, idx);
 }

@@ -22,7 +22,7 @@ template<class CMD>
 class GGAbstractViewForwardCommand : public GGAbstractViewCommand
 {
 public:
-    GGAbstractViewForwardCommand(GGViewModel *model) : GGAbstractViewCommand(model) {}
+    GGAbstractViewForwardCommand(GGViewModel *model) : GGAbstractViewCommand(model), m_cmd(NULL) {}
     ~GGAbstractViewForwardCommand() { delete m_cmd; }
 
     CMD *getInnerCommand() { return m_cmd; }
@@ -31,6 +31,7 @@ public:
     QString description() const { return m_cmd->description(); }
 
 protected:
+    bool doExecute();
     bool doUndo();
     bool doRedo();
 
@@ -39,6 +40,12 @@ protected:
 };
 
 /////////////////////////
+
+template<typename CMD>
+bool GGAbstractViewForwardCommand<CMD>::doExecute() {
+    if (!m_cmd->execute()) return setError(m_cmd->error());
+    return true;
+}
 
 template<typename CMD>
 bool GGAbstractViewForwardCommand<CMD>::doUndo() {
@@ -72,9 +79,46 @@ class GGDeleteViewPageCmd : public GGAbstractViewForwardCommand<GGDeletePageCmd>
 {
 public:
     GGDeleteViewPageCmd(GGViewModel *model, GGViewPage *page);
+};
 
-protected:
-    bool doExecute();
+/////////////////////////
+
+class GGSetViewPageStringCmd : public GGAbstractViewForwardCommand<GGSetPageStringCmd>
+{
+public:
+    GGSetViewPageStringCmd(GGViewModel *model, GGViewPage *page, QString str, GGSetPageStringCmd::Type type);
+};
+
+/////////////////////////
+
+class GGExchangeViewContentCmd : public GGAbstractViewForwardCommand<GGExchangeContentCmd>
+{
+public:
+    GGExchangeViewContentCmd(GGViewModel *model, GGViewPage *page, GGContentElement *elem);
+};
+
+/////////////////////////
+
+class GGSetViewActionLinkCmd : public GGAbstractViewForwardCommand<GGSetActionLinkCmd>
+{
+public:
+    GGSetViewActionLinkCmd(GGViewModel *model, GGViewPage *page, GGLink lnk);
+};
+
+/////////////////////////
+
+class GGViewMappedLinkCmd : public GGAbstractViewForwardCommand<GGMappedLinkCmd>
+{
+public:
+    GGViewMappedLinkCmd(GGViewModel *model, GGViewPage *page, GGMappedLink lnk, GGMappedLinkCmd::Type type, int idx);
+};
+
+/////////////////////////
+
+class GGViewDecisionLinkCmd : public GGAbstractViewForwardCommand<GGDecisionLinkCmd>
+{
+public:
+    GGViewDecisionLinkCmd(GGViewModel *model, GGViewPage *page, GGLink lnk, GGDecisionLinkCmd::Type type, int idx);
 };
 
 #endif // GGVIEWCOMMANDS_H
