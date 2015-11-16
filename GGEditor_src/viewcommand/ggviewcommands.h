@@ -84,7 +84,7 @@ public:
 };
 
 /////////////////////////
-
+/*
 class GGSetViewPageStringCmd : public GGAbstractViewForwardCommand<GGSetPageStringCmd>
 {
 public:
@@ -124,7 +124,7 @@ public:
 };
 
 /////////////////////////
-
+*/
 class GGCreateViewConnectionCmd : public GGAbstractViewForwardCommand<GGCreateConnectionCmd>
 {
 public:
@@ -143,11 +143,11 @@ public:
 };
 
 /////////////////////////
-
+/*
 class GGExchangeViewConnectionCmd : public GGAbstractViewForwardCommand<GGExchangeConnectionCmd>
 {
 public:
     GGExchangeViewConnectionCmd(GGViewModel *model, GGConnectionSlot slot, GGViewPage *src, GGViewPage *dest);
 };
-
+*/
 #endif // GGVIEWCOMMANDS_H

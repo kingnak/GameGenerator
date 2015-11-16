@@ -41,7 +41,7 @@ GGDeleteViewPageCmd::GGDeleteViewPageCmd(GGViewModel *model, GGViewPage *page)
 }
 
 /////////////////////////
-
+/*
 GGSetViewPageStringCmd::GGSetViewPageStringCmd(GGViewModel *model, GGViewPage *page, QString str, GGSetPageStringCmd::Type type)
     : GGAbstractViewForwardCommand(model)
 {
@@ -87,7 +87,7 @@ GGViewDecisionLinkCmd::GGViewDecisionLinkCmd(GGViewModel *model, GGViewPage *pag
     Q_ASSERT_X(p, "GGViewDecisionLinkCmd::GGViewDecisionLinkCmd", "Page must be decision page");
     if (p) m_cmd = new GGDecisionLinkCmd(model->editModel(), p, lnk, type, idx);
 }
-
+*/
 /////////////////////////
 
 GGCreateViewConnectionCmd::GGCreateViewConnectionCmd(GGViewModel *model, GGConnectionSlot slot, GGViewPage *src, GGViewPage *dest)
@@ -105,9 +105,10 @@ GGDeleteViewConnectionCmd::GGDeleteViewConnectionCmd(GGViewModel *model, GGViewC
 }
 
 /////////////////////////
-
+/*
 GGExchangeViewConnectionCmd::GGExchangeViewConnectionCmd(GGViewModel *model, GGConnectionSlot slot, GGViewPage *src, GGViewPage *dest)
     : GGAbstractViewForwardCommand(model)
 {
     m_cmd = new GGExchangeConnectionCmd(model->editModel(), src->page(), dest->page(), slot);
 }
+*/
