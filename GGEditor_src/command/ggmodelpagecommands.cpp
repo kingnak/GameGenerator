@@ -231,8 +231,7 @@ bool GGSetPageStringCmd::doSet(QString v, QString *old)
         return true;
     case Caption:
     {
-        GGContentPage *c = ggpage_cast<GGActionPage*>(m_page);
-        if (!c) c = ggpage_cast<GGDecisionPage*>(m_page);
+        GGContentPage *c = GG::as<GGContentPage>(m_page);
         if (!c) return false;
         *old = c->caption();
         c->setCaption(v);

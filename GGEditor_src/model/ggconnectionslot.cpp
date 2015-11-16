@@ -35,12 +35,11 @@ bool GGConnectionSlot::doConnectTest(bool doSet, GGPage *page, GGConnection *con
         }
         return false;
     case MappedConnection:
-        Q_ASSERT(ggpage_cast<GGActionPage*> (page) || ggpage_cast<GGDecisionPage*> (page));
+        Q_ASSERT(GG::as<GGMappedContentPage>(page));
         Q_ASSERT(m_idx >= 0);
 
         { // Scope limit mcp
-            GGMappedContentPage *mcp = ggpage_cast<GGActionPage*> (page);
-            if (!mcp) mcp = ggpage_cast<GGDecisionPage*> (page);
+            GGMappedContentPage *mcp = GG::as<GGMappedContentPage>(page);
             if (!mcp) return false;
 
             if (0 <= m_idx && m_idx < mcp->getLinkMap().size()) {
