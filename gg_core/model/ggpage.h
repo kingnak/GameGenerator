@@ -212,4 +212,25 @@ template <class T> inline T ggpage_cast(GGPage *p)
 template <class T> inline T ggpage_cast(const GGPage *p)
 { return (p && int(static_cast<T>(0)->Type) == p->type()) ? static_cast<T>(p) : 0; }
 
+namespace GG {
+template <class T> inline T* as(GGPage *p)
+{ return ggpage_cast<T*>(p); }
+
+template <> inline GGContentPage *as(GGPage *p)
+{
+    GGContentPage *cp = ggpage_cast<GGStartPage*>(p);
+    if (!cp) cp = ggpage_cast<GGEndPage*>(p);
+    if (!cp) cp = ggpage_cast<GGActionPage*>(p);
+    if (!cp) cp = ggpage_cast<GGDecisionPage*>(p);
+    return cp;
+}
+
+template <> inline GGMappedContentPage *as(GGPage *p)
+{
+    GGMappedContentPage *mcp = ggpage_cast<GGActionPage*>(p);
+    if (!mcp) mcp = ggpage_cast<GGDecisionPage*>(p);
+    return mcp;
+}
+}
+
 #endif // GGPAGE_H
