@@ -141,7 +141,7 @@ bool ViewModelSignalChecker::verifyFL(QString s, QString f, int l, int pr, int p
     LOCVERIFY(lcr == cr, qPrintable(QString("%3: Expected %1 view connection registrations, got %2").arg(cr).arg(lcr).arg(s)), qPrintable(f), l);
     LOCVERIFY(lcu == cu, qPrintable(QString("%3: Expected %1 view connection unregistrations, got %2").arg(cu).arg(lcu).arg(s)), qPrintable(f), l);
     LOCVERIFY(lpc == pc, qPrintable(QString("%3: Expected %1 model page changes, got %2").arg(pc).arg(lpc).arg(s)), qPrintable(f), l);
-    LOCVERIFY(lpc == pc, qPrintable(QString("%3: Expected %1 view page changes, got %2").arg(vpc).arg(lvpc).arg(s)), qPrintable(f), l);
+    LOCVERIFY(lvpc == vpc, qPrintable(QString("%3: Expected %1 view page changes, got %2").arg(vpc).arg(lvpc).arg(s)), qPrintable(f), l);
 #undef LOCVERIFY
     return ok;
 }
