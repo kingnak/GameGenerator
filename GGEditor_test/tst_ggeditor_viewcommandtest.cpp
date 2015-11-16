@@ -93,3 +93,34 @@ void GGEditor_ViewCommandTest::testCreateViewConnection()
     VERIFYVSIG(m_vmsc, "Redo Create Connection", 0, 0, 1, 0, 1, 0);
 }
 
+void GGEditor_ViewCommandTest::testDeleteViewPage()
+{
+    QVERIFY(m_stk->execute(m_vf->createStartPage(QRect(0,0,1,1))));
+    QVERIFY(m_stk->execute(m_vf->createEndPage(QRect(10,10,1,1))));
+    QVERIFY(m_stk->execute(m_vf->createConditionPage(QRect(20,20,1,1))));
+    VERIFYVSIG(m_vmsc, "Create pages", 3, 0, 0, 0, 0, 3);
+
+    GGViewPage *s = m_vm->getViewPageForPage(m_em->getPages()[0]);
+    GGViewPage *e = m_vm->getViewPageForPage(m_em->getPages()[1]);
+    GGViewPage *d = m_vm->getViewPageForPage(m_em->getPages()[2]);
+
+    QVERIFY(m_stk->execute(m_vf->createConnection(s, d, GGConnectionSlot::StartConnection)));
+    QVERIFY(m_stk->execute(m_vf->createConnection(d, e, GGConnectionSlot::TrueConnection)));
+    VERIFYVSIG(m_vmsc, "Create connections", 0, 0, 2, 0, 2, 0);
+
+    GGViewConnection *c1 = m_vm->getViewConectionForConnection(m_em->getConnections()[0]);
+    GGViewConnection *c2 = m_vm->getViewConectionForConnection(m_em->getConnections()[1]);
+
+    QVERIFY2(m_stk->execute(m_vf->deletePage(d)), "Cannot delete Page");
+    VERIFYVSIG(m_vmsc, "Delete page", 0, 1, 0, 2, 1, 0);
+    QVERIFY(m_em->getPageIncommingConnections(e->page()).isEmpty());
+
+    QVERIFY2(m_stk->undo(), "Cannot undo delete page");
+    VERIFYVSIG(m_vmsc, "Undo delete page", 1, 0, 2, 0, 2, 0);
+    QVERIFY2(m_vm->getViewConectionForConnection(m_em->getConnections()[0]) == c1, "View Connection changed after undo delete page");
+    QVERIFY2(m_vm->getViewConectionForConnection(m_em->getConnections()[1]) == c2, "View Connection changed after undo delete page");
+
+    QVERIFY2(m_stk->redo(), "Cannot redo delete page");
+    VERIFYVSIG(m_vmsc, "Redo Delete page", 0, 1, 0, 2, 1, 0);
+}
+
