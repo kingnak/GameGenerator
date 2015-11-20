@@ -32,3 +32,10 @@ else:win32:!win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$OUT_PWD/
 else:unix: PRE_TARGETDEPS += $$OUT_PWD/../GGEditor_src/libGGEditor_src.a
 
 include(../defaults.pri)
+
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../gg_core/release/ -lgg_core
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../gg_core/debug/ -lgg_core
+else:unix: LIBS += -L$$OUT_PWD/../gg_core/ -lgg_core
+
+INCLUDEPATH += $$PWD/../gg_core
+DEPENDPATH += $$PWD/../gg_core

@@ -5,7 +5,7 @@
 
 class GGMainWindow : public QMainWindow
 {
-
+    Q_OBJECT
 public:
     GGMainWindow();
 };
