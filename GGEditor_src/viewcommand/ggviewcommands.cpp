@@ -41,53 +41,38 @@ GGDeleteViewPageCmd::GGDeleteViewPageCmd(GGViewModel *model, GGViewPage *page)
 }
 
 /////////////////////////
-/*
-GGSetViewPageStringCmd::GGSetViewPageStringCmd(GGViewModel *model, GGViewPage *page, QString str, GGSetPageStringCmd::Type type)
-    : GGAbstractViewForwardCommand(model)
+
+GGMoveViewPageCmd::GGMoveViewPageCmd(GGViewModel *model, GGViewPage *page, QRect pos)
+    : GGAbstractViewCommand(model),
+      m_page(page),
+      m_new(pos)
 {
-    m_cmd = new GGSetPageStringCmd(model->editModel(), page->page(), str, type);
 }
 
-/////////////////////////
-
-GGExchangeViewContentCmd::GGExchangeViewContentCmd(GGViewModel *model, GGViewPage *page, GGContentElement *elem)
-    : GGAbstractViewForwardCommand(model)
+QString GGMoveViewPageCmd::description() const
 {
-    GGContentPage *p = GG::as<GGContentPage> (page->page());
-    Q_ASSERT_X(p, "GGExchangeViewContentCmd::GGExchangeViewContentCmd", "Page must be content page");
-    if (p) m_cmd = new GGExchangeContentCmd(model->editModel(), p, elem);
+    return "Move Page";
 }
 
-/////////////////////////
-
-GGSetViewActionLinkCmd::GGSetViewActionLinkCmd(GGViewModel *model, GGViewPage *page, GGLink lnk)
-    : GGAbstractViewForwardCommand(model)
+bool GGMoveViewPageCmd::doExecute()
 {
-    GGActionPage *p = ggpage_cast<GGActionPage *> (page->page());
-    Q_ASSERT_X(p, "GGSetViewActionLinkCmd::GGSetViewActionLinkCmd", "Page must be action page");
-    if (p) m_cmd = new GGSetActionLinkCmd(model->editModel(), p, lnk);
+    m_old = m_page->bounds();
+    m_page->setBounds(m_new);
+    return true;
 }
 
-/////////////////////////
-
-GGViewMappedLinkCmd::GGViewMappedLinkCmd(GGViewModel *model, GGViewPage *page, GGMappedLink lnk, GGMappedLinkCmd::Type type, int idx)
-    : GGAbstractViewForwardCommand(model)
+bool GGMoveViewPageCmd::doUndo()
 {
-    GGMappedContentPage *p = GG::as<GGMappedContentPage> (page->page());
-    Q_ASSERT_X(p, "GGViewMappedLinkCmd::GGViewMappedLinkCmd", "Page must be mappedcontent page");
-    if (p) m_cmd = new GGMappedLinkCmd(model->editModel(), p, lnk, type, idx);
+    m_page->setBounds(m_old);
+    return true;
 }
 
-/////////////////////////
-
-GGViewDecisionLinkCmd::GGViewDecisionLinkCmd(GGViewModel *model, GGViewPage *page, GGLink lnk, GGDecisionLinkCmd::Type type, int idx)
-    : GGAbstractViewForwardCommand(model)
+bool GGMoveViewPageCmd::doRedo()
 {
-    GGDecisionPage *p = GG::as<GGDecisionPage> (page->page());
-    Q_ASSERT_X(p, "GGViewDecisionLinkCmd::GGViewDecisionLinkCmd", "Page must be decision page");
-    if (p) m_cmd = new GGDecisionLinkCmd(model->editModel(), p, lnk, type, idx);
+    m_page->setBounds(m_new);
+    return true;
 }
-*/
+
 /////////////////////////
 
 GGCreateViewConnectionCmd::GGCreateViewConnectionCmd(GGViewModel *model, GGConnectionSlot slot, GGViewPage *src, GGViewPage *dest)
@@ -105,10 +90,3 @@ GGDeleteViewConnectionCmd::GGDeleteViewConnectionCmd(GGViewModel *model, GGViewC
 }
 
 /////////////////////////
-/*
-GGExchangeViewConnectionCmd::GGExchangeViewConnectionCmd(GGViewModel *model, GGConnectionSlot slot, GGViewPage *src, GGViewPage *dest)
-    : GGAbstractViewForwardCommand(model)
-{
-    m_cmd = new GGExchangeConnectionCmd(model->editModel(), src->page(), dest->page(), slot);
-}
-*/

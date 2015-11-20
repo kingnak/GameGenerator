@@ -38,6 +38,11 @@ GGDeleteViewPageCmd *GGViewCommandFactory::deletePage(GGViewPage *page)
     return new GGDeleteViewPageCmd(m_model, page);
 }
 
+GGMoveViewPageCmd *GGViewCommandFactory::movePage(GGViewPage *page, QRect pos)
+{
+    return new GGMoveViewPageCmd(m_model, page, pos);
+}
+
 GGCreateViewConnectionCmd *GGViewCommandFactory::createConnection(GGViewPage *src, GGViewPage *dest, GGConnectionSlot slot)
 {
     return new GGCreateViewConnectionCmd(m_model, slot, src, dest);

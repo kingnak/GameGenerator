@@ -84,47 +84,27 @@ public:
 };
 
 /////////////////////////
-/*
-class GGSetViewPageStringCmd : public GGAbstractViewForwardCommand<GGSetPageStringCmd>
+
+class GGMoveViewPageCmd : public GGAbstractViewCommand
 {
 public:
-    GGSetViewPageStringCmd(GGViewModel *model, GGViewPage *page, QString str, GGSetPageStringCmd::Type type);
+    GGMoveViewPageCmd(GGViewModel *model, GGViewPage *page, QRect pos);
+
+    QString description() const;
+
+protected:
+    bool doExecute();
+    bool doUndo();
+    bool doRedo();
+
+private:
+    GGViewPage *m_page;
+    QRect m_new;
+    QRect m_old;
 };
 
 /////////////////////////
 
-class GGExchangeViewContentCmd : public GGAbstractViewForwardCommand<GGExchangeContentCmd>
-{
-public:
-    GGExchangeViewContentCmd(GGViewModel *model, GGViewPage *page, GGContentElement *elem);
-};
-
-/////////////////////////
-
-class GGSetViewActionLinkCmd : public GGAbstractViewForwardCommand<GGSetActionLinkCmd>
-{
-public:
-    GGSetViewActionLinkCmd(GGViewModel *model, GGViewPage *page, GGLink lnk);
-};
-
-/////////////////////////
-
-class GGViewMappedLinkCmd : public GGAbstractViewForwardCommand<GGMappedLinkCmd>
-{
-public:
-    GGViewMappedLinkCmd(GGViewModel *model, GGViewPage *page, GGMappedLink lnk, GGMappedLinkCmd::Type type, int idx);
-};
-
-/////////////////////////
-
-class GGViewDecisionLinkCmd : public GGAbstractViewForwardCommand<GGDecisionLinkCmd>
-{
-public:
-    GGViewDecisionLinkCmd(GGViewModel *model, GGViewPage *page, GGLink lnk, GGDecisionLinkCmd::Type type, int idx);
-};
-
-/////////////////////////
-*/
 class GGCreateViewConnectionCmd : public GGAbstractViewForwardCommand<GGCreateConnectionCmd>
 {
 public:
@@ -142,12 +122,4 @@ public:
     GGDeleteViewConnectionCmd(GGViewModel *model, GGViewConnection *conn);
 };
 
-/////////////////////////
-/*
-class GGExchangeViewConnectionCmd : public GGAbstractViewForwardCommand<GGExchangeConnectionCmd>
-{
-public:
-    GGExchangeViewConnectionCmd(GGViewModel *model, GGConnectionSlot slot, GGViewPage *src, GGViewPage *dest);
-};
-*/
 #endif // GGVIEWCOMMANDS_H
