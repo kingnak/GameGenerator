@@ -2,6 +2,9 @@
 #include "../viewmodel/ggviewmodel.h"
 #include "ggpageitem.h"
 #include "ggselectionitem.h"
+#include <viewmodel/ggviewpage.h>
+#include <QDebug>
+#include <QGraphicsSceneMouseEvent>
 
 GGEditorScene::GGEditorScene(GGViewModel *model, QObject *parent)
     : QGraphicsScene(parent),
@@ -28,6 +31,19 @@ void GGEditorScene::itemMoved(GGPageItem *item)
     if (item == m_selItem->wrappedItem()) {
         m_selItem->setWrappedItem(item);
     }
+}
+
+void GGEditorScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+{
+    if (event->button() == Qt::LeftButton) {
+        foreach (QGraphicsItem *i, selectedItems()) {
+            if (GGPageItem *p = qgraphicsitem_cast<GGPageItem*> (i)) {
+                if (p->page()->bounds() != p->modelPosition())
+                    emit pageMoved(p->page(), p->modelPosition());
+            }
+        }
+    }
+    QGraphicsScene::mouseReleaseEvent(event);
 }
 
 void GGEditorScene::pageReg(GGViewPage *p)
@@ -63,6 +79,9 @@ void GGEditorScene::pageViewUpd(GGViewPage *p)
 {
     if (GGPageItem *item = m_pageMap.value(p)) {
         item->updateDrawingGeometry();
+        if (item == m_selItem->wrappedItem()) {
+            m_selItem->setWrappedItem(item);
+        }
     }
 }
 
@@ -71,6 +90,7 @@ void GGEditorScene::updateSelectionItem()
     QList<QGraphicsItem *> itms = selectedItems();
     if (itms.size() != 1) {
         m_selItem->setVisible(false);
+        m_selItem->setWrappedItem(NULL);
     } else {
         m_selItem->setWrappedItem(qgraphicsitem_cast<GGPageItem*>(itms[0]));
         m_selItem->setVisible(true);

@@ -5,6 +5,7 @@
 #include <QtGui>
 #include <QtWidgets>
 #include <QVector>
+#include <QDebug>
 
 const qreal GGPageItem::penWidth = 3;
 
@@ -16,6 +17,11 @@ GGPageItem::GGPageItem(GGViewPage *page, QGraphicsItem *parent)
     setFlag(QGraphicsItem::ItemIsMovable);
     setFlag(QGraphicsItem::ItemIsSelectable);
     setFlag(QGraphicsItem::ItemSendsScenePositionChanges);
+}
+
+QRect GGPageItem::modelPosition() const
+{
+    return mapToScene(m_geo).boundingRect().toRect();
 }
 
 QRectF GGPageItem::boundingRect() const
@@ -85,6 +91,13 @@ void GGPageItem::setDrawingGeometry(QRectF f)
         m_geo = mapFromScene(f).boundingRect();
     }
 }
+
+//void GGPageItem::commitPageGeometry()
+//{
+//    QRect r = mapToScene(m_geo).boundingRect().toRect();
+//    qDebug() << "Page" << m_page->page()->id() << "position" << r;
+//    m_page->setBounds(r);
+//}
 
 void GGPageItem::updateDrawingGeometry()
 {

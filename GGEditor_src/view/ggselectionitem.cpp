@@ -102,6 +102,8 @@ bool GGSelectionItem::sceneEventFilter(QGraphicsItem *watched, QEvent *event)
         return true;
 
     }
+    default:
+        return false;
     }
 
     return false;

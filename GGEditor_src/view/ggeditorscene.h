@@ -3,6 +3,7 @@
 
 #include <QGraphicsScene>
 #include <QMap>
+#include <QRect>
 
 class GGViewModel;
 class GGViewPage;
@@ -18,6 +19,12 @@ class GGEditorScene : public QGraphicsScene
 public:
     GGEditorScene(GGViewModel *model, QObject *parent = 0);
     void itemMoved(GGPageItem *item);
+
+signals:
+    void pageMoved(GGViewPage *page, QRect r);
+
+protected:
+    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
 
 private slots:
     void pageReg(GGViewPage *p);

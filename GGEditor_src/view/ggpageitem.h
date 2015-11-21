@@ -13,11 +13,14 @@ public:
 
     GGPageItem(GGViewPage *page, QGraphicsItem *parent = 0);
 
+    GGViewPage *page() { return m_page; }
+    QRect modelPosition() const;
+
     QRectF boundingRect() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
     void setDrawingGeometry(QRectF f);
-    void commitPageGeometry(QRectF f);
+//    void commitPageGeometry();
     void updateDrawingGeometry();
     QRectF innerBoundingRect() const;
 
