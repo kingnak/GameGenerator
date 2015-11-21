@@ -7,6 +7,7 @@
 #include <viewcommand/ggviewcommands.h>
 #include <QtGui>
 #include <QGraphicsView>
+#include <QGraphicsEllipseItem>
 
 GGMainWindow::GGMainWindow()
 {
@@ -17,9 +18,15 @@ GGMainWindow::GGMainWindow()
     setCentralWidget(v);
     GGViewCommandFactory *fac = new GGViewCommandFactory(vm);
 
-    GGAbstractCommandFactory::oneShotCommand(fac->createStartPage(QRect(0,0,100,100)));
-    GGAbstractCommandFactory::oneShotCommand(fac->createEndPage(QRect(0,0,100,100)));
-    GGAbstractCommandFactory::oneShotCommand(fac->createConditionPage(QRect(0,0,100,100)));
+    QGraphicsEllipseItem *e = new QGraphicsEllipseItem(-5,-5,10,10);
+    e->setBrush(Qt::red);
+    e->setZValue(100000);
+    sc->addItem(e);
+    //sc->addEllipse(0,0,3,3,QPen(Qt::yellow));
+
+    //GGAbstractCommandFactory::oneShotCommand(fac->createStartPage(QRect(0,0,100,100)));
+    //GGAbstractCommandFactory::oneShotCommand(fac->createEndPage(QRect(0,0,100,100)));
+    //GGAbstractCommandFactory::oneShotCommand(fac->createConditionPage(QRect(0,0,100,100)));
     GGAbstractCommandFactory::oneShotCommand(fac->createActionPage(QRect(0,0,100,100)));
-    GGAbstractCommandFactory::oneShotCommand(fac->createDecisionPage(QRect(0,0,100,100)));
+    //GGAbstractCommandFactory::oneShotCommand(fac->createDecisionPage(QRect(0,0,100,100)));
 }

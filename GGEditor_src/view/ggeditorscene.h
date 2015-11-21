@@ -10,13 +10,14 @@ class GGViewConnection;
 class GGPageItem;
 class GGConnectionItem;
 
+class GGSelectionItem;
+
 class GGEditorScene : public QGraphicsScene
 {
     Q_OBJECT
 public:
     GGEditorScene(GGViewModel *model, QObject *parent = 0);
-
-signals:
+    void itemMoved(GGPageItem *item);
 
 private slots:
     void pageReg(GGViewPage *p);
@@ -26,8 +27,11 @@ private slots:
     void pageUpd(GGViewPage *p);
     void pageViewUpd(GGViewPage *p);
 
+    void updateSelectionItem();
+
 private:
     GGViewModel *m_model;
+    GGSelectionItem *m_selItem;
 
     QMap<GGViewPage *, GGPageItem *> m_pageMap;
     QMap<GGViewConnection *, GGConnectionItem *> m_connMap;

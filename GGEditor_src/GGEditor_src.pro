@@ -25,7 +25,8 @@ SOURCES += ggmainwindow.cpp \
     viewcommand/ggviewcommands.cpp \
     viewcommand/ggviewcommandfactory.cpp \
     view/ggeditorscene.cpp \
-    view/ggpageitem.cpp
+    view/ggpageitem.cpp \
+    view/ggselectionitem.cpp
 
 HEADERS += ggmainwindow.h \
     model/ggeditmodel.h \
@@ -44,7 +45,8 @@ HEADERS += ggmainwindow.h \
     viewcommand/ggviewcommands.h \
     viewcommand/ggviewcommandfactory.h \
     view/ggeditorscene.h \
-    view/ggpageitem.h
+    view/ggpageitem.h \
+    view/ggselectionitem.h
 unix {
     target.path = /usr/lib
     INSTALLS += target

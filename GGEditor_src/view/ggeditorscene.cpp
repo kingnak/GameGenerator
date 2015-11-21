@@ -1,17 +1,33 @@
 #include "ggeditorscene.h"
 #include "../viewmodel/ggviewmodel.h"
 #include "ggpageitem.h"
+#include "ggselectionitem.h"
 
 GGEditorScene::GGEditorScene(GGViewModel *model, QObject *parent)
     : QGraphicsScene(parent),
       m_model(model)
 {
+    m_selItem = new GGSelectionItem;
+    m_selItem->setVisible(false);
+    m_selItem->setZValue(100);
+    addItem(m_selItem);
+    m_selItem->init();
+
     connect(m_model, SIGNAL(viewPageRegistered(GGViewPage*)), this, SLOT(pageReg(GGViewPage*)));
     connect(m_model, SIGNAL(viewPageUnregistered(GGViewPage*)), this, SLOT(pageUnreg(GGViewPage*)));
     connect(m_model, SIGNAL(viewConnectionRegistered(GGViewConnection*)), this, SLOT(connReg(GGViewConnection*)));
     connect(m_model, SIGNAL(viewConnectionUnregistered(GGViewConnection*)), this, SLOT(connUnreg(GGViewConnection*)));
     connect(m_model, SIGNAL(pageUpdated(GGViewPage*)), this, SLOT(pageUpd(GGViewPage*)));
     connect(m_model, SIGNAL(viewPageUpdated(GGViewPage*)), this, SLOT(pageViewUpd(GGViewPage*)));
+
+    connect(this, SIGNAL(selectionChanged()), this, SLOT(updateSelectionItem()));
+}
+
+void GGEditorScene::itemMoved(GGPageItem *item)
+{
+    if (item == m_selItem->wrappedItem()) {
+        m_selItem->setWrappedItem(item);
+    }
 }
 
 void GGEditorScene::pageReg(GGViewPage *p)
@@ -45,7 +61,18 @@ void GGEditorScene::pageUpd(GGViewPage *p)
 
 void GGEditorScene::pageViewUpd(GGViewPage *p)
 {
-    // TODO: Later more?
-    pageUpd(p);
+    if (GGPageItem *item = m_pageMap.value(p)) {
+        item->updateDrawingGeometry();
+    }
 }
 
+void GGEditorScene::updateSelectionItem()
+{
+    QList<QGraphicsItem *> itms = selectedItems();
+    if (itms.size() != 1) {
+        m_selItem->setVisible(false);
+    } else {
+        m_selItem->setWrappedItem(qgraphicsitem_cast<GGPageItem*>(itms[0]));
+        m_selItem->setVisible(true);
+    }
+}
