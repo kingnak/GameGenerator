@@ -14,6 +14,7 @@ GGMainWindow::GGMainWindow()
     GGEditModel *em = new GGEditModel(new GGSimpleFactory, this);
     GGViewModel *vm = new GGViewModel(em, this);
     GGEditorScene *sc = new GGEditorScene(vm, this);
+    sc->setSceneRect(-400,-400,800,800);
     QGraphicsView *v = new QGraphicsView(sc);
     setCentralWidget(v);
     GGViewCommandFactory *fac = new GGViewCommandFactory(vm);
@@ -22,11 +23,11 @@ GGMainWindow::GGMainWindow()
     e->setBrush(Qt::red);
     e->setZValue(100000);
     sc->addItem(e);
-    //sc->addEllipse(0,0,3,3,QPen(Qt::yellow));
 
-    //GGAbstractCommandFactory::oneShotCommand(fac->createStartPage(QRect(0,0,100,100)));
-    //GGAbstractCommandFactory::oneShotCommand(fac->createEndPage(QRect(0,0,100,100)));
-    //GGAbstractCommandFactory::oneShotCommand(fac->createConditionPage(QRect(0,0,100,100)));
+    GGAbstractCommandFactory::oneShotCommand(fac->createStartPage(QRect(0,0,100,100)));
+    GGAbstractCommandFactory::oneShotCommand(fac->createEndPage(QRect(0,0,100,100)));
+    GGAbstractCommandFactory::oneShotCommand(fac->createConditionPage(QRect(0,0,100,100)));
     GGAbstractCommandFactory::oneShotCommand(fac->createActionPage(QRect(0,0,100,100)));
-    //GGAbstractCommandFactory::oneShotCommand(fac->createDecisionPage(QRect(0,0,100,100)));
+    GGAbstractCommandFactory::oneShotCommand(fac->createDecisionPage(QRect(0,0,100,100)));
+    delete fac;
 }
