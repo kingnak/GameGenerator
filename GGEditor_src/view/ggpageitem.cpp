@@ -3,6 +3,7 @@
 #include <viewmodel/ggviewpage.h>
 #include <model/ggpage.h>
 #include <QtGui>
+#include <QtWidgets>
 #include <QVector>
 
 const qreal GGPageItem::penWidth = 3;
@@ -53,6 +54,11 @@ void GGPageItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option
     painter->drawEllipse(0,0,2,2);
     // TEST BOUNDS
     painter->drawRect(boundingRect());
+
+    if (isSelected()) {
+        painter->setPen(Qt::blue);
+        painter->drawRect(boundingRect());
+    }
 }
 
 void GGPageItem::setDrawingGeometry(QRectF f)
@@ -61,7 +67,10 @@ void GGPageItem::setDrawingGeometry(QRectF f)
     case GGStartPage::Type:
     case GGEndPage::Type:
     {
-        qreal s = qMax(30., qMax(f.width(), f.height()));
+        qreal s = qMax(30., f.height());
+        if (f.width() != m_geo.width()) {
+            s = qMax(30., f.width());
+        }
         f.setSize(QSizeF(s,s));
     }
         break;
@@ -72,12 +81,8 @@ void GGPageItem::setDrawingGeometry(QRectF f)
 
     if (m_geo != f) {
         prepareGeometryChange();
-        QPointF cc = f.center();
-        QPointF ccc = pos();
         setPos(f.center());
-        cc = pos();
-        f = mapFromScene(f).boundingRect();
-        m_geo = f;
+        m_geo = mapFromScene(f).boundingRect();
     }
 }
 
@@ -103,6 +108,8 @@ QRectF GGPageItem::innerBoundingRect() const
 
 void GGPageItem::paintStart(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
+    Q_UNUSED(option)
+    Q_UNUSED(widget)
     qreal r = qMin(innerBoundingRect().width(), innerBoundingRect().height())/2;
     QPainterPath path;
     path.addEllipse(QPointF(), r, r);
@@ -111,6 +118,8 @@ void GGPageItem::paintStart(QPainter *painter, const QStyleOptionGraphicsItem *o
 
 void GGPageItem::paintEnd(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
+    Q_UNUSED(option)
+    Q_UNUSED(widget)
     qreal r = qMin(innerBoundingRect().width(), innerBoundingRect().height());
     QRectF rect(QPointF(-r/2,-r/2), QSizeF(r,r));
     QPainterPath path;
@@ -125,6 +134,8 @@ void GGPageItem::paintEnd(QPainter *painter, const QStyleOptionGraphicsItem *opt
 
 void GGPageItem::paintCondition(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
+    Q_UNUSED(option)
+    Q_UNUSED(widget)
     QRectF ir = innerBoundingRect();
     QVector<QPointF> points;
     points
@@ -142,6 +153,8 @@ void GGPageItem::paintCondition(QPainter *painter, const QStyleOptionGraphicsIte
 
 void GGPageItem::paintAction(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
+    Q_UNUSED(option)
+    Q_UNUSED(widget)
     paintDecision(painter, option, widget);
     QRectF ir = innerBoundingRect();
     QLineF l(ir.left()+20, ir.top(), ir.left()+20, ir.bottom());
@@ -152,6 +165,8 @@ void GGPageItem::paintAction(QPainter *painter, const QStyleOptionGraphicsItem *
 
 void GGPageItem::paintDecision(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
+    Q_UNUSED(option)
+    Q_UNUSED(widget)
     QPainterPath path;
     path.addRoundedRect(innerBoundingRect(), 15, 15);
     painter->fillPath(path, Qt::white);

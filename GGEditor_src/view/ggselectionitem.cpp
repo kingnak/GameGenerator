@@ -5,15 +5,15 @@
 
 class GGSelectionItem::GGCornerGrabber : public QGraphicsItem {
     friend class GGSelectionItem;
-    GGCornerGrabber(int fX, int fY, GGSelectionItem *sel) : QGraphicsItem(sel), m_fX(fX), m_fY(fY) {
+    GGCornerGrabber(int pX, int pY, int fW, int fH, int fX, int fY, GGSelectionItem *sel) : QGraphicsItem(sel), m_pX(pX), m_pY(pY), m_fW(fW), m_fH(fH), m_fX(fX), m_fY(fY) {
         installSceneEventFilter(sel);
     }
-    int m_fX, m_fY;
+    int m_pX, m_pY, m_fW, m_fH, m_fX, m_fY;
     static const qreal GrabberSize;
     QPointF m_dragStart;
 public:
     QRectF boundingRect() const { return QRectF(-GrabberSize,-GrabberSize,GrabberSize,GrabberSize); }
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *) {
         painter->fillRect(boundingRect(), Qt::white);
         painter->setPen(Qt::blue);
         painter->drawRect(boundingRect());
@@ -44,20 +44,22 @@ QRectF GGSelectionItem::boundingRect() const
 
 void GGSelectionItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
+    Q_UNUSED(option)
+    Q_UNUSED(widget)
     painter->setPen(Qt::blue);
-    painter->drawRect(wrappedRect());
+    painter->drawRect(m_wrapped->boundingRect());
 }
 
 void GGSelectionItem::init()
 {
-    m_grabbers << new GGCornerGrabber(-1,-1,this)
-               << new GGCornerGrabber( 0,-1,this)
-               << new GGCornerGrabber(+1,-1,this)
-               << new GGCornerGrabber(-1, 0,this)
-               << new GGCornerGrabber(+1, 0,this)
-               << new GGCornerGrabber(-1,+1,this)
-               << new GGCornerGrabber( 0,+1,this)
-               << new GGCornerGrabber(+1,+1,this)
+    m_grabbers << new GGCornerGrabber(-1,-1, 0, 0,+1,+1,this)
+               << new GGCornerGrabber( 0,-1, 0, 0, 0,+1,this)
+               << new GGCornerGrabber(+1,-1, 1, 0, 0,+1,this)
+               << new GGCornerGrabber(-1, 0, 0, 0,+1, 0,this)
+               << new GGCornerGrabber(+1, 0, 1, 0, 0, 0,this)
+               << new GGCornerGrabber(-1,+1, 0, 1,+1, 0,this)
+               << new GGCornerGrabber( 0,+1, 0, 1, 0, 0,this)
+               << new GGCornerGrabber(+1,+1, 1, 1, 0, 0,this)
                   ;
 }
 
@@ -81,16 +83,22 @@ bool GGSelectionItem::sceneEventFilter(QGraphicsItem *watched, QEvent *event)
         return true;
     case QEvent::GraphicsSceneMouseMove:
     {
+        bool sendsScenePos = m_wrapped->flags().testFlag(QGraphicsItem::ItemSendsScenePositionChanges);
+        m_wrapped->setFlag(QGraphicsItem::ItemSendsScenePositionChanges, false);
         QPointF delta = mevent->scenePos() - corner->m_dragStart;
-        delta.rx() *= corner->m_fX;
-        delta.ry() *= corner->m_fY;
-        QRectF aa = wrappedRect();
+        qreal dw = delta.x() * corner->m_fW;
+        qreal dh = delta.y() * corner->m_fH;
+        qreal dx = delta.x() * corner->m_fX;
+        qreal dy = delta.y() * corner->m_fY;
         QRectF r = mapToScene(wrappedRect()).boundingRect();
-        r.setWidth(r.width() + delta.x());
-        r.setHeight(r.height() + delta.y());
-        QPointF p = m_wrapped->pos();
+        r.adjust(dx,dy,dw,dh);
+
         prepareGeometryChange();
         m_wrapped->setDrawingGeometry(r);
+        setPos(m_wrapped->pos());
+        updateCornerGrabberPos();
+        corner->m_dragStart = mevent->scenePos();
+        m_wrapped->setFlag(QGraphicsItem::ItemSendsScenePositionChanges, sendsScenePos);
         return true;
 
     }
@@ -101,11 +109,11 @@ bool GGSelectionItem::sceneEventFilter(QGraphicsItem *watched, QEvent *event)
 
 void GGSelectionItem::updateCornerGrabberPos()
 {
-    const qreal w = wrappedRect().width()/2;
-    const qreal h = wrappedRect().height()/2;
+    const qreal w = m_wrapped->boundingRect().width()/2;
+    const qreal h = m_wrapped->boundingRect().height()/2;
     const qreal d = GGCornerGrabber::GrabberSize/2;
     for (int i = 0; i < m_grabbers.size(); ++i) {
-        m_grabbers[i]->setPos(m_grabbers[i]->m_fX*w+d, m_grabbers[i]->m_fY*h+d);
+        m_grabbers[i]->setPos(m_grabbers[i]->m_pX*w+d, m_grabbers[i]->m_pY*h+d);
     }
 }
 
