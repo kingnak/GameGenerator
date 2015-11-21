@@ -2,6 +2,7 @@
 #include <model/ggeditmodel.h>
 #include <model/ggsimplefactory.h>
 #include <command/ggcommandstack.h>
+#include <command/ggcommandgroup.h>
 #include <viewcommand/ggviewcommands.h>
 #include <viewmodel/ggviewmodel.h>
 #include <viewcommand/ggviewcommandfactory.h>
@@ -41,8 +42,25 @@ void GGUIController::redo()
 
 void GGUIController::changePageGeometry(GGViewPage *page, QRect rect)
 {
-    GGAbstractCommand *c = m_cmdFactory->movePage(page, rect);
-    if (!m_stack->execute(c)) {
-        emit commandError(c->error());
+    doExecCmd(m_cmdFactory->movePage(page, rect));
+
+}
+
+void GGUIController::changeMultiplePagesGeometry(QList<QPair<GGViewPage *, QRect> > changes)
+{
+    GGCommandGroup *grp = new GGCommandGroup;
+    typedef QPair<GGViewPage*,QRect> PR;
+    foreach (PR p, changes) {
+        GGAbstractCommand *c = m_cmdFactory->movePage(p.first, p.second);
+        grp->addCommand(c);
+    }
+
+    doExecCmd(grp);
+}
+
+void GGUIController::doExecCmd(GGAbstractCommand *cmd)
+{
+    if (!m_stack->execute(cmd)) {
+        emit commandError(cmd->error());
     }
 }

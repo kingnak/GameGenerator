@@ -4,13 +4,15 @@
 #include <QGraphicsScene>
 #include <QMap>
 #include <QRect>
+#include <QList>
+#include <QPair>
 
+class GGUIController;
 class GGViewModel;
 class GGViewPage;
 class GGViewConnection;
 class GGPageItem;
 class GGConnectionItem;
-
 class GGSelectionItem;
 
 class GGEditorScene : public QGraphicsScene
@@ -19,9 +21,11 @@ class GGEditorScene : public QGraphicsScene
 public:
     GGEditorScene(GGViewModel *model, QObject *parent = 0);
     void itemMoved(GGPageItem *item);
+    void connectToController(GGUIController *ctrl);
 
 signals:
     void pageMoved(GGViewPage *page, QRect r);
+    void multiplePagesMoved(QList<QPair<GGViewPage*, QRect> > movements);
 
 protected:
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);

@@ -15,27 +15,6 @@
 
 GGMainWindow::GGMainWindow()
 {
-    /*
-    GGEditModel *em = new GGEditModel(new GGSimpleFactory, this);
-    GGViewModel *vm = new GGViewModel(em, this);
-    GGEditorScene *sc = new GGEditorScene(vm, this);
-    sc->setSceneRect(-400,-400,800,800);
-    QGraphicsView *v = new QGraphicsView(sc);
-    setCentralWidget(v);
-    GGViewCommandFactory *fac = new GGViewCommandFactory(vm);
-
-    QGraphicsEllipseItem *e = new QGraphicsEllipseItem(-5,-5,10,10);
-    e->setBrush(Qt::red);
-    e->setZValue(100000);
-    sc->addItem(e);
-
-    GGAbstractCommandFactory::oneShotCommand(fac->createStartPage(QRect(0,0,100,100)));
-    GGAbstractCommandFactory::oneShotCommand(fac->createEndPage(QRect(0,0,100,100)));
-    GGAbstractCommandFactory::oneShotCommand(fac->createConditionPage(QRect(0,0,100,100)));
-    GGAbstractCommandFactory::oneShotCommand(fac->createActionPage(QRect(0,0,100,100)));
-    GGAbstractCommandFactory::oneShotCommand(fac->createDecisionPage(QRect(0,0,100,100)));
-    delete fac;
-    */
     m_ctrl = new GGUIController(this);
 
     GGEditorScene *sc = new GGEditorScene(m_ctrl->model(), this);
@@ -43,19 +22,22 @@ GGMainWindow::GGMainWindow()
     QGraphicsView *v = new QGraphicsView(sc);
     setCentralWidget(v);
     GGViewCommandFactory *fac = new GGViewCommandFactory(m_ctrl->model());
+    v->setDragMode(QGraphicsView::RubberBandDrag);
 
+    /*
     QGraphicsEllipseItem *e = new QGraphicsEllipseItem(-5,-5,10,10);
     e->setBrush(Qt::red);
     e->setZValue(100000);
     sc->addItem(e);
+    */
 
-    connect(sc, SIGNAL(pageMoved(GGViewPage*,QRect)), m_ctrl, SLOT(changePageGeometry(GGViewPage*,QRect)));
+    sc->connectToController(m_ctrl);
 
     GGAbstractCommandFactory::oneShotCommand(fac->createStartPage(QRect(0,0,100,100)));
-    GGAbstractCommandFactory::oneShotCommand(fac->createEndPage(QRect(0,0,100,100)));
-    GGAbstractCommandFactory::oneShotCommand(fac->createConditionPage(QRect(0,0,100,100)));
-    GGAbstractCommandFactory::oneShotCommand(fac->createActionPage(QRect(0,0,100,100)));
-    GGAbstractCommandFactory::oneShotCommand(fac->createDecisionPage(QRect(0,0,100,100)));
+    GGAbstractCommandFactory::oneShotCommand(fac->createEndPage(QRect(100,0,100,100)));
+    GGAbstractCommandFactory::oneShotCommand(fac->createConditionPage(QRect(0,100,100,100)));
+    GGAbstractCommandFactory::oneShotCommand(fac->createActionPage(QRect(100,100,100,100)));
+    GGAbstractCommandFactory::oneShotCommand(fac->createDecisionPage(QRect(200,100,100,100)));
     delete fac;
 
     QAction *a = new QAction(this);

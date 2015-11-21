@@ -55,11 +55,13 @@ void GGPageItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option
     }
     painter->restore();
 
+    /*
     // TEST CENTER
     painter->setPen(Qt::red);
     painter->drawEllipse(0,0,2,2);
     // TEST BOUNDS
     painter->drawRect(boundingRect());
+    */
 
     if (isSelected()) {
         painter->setPen(Qt::blue);

@@ -3,10 +3,13 @@
 
 #include <QObject>
 #include <QRect>
+#include <QList>
+#include <QPair>
 
 class GGViewModel;
 class GGViewCommandFactory;
 class GGCommandStack;
+class GGAbstractCommand;
 class GGViewPage;
 
 class GGUIController : public QObject
@@ -21,10 +24,15 @@ public:
 public slots:
     void undo();
     void redo();
+
     void changePageGeometry(GGViewPage *page, QRect rect);
+    void changeMultiplePagesGeometry(QList<QPair<GGViewPage*,QRect> > changes);
 
 signals:
     void commandError(QString err);
+
+private:
+    void doExecCmd(GGAbstractCommand *cmd);
 
 private:
     GGViewModel *m_model;

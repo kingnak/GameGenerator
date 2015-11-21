@@ -2,6 +2,7 @@
 #include "../viewmodel/ggviewmodel.h"
 #include "ggpageitem.h"
 #include "ggselectionitem.h"
+#include "gguicontroller.h"
 #include <viewmodel/ggviewpage.h>
 #include <QDebug>
 #include <QGraphicsSceneMouseEvent>
@@ -33,15 +34,26 @@ void GGEditorScene::itemMoved(GGPageItem *item)
     }
 }
 
+void GGEditorScene::connectToController(GGUIController *ctrl)
+{
+    connect(this, SIGNAL(pageMoved(GGViewPage*,QRect)), ctrl, SLOT(changePageGeometry(GGViewPage*,QRect)));
+    connect(this, SIGNAL(multiplePagesMoved(QList<QPair<GGViewPage*,QRect> >)), ctrl, SLOT(changeMultiplePagesGeometry(QList<QPair<GGViewPage*,QRect> >)));
+}
+
 void GGEditorScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton) {
+        QList<QPair<GGViewPage*,QRect> > movs;
         foreach (QGraphicsItem *i, selectedItems()) {
             if (GGPageItem *p = qgraphicsitem_cast<GGPageItem*> (i)) {
                 if (p->page()->bounds() != p->modelPosition())
-                    emit pageMoved(p->page(), p->modelPosition());
+                    movs << qMakePair(p->page(), p->modelPosition());
             }
         }
+        if (movs.size() > 1)
+            emit multiplePagesMoved(movs);
+        else if (movs.size() == 1)
+            emit pageMoved(movs[0].first, movs[0].second);
     }
     QGraphicsScene::mouseReleaseEvent(event);
 }
