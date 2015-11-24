@@ -8,11 +8,8 @@
 #include <viewcommand/ggviewcommandfactory.h>
 
 GGUIController::GGUIController(QObject *parent)
-    : QObject(parent)
+    : QObject(parent), m_model(NULL), m_cmdFactory(NULL)
 {
-    GGEditModel *em = new GGEditModel(new GGSimpleFactory, this);
-    m_model = new GGViewModel(em, this);
-    m_cmdFactory = new GGViewCommandFactory(m_model);
     m_stack = new GGCommandStack;
 }
 
@@ -20,6 +17,18 @@ GGUIController::~GGUIController()
 {
     delete m_cmdFactory;
     delete m_stack;
+}
+
+void GGUIController::setModel(GGViewModel *model)
+{
+    delete m_cmdFactory;
+    m_stack->clear();
+    m_model = model;
+    if (m_model)
+        m_cmdFactory = new GGViewCommandFactory(m_model);
+    else
+        m_cmdFactory = NULL;
+    emit modelReset(m_model);
 }
 
 void GGUIController::undo()
@@ -55,6 +64,18 @@ void GGUIController::changeMultiplePagesGeometry(QList<QPair<GGViewPage *, QRect
         grp->addCommand(c);
     }
 
+    doExecCmd(grp);
+}
+
+void GGUIController::deleteMultipleObjects(QList<GGViewPage *> pages, QList<GGViewConnection *> connections)
+{
+    GGCommandGroup *grp = new GGCommandGroup;
+    foreach (GGViewConnection *c, connections) {
+        grp->addCommand(m_cmdFactory->deleteConnection(c));
+    }
+    foreach (GGViewPage *p, pages) {
+        grp->addCommand(m_cmdFactory->deletePage(p));
+    }
     doExecCmd(grp);
 }
 

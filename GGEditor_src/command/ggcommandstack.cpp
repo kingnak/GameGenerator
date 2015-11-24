@@ -63,6 +63,15 @@ bool GGCommandStack::redo()
     return true;
 }
 
+void GGCommandStack::clear()
+{
+    qDeleteAll(m_stack);
+    m_stack.clear();
+    m_lastCommand = NULL;
+    m_lastError.clear();
+    m_commandIndex = -1;
+}
+
 QString GGCommandStack::lastError()
 {
     return m_lastError;

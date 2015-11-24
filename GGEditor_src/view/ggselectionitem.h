@@ -8,6 +8,9 @@ class GGPageItem;
 class GGSelectionItem : public QGraphicsItem
 {
 public:
+    enum { Type = QGraphicsItem::UserType + 3 };
+    int type() const { return Type; }
+
     GGSelectionItem(QGraphicsItem *parent = 0);
 
     void setWrappedItem(GGPageItem *item);

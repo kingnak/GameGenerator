@@ -46,6 +46,7 @@ void GGSelectionItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *o
 {
     Q_UNUSED(option)
     Q_UNUSED(widget)
+    if (!m_wrapped) return;
     painter->setPen(Qt::blue);
     painter->drawRect(m_wrapped->boundingRect());
 }
@@ -65,6 +66,8 @@ void GGSelectionItem::init()
 
 bool GGSelectionItem::sceneEventFilter(QGraphicsItem *watched, QEvent *event)
 {
+    if (!m_wrapped) return false;
+
     GGCornerGrabber *corner = dynamic_cast<GGCornerGrabber*>(watched);
     if (!corner) return false;
 
@@ -79,7 +82,6 @@ bool GGSelectionItem::sceneEventFilter(QGraphicsItem *watched, QEvent *event)
         return true;
     case QEvent::GraphicsSceneMouseRelease:
         corner->m_dragStart = QPointF();
-        // TODO: Notify somebody?
         return true;
     case QEvent::GraphicsSceneMouseMove:
     {
@@ -97,6 +99,7 @@ bool GGSelectionItem::sceneEventFilter(QGraphicsItem *watched, QEvent *event)
         m_wrapped->setDrawingGeometry(r);
         setPos(m_wrapped->pos());
         updateCornerGrabberPos();
+        m_wrapped->updateConnectionPositions();
         corner->m_dragStart = mevent->scenePos();
         m_wrapped->setFlag(QGraphicsItem::ItemSendsScenePositionChanges, sendsScenePos);
         return true;
@@ -111,6 +114,7 @@ bool GGSelectionItem::sceneEventFilter(QGraphicsItem *watched, QEvent *event)
 
 void GGSelectionItem::updateCornerGrabberPos()
 {
+    if (!m_wrapped) return;
     const qreal w = m_wrapped->boundingRect().width()/2;
     const qreal h = m_wrapped->boundingRect().height()/2;
     const qreal d = GGCornerGrabber::GrabberSize/2;

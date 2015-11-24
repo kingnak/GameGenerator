@@ -1,30 +1,25 @@
 #include "ggeditorscene.h"
 #include "../viewmodel/ggviewmodel.h"
 #include "ggpageitem.h"
+#include "ggconnectionitem.h"
 #include "ggselectionitem.h"
 #include "gguicontroller.h"
+#include <model/ggeditmodel.h>
 #include <viewmodel/ggviewpage.h>
+#include <viewmodel/ggviewconnection.h>
+#include <model/ggpage.h>
+#include <model/ggconnection.h>
 #include <QDebug>
 #include <QGraphicsSceneMouseEvent>
+#include <QtWidgets>
 
-GGEditorScene::GGEditorScene(GGViewModel *model, QObject *parent)
+GGEditorScene::GGEditorScene(QObject *parent)
     : QGraphicsScene(parent),
-      m_model(model)
+      m_model(NULL),
+      m_selItem(NULL)
 {
-    m_selItem = new GGSelectionItem;
-    m_selItem->setVisible(false);
-    m_selItem->setZValue(100);
-    addItem(m_selItem);
-    m_selItem->init();
-
-    connect(m_model, SIGNAL(viewPageRegistered(GGViewPage*)), this, SLOT(pageReg(GGViewPage*)));
-    connect(m_model, SIGNAL(viewPageUnregistered(GGViewPage*)), this, SLOT(pageUnreg(GGViewPage*)));
-    connect(m_model, SIGNAL(viewConnectionRegistered(GGViewConnection*)), this, SLOT(connReg(GGViewConnection*)));
-    connect(m_model, SIGNAL(viewConnectionUnregistered(GGViewConnection*)), this, SLOT(connUnreg(GGViewConnection*)));
-    connect(m_model, SIGNAL(pageUpdated(GGViewPage*)), this, SLOT(pageUpd(GGViewPage*)));
-    connect(m_model, SIGNAL(viewPageUpdated(GGViewPage*)), this, SLOT(pageViewUpd(GGViewPage*)));
-
     connect(this, SIGNAL(selectionChanged()), this, SLOT(updateSelectionItem()));
+    initSelItem();
 }
 
 void GGEditorScene::itemMoved(GGPageItem *item)
@@ -32,12 +27,68 @@ void GGEditorScene::itemMoved(GGPageItem *item)
     if (item == m_selItem->wrappedItem()) {
         m_selItem->setWrappedItem(item);
     }
+
+    item->updateConnectionPositions();
 }
 
 void GGEditorScene::connectToController(GGUIController *ctrl)
 {
+    connect(ctrl, SIGNAL(modelReset(GGViewModel*)), this, SLOT(resetModel(GGViewModel*)));
     connect(this, SIGNAL(pageMoved(GGViewPage*,QRect)), ctrl, SLOT(changePageGeometry(GGViewPage*,QRect)));
     connect(this, SIGNAL(multiplePagesMoved(QList<QPair<GGViewPage*,QRect> >)), ctrl, SLOT(changeMultiplePagesGeometry(QList<QPair<GGViewPage*,QRect> >)));
+    connect(this, SIGNAL(multipleObjectsDeleted(QList<GGViewPage*>,QList<GGViewConnection*>)), ctrl, SLOT(deleteMultipleObjects(QList<GGViewPage*>,QList<GGViewConnection*>)));
+}
+
+GGPageItem *GGEditorScene::itemForPage(GGViewPage *page)
+{
+    return m_pageMap.value(page);
+}
+
+void GGEditorScene::resetModel(GGViewModel *model)
+{
+    if (m_model) {
+        m_model->disconnect();
+    }
+    this->clear();
+    m_model = model;
+    m_pageMap.clear();
+    m_connMap.clear();
+
+    if (m_model) {
+        connect(m_model, SIGNAL(viewPageRegistered(GGViewPage*)), this, SLOT(pageReg(GGViewPage*)));
+        connect(m_model, SIGNAL(viewPageUnregistered(GGViewPage*)), this, SLOT(pageUnreg(GGViewPage*)));
+        connect(m_model, SIGNAL(viewConnectionRegistered(GGViewConnection*)), this, SLOT(connReg(GGViewConnection*)));
+        connect(m_model, SIGNAL(viewConnectionUnregistered(GGViewConnection*)), this, SLOT(connUnreg(GGViewConnection*)));
+        connect(m_model, SIGNAL(pageUpdated(GGViewPage*)), this, SLOT(pageUpd(GGViewPage*)));
+        connect(m_model, SIGNAL(viewPageUpdated(GGViewPage*)), this, SLOT(pageViewUpd(GGViewPage*)));
+    }
+
+    // MUST Refresh, to ensure selitem
+    refresh();
+}
+
+void GGEditorScene::refresh()
+{
+    this->clear();
+    m_selItem = NULL;
+    initSelItem();
+    // Populate with items
+    if (m_model) {
+        foreach (GGPage *p, m_model->editModel()->getPages()) {
+            if (GGViewPage *vp = m_model->getViewPageForPage(p)) {
+                pageReg(vp);
+            } else {
+                qCritical("No ViewPage for Page");
+            }
+        }
+        foreach (GGConnection *c, m_model->editModel()->getConnections()) {
+            if (GGViewConnection *vc = m_model->getViewConectionForConnection(c)) {
+                connReg(vc);
+            } else {
+                qCritical("No ViewConnection for Connection");
+            }
+        }
+    }
 }
 
 void GGEditorScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
@@ -58,26 +109,84 @@ void GGEditorScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     QGraphicsScene::mouseReleaseEvent(event);
 }
 
+void GGEditorScene::keyReleaseEvent(QKeyEvent *event)
+{
+    if (event->key() == Qt::Key_Delete) {
+        QList<GGViewConnection *> delCons;
+        QList<GGViewPage *> delPages;
+        foreach (QGraphicsItem *i, selectedItems()) {
+            if (GGPageItem *p = qgraphicsitem_cast<GGPageItem*>(i)) {
+                delPages << p->page();
+            } else if (GGConnectionItem *c = qgraphicsitem_cast<GGConnectionItem*>(i)) {
+                delCons << c->connection();
+            }
+        }
+
+        if (!delCons.isEmpty() || !delPages.isEmpty()) {
+            emit multipleObjectsDeleted(delPages, delCons);
+        }
+    }
+}
+
 void GGEditorScene::pageReg(GGViewPage *p)
 {
     GGPageItem *item = new GGPageItem(p);
+    item->setZValue(PAGE_ZVALUE);
     m_pageMap[p] = item;
     this->addItem(item);
+
+    // TODO: Needed? Added page with connections, but they are added separately later...
+    /*
+    foreach (GGConnection *c, m_model->editModel()->getPageAllConnections(p->page())) {
+        if (GGViewConnection *vc = m_model->getViewConectionForConnection(c)) {
+            if (GGConnectionItem *it = m_connMap.value(vc)) {
+                item->addConnection(it);
+            }
+        }
+    }
+    */
 }
 
 void GGEditorScene::pageUnreg(GGViewPage *p)
 {
-    delete m_pageMap.take(p);
+    GGPageItem *it = m_pageMap.take(p);
+    if (it) {
+        // TODO: needed? When removing page, connections are removed fist
+        foreach (GGConnectionItem *cit, it->connectionItems()) {
+            qDebug("Removing page from scene that has connections");
+            if (cit) connUnreg(cit->connection());
+        }
+        delete it;
+    }
 }
 
 void GGEditorScene::connReg(GGViewConnection *c)
 {
-    // TODO
+    GGConnectionItem *item = new GGConnectionItem(c);
+    item->setZValue(CONNECTION_ZVALUE);
+    m_connMap[c] = item;
+    this->addItem(item);
+
+    if (GGViewPage *vp = m_model->getViewPageForPage(c->connection()->source())) {
+        if (GGPageItem *it = m_pageMap.value(vp)) {
+            it->addConnection(item);
+        }
+    }
+    if (GGViewPage *vp = m_model->getViewPageForPage(c->connection()->destination())) {
+        if (GGPageItem *it = m_pageMap.value(vp)) {
+            it->addConnection(item);
+        }
+    }
 }
 
 void GGEditorScene::connUnreg(GGViewConnection *c)
 {
-    m_connMap.remove(c);
+    GGConnectionItem *it = m_connMap.take(c);
+    if (it) {
+        if (it->sourceItem()) it->sourceItem()->removeConnection(it);
+        if (it->destinationItem()) it->destinationItem()->removeConnection(it);
+    }
+    delete it;
 }
 
 void GGEditorScene::pageUpd(GGViewPage *p)
@@ -103,8 +212,22 @@ void GGEditorScene::updateSelectionItem()
     if (itms.size() != 1) {
         m_selItem->setVisible(false);
         m_selItem->setWrappedItem(NULL);
-    } else {
-        m_selItem->setWrappedItem(qgraphicsitem_cast<GGPageItem*>(itms[0]));
+    } else if (GGPageItem *itm = qgraphicsitem_cast<GGPageItem*>(itms[0])) {
+        m_selItem->setWrappedItem(itm);
         m_selItem->setVisible(true);
+    } else {
+        m_selItem->setVisible(false);
+        m_selItem->setWrappedItem(NULL);
+    }
+}
+
+void GGEditorScene::initSelItem()
+{
+    if (!m_selItem) {
+        m_selItem = new GGSelectionItem;
+        m_selItem->setVisible(false);
+        m_selItem->setZValue(SELECTION_ZVALUE);
+        addItem(m_selItem);
+        m_selItem->init();
     }
 }

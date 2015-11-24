@@ -16,6 +16,8 @@ public:
     bool undo();
     bool redo();
 
+    void clear();
+
     QString lastError();
 
     GGAbstractCommand *lastCommand();

@@ -2,8 +2,11 @@
 #define GGPAGEITEM_H
 
 #include <QGraphicsItem>
+#include <QSet>
 
 class GGViewPage;
+class GGEditorScene;
+class GGConnectionItem;
 
 class GGPageItem : public QGraphicsItem
 {
@@ -18,6 +21,14 @@ public:
 
     QRectF boundingRect() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+    QPainterPath shape() const;
+
+    void addConnection(GGConnectionItem *itm);
+    void removeConnection(GGConnectionItem *itm);
+    QSet<GGConnectionItem *> connectionItems();
+    void clearConnections();
+
+    void updateConnectionPositions();
 
     void setDrawingGeometry(QRectF f);
 //    void commitPageGeometry();
@@ -28,6 +39,8 @@ protected:
     QVariant itemChange(GraphicsItemChange change, const QVariant &value);
 
 private:
+    GGEditorScene *editScene();
+    const GGEditorScene *editScene() const;
 
     void paintStart(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
     void paintEnd(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
@@ -38,7 +51,7 @@ private:
 private:
     GGViewPage *m_page;
     QRectF m_geo;
-    static const qreal penWidth;
+    QSet<GGConnectionItem *> m_connections;
 };
 
 #endif // GGPAGEITEM_H

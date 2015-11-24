@@ -131,3 +131,8 @@ QList<GGConnection *> GGEditModel::getPageIncommingConnections(GGPage *page) con
     }
     return ret;
 }
+
+QList<GGConnection *> GGEditModel::getPageAllConnections(GGPage *page) const
+{
+    return page->getConnections() + getPageIncommingConnections(page);
+}

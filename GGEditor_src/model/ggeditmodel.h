@@ -23,6 +23,7 @@ public:
     GGConnection *unregisterConnection(GG::ConnectionID id);
 
     QList<GGConnection *> getPageIncommingConnections(GGPage *page) const;
+    QList<GGConnection *> getPageAllConnections(GGPage *page) const;
 
 private:
     QMap<GG::PageID, QSet<GG::ConnectionID> > m_incommingConns;

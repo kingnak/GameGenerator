@@ -11,6 +11,7 @@ class GGViewCommandFactory;
 class GGCommandStack;
 class GGAbstractCommand;
 class GGViewPage;
+class GGViewConnection;
 
 class GGUIController : public QObject
 {
@@ -21,15 +22,19 @@ public:
 
     GGViewModel *model() { return m_model; }
 
+    void setModel(GGViewModel *model);
+
 public slots:
     void undo();
     void redo();
 
     void changePageGeometry(GGViewPage *page, QRect rect);
     void changeMultiplePagesGeometry(QList<QPair<GGViewPage*,QRect> > changes);
+    void deleteMultipleObjects(QList<GGViewPage*> pages, QList<GGViewConnection*> connections);
 
 signals:
     void commandError(QString err);
+    void modelReset(GGViewModel *model);
 
 private:
     void doExecCmd(GGAbstractCommand *cmd);
