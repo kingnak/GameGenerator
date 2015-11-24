@@ -32,12 +32,18 @@ public slots:
     void changeMultiplePagesGeometry(QList<QPair<GGViewPage*,QRect> > changes);
     void deleteMultipleObjects(QList<GGViewPage*> pages, QList<GGViewConnection*> connections);
 
+    GGViewPage *createStartPage(QRect r);
+    GGViewPage *createEndPage(QRect r);
+    GGViewPage *createConditionPage(QRect r);
+    GGViewPage *createActionPage(QRect r);
+    GGViewPage *createDecisionPage(QRect r);
+
 signals:
     void commandError(QString err);
     void modelReset(GGViewModel *model);
 
 private:
-    void doExecCmd(GGAbstractCommand *cmd);
+    bool doExecCmd(GGAbstractCommand *cmd);
 
 private:
     GGViewModel *m_model;

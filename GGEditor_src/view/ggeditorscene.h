@@ -19,7 +19,7 @@ class GGEditorScene : public QGraphicsScene
 {
     Q_OBJECT
 public:
-    GGEditorScene(QObject *parent = 0);
+    GGEditorScene(GGUIController *ctrl, QObject *parent = 0);
     void itemMoved(GGPageItem *item);
     void connectToController(GGUIController *ctrl);
 
@@ -43,13 +43,20 @@ public:
 public slots:
     void resetModel(GGViewModel *model);
     void refresh();
+    void selectPage(GGViewPage *page);
 
 signals:
     void pageMoved(GGViewPage *page, QRect r);
     void multiplePagesMoved(QList<QPair<GGViewPage*, QRect> > movements);
     void multipleObjectsDeleted(QList<GGViewPage *> pages, QList<GGViewConnection *> connections);
 
+    void pageSelected(GGViewPage *page);
+    void connectionSelected(GGViewConnection *conn);
+    void otherSelected();
+    void clickedEmptySpace(QPointF pos);
+
 protected:
+    void mousePressEvent(QGraphicsSceneMouseEvent *event);
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
     void keyReleaseEvent(QKeyEvent *event);
 
@@ -72,6 +79,7 @@ private:
 
     QMap<GGViewPage *, GGPageItem *> m_pageMap;
     QMap<GGViewConnection *, GGConnectionItem *> m_connMap;
+    bool m_clickedOnEmpty;
 };
 
 #endif // GGEDITORSCENE_H

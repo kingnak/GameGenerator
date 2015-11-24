@@ -68,6 +68,8 @@ class GGCreateViewPageCmd : public GGAbstractViewForwardCommand<GGCreatePageCmd>
 public:
     GGCreateViewPageCmd(GGViewModel *model, GGCreatePageCmd::PageType type, QRect bounds);
 
+    GGViewPage *createdPage();
+
 protected:
     bool doExecute();
 

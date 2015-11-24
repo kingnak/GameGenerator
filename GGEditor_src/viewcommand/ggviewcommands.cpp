@@ -13,6 +13,14 @@ GGCreateViewPageCmd::GGCreateViewPageCmd(GGViewModel *model, GGCreatePageCmd::Pa
     m_cmd = new GGCreatePageCmd(model->editModel(), type);
 }
 
+GGViewPage *GGCreateViewPageCmd::createdPage()
+{
+    if (state() == Executed) {
+        return m_model->getViewPageForPage(getInnerCommand()->createdPage());
+    }
+    return NULL;
+}
+
 bool GGCreateViewPageCmd::doExecute()
 {
     if (!m_cmd->execute()) {

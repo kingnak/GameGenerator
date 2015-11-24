@@ -10,7 +10,7 @@ TARGET = GGEditor_src
 TEMPLATE = lib
 CONFIG += staticlib
 
-SOURCES += ggmainwindow.cpp \
+SOURCES += \
     model/ggeditmodel.cpp \
     command/ggeditcommandfactory.cpp \
     command/ggabstractcommand.cpp \
@@ -28,9 +28,11 @@ SOURCES += ggmainwindow.cpp \
     view/ggpageitem.cpp \
     view/ggselectionitem.cpp \
     view/gguicontroller.cpp \
-    view/ggconnectionitem.cpp
+    view/ggconnectionitem.cpp \
+    ggmainwindow.cpp \
+    view/ggeditorview.cpp
 
-HEADERS += ggmainwindow.h \
+HEADERS += \
     model/ggeditmodel.h \
     command/ggeditcommandfactory.h \
     command/ggabstractcommand.h \
@@ -50,7 +52,9 @@ HEADERS += ggmainwindow.h \
     view/ggpageitem.h \
     view/ggselectionitem.h \
     view/gguicontroller.h \
-    view/ggconnectionitem.h
+    view/ggconnectionitem.h \
+    ggmainwindow.h \
+    view/ggeditorview.h
 unix {
     target.path = /usr/lib
     INSTALLS += target
@@ -64,3 +68,6 @@ INCLUDEPATH += $$PWD/../gg_core
 DEPENDPATH += $$PWD/../gg_core
 
 include(../defaults.pri)
+
+FORMS += \
+    ggmainwindow.ui

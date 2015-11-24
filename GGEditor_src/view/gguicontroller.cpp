@@ -79,9 +79,56 @@ void GGUIController::deleteMultipleObjects(QList<GGViewPage *> pages, QList<GGVi
     doExecCmd(grp);
 }
 
-void GGUIController::doExecCmd(GGAbstractCommand *cmd)
+GGViewPage *GGUIController::createStartPage(QRect r)
+{
+    GGCreateViewPageCmd *c = m_cmdFactory->createStartPage(r);
+    if (doExecCmd(c)) {
+        return c->createdPage();
+    }
+    return NULL;
+}
+
+GGViewPage *GGUIController::createEndPage(QRect r)
+{
+    GGCreateViewPageCmd *c = m_cmdFactory->createEndPage(r);
+    if (doExecCmd(c)) {
+        return c->createdPage();
+    }
+    return NULL;
+}
+
+GGViewPage *GGUIController::createConditionPage(QRect r)
+{
+    GGCreateViewPageCmd *c = m_cmdFactory->createConditionPage(r);
+    if (doExecCmd(c)) {
+        return c->createdPage();
+    }
+    return NULL;
+}
+
+GGViewPage *GGUIController::createActionPage(QRect r)
+{
+    GGCreateViewPageCmd *c = m_cmdFactory->createActionPage(r);
+    if (doExecCmd(c)) {
+        return c->createdPage();
+    }
+    return NULL;
+}
+
+GGViewPage *GGUIController::createDecisionPage(QRect r)
+{
+    GGCreateViewPageCmd *c = m_cmdFactory->createDecisionPage(r);
+    if (doExecCmd(c)) {
+        return c->createdPage();
+    }
+    return NULL;
+}
+
+bool GGUIController::doExecCmd(GGAbstractCommand *cmd)
 {
     if (!m_stack->execute(cmd)) {
         emit commandError(cmd->error());
+        return false;
     }
+    return true;
 }

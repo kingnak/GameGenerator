@@ -13,13 +13,15 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QtWidgets>
 
-GGEditorScene::GGEditorScene(QObject *parent)
+GGEditorScene::GGEditorScene(GGUIController *ctrl, QObject *parent)
     : QGraphicsScene(parent),
       m_model(NULL),
       m_selItem(NULL)
 {
     connect(this, SIGNAL(selectionChanged()), this, SLOT(updateSelectionItem()));
     initSelItem();
+    if (ctrl)
+        connectToController(ctrl);
 }
 
 void GGEditorScene::itemMoved(GGPageItem *item)
@@ -49,6 +51,7 @@ void GGEditorScene::resetModel(GGViewModel *model)
     if (m_model) {
         m_model->disconnect();
     }
+    this->clearSelection();
     this->clear();
     m_model = model;
     m_pageMap.clear();
@@ -91,22 +94,49 @@ void GGEditorScene::refresh()
     }
 }
 
+void GGEditorScene::selectPage(GGViewPage *page)
+{
+    if (GGPageItem *i = m_pageMap.value(page)) {
+        i->setSelected(true);
+    } else {
+        clearSelection();
+    }
+}
+
+void GGEditorScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
+{
+    m_clickedOnEmpty = true;
+    if (event->button() != Qt::LeftButton || !selectedItems().isEmpty()) {
+        m_clickedOnEmpty = false;
+    }
+    QGraphicsScene::mousePressEvent(event);
+    if (event->button() != Qt::LeftButton || !selectedItems().isEmpty()) {
+        m_clickedOnEmpty = false;
+    }
+}
+
 void GGEditorScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
+    QGraphicsScene::mouseReleaseEvent(event);
     if (event->button() == Qt::LeftButton) {
         QList<QPair<GGViewPage*,QRect> > movs;
-        foreach (QGraphicsItem *i, selectedItems()) {
-            if (GGPageItem *p = qgraphicsitem_cast<GGPageItem*> (i)) {
-                if (p->page()->bounds() != p->modelPosition())
-                    movs << qMakePair(p->page(), p->modelPosition());
+        if (selectedItems().isEmpty() && m_clickedOnEmpty) {
+            // clicked on empty space.
+            emit clickedEmptySpace(event->scenePos());
+        } else {
+            foreach (QGraphicsItem *i, selectedItems()) {
+                if (GGPageItem *p = qgraphicsitem_cast<GGPageItem*> (i)) {
+                    if (p->page()->bounds() != p->modelPosition())
+                        movs << qMakePair(p->page(), p->modelPosition());
+                }
             }
+            if (movs.size() > 1)
+                emit multiplePagesMoved(movs);
+            else if (movs.size() == 1)
+                emit pageMoved(movs[0].first, movs[0].second);
         }
-        if (movs.size() > 1)
-            emit multiplePagesMoved(movs);
-        else if (movs.size() == 1)
-            emit pageMoved(movs[0].first, movs[0].second);
     }
-    QGraphicsScene::mouseReleaseEvent(event);
+    m_clickedOnEmpty = false;
 }
 
 void GGEditorScene::keyReleaseEvent(QKeyEvent *event)
@@ -209,15 +239,16 @@ void GGEditorScene::pageViewUpd(GGViewPage *p)
 void GGEditorScene::updateSelectionItem()
 {
     QList<QGraphicsItem *> itms = selectedItems();
+    m_selItem->setVisible(false);
+    m_selItem->setWrappedItem(NULL);
     if (itms.size() != 1) {
-        m_selItem->setVisible(false);
-        m_selItem->setWrappedItem(NULL);
+        emit otherSelected();
     } else if (GGPageItem *itm = qgraphicsitem_cast<GGPageItem*>(itms[0])) {
         m_selItem->setWrappedItem(itm);
         m_selItem->setVisible(true);
-    } else {
-        m_selItem->setVisible(false);
-        m_selItem->setWrappedItem(NULL);
+        emit pageSelected(itm->page());
+    } else if (GGConnectionItem *itm = qgraphicsitem_cast<GGConnectionItem*>(itms[0])) {
+        emit connectionSelected(itm->connection());
     }
 }
 
