@@ -1,6 +1,8 @@
 #ifndef GGCONNECTIONSLOT_H
 #define GGCONNECTIONSLOT_H
 
+#include <QList>
+
 class GGPage;
 class GGConnection;
 class GGEditModel;
@@ -28,6 +30,7 @@ public:
     bool canConnect(GGPage *page);
 
     static GGConnectionSlot findConnection(const GGPage *page, const GGConnection *conn);
+    static QList<GGConnectionSlot> enumerateConnections(const GGPage *page);
 
 private:
     bool doConnectTest(bool doSet, GGPage *page, GGConnection *conn, GGConnection **oldConnection = 0);

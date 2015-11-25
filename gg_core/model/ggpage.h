@@ -216,20 +216,31 @@ namespace GG {
 template <class T> inline T* as(GGPage *p)
 { return ggpage_cast<T*>(p); }
 
-template <> inline GGContentPage *as(GGPage *p)
+template <class T> inline T* as(const GGPage *p)
+{ return ggpage_cast<T*>(p); }
+
+template <> inline const GGContentPage *as(const GGPage *p)
 {
-    GGContentPage *cp = ggpage_cast<GGStartPage*>(p);
-    if (!cp) cp = ggpage_cast<GGEndPage*>(p);
-    if (!cp) cp = ggpage_cast<GGActionPage*>(p);
-    if (!cp) cp = ggpage_cast<GGDecisionPage*>(p);
+    const GGContentPage *cp = ggpage_cast<const GGStartPage*>(p);
+    if (!cp) cp = ggpage_cast<const GGEndPage*>(p);
+    if (!cp) cp = ggpage_cast<const GGActionPage*>(p);
+    if (!cp) cp = ggpage_cast<const GGDecisionPage*>(p);
     return cp;
 }
 
-template <> inline GGMappedContentPage *as(GGPage *p)
+template <> inline GGContentPage *as(GGPage *p) {
+    return const_cast<GGContentPage*> (as<const GGContentPage>(const_cast<const GGPage*>(p)));
+}
+
+template <> inline const GGMappedContentPage *as(const GGPage *p)
 {
-    GGMappedContentPage *mcp = ggpage_cast<GGActionPage*>(p);
-    if (!mcp) mcp = ggpage_cast<GGDecisionPage*>(p);
+    const GGMappedContentPage *mcp = ggpage_cast<const GGActionPage*>(p);
+    if (!mcp) mcp = ggpage_cast<const GGDecisionPage*>(p);
     return mcp;
+}
+
+template <> inline GGMappedContentPage *as(GGPage *p) {
+    return const_cast<GGMappedContentPage*> (as<const GGMappedContentPage>(const_cast<const GGPage *>(p)));
 }
 }
 

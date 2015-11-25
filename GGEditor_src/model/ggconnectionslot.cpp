@@ -182,3 +182,28 @@ GGConnectionSlot GGConnectionSlot::findConnection(const GGPage *page, const GGCo
     Q_ASSERT_X(false, "GGConnectionSlot::findConnection", "Cannot determine connection slot");
     return GGConnectionSlot(NoConnection);
 }
+
+QList<GGConnectionSlot> GGConnectionSlot::enumerateConnections(const GGPage *page)
+{
+    QList<GGConnectionSlot> ret;
+    if (GG::as<const GGStartPage>(page)) {
+        ret << StartConnection;
+    }
+    if (GG::as<const GGConditionPage>(page)) {
+        ret << TrueConnection << FalseConnection;
+    }
+    if (GG::as<const GGActionPage>(page)) {
+        ret << ActionConnection;
+    }
+    if (const GGDecisionPage *dp = GG::as<const GGDecisionPage>(page)) {
+        for (int i = 0; i < dp->getDecisionLinks().size(); ++i) {
+            ret << GGConnectionSlot(DecisionConnection, i);
+        }
+    }
+    if (const GGMappedContentPage *mcp = GG::as<const GGMappedContentPage>(page)) {
+        for (int i = 0; i < mcp->getLinkMap().size(); ++i) {
+            ret << GGConnectionSlot(MappedConnection, i);
+        }
+    }
+    return ret;
+}
