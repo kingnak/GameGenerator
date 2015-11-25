@@ -102,6 +102,21 @@ void GGUIController::deleteMultipleObjects(QSet<GGViewPage *> pages, QSet<GGView
     doExecCmd(grp);
 }
 
+void GGUIController::changePageName(GGPage *page, QString name)
+{
+    doExecCmd(m_cmdFactory->setPageName(page, name));
+}
+
+void GGUIController::changePageScene(GGPage *page, QString scene)
+{
+    doExecCmd(m_cmdFactory->setPageScene(page, scene));
+}
+
+void GGUIController::changeContentPageCaption(GGContentPage *page, QString cap)
+{
+    doExecCmd(m_cmdFactory->setPageCaption(page, cap));
+}
+
 void GGUIController::connnectPagesDialog(GGViewPage *src, GGViewPage *dest)
 {
     setCreationMode(CreateNone);

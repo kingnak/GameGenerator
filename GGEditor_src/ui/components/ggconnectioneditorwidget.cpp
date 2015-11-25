@@ -46,6 +46,9 @@ void GGConnectionEditorWidget::setConnection(GGPage *page, GGConnectionSlot slot
             }
         }
         switch (m_slot.type()) {
+        case GGConnectionSlot::NoConnection:
+            qFatal("Can never reach this");
+            break;
         case GGConnectionSlot::StartConnection:
             ui->lblType->setText(tr("Start Connection"));
             break;

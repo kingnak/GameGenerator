@@ -17,6 +17,7 @@ GGMainWindow::GGMainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     m_ctrl = new GGUIController(this);
+    ui->wgtPageContent->setController(m_ctrl);
     connect(m_ctrl, SIGNAL(commandError(QString)), this, SLOT(showError(QString)));
     connect(m_ctrl, SIGNAL(objectsSelected(QSet<GGViewPage*>,QSet<GGViewConnection*>)), this, SLOT(clearSelection()));
     connect(m_ctrl, SIGNAL(selectionCleared()), this, SLOT(clearSelection()));
@@ -81,25 +82,8 @@ void GGMainWindow::closeModel()
 void GGMainWindow::selectPage(GGViewPage *page)
 {
     setPointerMode();
-    switch (page->page()->type()) {
-    case GGStartPage::Type:
-        ui->stkDetailEdits->setCurrentWidget(ui->pageStart);
-        break;
-    case GGEndPage::Type:
-        ui->stkDetailEdits->setCurrentWidget(ui->pageEnd);
-        break;
-    case GGConditionPage::Type:
-        ui->stkDetailEdits->setCurrentWidget(ui->pageCondition);
-        break;
-    case GGActionPage::Type:
-        ui->stkDetailEdits->setCurrentWidget(ui->pageAction);
-        break;
-    case GGDecisionPage::Type:
-        ui->stkDetailEdits->setCurrentWidget(ui->pageDecision);
-        break;
-    default:
-        ui->stkDetailEdits->setCurrentWidget(ui->pageEmpty);
-    }
+    ui->wgtPageContent->displayPage(page->page());
+    ui->stkDetailEdits->setCurrentWidget(ui->pagePage);
 }
 
 void GGMainWindow::selectConnection(GGViewConnection *conn)
@@ -128,7 +112,8 @@ void GGMainWindow::setClickMode(QAction *act)
     }
 
     bool ok;
-    int cm = QMetaEnum::fromType<GGUIController::CreationMode>().keyToValue(act->property("CreationMode").toString().toUtf8(), &ok);
+    QMetaEnum cmEnum = GGUIController::staticMetaObject.enumerator(GGUIController::staticMetaObject.indexOfEnumerator("CreationMode"));
+    int cm = cmEnum.keyToValue(act->property("CreationMode").toString().toUtf8(), &ok);
     Q_ASSERT_X(ok, "GGMainWindow::setClickMode", "Invalid Creation Mode");
     if (ok) {
         m_ctrl->setCreationMode(static_cast<GGUIController::CreationMode> (cm));
@@ -163,7 +148,8 @@ void GGMainWindow::setCreationMode()
 {
     foreach (QAction *act, m_createActions->actions()) {
         bool ok;
-        int cm = QMetaEnum::fromType<GGUIController::CreationMode>().keyToValue(act->property("CreationMode").toString().toUtf8(), &ok);
+        QMetaEnum cmEnum = GGUIController::staticMetaObject.enumerator(GGUIController::staticMetaObject.indexOfEnumerator("CreationMode"));
+        int cm = cmEnum.keyToValue(act->property("CreationMode").toString().toUtf8(), &ok);
         Q_ASSERT_X(ok, "GGMainWindow::setCreationMode", "Invalid Creation Mode");
         if (cm == m_ctrl->creationMode()) {
             act->activate(QAction::Trigger);

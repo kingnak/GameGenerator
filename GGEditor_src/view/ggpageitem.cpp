@@ -35,13 +35,16 @@ void GGPageItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option
 {
     painter->setPen(QPen(editScene()->pageColor(), editScene()->pageBorderWidth()));
 
+    bool withCaption = true;
     painter->save();
     switch (m_page->page()->type()) {
     case GGStartPage::Type:
         paintStart(painter, option, widget);
+        withCaption = false;
         break;
     case GGEndPage::Type:
         paintEnd(painter, option, widget);
+        withCaption = false;
         break;
     case GGConditionPage::Type:
         paintCondition(painter, option, widget);
@@ -54,6 +57,11 @@ void GGPageItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option
         break;
     }
     painter->restore();
+
+    if (withCaption) {
+        QString name = m_page->page()->name();
+        painter->drawText(innerBoundingRect(), Qt::AlignHCenter | Qt::AlignCenter, name);
+    }
 
     /*
     // TEST CENTER

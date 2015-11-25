@@ -3,6 +3,9 @@
 
 #include "gg_core_global.h"
 #include <QString>
+#include <QSize>
+
+class QPixmap;
 
 class GG_CORESHARED_EXPORT GGContentElement
 {
@@ -10,6 +13,8 @@ protected:
     GGContentElement() {}
 public:
     virtual ~GGContentElement() {}
+
+    virtual QPixmap preview(QSize sz) const = 0;
 
     // Maybe needed by Copy Page
     //virtual GGContentElement *clone() = 0;
@@ -58,6 +63,8 @@ public:
     GGImageContent() {}
     QString imageFilePath() const;
     void setImageFilePath(QString path);
+
+    QPixmap preview(QSize sz) const;
 
 protected:
     QString m_imageFilePath;

@@ -10,6 +10,8 @@ class GGViewModel;
 class GGViewCommandFactory;
 class GGCommandStack;
 class GGAbstractCommand;
+class GGPage;
+class GGContentPage;
 class GGViewPage;
 class GGViewConnection;
 
@@ -27,7 +29,7 @@ public:
     enum CreationMode {
         CreateNone, CreateStartPage, CreateEndPage, CreateConditionPage, CreateActionPage, CreateDecisionPage, CreateConnection
     };
-    Q_ENUM(CreationMode)
+    Q_ENUMS(CreationMode)
     void setCreationMode(CreationMode mode);
     CreationMode creationMode() const { return m_createMode; }
 
@@ -40,6 +42,10 @@ public slots:
     void changePageGeometry(GGViewPage *page, QRect rect);
     void changeMultiplePagesGeometry(QList<QPair<GGViewPage*,QRect> > changes);
     void deleteMultipleObjects(QSet<GGViewPage*> pages, QSet<GGViewConnection*> connections);
+
+    void changePageName(GGPage *page, QString name);
+    void changePageScene(GGPage *page, QString scene);
+    void changeContentPageCaption(GGContentPage *page, QString cap);
 
     void connnectPagesDialog(GGViewPage *src, GGViewPage *dest);
 

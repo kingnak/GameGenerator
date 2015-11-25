@@ -1,5 +1,6 @@
 #include "ggcontentelement.h"
-
+#include <QImage>
+#include <QPixmap>
 
 QString GGAudioContent::audioFilePath() const
 {
@@ -43,4 +44,10 @@ QString GGImageContent::imageFilePath() const
 void GGImageContent::setImageFilePath(QString path)
 {
     m_imageFilePath = path;
+}
+
+QPixmap GGImageContent::preview(QSize sz) const
+{
+    QImage img(m_imageFilePath);
+    return QPixmap::fromImage(img.scaled(sz, Qt::KeepAspectRatio));
 }
