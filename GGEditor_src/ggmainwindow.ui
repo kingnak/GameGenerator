@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>GameGenerator [*]</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QHBoxLayout" name="horizontalLayout">
@@ -177,6 +177,9 @@
    </attribute>
    <addaction name="action_New"/>
    <addaction name="separator"/>
+   <addaction name="actionUndo"/>
+   <addaction name="actionRedo"/>
+   <addaction name="separator"/>
    <addaction name="actionP"/>
    <addaction name="actionS"/>
    <addaction name="actionE"/>
@@ -184,6 +187,8 @@
    <addaction name="actionA"/>
    <addaction name="actionD"/>
    <addaction name="actionL"/>
+   <addaction name="separator"/>
+   <addaction name="actionDelete"/>
   </widget>
   <action name="action_New">
    <property name="text">
@@ -208,6 +213,9 @@
    <property name="shortcut">
     <string>Alt+S</string>
    </property>
+   <property name="CreationMode" stdset="0">
+    <string notr="true">CreateStartPage</string>
+   </property>
   </action>
   <action name="actionE">
    <property name="checkable">
@@ -221,6 +229,9 @@
    </property>
    <property name="shortcut">
     <string>Alt+E</string>
+   </property>
+   <property name="CreationMode" stdset="0">
+    <string notr="true">CreateEndPage</string>
    </property>
   </action>
   <action name="actionC">
@@ -236,6 +247,9 @@
    <property name="shortcut">
     <string>Alt+C</string>
    </property>
+   <property name="CreationMode" stdset="0">
+    <string notr="true">CreateConditionPage</string>
+   </property>
   </action>
   <action name="actionA">
    <property name="checkable">
@@ -249,6 +263,9 @@
    </property>
    <property name="shortcut">
     <string>Alt+A</string>
+   </property>
+   <property name="CreationMode" stdset="0">
+    <string notr="true">CreateActionPage</string>
    </property>
   </action>
   <action name="actionD">
@@ -264,6 +281,9 @@
    <property name="shortcut">
     <string>Alt+D</string>
    </property>
+   <property name="CreationMode" stdset="0">
+    <string notr="true">CreateDecisionPage</string>
+   </property>
   </action>
   <action name="actionL">
    <property name="checkable">
@@ -277,6 +297,9 @@
    </property>
    <property name="shortcut">
     <string>Alt+L</string>
+   </property>
+   <property name="CreationMode" stdset="0">
+    <string notr="true">CreateConnection</string>
    </property>
   </action>
   <action name="actionP">
@@ -294,6 +317,39 @@
    </property>
    <property name="shortcut">
     <string>Alt+P</string>
+   </property>
+   <property name="CreationMode" stdset="0">
+    <string notr="true">CreateNone</string>
+   </property>
+  </action>
+  <action name="actionUndo">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Undo</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Z</string>
+   </property>
+  </action>
+  <action name="actionRedo">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Redo</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Y</string>
+   </property>
+  </action>
+  <action name="actionDelete">
+   <property name="text">
+    <string>delete</string>
+   </property>
+   <property name="shortcut">
+    <string>Del</string>
    </property>
   </action>
  </widget>
@@ -338,11 +394,25 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>toolBar</sender>
+   <signal>actionTriggered(QAction*)</signal>
+   <receiver>GGMainWindow</receiver>
+   <slot>handleAction(QAction*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>602</x>
+     <y>30</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>719</x>
+     <y>-4</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
-  <slot>selectPage(GGPage*)</slot>
-  <slot>selecConnection(GGConnection*)</slot>
   <slot>newModel()</slot>
-  <slot>setClickMode()</slot>
+  <slot>handleAction(QAction*)</slot>
  </slots>
 </ui>

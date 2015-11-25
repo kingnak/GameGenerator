@@ -18,17 +18,19 @@ GGMainWindow::GGMainWindow(QWidget *parent) :
 
     m_ctrl = new GGUIController(this);
     connect(m_ctrl, SIGNAL(commandError(QString)), this, SLOT(showError(QString)));
+    connect(m_ctrl, SIGNAL(objectsSelected(QSet<GGViewPage*>,QSet<GGViewConnection*>)), this, SLOT(clearSelection()));
+    connect(m_ctrl, SIGNAL(selectionCleared()), this, SLOT(clearSelection()));
+    connect(m_ctrl, SIGNAL(singlePageSelected(GGViewPage*)), this, SLOT(selectPage(GGViewPage*)));
+    connect(m_ctrl, SIGNAL(singleConnectionSelected(GGViewConnection*)), this, SLOT(selectConnection(GGViewConnection*)));
+    connect(m_ctrl, SIGNAL(modelDirty(bool)), this, SLOT(setWindowModified(bool)));
+    connect(m_ctrl, SIGNAL(undoAvailable(bool)), ui->actionUndo, SLOT(setEnabled(bool)));
+    connect(m_ctrl, SIGNAL(redoAvailable(bool)), ui->actionRedo, SLOT(setEnabled(bool)));
 
     m_editorScene = new GGEditorScene(m_ctrl, this);
     m_editorScene->setSceneRect(-400,-400,800,800);
     ui->scEditView->setScene(m_editorScene);
 
-    connect(m_editorScene, SIGNAL(pageSelected(GGViewPage*)), this, SLOT(selectPage(GGViewPage*)));
-    connect(m_editorScene, SIGNAL(connectionSelected(GGViewConnection*)), this, SLOT(selectConnection(GGViewConnection*)));
-    connect(m_editorScene, SIGNAL(otherSelected()), this, SLOT(selectOther()));
-    connect(m_editorScene, SIGNAL(clickedEmptySpace(QPointF)), this, SLOT(clickedEmptySpace(QPointF)));
-
-
+    // Group Click Mode actions
     m_createActions = new QActionGroup(this);
     m_createActions->addAction(ui->actionS);
     m_createActions->addAction(ui->actionE);
@@ -38,7 +40,12 @@ GGMainWindow::GGMainWindow(QWidget *parent) :
     m_createActions->addAction(ui->actionL);
     m_createActions->addAction(ui->actionP);
 
-    connect(m_createActions, SIGNAL(triggered(QAction*)), this, SLOT(setClickMode(QAction*)));
+    // Set proper undo/redo shortcuts
+    ui->actionUndo->setShortcut(QKeySequence::Undo);
+    ui->actionRedo->setShortcut(QKeySequence::Redo);
+
+    // Always go back to pointer after a scene click
+    connect(m_editorScene, SIGNAL(clickedEmptySpace(QPointF)), this, SLOT(setPointerMode()));
 
     newModel();
 }
@@ -56,9 +63,6 @@ void GGMainWindow::newModel()
     m_viewModel = new GGViewModel(em);
     m_ctrl->setModel(m_viewModel);
     ui->scEditView->setEnabled(true);
-
-
-
 }
 
 void GGMainWindow::closeModel()
@@ -95,7 +99,6 @@ void GGMainWindow::selectPage(GGViewPage *page)
     default:
         ui->stkDetailEdits->setCurrentWidget(ui->pageEmpty);
     }
-    m_editorScene->selectPage(page);
 }
 
 void GGMainWindow::selectConnection(GGViewConnection *conn)
@@ -104,9 +107,8 @@ void GGMainWindow::selectConnection(GGViewConnection *conn)
     ui->stkDetailEdits->setCurrentWidget(ui->pageLink);
 }
 
-void GGMainWindow::selectOther()
+void GGMainWindow::clearSelection()
 {
-    //setPointerMode();
     ui->stkDetailEdits->setCurrentWidget(ui->pageEmpty);
 }
 
@@ -123,34 +125,35 @@ void GGMainWindow::setClickMode(QAction *act)
         ui->scEditView->setDragMode(QGraphicsView::NoDrag);
         m_editorScene->clearSelection();
     }
-}
 
-void GGMainWindow::clickedEmptySpace(QPointF pos)
-{
-    QAction *act = m_createActions->checkedAction();
-    QRect r(pos.toPoint(), QSize());
-    if (act == ui->actionS) {
-        selectPage(m_ctrl->createStartPage(r));
-    } else if (act == ui->actionE) {
-        selectPage(m_ctrl->createEndPage(r));
-    } else if (act == ui->actionC) {
-        selectPage(m_ctrl->createConditionPage(r));
-    } else if (act == ui->actionA) {
-        selectPage(m_ctrl->createActionPage(r));
-    } else if (act == ui->actionD) {
-        selectPage(m_ctrl->createDecisionPage(r));
-    } else if (act == ui->actionL) {
-qDebug("L");
-    } else if (act == ui->actionP) {
-qDebug("P");
-    } else {
-qDebug("?");
+    bool ok;
+    int cm = QMetaEnum::fromType<GGUIController::CreationMode>().keyToValue(act->property("CreationMode").toString().toUtf8(), &ok);
+    Q_ASSERT_X(ok, "GGMainWindow::setClickMode", "Invalid Creation Mode");
+    if (ok) {
+        m_ctrl->setCreationMode(static_cast<GGUIController::CreationMode> (cm));
     }
-    setPointerMode();
 }
 
 void GGMainWindow::setPointerMode()
 {
     ui->actionP->activate(QAction::Trigger);
+}
 
+void GGMainWindow::handleAction(QAction *act)
+{
+    if (m_createActions->actions().contains(act)) {
+        setClickMode(act);
+        return;
+    }
+    if (act == ui->actionUndo) {
+        m_ctrl->undo();
+        return;
+    }
+    if (act == ui->actionRedo) {
+        m_ctrl->redo();
+        return;
+    }
+    if (act == ui->actionDelete) {
+        m_editorScene->deleteCurrentSelection();
+    }
 }

@@ -16,7 +16,8 @@
 GGEditorScene::GGEditorScene(GGUIController *ctrl, QObject *parent)
     : QGraphicsScene(parent),
       m_model(NULL),
-      m_selItem(NULL)
+      m_selItem(NULL),
+      m_inUpdateSelection(false)
 {
     connect(this, SIGNAL(selectionChanged()), this, SLOT(updateSelectionItem()));
     initSelItem();
@@ -35,10 +36,17 @@ void GGEditorScene::itemMoved(GGPageItem *item)
 
 void GGEditorScene::connectToController(GGUIController *ctrl)
 {
+    // Inwards
     connect(ctrl, SIGNAL(modelReset(GGViewModel*)), this, SLOT(resetModel(GGViewModel*)));
+    connect(ctrl, SIGNAL(objectsSelected(QSet<GGViewPage*>,QSet<GGViewConnection*>)), this, SLOT(setSelection(QSet<GGViewPage*>,QSet<GGViewConnection*>)));
+    connect(ctrl, SIGNAL(selectionCleared()), this, SLOT(clearSelection()));
+
+    // Outwards
     connect(this, SIGNAL(pageMoved(GGViewPage*,QRect)), ctrl, SLOT(changePageGeometry(GGViewPage*,QRect)));
     connect(this, SIGNAL(multiplePagesMoved(QList<QPair<GGViewPage*,QRect> >)), ctrl, SLOT(changeMultiplePagesGeometry(QList<QPair<GGViewPage*,QRect> >)));
-    connect(this, SIGNAL(multipleObjectsDeleted(QList<GGViewPage*>,QList<GGViewConnection*>)), ctrl, SLOT(deleteMultipleObjects(QList<GGViewPage*>,QList<GGViewConnection*>)));
+    connect(this, SIGNAL(multipleObjectsDeleted(QSet<GGViewPage*>,QSet<GGViewConnection*>)), ctrl, SLOT(deleteMultipleObjects(QSet<GGViewPage*>,QSet<GGViewConnection*>)));
+    connect(this, SIGNAL(itemsSelected(QSet<GGViewPage*>,QSet<GGViewConnection*>)), ctrl, SLOT(setSelection(QSet<GGViewPage*>,QSet<GGViewConnection*>)));
+    connect(this, SIGNAL(clickedEmptySpace(QPointF)), ctrl, SLOT(handleSceneClick(QPointF)));
 }
 
 GGPageItem *GGEditorScene::itemForPage(GGViewPage *page)
@@ -94,24 +102,45 @@ void GGEditorScene::refresh()
     }
 }
 
-void GGEditorScene::selectPage(GGViewPage *page)
+
+void GGEditorScene::setSelection(QSet<GGViewPage *> pages, QSet<GGViewConnection *> conns)
 {
-    if (GGPageItem *i = m_pageMap.value(page)) {
-        i->setSelected(true);
-    } else {
-        clearSelection();
+    m_inUpdateSelection = true;
+    clearSelection();
+    foreach (GGViewPage *p, pages) {
+        if (m_pageMap.value(p))
+            m_pageMap[p]->setSelected(true);
+    }
+    foreach (GGViewConnection *c, conns) {
+        if (m_connMap.value(c))
+            m_connMap[c]->setSelected(true);
+    }
+    if (pages.size() == 1 && conns.isEmpty()) {
+        m_selItem->setWrappedItem(m_pageMap.value(*pages.begin()));
+    }
+    m_inUpdateSelection = false;
+}
+
+void GGEditorScene::deleteCurrentSelection()
+{
+    QSet<GGViewConnection *> delCons;
+    QSet<GGViewPage *> delPages;
+    selectionToSets(delPages, delCons);
+    if (!delCons.isEmpty() || !delPages.isEmpty()) {
+        emit multipleObjectsDeleted(delPages, delCons);
     }
 }
 
 void GGEditorScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    m_clickedOnEmpty = true;
-    if (event->button() != Qt::LeftButton || !selectedItems().isEmpty()) {
-        m_clickedOnEmpty = false;
-    }
-    QGraphicsScene::mousePressEvent(event);
-    if (event->button() != Qt::LeftButton || !selectedItems().isEmpty()) {
-        m_clickedOnEmpty = false;
+    if (event->button() == Qt::LeftButton) {
+        bool empty = selectedItems().isEmpty();
+        QGraphicsScene::mousePressEvent(event);
+        if (empty && selectedItems().isEmpty()) {
+            emit clickedEmptySpace(event->scenePos());
+        }
+    } else {
+        QGraphicsScene::mousePressEvent(event);
     }
 }
 
@@ -120,41 +149,16 @@ void GGEditorScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     QGraphicsScene::mouseReleaseEvent(event);
     if (event->button() == Qt::LeftButton) {
         QList<QPair<GGViewPage*,QRect> > movs;
-        if (selectedItems().isEmpty() && m_clickedOnEmpty) {
-            // clicked on empty space.
-            emit clickedEmptySpace(event->scenePos());
-        } else {
-            foreach (QGraphicsItem *i, selectedItems()) {
-                if (GGPageItem *p = qgraphicsitem_cast<GGPageItem*> (i)) {
-                    if (p->page()->bounds() != p->modelPosition())
-                        movs << qMakePair(p->page(), p->modelPosition());
-                }
-            }
-            if (movs.size() > 1)
-                emit multiplePagesMoved(movs);
-            else if (movs.size() == 1)
-                emit pageMoved(movs[0].first, movs[0].second);
-        }
-    }
-    m_clickedOnEmpty = false;
-}
-
-void GGEditorScene::keyReleaseEvent(QKeyEvent *event)
-{
-    if (event->key() == Qt::Key_Delete) {
-        QList<GGViewConnection *> delCons;
-        QList<GGViewPage *> delPages;
         foreach (QGraphicsItem *i, selectedItems()) {
-            if (GGPageItem *p = qgraphicsitem_cast<GGPageItem*>(i)) {
-                delPages << p->page();
-            } else if (GGConnectionItem *c = qgraphicsitem_cast<GGConnectionItem*>(i)) {
-                delCons << c->connection();
+            if (GGPageItem *p = qgraphicsitem_cast<GGPageItem*> (i)) {
+                if (p->page()->bounds() != p->modelPosition())
+                    movs << qMakePair(p->page(), p->modelPosition());
             }
         }
-
-        if (!delCons.isEmpty() || !delPages.isEmpty()) {
-            emit multipleObjectsDeleted(delPages, delCons);
-        }
+        if (movs.size() > 1)
+            emit multiplePagesMoved(movs);
+        else if (movs.size() == 1)
+            emit pageMoved(movs[0].first, movs[0].second);
     }
 }
 
@@ -238,18 +242,16 @@ void GGEditorScene::pageViewUpd(GGViewPage *p)
 
 void GGEditorScene::updateSelectionItem()
 {
-    QList<QGraphicsItem *> itms = selectedItems();
     m_selItem->setVisible(false);
     m_selItem->setWrappedItem(NULL);
-    if (itms.size() != 1) {
-        emit otherSelected();
-    } else if (GGPageItem *itm = qgraphicsitem_cast<GGPageItem*>(itms[0])) {
-        m_selItem->setWrappedItem(itm);
-        m_selItem->setVisible(true);
-        emit pageSelected(itm->page());
-    } else if (GGConnectionItem *itm = qgraphicsitem_cast<GGConnectionItem*>(itms[0])) {
-        emit connectionSelected(itm->connection());
-    }
+
+    // Break infinite indirect recursion if selection is updated by outside party
+    if (m_inUpdateSelection) return;
+
+    QSet<GGViewConnection *> conns;
+    QSet<GGViewPage *> pages;
+    selectionToSets(pages, conns);
+    emit itemsSelected(pages, conns);
 }
 
 void GGEditorScene::initSelItem()
@@ -260,5 +262,19 @@ void GGEditorScene::initSelItem()
         m_selItem->setZValue(SELECTION_ZVALUE);
         addItem(m_selItem);
         m_selItem->init();
+    }
+}
+
+void GGEditorScene::selectionToSets(QSet<GGViewPage *> &pages, QSet<GGViewConnection *> &conns)
+{
+    pages.clear();
+    conns.clear();
+    QList<QGraphicsItem *> itms = selectedItems();
+    foreach (QGraphicsItem *itm, itms) {
+        if (GGPageItem *pi = qgraphicsitem_cast<GGPageItem*>(itm)) {
+            pages << pi->page();
+        } else if (GGConnectionItem *ci = qgraphicsitem_cast<GGConnectionItem*>(itm)) {
+            conns << ci->connection();
+        }
     }
 }

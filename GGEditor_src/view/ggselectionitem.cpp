@@ -7,6 +7,10 @@ class GGSelectionItem::GGCornerGrabber : public QGraphicsItem {
     friend class GGSelectionItem;
     GGCornerGrabber(int pX, int pY, int fW, int fH, int fX, int fY, GGSelectionItem *sel) : QGraphicsItem(sel), m_pX(pX), m_pY(pY), m_fW(fW), m_fH(fH), m_fX(fX), m_fY(fY) {
         installSceneEventFilter(sel);
+        if (pX == pY) setCursor(Qt::SizeFDiagCursor);
+        else if (pX == -pY) setCursor(Qt::SizeBDiagCursor);
+        else if (pY == 0) setCursor(Qt::SizeHorCursor);
+        else if (pX == 0) setCursor(Qt::SizeVerCursor);
     }
     int m_pX, m_pY, m_fW, m_fH, m_fX, m_fY;
     static const qreal GrabberSize;
@@ -29,9 +33,11 @@ GGSelectionItem::GGSelectionItem(QGraphicsItem *parent)
 
 void GGSelectionItem::setWrappedItem(GGPageItem *item)
 {
+    setVisible(false);
     m_wrapped = item;
     if (!m_wrapped) return;
     setPos(m_wrapped->pos());
+    setVisible(true);
     updateCornerGrabberPos();
     update();
 }

@@ -8,7 +8,11 @@
 #include <viewcommand/ggviewcommandfactory.h>
 
 GGUIController::GGUIController(QObject *parent)
-    : QObject(parent), m_model(NULL), m_cmdFactory(NULL)
+    : QObject(parent),
+      m_model(NULL),
+      m_cmdFactory(NULL),
+      m_createMode(CreateNone),
+      m_saveCommand(NULL)
 {
     m_stack = new GGCommandStack;
 }
@@ -29,6 +33,13 @@ void GGUIController::setModel(GGViewModel *model)
     else
         m_cmdFactory = NULL;
     emit modelReset(m_model);
+    saveCheckpoint();
+}
+
+void GGUIController::saveCheckpoint()
+{
+    m_saveCommand = m_stack->undoCommand();
+    checkSaveCheckpoint();
 }
 
 void GGUIController::undo()
@@ -38,6 +49,7 @@ void GGUIController::undo()
             emit commandError(c->error());
         }
     }
+    checkSaveCheckpoint();
 }
 
 void GGUIController::redo()
@@ -47,12 +59,12 @@ void GGUIController::redo()
             emit commandError(c->error());
         }
     }
+    checkSaveCheckpoint();
 }
 
 void GGUIController::changePageGeometry(GGViewPage *page, QRect rect)
 {
     doExecCmd(m_cmdFactory->movePage(page, rect));
-
 }
 
 void GGUIController::changeMultiplePagesGeometry(QList<QPair<GGViewPage *, QRect> > changes)
@@ -67,7 +79,7 @@ void GGUIController::changeMultiplePagesGeometry(QList<QPair<GGViewPage *, QRect
     doExecCmd(grp);
 }
 
-void GGUIController::deleteMultipleObjects(QList<GGViewPage *> pages, QList<GGViewConnection *> connections)
+void GGUIController::deleteMultipleObjects(QSet<GGViewPage *> pages, QSet<GGViewConnection *> connections)
 {
     GGCommandGroup *grp = new GGCommandGroup;
     foreach (GGViewConnection *c, connections) {
@@ -79,49 +91,55 @@ void GGUIController::deleteMultipleObjects(QList<GGViewPage *> pages, QList<GGVi
     doExecCmd(grp);
 }
 
-GGViewPage *GGUIController::createStartPage(QRect r)
+void GGUIController::setSelection(QSet<GGViewPage *> pages, QSet<GGViewConnection *> connections)
 {
-    GGCreateViewPageCmd *c = m_cmdFactory->createStartPage(r);
-    if (doExecCmd(c)) {
-        return c->createdPage();
+    if (pages.empty() && connections.empty()) {
+        emit selectionCleared();
+        return;
     }
-    return NULL;
+    // TODO: don't emit when single conn/page selected?
+    emit objectsSelected(pages, connections);
+    if (pages.empty() && connections.size() == 1) {
+        emit singleConnectionSelected(*connections.begin());
+        return;
+    }
+    if (connections.empty() && pages.size() == 1) {
+        emit singlePageSelected(*pages.begin());
+        return;
+    }
 }
 
-GGViewPage *GGUIController::createEndPage(QRect r)
+void GGUIController::handleSceneClick(QPointF pos)
 {
-    GGCreateViewPageCmd *c = m_cmdFactory->createEndPage(r);
-    if (doExecCmd(c)) {
-        return c->createdPage();
+    GGCreateViewPageCmd *cmd = NULL;
+    QRect r(pos.toPoint(), QSize());
+    switch (m_createMode) {
+    case CreateNone:
+        return;
+    case CreateStartPage:
+        cmd = m_cmdFactory->createStartPage(r);
+        break;
+    case CreateEndPage:
+        cmd = m_cmdFactory->createEndPage(r);
+        break;
+    case CreateConditionPage:
+        cmd = m_cmdFactory->createConditionPage(r);
+        break;
+    case CreateActionPage:
+        cmd = m_cmdFactory->createActionPage(r);
+        break;
+    case CreateDecisionPage:
+        cmd = m_cmdFactory->createDecisionPage(r);
+        break;
+    case CreateConnection:
+        return;
     }
-    return NULL;
-}
-
-GGViewPage *GGUIController::createConditionPage(QRect r)
-{
-    GGCreateViewPageCmd *c = m_cmdFactory->createConditionPage(r);
-    if (doExecCmd(c)) {
-        return c->createdPage();
+    if (cmd) {
+        if (doExecCmd(cmd)) {
+            // This doesn't work, as the scene somehow immediately resets the selection...
+            this->setSelection(QSet<GGViewPage*>()<<cmd->createdPage(), QSet<GGViewConnection*>());
+        }
     }
-    return NULL;
-}
-
-GGViewPage *GGUIController::createActionPage(QRect r)
-{
-    GGCreateViewPageCmd *c = m_cmdFactory->createActionPage(r);
-    if (doExecCmd(c)) {
-        return c->createdPage();
-    }
-    return NULL;
-}
-
-GGViewPage *GGUIController::createDecisionPage(QRect r)
-{
-    GGCreateViewPageCmd *c = m_cmdFactory->createDecisionPage(r);
-    if (doExecCmd(c)) {
-        return c->createdPage();
-    }
-    return NULL;
 }
 
 bool GGUIController::doExecCmd(GGAbstractCommand *cmd)
@@ -130,5 +148,19 @@ bool GGUIController::doExecCmd(GGAbstractCommand *cmd)
         emit commandError(cmd->error());
         return false;
     }
+    checkSaveCheckpoint();
     return true;
+}
+
+bool GGUIController::checkSaveCheckpoint()
+{
+    bool dirty = (m_saveCommand != m_stack->undoCommand());
+    emit modelDirty(dirty);
+
+    bool canUndo = (m_stack->undoCommand() != NULL);
+    bool canRedo = (m_stack->redoCommand() != NULL);
+    emit undoAvailable(canUndo);
+    emit redoAvailable(canRedo);
+
+    return !dirty;
 }

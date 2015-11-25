@@ -43,22 +43,20 @@ public:
 public slots:
     void resetModel(GGViewModel *model);
     void refresh();
-    void selectPage(GGViewPage *page);
+    void setSelection(QSet<GGViewPage *> pages, QSet<GGViewConnection *> conns);
+    void deleteCurrentSelection();
 
 signals:
     void pageMoved(GGViewPage *page, QRect r);
     void multiplePagesMoved(QList<QPair<GGViewPage*, QRect> > movements);
-    void multipleObjectsDeleted(QList<GGViewPage *> pages, QList<GGViewConnection *> connections);
+    void multipleObjectsDeleted(QSet<GGViewPage *> pages, QSet<GGViewConnection *> connections);
 
-    void pageSelected(GGViewPage *page);
-    void connectionSelected(GGViewConnection *conn);
-    void otherSelected();
+    void itemsSelected(QSet<GGViewPage*> pages, QSet<GGViewConnection*> conns);
     void clickedEmptySpace(QPointF pos);
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
-    void keyReleaseEvent(QKeyEvent *event);
 
 private slots:
     void pageReg(GGViewPage *p);
@@ -72,6 +70,7 @@ private slots:
 
 private:
     void initSelItem();
+    void selectionToSets(QSet<GGViewPage*> &pages, QSet<GGViewConnection*> &conns);
 
 private:
     GGViewModel *m_model;
@@ -79,7 +78,8 @@ private:
 
     QMap<GGViewPage *, GGPageItem *> m_pageMap;
     QMap<GGViewConnection *, GGConnectionItem *> m_connMap;
-    bool m_clickedOnEmpty;
+    
+    bool m_inUpdateSelection;
 };
 
 #endif // GGEDITORSCENE_H

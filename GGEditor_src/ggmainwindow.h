@@ -29,13 +29,13 @@ public slots:
 
     void selectPage(GGViewPage *page);
     void selectConnection(GGViewConnection *conn);
-    void selectOther();
+    void clearSelection();
 
 private slots:
     void showError(QString err);
     void setClickMode(QAction *act);
-    void clickedEmptySpace(QPointF pos);
     void setPointerMode();
+    void handleAction(QAction *act);
 
 private:
     Ui::GGMainWindow *ui;
