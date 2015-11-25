@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file alias="connect">icons/forward.png</file>
+        <file alias="delete">icons/button_cancel.png</file>
+        <file alias="newfile">icons/filenew.png</file>
+        <file alias="redo">icons/redo.png</file>
+        <file alias="undo">icons/undo.png</file>
+    </qresource>
+</RCC>

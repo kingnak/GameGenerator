@@ -8,6 +8,7 @@
 #include <viewmodel/ggviewmodel.h>
 #include <viewmodel/ggviewpage.h>
 #include <viewcommand/ggviewcommandfactory.h>
+#include <ui/dialogs/ggchoseconnectionslotdlg.h>
 
 GGUIController::GGUIController(QObject *parent)
     : QObject(parent),
@@ -105,9 +106,20 @@ void GGUIController::connnectPagesDialog(GGViewPage *src, GGViewPage *dest)
 {
     setCreationMode(CreateNone);
     // DUMMY
+    /*
     QList<GGConnectionSlot> lst = GGConnectionSlot::enumerateConnections(src->page());
     if (!lst.isEmpty()) {
         GGCreateViewConnectionCmd *cmd = m_cmdFactory->createConnection(src, dest, lst[0]);
+        if (doExecCmd(cmd))
+            if (cmd->createdConnection())
+                setSelection(QSet<GGViewPage*>(), QSet<GGViewConnection *>() << cmd->createdConnection());
+    }
+    */
+    GGChoseConnectionSlotDlg dlg;
+    dlg.setConnectionSlots(src->page());
+    if (dlg.exec() == QDialog::Accepted) {
+        GGConnectionSlot s = dlg.selectedSlot();
+        GGCreateViewConnectionCmd *cmd = m_cmdFactory->createConnection(src, dest, s);
         if (doExecCmd(cmd))
             if (cmd->createdConnection())
                 setSelection(QSet<GGViewPage*>(), QSet<GGViewConnection *>() << cmd->createdConnection());

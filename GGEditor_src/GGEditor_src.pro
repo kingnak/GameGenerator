@@ -30,7 +30,9 @@ SOURCES += \
     view/gguicontroller.cpp \
     view/ggconnectionitem.cpp \
     ggmainwindow.cpp \
-    view/ggeditorview.cpp
+    view/ggeditorview.cpp \
+    ui/components/ggconnectioneditorwidget.cpp \
+    ui/dialogs/ggchoseconnectionslotdlg.cpp
 
 HEADERS += \
     model/ggeditmodel.h \
@@ -54,7 +56,9 @@ HEADERS += \
     view/gguicontroller.h \
     view/ggconnectionitem.h \
     ggmainwindow.h \
-    view/ggeditorview.h
+    view/ggeditorview.h \
+    ui/components/ggconnectioneditorwidget.h \
+    ui/dialogs/ggchoseconnectionslotdlg.h
 unix {
     target.path = /usr/lib
     INSTALLS += target
@@ -70,4 +74,9 @@ DEPENDPATH += $$PWD/../gg_core
 include(../defaults.pri)
 
 FORMS += \
-    ggmainwindow.ui
+    ggmainwindow.ui \
+    ui/components/ggconnectioneditorwidget.ui \
+    ui/dialogs/ggchoseconnectionslotdlg.ui
+
+RESOURCES += \
+    ui/resources.qrc

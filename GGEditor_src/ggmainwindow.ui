@@ -162,7 +162,15 @@
     <addaction name="separator"/>
     <addaction name="action_Quit"/>
    </widget>
+   <widget class="QMenu" name="menu_Edit">
+    <property name="title">
+     <string>&amp;Edit</string>
+    </property>
+    <addaction name="actionUndo"/>
+    <addaction name="actionRedo"/>
+   </widget>
    <addaction name="menu_File"/>
+   <addaction name="menu_Edit"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <widget class="QToolBar" name="toolBar">
@@ -191,6 +199,10 @@
    <addaction name="actionDelete"/>
   </widget>
   <action name="action_New">
+   <property name="icon">
+    <iconset resource="ui/resources.qrc">
+     <normaloff>:/icons/newfile</normaloff>:/icons/newfile</iconset>
+   </property>
    <property name="text">
     <string>&amp;New</string>
    </property>
@@ -326,6 +338,10 @@
    <property name="enabled">
     <bool>false</bool>
    </property>
+   <property name="icon">
+    <iconset resource="ui/resources.qrc">
+     <normaloff>:/icons/undo</normaloff>:/icons/undo</iconset>
+   </property>
    <property name="text">
     <string>Undo</string>
    </property>
@@ -337,6 +353,10 @@
    <property name="enabled">
     <bool>false</bool>
    </property>
+   <property name="icon">
+    <iconset resource="ui/resources.qrc">
+     <normaloff>:/icons/redo</normaloff>:/icons/redo</iconset>
+   </property>
    <property name="text">
     <string>Redo</string>
    </property>
@@ -345,6 +365,10 @@
    </property>
   </action>
   <action name="actionDelete">
+   <property name="icon">
+    <iconset resource="ui/resources.qrc">
+     <normaloff>:/icons/delete</normaloff>:/icons/delete</iconset>
+   </property>
    <property name="text">
     <string>delete</string>
    </property>
@@ -360,7 +384,9 @@
    <header>view/ggeditorview.h</header>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="ui/resources.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>action_New</sender>
