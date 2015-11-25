@@ -107,10 +107,11 @@ private:
 
 /////////////////////////
 
-class GGCreateViewConnectionCmd : public GGAbstractViewForwardCommand<GGCreateConnectionCmd>
+class GGCreateViewConnectionCmd : public GGAbstractViewForwardCommand<GGExchangeConnectionCmd>
 {
 public:
     GGCreateViewConnectionCmd(GGViewModel *model, GGConnectionSlot slot, GGViewPage *src, GGViewPage *dest);
+    GGViewConnection *createdConnection();
 protected:
     // Maybe in future needed
     //bool doExecute();

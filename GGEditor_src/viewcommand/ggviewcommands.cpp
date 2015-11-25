@@ -86,7 +86,15 @@ bool GGMoveViewPageCmd::doRedo()
 GGCreateViewConnectionCmd::GGCreateViewConnectionCmd(GGViewModel *model, GGConnectionSlot slot, GGViewPage *src, GGViewPage *dest)
     : GGAbstractViewForwardCommand(model)
 {
-    m_cmd = new GGCreateConnectionCmd(model->editModel(), slot, src->page(), dest->page());
+    m_cmd = new GGExchangeConnectionCmd(model->editModel(), src->page(), dest->page(), slot);
+}
+
+GGViewConnection *GGCreateViewConnectionCmd::createdConnection()
+{
+    if (state() == Executed) {
+        return m_model->getViewConectionForConnection(this->getInnerCommand()->newConnection());
+    }
+    return NULL;
 }
 
 /////////////////////////
