@@ -36,6 +36,7 @@ private slots:
     void setClickMode(QAction *act);
     void setPointerMode();
     void handleAction(QAction *act);
+    void setCreationMode();
 
 private:
     Ui::GGMainWindow *ui;

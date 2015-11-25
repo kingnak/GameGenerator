@@ -54,8 +54,11 @@ signals:
     void itemsSelected(QSet<GGViewPage*> pages, QSet<GGViewConnection*> conns);
     void clickedEmptySpace(QPointF pos);
 
+    void connectPages(GGViewPage *source, GGViewPage *destination);
+
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
+    void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
 
 private slots:
@@ -75,6 +78,9 @@ private:
 private:
     GGViewModel *m_model;
     GGSelectionItem *m_selItem;
+    GGUIController *m_ctrl;
+    QGraphicsLineItem *m_connectorLine;
+    GGPageItem *m_connectSource;
 
     QMap<GGViewPage *, GGPageItem *> m_pageMap;
     QMap<GGViewConnection *, GGConnectionItem *> m_connMap;

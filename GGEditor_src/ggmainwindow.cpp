@@ -25,6 +25,7 @@ GGMainWindow::GGMainWindow(QWidget *parent) :
     connect(m_ctrl, SIGNAL(modelDirty(bool)), this, SLOT(setWindowModified(bool)));
     connect(m_ctrl, SIGNAL(undoAvailable(bool)), ui->actionUndo, SLOT(setEnabled(bool)));
     connect(m_ctrl, SIGNAL(redoAvailable(bool)), ui->actionRedo, SLOT(setEnabled(bool)));
+    connect(m_ctrl, SIGNAL(creationModeChanged(CreationMode)), this, SLOT(setCreationMode()));
 
     m_editorScene = new GGEditorScene(m_ctrl, this);
     m_editorScene->setSceneRect(-400,-400,800,800);
@@ -155,5 +156,18 @@ void GGMainWindow::handleAction(QAction *act)
     }
     if (act == ui->actionDelete) {
         m_editorScene->deleteCurrentSelection();
+    }
+}
+
+void GGMainWindow::setCreationMode()
+{
+    foreach (QAction *act, m_createActions->actions()) {
+        bool ok;
+        int cm = QMetaEnum::fromType<GGUIController::CreationMode>().keyToValue(act->property("CreationMode").toString().toUtf8(), &ok);
+        Q_ASSERT_X(ok, "GGMainWindow::setCreationMode", "Invalid Creation Mode");
+        if (cm == m_ctrl->creationMode()) {
+            act->activate(QAction::Trigger);
+            return;
+        }
     }
 }

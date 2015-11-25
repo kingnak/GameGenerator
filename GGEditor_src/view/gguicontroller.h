@@ -28,7 +28,7 @@ public:
         CreateNone, CreateStartPage, CreateEndPage, CreateConditionPage, CreateActionPage, CreateDecisionPage, CreateConnection
     };
     Q_ENUM(CreationMode)
-    void setCreationMode(CreationMode mode) { m_createMode = mode; }
+    void setCreationMode(CreationMode mode);
     CreationMode creationMode() const { return m_createMode; }
 
 public slots:
@@ -40,6 +40,8 @@ public slots:
     void changePageGeometry(GGViewPage *page, QRect rect);
     void changeMultiplePagesGeometry(QList<QPair<GGViewPage*,QRect> > changes);
     void deleteMultipleObjects(QSet<GGViewPage*> pages, QSet<GGViewConnection*> connections);
+
+    void connnectPagesDialog(GGViewPage *src, GGViewPage *dest);
 
     void setSelection(QSet<GGViewPage *> pages, QSet<GGViewConnection *> connections);
 
@@ -57,6 +59,7 @@ signals:
     void undoAvailable(bool avail);
     void redoAvailable(bool avail);
 
+    void creationModeChanged(CreationMode mode);
 
 private:
     bool doExecCmd(GGAbstractCommand *cmd);

@@ -17,6 +17,9 @@ GGEditorScene::GGEditorScene(GGUIController *ctrl, QObject *parent)
     : QGraphicsScene(parent),
       m_model(NULL),
       m_selItem(NULL),
+      m_ctrl(NULL),
+      m_connectorLine(NULL),
+      m_connectSource(NULL),
       m_inUpdateSelection(false)
 {
     connect(this, SIGNAL(selectionChanged()), this, SLOT(updateSelectionItem()));
@@ -47,6 +50,9 @@ void GGEditorScene::connectToController(GGUIController *ctrl)
     connect(this, SIGNAL(multipleObjectsDeleted(QSet<GGViewPage*>,QSet<GGViewConnection*>)), ctrl, SLOT(deleteMultipleObjects(QSet<GGViewPage*>,QSet<GGViewConnection*>)));
     connect(this, SIGNAL(itemsSelected(QSet<GGViewPage*>,QSet<GGViewConnection*>)), ctrl, SLOT(setSelection(QSet<GGViewPage*>,QSet<GGViewConnection*>)));
     connect(this, SIGNAL(clickedEmptySpace(QPointF)), ctrl, SLOT(handleSceneClick(QPointF)));
+    connect(this, SIGNAL(connectPages(GGViewPage*,GGViewPage*)), ctrl, SLOT(connnectPagesDialog(GGViewPage*,GGViewPage*)));
+
+    m_ctrl = ctrl;
 }
 
 GGPageItem *GGEditorScene::itemForPage(GGViewPage *page)
@@ -133,7 +139,35 @@ void GGEditorScene::deleteCurrentSelection()
 
 void GGEditorScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    if (event->button() == Qt::LeftButton) {
+    m_connectSource = NULL;
+    if (m_ctrl->creationMode() == GGUIController::CreateNone) {
+        // Normal pointer mode
+        QGraphicsScene::mousePressEvent(event);
+        return;
+    }
+    if (m_ctrl->creationMode() == GGUIController::CreateConnection) {
+        // Create connection => store source
+        QGraphicsItem *srcItm = itemAt(event->scenePos(), QTransform());
+        GGPageItem *src = qgraphicsitem_cast<GGPageItem*> (srcItm);
+        if (!src)
+            if (srcItm == m_selItem)
+                src = m_selItem->wrappedItem();
+
+        if (src) {
+            m_connectSource = src;
+            m_connectorLine = new QGraphicsLineItem(QLineF(src->scenePos(), event->scenePos()));
+            addItem(m_connectorLine);
+
+            // mark source as selected
+            clearSelection();
+            m_inUpdateSelection = true;
+            src->setSelected(true);
+            m_inUpdateSelection = false;
+            event->accept();
+            return;
+        }
+    }
+    else if (event->button() == Qt::LeftButton) {
         bool empty = selectedItems().isEmpty();
         QGraphicsScene::mousePressEvent(event);
         if (empty && selectedItems().isEmpty()) {
@@ -144,8 +178,42 @@ void GGEditorScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
     }
 }
 
+void GGEditorScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
+{
+    if (m_connectorLine) {
+        m_connectorLine->setLine(QLineF(m_connectorLine->line().p1(), event->scenePos()));
+
+        // Update selected highlight
+        GGPageItem *dst = qgraphicsitem_cast<GGPageItem*> (itemAt(event->scenePos(), QTransform()));
+        m_inUpdateSelection = true;
+        clearSelection();
+        if (dst) {
+            dst->setSelected(true);
+        }
+        m_connectSource->setSelected(true);
+        m_inUpdateSelection = false;
+        event->accept();
+    } else {
+        QGraphicsScene::mouseMoveEvent(event);
+    }
+}
+
 void GGEditorScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
+    if (m_connectorLine) {
+        GGPageItem *dst = qgraphicsitem_cast<GGPageItem*> (itemAt(event->scenePos(), QTransform()));
+        GGPageItem *src = m_connectSource;
+        delete m_connectorLine;
+        m_connectorLine = NULL;
+
+        if (src && dst) {
+            emit connectPages(src->page(), dst->page());
+        }
+
+        event->accept();
+        return;
+    }
+
     QGraphicsScene::mouseReleaseEvent(event);
     if (event->button() == Qt::LeftButton) {
         QList<QPair<GGViewPage*,QRect> > movs;

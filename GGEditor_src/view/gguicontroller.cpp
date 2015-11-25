@@ -1,10 +1,12 @@
 #include "gguicontroller.h"
 #include <model/ggeditmodel.h>
 #include <model/ggsimplefactory.h>
+#include <model/ggpage.h>
 #include <command/ggcommandstack.h>
 #include <command/ggcommandgroup.h>
 #include <viewcommand/ggviewcommands.h>
 #include <viewmodel/ggviewmodel.h>
+#include <viewmodel/ggviewpage.h>
 #include <viewcommand/ggviewcommandfactory.h>
 
 GGUIController::GGUIController(QObject *parent)
@@ -34,6 +36,14 @@ void GGUIController::setModel(GGViewModel *model)
         m_cmdFactory = NULL;
     emit modelReset(m_model);
     saveCheckpoint();
+}
+
+void GGUIController::setCreationMode(GGUIController::CreationMode mode)
+{
+    if (mode != m_createMode) {
+        m_createMode = mode;
+        emit creationModeChanged(mode);
+    }
 }
 
 void GGUIController::saveCheckpoint()
@@ -89,6 +99,19 @@ void GGUIController::deleteMultipleObjects(QSet<GGViewPage *> pages, QSet<GGView
         grp->addCommand(m_cmdFactory->deletePage(p));
     }
     doExecCmd(grp);
+}
+
+void GGUIController::connnectPagesDialog(GGViewPage *src, GGViewPage *dest)
+{
+    setCreationMode(CreateNone);
+    // DUMMY
+    QList<GGConnectionSlot> lst = GGConnectionSlot::enumerateConnections(src->page());
+    if (!lst.isEmpty()) {
+        GGCreateViewConnectionCmd *cmd = m_cmdFactory->createConnection(src, dest, lst[0]);
+        if (doExecCmd(cmd))
+            if (cmd->createdConnection())
+                setSelection(QSet<GGViewPage*>(), QSet<GGViewConnection *>() << cmd->createdConnection());
+    }
 }
 
 void GGUIController::setSelection(QSet<GGViewPage *> pages, QSet<GGViewConnection *> connections)
