@@ -81,13 +81,15 @@ void GGConnectionItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
     }
 
     // Draw head
-    qreal headSize = 20;
+    const qreal headSize = 25;
     const qreal PI = 3.14;
+    const qreal deltaAngle = PI/6;
     qreal angle = ::atan2(line.dy(), line.dx());
     QPointF a1 = intersect;
-    QPointF a2 = intersect-QPointF(headSize*::cos(angle+PI/3),headSize*::sin(angle+PI/3));
-    QPointF a3 = intersect-QPointF(headSize*::cos(angle-PI/3),headSize*::sin(angle-PI/3));
-    QPolygonF head = QPolygonF(QVector<QPointF>() << a1 << a2 << a3);
+    QPointF a2 = intersect-QPointF(headSize*::cos(angle+deltaAngle),headSize*::sin(angle+deltaAngle));
+    QPointF a3 = intersect-QPointF(headSize/2*::cos(angle),headSize/2*::sin(angle));
+    QPointF a4 = intersect-QPointF(headSize*::cos(angle-deltaAngle),headSize*::sin(angle-deltaAngle));
+    QPolygonF head = QPolygonF(QVector<QPointF>() << a1 << a2 << a3 << a4);
     QPainterPath headPath;
     headPath.addPolygon(head);
     painter->fillPath(headPath, editScene()->connectionColor());
