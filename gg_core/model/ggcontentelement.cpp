@@ -1,6 +1,8 @@
 #include "ggcontentelement.h"
 #include <QImage>
 #include <QPixmap>
+#include <QPainter>
+#include <QTextDocument>
 
 QString GGAudioContent::audioFilePath() const
 {
@@ -32,6 +34,18 @@ QString GGTextContent::textContent() const
 void GGTextContent::setTextContent(QString content)
 {
     m_textContent = content;
+}
+
+QPixmap GGTextContent::preview(QSize sz) const
+{
+    QPixmap ret(sz);
+    ret.fill(Qt::transparent);
+    QPainter p(&ret);
+    QTextDocument doc;
+    doc.setHtml(m_textContent);
+    doc.drawContents(&p, QRect(QPoint(), sz));
+    //p.drawText(QRect(QPoint(), sz), m_textContent);
+    return ret;
 }
 
 ///////////////////////////////////////////////

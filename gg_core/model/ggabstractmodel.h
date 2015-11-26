@@ -4,6 +4,7 @@
 #include <gg_core_global.h>
 #include <gg_definitions.h>
 #include <QObject>
+#include "ggvariable.h"
 
 class GGPage;
 class GGConnection;
@@ -27,6 +28,11 @@ public:
     virtual bool registerConnectionWithId(GGConnection *conn) = 0;
 
     virtual void notifyPageUpdate(GG::PageID id);
+
+    virtual QSet<GGVariable> variables() const = 0;
+    virtual GGVariable variableByName(QString name) const = 0;
+    virtual bool addVariable(GGVariable v) = 0;
+    virtual bool removeVariable(GGVariable v) = 0;
 
 signals:
     void pageRegistered(GGPage *page);

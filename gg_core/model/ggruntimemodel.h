@@ -21,10 +21,16 @@ public:
     bool registerPageWithId(GGPage *page);
     bool registerConnectionWithId(GGConnection *conn);
 
+    QSet<GGVariable> variables() const;
+    GGVariable variableByName(QString name) const;
+    bool addVariable(GGVariable v);
+    bool removeVariable(GGVariable v);
+
 protected:
     GGAbstractFactory *m_factory;
     QMap<GG::PageID, GGPage *> m_pages;
     QMap<GG::ConnectionID, GGConnection *> m_connections;
+    QMap<QString, GGVariable> m_variables;
 };
 
 #endif // GGRUNTIMEMODEL_H

@@ -2,6 +2,7 @@
 #include "ggpage.h"
 #include "ggconnection.h"
 #include "ggabstractfactory.h"
+#include <QSet>
 
 GGRuntimeModel::GGRuntimeModel(GGAbstractFactory *factory, QObject *parent)
     : GGAbstractModel(parent),
@@ -89,4 +90,30 @@ bool GGRuntimeModel::registerConnectionWithId(GGConnection *conn)
 
     emit connectionRegistered(conn);
     return true;
+}
+
+QSet<GGVariable> GGRuntimeModel::variables() const
+{
+    return m_variables.values().toSet();
+}
+
+GGVariable GGRuntimeModel::variableByName(QString name) const
+{
+    if (m_variables.contains(name))
+        return m_variables[name];
+    return GGVariable(QString::null);
+}
+
+bool GGRuntimeModel::addVariable(GGVariable v)
+{
+    if (!v.isValid()) return false;
+    if (m_variables.contains(v.name())) return false;
+    m_variables[v.name()] = v;
+    return true;
+}
+
+bool GGRuntimeModel::removeVariable(GGVariable v)
+{
+    if (!v.isValid()) return false;
+    return m_variables.remove(v.name()) > 0;
 }

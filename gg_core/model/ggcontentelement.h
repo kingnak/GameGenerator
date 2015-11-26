@@ -51,6 +51,8 @@ public:
     QString textContent() const;
     void setTextContent(QString content);
 
+    QPixmap preview(QSize sz) const;
+
 protected:
     QString m_textContent;
 };
