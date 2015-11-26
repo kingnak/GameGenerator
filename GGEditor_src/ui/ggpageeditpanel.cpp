@@ -22,7 +22,7 @@ void GGPageEditPanel::setController(GGUIController *ctrl)
     modelReset();
 
     ui->wgtContent->setController(m_ctrl);
-
+    ui->wgtCondition->setController(m_ctrl);
 }
 
 GGPageEditPanel::~GGPageEditPanel()
@@ -113,7 +113,8 @@ void GGPageEditPanel::setEnd()
 
 void GGPageEditPanel::setCondition()
 {
-    if (GG::as<GGConditionPage>(m_page)) {
+    if (GGConditionPage *cp = GG::as<GGConditionPage>(m_page)) {
+        ui->wgtCondition->setPage(cp);
         ui->grpCondition->setVisible(true);
     }
 }

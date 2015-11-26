@@ -73,6 +73,7 @@ private slots:
 
 private:
     void initSelItem();
+    GGPageItem *getItemAtPos(QPointF pos);
     void selectionToSets(QSet<GGViewPage*> &pages, QSet<GGViewConnection*> &conns);
 
 private:

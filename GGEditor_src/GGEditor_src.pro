@@ -34,7 +34,8 @@ SOURCES += \
     ui/components/ggconnectioneditorwidget.cpp \
     ui/dialogs/ggchoseconnectionslotdlg.cpp \
     ui/ggpageeditpanel.cpp \
-    ui/components/ggcontenteditorwidget.cpp
+    ui/panes/ggconditioneditorpane.cpp \
+    ui/panes/ggcontenteditorpane.cpp
 
 HEADERS += \
     model/ggeditmodel.h \
@@ -62,7 +63,8 @@ HEADERS += \
     ui/components/ggconnectioneditorwidget.h \
     ui/dialogs/ggchoseconnectionslotdlg.h \
     ui/ggpageeditpanel.h \
-    ui/components/ggcontenteditorwidget.h
+	ui/panes/ggconditioneditorpane.h \
+    ui/panes/ggcontenteditorpane.h
 unix {
     target.path = /usr/lib
     INSTALLS += target
@@ -82,7 +84,8 @@ FORMS += \
     ui/components/ggconnectioneditorwidget.ui \
     ui/dialogs/ggchoseconnectionslotdlg.ui \
     ui/ggpageeditpanel.ui \
-    ui/components/ggcontenteditorwidget.ui
+	ui/panes/ggconditioneditorpane.ui \
+    ui/panes/ggcontenteditorpane.ui
 
 RESOURCES += \
     ui/resources.qrc

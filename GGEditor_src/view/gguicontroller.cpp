@@ -15,7 +15,9 @@ GGUIController::GGUIController(QObject *parent)
       m_model(NULL),
       m_cmdFactory(NULL),
       m_createMode(CreateNone),
-      m_saveCommand(NULL)
+      m_saveCommand(NULL),
+      m_directConnSource(NULL),
+      m_directConnSlot(GGConnectionSlot::NoConnection)
 {
     m_stack = new GGCommandStack;
 }
@@ -41,6 +43,8 @@ void GGUIController::setModel(GGViewModel *model)
 
 void GGUIController::setCreationMode(GGUIController::CreationMode mode)
 {
+    m_directConnSlot = GGConnectionSlot::NoConnection;
+    m_directConnSource = NULL;
     if (mode != m_createMode) {
         m_createMode = mode;
         emit creationModeChanged(mode);
@@ -190,6 +194,25 @@ void GGUIController::handleSceneClick(QPointF pos)
             this->setSelection(QSet<GGViewPage*>()<<cmd->createdPage(), QSet<GGViewConnection*>());
         }
     }
+}
+
+void GGUIController::connectPageDirect(GGPage *src, GGConnectionSlot slot)
+{
+    setCreationMode(CreateConnectionDirect);
+    m_directConnSource = src;
+    m_directConnSlot = slot;
+    emit connectingDirect(src, slot);
+}
+
+void GGUIController::setDirectConnectionPage(GGPage *dest)
+{
+    doExecCmd(m_cmdFactory->createConnection(m_model->getViewPageForPage(m_directConnSource), m_model->getViewPageForPage(dest), m_directConnSlot));
+    abortDirectConnection();
+}
+
+void GGUIController::abortDirectConnection()
+{
+    setCreationMode(CreateNone);
 }
 
 bool GGUIController::doExecCmd(GGAbstractCommand *cmd)

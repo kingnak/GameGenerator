@@ -1,27 +1,27 @@
-#include "ggcontenteditorwidget.h"
-#include "ui_ggcontenteditorwidget.h"
+#include "ggcontenteditorpane.h"
+#include "ui_ggcontenteditorpane.h"
 #include <model/ggpage.h>
 #include <model/ggcontentelement.h>
 #include <view/gguicontroller.h>
 
-GGContentEditorWidget::GGContentEditorWidget(QWidget *parent) :
+GGContentEditorPane::GGContentEditorPane(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::GGContentEditorWidget)
+    ui(new Ui::GGContentEditorPane)
 {
     ui->setupUi(this);
 }
 
-GGContentEditorWidget::~GGContentEditorWidget()
+GGContentEditorPane::~GGContentEditorPane()
 {
     delete ui;
 }
 
-void GGContentEditorWidget::setController(GGUIController *ctrl)
+void GGContentEditorPane::setController(GGUIController *ctrl)
 {
     m_ctrl = ctrl;
 }
 
-void GGContentEditorWidget::setContentPage(GGContentPage *p)
+void GGContentEditorPane::setContentPage(GGContentPage *p)
 {
     m_page = p;
     ui->txtCaption->setText(p->caption());
@@ -31,12 +31,12 @@ void GGContentEditorWidget::setContentPage(GGContentPage *p)
     ui->lblPreview->setPixmap(pix);
 }
 
-void GGContentEditorWidget::on_txtCaption_editingFinished()
+void GGContentEditorPane::on_txtCaption_editingFinished()
 {
     m_ctrl->changeContentPageCaption(m_page, ui->txtCaption->text());
 }
 
-void GGContentEditorWidget::on_btnChange_clicked()
+void GGContentEditorPane::on_btnChange_clicked()
 {
     // TODO
 }

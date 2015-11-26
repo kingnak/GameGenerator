@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>GGConditionEditorPane</class>
+ <widget class="QWidget" name="GGConditionEditorPane">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>416</width>
+    <height>63</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>&lt;TODO: CONDITION&gt;</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="GGConnectionEditorWidget" name="wgtTrue" native="true"/>
+   </item>
+   <item>
+    <widget class="GGConnectionEditorWidget" name="wgtFalse" native="true"/>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>GGConnectionEditorWidget</class>
+   <extends>QWidget</extends>
+   <header>ui/components/ggconnectioneditorwidget.h</header>
+   <container>1</container>
+   <slots>
+    <signal>activated(GGPage*,GGConnectionSlot)</signal>
+    <signal>updateCaption(GGPage*,GGConnectionSlot,QString)</signal>
+   </slots>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>wgtTrue</sender>
+   <signal>activated(GGPage*,GGConnectionSlot)</signal>
+   <receiver>GGConditionEditorPane</receiver>
+   <slot>connectPage()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>145</x>
+     <y>72</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>170</x>
+     <y>5</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>wgtFalse</sender>
+   <signal>activated(GGPage*,GGConnectionSlot)</signal>
+   <receiver>GGConditionEditorPane</receiver>
+   <slot>connectPage()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>195</x>
+     <y>135</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>215</x>
+     <y>0</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>connectPage()</slot>
+ </slots>
+</ui>

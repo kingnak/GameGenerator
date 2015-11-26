@@ -145,33 +145,38 @@ void GGEditorScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
         QGraphicsScene::mousePressEvent(event);
         return;
     }
-    if (m_ctrl->creationMode() == GGUIController::CreateConnection) {
-        // Create connection => store source
-        QGraphicsItem *srcItm = itemAt(event->scenePos(), QTransform());
-        GGPageItem *src = qgraphicsitem_cast<GGPageItem*> (srcItm);
-        if (!src)
-            if (srcItm == m_selItem)
-                src = m_selItem->wrappedItem();
 
-        if (src) {
-            m_connectSource = src;
-            m_connectorLine = new QGraphicsLineItem(QLineF(src->scenePos(), event->scenePos()));
-            addItem(m_connectorLine);
+    if (event->button() == Qt::LeftButton) {
+        if (m_ctrl->creationMode() == GGUIController::CreateConnection) {
+            // Create connection => store source
+            GGPageItem *src = getItemAtPos(event->scenePos());
 
-            // mark source as selected
-            clearSelection();
-            m_inUpdateSelection = true;
-            src->setSelected(true);
-            m_inUpdateSelection = false;
-            event->accept();
-            return;
-        }
-    }
-    else if (event->button() == Qt::LeftButton) {
-        bool empty = selectedItems().isEmpty();
-        QGraphicsScene::mousePressEvent(event);
-        if (empty && selectedItems().isEmpty()) {
-            emit clickedEmptySpace(event->scenePos());
+            if (src) {
+                m_connectSource = src;
+                m_connectorLine = new QGraphicsLineItem(QLineF(src->scenePos(), event->scenePos()));
+                addItem(m_connectorLine);
+
+                // mark source as selected
+                clearSelection();
+                m_inUpdateSelection = true;
+                src->setSelected(true);
+                m_inUpdateSelection = false;
+                event->accept();
+                return;
+            }
+        } else if (m_ctrl->creationMode() == GGUIController::CreateConnectionDirect) {
+            GGPageItem *p = getItemAtPos(event->scenePos());
+            if (p) {
+                m_ctrl->setDirectConnectionPage(p->page()->page());
+            } else {
+                m_ctrl->abortDirectConnection();
+            }
+        } else {
+            bool empty = selectedItems().isEmpty();
+            QGraphicsScene::mousePressEvent(event);
+            if (empty && selectedItems().isEmpty()) {
+                emit clickedEmptySpace(event->scenePos());
+            }
         }
     } else {
         QGraphicsScene::mousePressEvent(event);
@@ -331,6 +336,16 @@ void GGEditorScene::initSelItem()
         addItem(m_selItem);
         m_selItem->init();
     }
+}
+
+GGPageItem *GGEditorScene::getItemAtPos(QPointF pos)
+{
+    QGraphicsItem *srcItm = itemAt(pos, QTransform());
+    GGPageItem *src = qgraphicsitem_cast<GGPageItem*> (srcItm);
+    if (!src)
+        if (srcItm == m_selItem)
+            src = m_selItem->wrappedItem();
+    return src;
 }
 
 void GGEditorScene::selectionToSets(QSet<GGViewPage *> &pages, QSet<GGViewConnection *> &conns)

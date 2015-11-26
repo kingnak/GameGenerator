@@ -10,6 +10,8 @@ class GGEditorScene;
 class GGViewModel;
 class GGViewPage;
 class GGViewConnection;
+class GGPage;
+class GGConnectionSlot;
 
 namespace Ui {
 class GGMainWindow;
@@ -37,6 +39,7 @@ private slots:
     void setPointerMode();
     void handleAction(QAction *act);
     void setCreationMode();
+    void handleConnectDirect(GGPage *page, const GGConnectionSlot &slot);
 
 private:
     Ui::GGMainWindow *ui;

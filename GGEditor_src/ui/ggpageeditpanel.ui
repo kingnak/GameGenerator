@@ -62,7 +62,7 @@
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
-       <widget class="GGContentEditorWidget" name="wgtCondition" native="true"/>
+       <widget class="GGConditionEditorPane" name="wgtCondition" native="true"/>
       </item>
      </layout>
     </widget>
@@ -74,7 +74,7 @@
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_3">
       <item>
-       <widget class="GGContentEditorWidget" name="wgtContent" native="true"/>
+       <widget class="GGContentEditorPane" name="wgtContent" native="true"/>
       </item>
      </layout>
     </widget>
@@ -103,13 +103,32 @@
      </layout>
     </widget>
    </item>
+   <item>
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>0</width>
+       <height>0</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
   </layout>
  </widget>
  <customwidgets>
   <customwidget>
-   <class>GGContentEditorWidget</class>
+   <class>GGContentEditorPane</class>
    <extends>QWidget</extends>
-   <header>ui/components/ggcontenteditorwidget.h</header>
+   <header>ui/panes/ggcontenteditorpane.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>GGConditionEditorPane</class>
+   <extends>QWidget</extends>
+   <header>ui/panes/ggconditioneditorpane.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

@@ -33,7 +33,7 @@
         </size>
        </property>
        <property name="currentIndex">
-        <number>1</number>
+        <number>2</number>
        </property>
        <widget class="QWidget" name="pageEmpty">
         <widget class="QLabel" name="label">
@@ -47,6 +47,21 @@
          </property>
          <property name="text">
           <string>EMPTY</string>
+         </property>
+        </widget>
+       </widget>
+       <widget class="QWidget" name="pageLinkDirect">
+        <widget class="QLabel" name="label_2">
+         <property name="geometry">
+          <rect>
+           <x>100</x>
+           <y>40</y>
+           <width>47</width>
+           <height>13</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Link Direct</string>
          </property>
         </widget>
        </widget>
@@ -71,8 +86,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>784</width>
-              <height>192</height>
+              <width>764</width>
+              <height>182</height>
              </rect>
             </property>
            </widget>
@@ -106,7 +121,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>20</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">

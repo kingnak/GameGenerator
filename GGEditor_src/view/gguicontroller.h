@@ -6,6 +6,8 @@
 #include <QList>
 #include <QPair>
 
+#include <model/ggconnectionslot.h>
+
 class GGViewModel;
 class GGViewCommandFactory;
 class GGCommandStack;
@@ -27,7 +29,7 @@ public:
     void setModel(GGViewModel *model);
 
     enum CreationMode {
-        CreateNone, CreateStartPage, CreateEndPage, CreateConditionPage, CreateActionPage, CreateDecisionPage, CreateConnection
+        CreateNone, CreateStartPage, CreateEndPage, CreateConditionPage, CreateActionPage, CreateDecisionPage, CreateConnection, CreateConnectionDirect
     };
     Q_ENUMS(CreationMode)
     void setCreationMode(CreationMode mode);
@@ -53,6 +55,10 @@ public slots:
 
     void handleSceneClick(QPointF pos);
 
+    void connectPageDirect(GGPage *src, GGConnectionSlot slot);
+    void setDirectConnectionPage(GGPage *dest);
+    void abortDirectConnection();
+
 signals:
     void objectsSelected(QSet<GGViewPage *> pages, QSet<GGViewConnection *> connections);
     void singlePageSelected(GGViewPage *page);
@@ -66,6 +72,7 @@ signals:
     void redoAvailable(bool avail);
 
     void creationModeChanged(CreationMode mode);
+    void connectingDirect(GGPage *page, GGConnectionSlot slot);
 
 private:
     bool doExecCmd(GGAbstractCommand *cmd);
@@ -77,6 +84,9 @@ private:
     GGViewCommandFactory *m_cmdFactory;
     CreationMode m_createMode;
     GGAbstractCommand *m_saveCommand;
+
+    GGPage *m_directConnSource;
+    GGConnectionSlot m_directConnSlot;
 };
 
 #endif // GGUICONTROLLER_H
