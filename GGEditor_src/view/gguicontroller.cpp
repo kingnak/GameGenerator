@@ -121,6 +121,11 @@ void GGUIController::changeContentPageCaption(GGContentPage *page, QString cap)
     doExecCmd(m_cmdFactory->setPageCaption(page, cap));
 }
 
+void GGUIController::changeContentElement(GGContentPage *page, GGContentElement *elem)
+{
+    doExecCmd(m_cmdFactory->exchangeContent(page, elem));
+}
+
 void GGUIController::connnectPagesDialog(GGViewPage *src, GGViewPage *dest)
 {
     setCreationMode(CreateNone);

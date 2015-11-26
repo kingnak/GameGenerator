@@ -35,7 +35,8 @@ SOURCES += \
     ui/dialogs/ggchoseconnectionslotdlg.cpp \
     ui/ggpageeditpanel.cpp \
     ui/panes/ggconditioneditorpane.cpp \
-    ui/panes/ggcontenteditorpane.cpp
+    ui/panes/ggcontenteditorpane.cpp \
+    ui/dialogs/ggeditcontentelementdialog.cpp
 
 HEADERS += \
     model/ggeditmodel.h \
@@ -64,7 +65,8 @@ HEADERS += \
     ui/dialogs/ggchoseconnectionslotdlg.h \
     ui/ggpageeditpanel.h \
 	ui/panes/ggconditioneditorpane.h \
-    ui/panes/ggcontenteditorpane.h
+    ui/panes/ggcontenteditorpane.h \
+    ui/dialogs/ggeditcontentelementdialog.h
 unix {
     target.path = /usr/lib
     INSTALLS += target
@@ -85,7 +87,8 @@ FORMS += \
     ui/dialogs/ggchoseconnectionslotdlg.ui \
     ui/ggpageeditpanel.ui \
 	ui/panes/ggconditioneditorpane.ui \
-    ui/panes/ggcontenteditorpane.ui
+    ui/panes/ggcontenteditorpane.ui \
+    ui/dialogs/ggeditcontentelementdialog.ui
 
 RESOURCES += \
     ui/resources.qrc

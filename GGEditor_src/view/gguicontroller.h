@@ -14,6 +14,7 @@ class GGCommandStack;
 class GGAbstractCommand;
 class GGPage;
 class GGContentPage;
+class GGContentElement;
 class GGViewPage;
 class GGViewConnection;
 
@@ -48,6 +49,7 @@ public slots:
     void changePageName(GGPage *page, QString name);
     void changePageScene(GGPage *page, QString scene);
     void changeContentPageCaption(GGContentPage *page, QString cap);
+    void changeContentElement(GGContentPage *page, GGContentElement *elem);
 
     void connnectPagesDialog(GGViewPage *src, GGViewPage *dest);
 

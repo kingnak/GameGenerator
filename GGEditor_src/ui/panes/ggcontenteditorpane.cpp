@@ -1,5 +1,6 @@
 #include "ggcontenteditorpane.h"
 #include "ui_ggcontenteditorpane.h"
+#include "../dialogs/ggeditcontentelementdialog.h"
 #include <model/ggpage.h>
 #include <model/ggcontentelement.h>
 #include <view/gguicontroller.h>
@@ -38,5 +39,10 @@ void GGContentEditorPane::on_txtCaption_editingFinished()
 
 void GGContentEditorPane::on_btnChange_clicked()
 {
-    // TODO
+    GGEditContentElementDialog dlg;
+    dlg.setContentElement(m_page->content());
+    if (dlg.exec() == QDialog::Accepted) {
+        GGContentElement *e = dlg.getContentElement();
+        m_ctrl->changeContentElement(m_page, e);
+    }
 }
