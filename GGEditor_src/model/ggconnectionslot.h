@@ -24,6 +24,7 @@ public:
 
     SlotType type() const { return m_type; }
     int index() const { return m_idx; }
+    bool isLink() const;
 
     bool connect(GGPage *page, GGConnection *conn, GGConnection **oldConnection = 0);
     GGConnection *getExistingConnection(GGPage *page);

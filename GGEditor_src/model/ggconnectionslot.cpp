@@ -98,6 +98,18 @@ bool GGConnectionSlot::doConnectTest(bool doSet, GGPage *page, GGConnection *con
     }
 }
 
+bool GGConnectionSlot::isLink() const
+{
+    switch (m_type) {
+    case StartConnection:
+    case TrueConnection:
+    case FalseConnection:
+        return false;
+    default:
+        return true;
+    }
+}
+
 bool GGConnectionSlot::connect(GGPage *page, GGConnection *conn, GGConnection **oldConnection)
 {
     return doConnectTest(true, page, conn, oldConnection);

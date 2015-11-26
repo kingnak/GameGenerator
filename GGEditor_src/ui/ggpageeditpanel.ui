@@ -50,7 +50,7 @@
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_6">
       <item>
-       <widget class="QWidget" name="wgtAction" native="true"/>
+       <widget class="GGActionEditorPane" name="wgtAction" native="true"/>
       </item>
      </layout>
     </widget>
@@ -98,7 +98,7 @@
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_4">
       <item>
-       <widget class="QWidget" name="wgtDecision" native="true"/>
+       <widget class="GGDecisionEditorPane" name="wgtDecision" native="true"/>
       </item>
      </layout>
     </widget>
@@ -129,6 +129,18 @@
    <class>GGConditionEditorPane</class>
    <extends>QWidget</extends>
    <header>ui/panes/ggconditioneditorpane.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>GGActionEditorPane</class>
+   <extends>QWidget</extends>
+   <header>ui/panes/ggactioneditorpane.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>GGDecisionEditorPane</class>
+   <extends>QWidget</extends>
+   <header>ui/panes/ggdecisioneditorpane.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

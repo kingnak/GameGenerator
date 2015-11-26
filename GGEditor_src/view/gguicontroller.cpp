@@ -126,6 +126,35 @@ void GGUIController::changeContentElement(GGContentPage *page, GGContentElement 
     doExecCmd(m_cmdFactory->exchangeContent(page, elem));
 }
 
+void GGUIController::changeLink(GGPage *page, GGConnectionSlot slot, const GGLink &link)
+{
+    GGAbstractCommand *cmd = NULL;
+    if (slot.type() == GGConnectionSlot::ActionConnection) {
+        cmd = m_cmdFactory->setActionLink(GG::as<GGActionPage>(page), link);
+    } else if (slot.type() == GGConnectionSlot::DecisionConnection) {
+        cmd = m_cmdFactory->setDecisionLink(GG::as<GGDecisionPage>(page), slot.index(), link);
+    } else if (slot.type() == GGConnectionSlot::MappedConnection) {
+        GGMappedContentPage *mcp = GG::as<GGMappedContentPage>(page);
+        GGMappedLink ml = mcp->getLinkMap().value(slot.index());
+        ml.setLink(link);
+        cmd = m_cmdFactory->setMappedLink(mcp, slot.index(), ml);
+    } else {
+        Q_ASSERT_X(false, "GGUIController::changeLink", "Unsupported connection type");
+        return;
+    }
+    doExecCmd(cmd);
+}
+
+void GGUIController::removeDecisionLink(GGDecisionPage *page, int idx)
+{
+    doExecCmd(m_cmdFactory->removeDecisionLink(page, idx));
+}
+
+void GGUIController::addDecisionLink(GGDecisionPage *page)
+{
+    doExecCmd(m_cmdFactory->addDecisionLink(page));
+}
+
 void GGUIController::connnectPagesDialog(GGViewPage *src, GGViewPage *dest)
 {
     setCreationMode(CreateNone);

@@ -45,6 +45,7 @@ void GGChoseConnectionSlotDlg::setConnectionSlots(GGPage *source)
         w->setConnection(m_page, s);
         w->setCheckable(true);
         w->setEditable(false);
+        w->setFields(GGConnectionEditorWidget::Type | GGConnectionEditorWidget::Page | GGConnectionEditorWidget::Number | GGConnectionEditorWidget::Caption);
         connect(w, SIGNAL(toggled(bool,GGPage*,GGConnectionSlot)), this, SLOT(toggledOne()));
         ui->scrollAreaWidgetContents->layout()->addWidget(w);
     }

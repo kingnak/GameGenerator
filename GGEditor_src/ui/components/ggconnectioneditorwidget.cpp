@@ -7,14 +7,24 @@ GGConnectionEditorWidget::GGConnectionEditorWidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::GGConnectionEditorWidget),
     m_page(NULL),
-    m_slot(GGConnectionSlot::NoConnection)
+    m_slot(GGConnectionSlot::NoConnection),
+    m_fields(All),
+    m_editable(true)
 {
     ui->setupUi(this);
+    ui->btnDelete->setVisible(false);
+    connect(ui->wgtAction, SIGNAL(actionUpdated(GGAction)), this, SLOT(actionUpdated()));
 }
 
 GGConnectionEditorWidget::~GGConnectionEditorWidget()
 {
     delete ui;
+}
+
+void GGConnectionEditorWidget::setFields(int f)
+{
+    m_fields = static_cast<Fields>(f);
+    setConnection(m_page, m_slot);
 }
 
 GGConnectionSlot GGConnectionEditorWidget::slot()
@@ -27,14 +37,38 @@ GGPage *GGConnectionEditorWidget::page()
     return m_page;
 }
 
+GGAction GGConnectionEditorWidget::getAction()
+{
+    return ui->wgtAction->getAction();
+}
+
+QString GGConnectionEditorWidget::getCaption()
+{
+    return ui->txtCaption->text();
+}
+
 void GGConnectionEditorWidget::setConnection(GGPage *page, GGConnectionSlot slot)
 {
     m_page = page;
     m_slot = slot;
     ui->txtCaption->setEnabled(false);
     ui->txtCaption->setText("");
-    ui->lblNumber->setVisible(false);
     ui->lblConnectedPage->setText("");
+
+    ui->lblType->setVisible(m_fields.testFlag(Type));
+    ui->lblNumber->setVisible(false);
+    ui->wgtAction->setVisible(false);
+    ui->txtCaption->setVisible(false);
+
+    if (slot.isLink()) {
+        if (m_fields.testFlag(Action)) ui->wgtAction->setVisible(true);
+        if (m_fields.testFlag(Caption)) ui->txtCaption->setVisible(true);
+    }
+
+    ui->txtCaption->setEnabled(m_editable);
+    ui->wgtAction->setEditable(m_editable);
+    ui->btnDelete->setEnabled(m_editable);
+
     if (m_page && m_slot.type() != GGConnectionSlot::NoConnection) {
         setEnabled(true);
         GGConnection *c = slot.getExistingConnection(page);
@@ -60,22 +94,22 @@ void GGConnectionEditorWidget::setConnection(GGPage *page, GGConnectionSlot slot
             break;
         case GGConnectionSlot::ActionConnection:
             ui->lblType->setText(tr("Action Connection"));
-            ui->txtCaption->setEnabled(m_editable);
             ui->txtCaption->setText(GG::as<GGActionPage>(page)->actionLink().name());
+            ui->wgtAction->setAction(GG::as<GGActionPage>(page)->actionLink().action());
             break;
         case GGConnectionSlot::DecisionConnection:
-            ui->lblNumber->setVisible(true);
-            ui->lblNumber->setText(QString("#%1").arg(m_slot.index()));
+            if (m_fields.testFlag(Number)) ui->lblNumber->setVisible(true);
+            ui->lblNumber->setText(QString("#%1").arg(m_slot.index()+1));
             ui->lblType->setText("Decision");
-            ui->txtCaption->setEnabled(m_editable);
             ui->txtCaption->setText(GG::as<GGDecisionPage>(page)->getDecisionLinks().value(m_slot.index()).name());
+            ui->wgtAction->setAction(GG::as<GGDecisionPage>(page)->getDecisionLinks().value(m_slot.index()).action());
             break;
         case GGConnectionSlot::MappedConnection:
-            ui->lblNumber->setVisible(true);
-            ui->lblNumber->setText(QString("#%1").arg(m_slot.index()));
+            if (m_fields.testFlag(Number)) ui->lblNumber->setVisible(true);
+            ui->lblNumber->setText(QString("#%1").arg(m_slot.index()+1));
             ui->lblType->setText("Mapped");
-            ui->txtCaption->setEnabled(m_editable);
             ui->txtCaption->setText(GG::as<GGMappedContentPage>(page)->getLinkMap().value(m_slot.index()).link().name());
+            ui->wgtAction->setAction(GG::as<GGMappedContentPage>(page)->getLinkMap().value(m_slot.index()).link().action());
             break;
         }
     } else {
@@ -101,10 +135,15 @@ void GGConnectionEditorWidget::setChecked(bool checked)
     }
 }
 
+void GGConnectionEditorWidget::setDeletable(bool canDelete)
+{
+    ui->btnDelete->setVisible(canDelete);
+}
+
 void GGConnectionEditorWidget::activateClicked()
 {
     if (!ui->btnActivate->isCheckable()) {
-        activated(m_page, m_slot);
+        emit this->activated(m_page, m_slot);
     }
 }
 
@@ -120,4 +159,14 @@ void GGConnectionEditorWidget::captionEdited()
     if (m_editable) {
         emit updateCaption(m_page, m_slot, ui->txtCaption->text());
     }
+}
+
+void GGConnectionEditorWidget::actionUpdated()
+{
+    emit updateAction(m_page, m_slot, ui->wgtAction->getAction());
+}
+
+void GGConnectionEditorWidget::deleteMe()
+{
+    emit deleteConnection(m_page, m_slot);
 }

@@ -14,7 +14,9 @@ class GGCommandStack;
 class GGAbstractCommand;
 class GGPage;
 class GGContentPage;
+class GGDecisionPage;
 class GGContentElement;
+class GGLink;
 class GGViewPage;
 class GGViewConnection;
 
@@ -50,6 +52,9 @@ public slots:
     void changePageScene(GGPage *page, QString scene);
     void changeContentPageCaption(GGContentPage *page, QString cap);
     void changeContentElement(GGContentPage *page, GGContentElement *elem);
+    void changeLink(GGPage *page, GGConnectionSlot slot, const GGLink &link);
+    void removeDecisionLink(GGDecisionPage *page, int idx);
+    void addDecisionLink(GGDecisionPage *page);
 
     void connnectPagesDialog(GGViewPage *src, GGViewPage *dest);
 

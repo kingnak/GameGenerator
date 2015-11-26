@@ -23,6 +23,8 @@ void GGPageEditPanel::setController(GGUIController *ctrl)
 
     ui->wgtContent->setController(m_ctrl);
     ui->wgtCondition->setController(m_ctrl);
+    ui->wgtAction->setController(m_ctrl);
+    ui->wgtDecision->setController(m_ctrl);
 }
 
 GGPageEditPanel::~GGPageEditPanel()
@@ -122,7 +124,8 @@ void GGPageEditPanel::setCondition()
 void GGPageEditPanel::setAction()
 {
     setMappedContent();
-    if (GG::as<GGActionPage>(m_page)) {
+    if (GGActionPage *ap = GG::as<GGActionPage>(m_page)) {
+        ui->wgtAction->setPage(ap);
         ui->grpAction->setVisible(true);
     }
 }
@@ -130,7 +133,8 @@ void GGPageEditPanel::setAction()
 void GGPageEditPanel::setDecision()
 {
     setMappedContent();
-    if (GG::as<GGDecisionPage>(m_page)) {
+    if (GGDecisionPage *dp = GG::as<GGDecisionPage>(m_page)) {
+        ui->wgtDecision->setPage(dp);
         ui->grpDecision->setVisible(true);
     }
 }

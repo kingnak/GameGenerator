@@ -36,7 +36,10 @@ SOURCES += \
     ui/ggpageeditpanel.cpp \
     ui/panes/ggconditioneditorpane.cpp \
     ui/panes/ggcontenteditorpane.cpp \
-    ui/dialogs/ggeditcontentelementdialog.cpp
+    ui/dialogs/ggeditcontentelementdialog.cpp \
+    ui/components/ggactioneditorwidget.cpp \
+    ui/panes/ggactioneditorpane.cpp \
+    ui/panes/ggdecisioneditorpane.cpp
 
 HEADERS += \
     model/ggeditmodel.h \
@@ -66,7 +69,10 @@ HEADERS += \
     ui/ggpageeditpanel.h \
 	ui/panes/ggconditioneditorpane.h \
     ui/panes/ggcontenteditorpane.h \
-    ui/dialogs/ggeditcontentelementdialog.h
+    ui/dialogs/ggeditcontentelementdialog.h \
+    ui/components/ggactioneditorwidget.h \
+    ui/panes/ggactioneditorpane.h \
+    ui/panes/ggdecisioneditorpane.h
 unix {
     target.path = /usr/lib
     INSTALLS += target
@@ -88,7 +94,10 @@ FORMS += \
     ui/ggpageeditpanel.ui \
 	ui/panes/ggconditioneditorpane.ui \
     ui/panes/ggcontenteditorpane.ui \
-    ui/dialogs/ggeditcontentelementdialog.ui
+    ui/dialogs/ggeditcontentelementdialog.ui \
+    ui/components/ggactioneditorwidget.ui \
+    ui/panes/ggactioneditorpane.ui \
+    ui/panes/ggdecisioneditorpane.ui
 
 RESOURCES += \
     ui/resources.qrc
