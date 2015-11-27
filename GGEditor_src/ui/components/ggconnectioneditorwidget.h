@@ -23,11 +23,20 @@ public:
         Action  = 0x0004,
         Page    = 0x0008,
         Number  = 0x0010,
-        All     = Type|Caption|Action|Page|Number
+        AllFields   = Type|Caption|Action|Page|Number
     };
     Q_DECLARE_FLAGS(Fields, Field)
+    enum ConnectionAction {
+        Delete  = 0x0001,
+        Connect = 0x0002,
+        Select  = 0x0004,
+        Edit    = 0x0008,
+        AllActions  = Delete | Connect | Edit
+    };
+    Q_DECLARE_FLAGS(ConnectionActions, ConnectionAction)
 
     void setFields(int f);
+    void setActions(int a);
 
     GGConnectionSlot slot();
     GGPage *page();
@@ -36,10 +45,10 @@ public:
 
 public slots:
     void setConnection(GGPage *page, GGConnectionSlot slot);
-    void setCheckable(bool checkable);
-    void setEditable(bool editable);
+    //void setCheckable(bool checkable);
+    //void setEditable(bool editable);
     void setChecked(bool checked);
-    void setDeletable(bool canDelete);
+    //void setDeletable(bool canDelete);
 
 signals:
     void activated(GGPage *page, GGConnectionSlot slot);
@@ -59,8 +68,9 @@ private:
     Ui::GGConnectionEditorWidget *ui;
     GGPage *m_page;
     GGConnectionSlot m_slot;
-    bool m_editable;
+    //bool m_editable;
     Fields m_fields;
+    ConnectionActions m_actions;
 };
 
 #endif // GGCONNECTIONEDITORWIDGET_H

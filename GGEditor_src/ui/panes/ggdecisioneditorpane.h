@@ -4,7 +4,9 @@
 #include <QWidget>
 
 class GGUIController;
+class GGPage;
 class GGDecisionPage;
+class GGConnectionSlot;
 
 namespace Ui {
 class GGDecisionEditorPane;
@@ -24,12 +26,9 @@ public slots:
     void setPage(GGDecisionPage *page);
 
 private slots:
-    void deleteLink();
-    void connectLink();
+    void deleteLink(GGPage *, const GGConnectionSlot &slt);
+    void connectLink(GGPage *, const GGConnectionSlot &slt);
     void on_btnAdd_clicked();
-
-private:
-    void cleanDecisions();
 
 private:
     Ui::GGDecisionEditorPane *ui;

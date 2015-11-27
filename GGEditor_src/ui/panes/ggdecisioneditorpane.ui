@@ -15,17 +15,17 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QScrollArea" name="scrollArea">
+    <widget class="GGConnectionListEditorWidget" name="wgtDecisions">
      <property name="widgetResizable">
       <bool>true</bool>
      </property>
-     <widget class="QWidget" name="wgtDecisions">
+     <widget class="QWidget" name="wgtDecisionsa_2">
       <property name="geometry">
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>380</width>
-        <height>250</height>
+        <width>386</width>
+        <height>255</height>
        </rect>
       </property>
      </widget>
@@ -61,6 +61,14 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>GGConnectionListEditorWidget</class>
+   <extends>QScrollArea</extends>
+   <header>ui/components/ggconnectionlisteditorwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="../resources.qrc"/>
  </resources>

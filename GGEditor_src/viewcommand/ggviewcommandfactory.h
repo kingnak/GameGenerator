@@ -32,6 +32,7 @@ public:
 
     GGCreateViewConnectionCmd *createConnection(GGViewPage *src, GGViewPage *dest, GGConnectionSlot slot);
     GGDeleteViewConnectionCmd *deleteConnection(GGViewConnection *conn);
+    using GGEditCommandFactory::deleteConnection;
 
 
 private:

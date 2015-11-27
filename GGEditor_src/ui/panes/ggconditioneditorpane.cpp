@@ -39,3 +39,16 @@ void GGConditionEditorPane::connectPage()
         Q_ASSERT(false);
     }
 }
+
+void GGConditionEditorPane::deleteConn()
+{
+    if (sender() == ui->wgtTrue) {
+        if (m_page->trueConnection())
+            m_ctrl->deleteConnection(m_page->trueConnection());
+    } else if (sender() == ui->wgtFalse) {
+        if (m_page->falseConnection())
+            m_ctrl->deleteConnection(m_page->falseConnection());
+    } else {
+        Q_ASSERT(false);
+    }
+}

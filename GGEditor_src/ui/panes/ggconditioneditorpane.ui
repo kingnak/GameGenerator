@@ -14,16 +14,7 @@
    <string>Form</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
-   <property name="leftMargin">
-    <number>0</number>
-   </property>
-   <property name="topMargin">
-    <number>0</number>
-   </property>
-   <property name="rightMargin">
-    <number>0</number>
-   </property>
-   <property name="bottomMargin">
+   <property name="margin">
     <number>0</number>
    </property>
    <item>
@@ -50,6 +41,7 @@
    <slots>
     <signal>activated(GGPage*,GGConnectionSlot)</signal>
     <signal>updateCaption(GGPage*,GGConnectionSlot,QString)</signal>
+    <signal>deleteConnection(GGPage*,GGConnectionSlot)</signal>
    </slots>
   </customwidget>
  </customwidgets>
@@ -63,7 +55,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>145</x>
-     <y>72</y>
+     <y>40</y>
     </hint>
     <hint type="destinationlabel">
      <x>170</x>
@@ -79,7 +71,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>195</x>
-     <y>135</y>
+     <y>62</y>
     </hint>
     <hint type="destinationlabel">
      <x>215</x>
@@ -87,8 +79,41 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>wgtTrue</sender>
+   <signal>deleteConnection(GGPage*,GGConnectionSlot)</signal>
+   <receiver>GGConditionEditorPane</receiver>
+   <slot>deleteConn()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>321</x>
+     <y>33</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>339</x>
+     <y>-9</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>wgtFalse</sender>
+   <signal>deleteConnection(GGPage*,GGConnectionSlot)</signal>
+   <receiver>GGConditionEditorPane</receiver>
+   <slot>deleteConn()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>116</x>
+     <y>51</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>159</x>
+     <y>-10</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>connectPage()</slot>
+  <slot>deleteConn()</slot>
  </slots>
 </ui>

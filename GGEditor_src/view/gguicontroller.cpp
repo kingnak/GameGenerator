@@ -94,6 +94,11 @@ void GGUIController::changeMultiplePagesGeometry(QList<QPair<GGViewPage *, QRect
     doExecCmd(grp);
 }
 
+void GGUIController::deleteConnection(GGConnection *c)
+{
+    doExecCmd(m_cmdFactory->deleteConnection(c));
+}
+
 void GGUIController::deleteMultipleObjects(QSet<GGViewPage *> pages, QSet<GGViewConnection *> connections)
 {
     GGCommandGroup *grp = new GGCommandGroup;

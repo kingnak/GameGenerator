@@ -46,6 +46,7 @@ public slots:
 
     void changePageGeometry(GGViewPage *page, QRect rect);
     void changeMultiplePagesGeometry(QList<QPair<GGViewPage*,QRect> > changes);
+    void deleteConnection(GGConnection *c);
     void deleteMultipleObjects(QSet<GGViewPage*> pages, QSet<GGViewConnection*> connections);
 
     void changePageName(GGPage *page, QString name);

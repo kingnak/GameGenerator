@@ -86,7 +86,7 @@
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_5">
       <item>
-       <widget class="QWidget" name="wgtMapping" native="true"/>
+       <widget class="GGMappingEditorPane" name="wgtMapping" native="true"/>
       </item>
      </layout>
     </widget>
@@ -141,6 +141,12 @@
    <class>GGDecisionEditorPane</class>
    <extends>QWidget</extends>
    <header>ui/panes/ggdecisioneditorpane.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>GGMappingEditorPane</class>
+   <extends>QWidget</extends>
+   <header>ui/panes/ggmappingeditorpane.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

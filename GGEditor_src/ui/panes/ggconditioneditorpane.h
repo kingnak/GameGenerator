@@ -25,6 +25,7 @@ public slots:
 
 private slots:
     void connectPage();
+    void deleteConn();
 
 private:
     Ui::GGConditionEditorPane *ui;

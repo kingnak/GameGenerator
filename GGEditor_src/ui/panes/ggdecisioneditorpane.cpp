@@ -9,7 +9,8 @@ GGDecisionEditorPane::GGDecisionEditorPane(QWidget *parent) :
     ui(new Ui::GGDecisionEditorPane)
 {
     ui->setupUi(this);
-    ui->wgtDecisions->setLayout(new QVBoxLayout);
+    connect(ui->wgtDecisions, SIGNAL(connectConnection(GGPage*,GGConnectionSlot)), this, SLOT(connectLink(GGPage*,GGConnectionSlot)));
+    connect(ui->wgtDecisions, SIGNAL(deleteConnection(GGPage*,GGConnectionSlot)), this, SLOT(deleteLink(GGPage*,GGConnectionSlot)));
 }
 
 GGDecisionEditorPane::~GGDecisionEditorPane()
@@ -25,42 +26,24 @@ void GGDecisionEditorPane::setController(GGUIController *ctrl)
 void GGDecisionEditorPane::setPage(GGDecisionPage *page)
 {
     m_page = page;
-
-    cleanDecisions();
-    if (!page) return;
+    QList<GGConnectionSlot> slts;
     for (int i = 0; i < page->getDecisionLinks().size(); ++i) {
-        GGConnectionEditorWidget *w = new GGConnectionEditorWidget;
-        w->setConnection(page, GGConnectionSlot(GGConnectionSlot::DecisionConnection, i));
-        w->setDeletable(true);
-        connect(w, SIGNAL(deleteConnection(GGPage*,GGConnectionSlot)), this, SLOT(deleteLink()));
-        connect(w, SIGNAL(activated(GGPage*,GGConnectionSlot)), this, SLOT(connectLink()));
-        ui->wgtDecisions->layout()->addWidget(w);
+        slts << GGConnectionSlot(GGConnectionSlot::DecisionConnection, i);
     }
-    ui->wgtDecisions->layout()->addItem(new QSpacerItem(0,0,QSizePolicy::Minimum, QSizePolicy::Expanding));
+    ui->wgtDecisions->setConnections(m_page, slts);
 }
 
-void GGDecisionEditorPane::deleteLink()
+void GGDecisionEditorPane::deleteLink(GGPage *, const GGConnectionSlot &slt)
 {
-    GGConnectionSlot s = static_cast<GGConnectionEditorWidget*> (sender())->slot();
-    m_ctrl->removeDecisionLink(m_page, s.index());
+    m_ctrl->removeDecisionLink(m_page, slt.index());
 }
 
-void GGDecisionEditorPane::connectLink()
+void GGDecisionEditorPane::connectLink(GGPage *, const GGConnectionSlot &slt)
 {
-    GGConnectionSlot s = static_cast<GGConnectionEditorWidget*> (sender())->slot();
-    m_ctrl->connectPageDirect(m_page, s);
+    m_ctrl->connectPageDirect(m_page, slt);
 }
 
 void GGDecisionEditorPane::on_btnAdd_clicked()
 {
     m_ctrl->addDecisionLink(m_page);
-}
-
-void GGDecisionEditorPane::cleanDecisions()
-{
-    while (ui->wgtDecisions->layout()->count()) {
-        delete ui->wgtDecisions->layout()->takeAt(0);
-    }
-    QList<GGConnectionEditorWidget*> l = ui->wgtDecisions->findChildren<GGConnectionEditorWidget*>();
-    qDeleteAll(l);
 }

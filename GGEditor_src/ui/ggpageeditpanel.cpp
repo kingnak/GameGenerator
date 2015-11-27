@@ -25,6 +25,7 @@ void GGPageEditPanel::setController(GGUIController *ctrl)
     ui->wgtCondition->setController(m_ctrl);
     ui->wgtAction->setController(m_ctrl);
     ui->wgtDecision->setController(m_ctrl);
+    ui->wgtMapping->setController(m_ctrl);
 }
 
 GGPageEditPanel::~GGPageEditPanel()
@@ -48,6 +49,7 @@ void GGPageEditPanel::displayPage(GGPage *page)
     setAction();
     setDecision();
 
+    /*
     switch (page->type()) {
     case GGStartPage::Type:
         ui->grpContent->setVisible(true);
@@ -59,18 +61,19 @@ void GGPageEditPanel::displayPage(GGPage *page)
         ui->grpCondition->setVisible(true);
         break;
     case GGActionPage::Type:
-        ui->grpContent->setVisible(true);
+        //ui->grpContent->setVisible(true);
         ui->grpAction->setVisible(true);
         ui->grpMapping->setVisible(true);
         break;
     case GGDecisionPage::Type:
-        ui->grpContent->setVisible(true);
+        //ui->grpContent->setVisible(true);
         ui->grpDecision->setVisible(true);
         ui->grpMapping->setVisible(true);
         break;
     default:
         Q_ASSERT(false);
     }
+    */
 }
 
 void GGPageEditPanel::pageUpdated(GGPage *page)
@@ -105,12 +108,14 @@ void GGPageEditPanel::setCommon()
 
 void GGPageEditPanel::setStart()
 {
-    setContent();
+    if (GG::as<GGStartPage>(m_page))
+        setContent();
 }
 
 void GGPageEditPanel::setEnd()
 {
-    setContent();
+    if (GG::as<GGEndPage>(m_page))
+        setContent();
 }
 
 void GGPageEditPanel::setCondition()
@@ -149,8 +154,8 @@ void GGPageEditPanel::setContent()
 
 void GGPageEditPanel::setMappedContent()
 {
-    setContent();
-    if (GG::as<GGMappedContentPage>(m_page)) {
+    if (GGMappedContentPage *mcp = GG::as<GGMappedContentPage>(m_page)) {
+        ui->wgtMapping->setMappedPage(mcp);
         ui->grpMapping->setVisible(true);
     }
 }

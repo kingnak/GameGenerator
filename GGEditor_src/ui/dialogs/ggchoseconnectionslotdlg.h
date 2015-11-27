@@ -25,7 +25,7 @@ public slots:
     void setConnectionSlots(GGPage *source);
 
 private slots:
-    void toggledOne();
+    void toggledOne(int idx);
 
 private:
     Ui::GGChoseConnectionSlotDlg *ui;

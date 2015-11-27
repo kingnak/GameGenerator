@@ -8,11 +8,12 @@ GGConnectionEditorWidget::GGConnectionEditorWidget(QWidget *parent) :
     ui(new Ui::GGConnectionEditorWidget),
     m_page(NULL),
     m_slot(GGConnectionSlot::NoConnection),
-    m_fields(All),
-    m_editable(true)
+    m_fields(AllFields),
+    m_actions(AllActions)/*,
+    m_editable(true)*/
 {
     ui->setupUi(this);
-    ui->btnDelete->setVisible(false);
+//    ui->btnDelete->setVisible(false);
     connect(ui->wgtAction, SIGNAL(actionUpdated(GGAction)), this, SLOT(actionUpdated()));
 }
 
@@ -24,6 +25,15 @@ GGConnectionEditorWidget::~GGConnectionEditorWidget()
 void GGConnectionEditorWidget::setFields(int f)
 {
     m_fields = static_cast<Fields>(f);
+    setConnection(m_page, m_slot);
+}
+
+void GGConnectionEditorWidget::setActions(int a)
+{
+    m_actions = static_cast<ConnectionActions>(a);
+    if (m_actions.testFlag(Connect) && m_actions.testFlag(Select)) {
+        m_actions = m_actions & (~Select);
+    }
     setConnection(m_page, m_slot);
 }
 
@@ -59,15 +69,18 @@ void GGConnectionEditorWidget::setConnection(GGPage *page, GGConnectionSlot slot
     ui->lblNumber->setVisible(false);
     ui->wgtAction->setVisible(false);
     ui->txtCaption->setVisible(false);
+    ui->btnActivate->setChecked(false);
+    ui->btnActivate->setCheckable(m_actions.testFlag(Select));
 
     if (slot.isLink()) {
         if (m_fields.testFlag(Action)) ui->wgtAction->setVisible(true);
         if (m_fields.testFlag(Caption)) ui->txtCaption->setVisible(true);
     }
 
-    ui->txtCaption->setEnabled(m_editable);
-    ui->wgtAction->setEditable(m_editable);
-    ui->btnDelete->setEnabled(m_editable);
+    ui->txtCaption->setEnabled(m_actions.testFlag(Edit));
+    ui->wgtAction->setEditable(m_actions.testFlag(Edit));
+    ui->btnDelete->setEnabled(m_actions.testFlag(Edit));
+    ui->btnDelete->setVisible(m_actions.testFlag(Delete));
 
     if (m_page && m_slot.type() != GGConnectionSlot::NoConnection) {
         setEnabled(true);
@@ -117,16 +130,16 @@ void GGConnectionEditorWidget::setConnection(GGPage *page, GGConnectionSlot slot
     }
 }
 
-void GGConnectionEditorWidget::setCheckable(bool checkable)
-{
-    ui->btnActivate->setCheckable(checkable);
-}
+//void GGConnectionEditorWidget::setCheckable(bool checkable)
+//{
+//    ui->btnActivate->setCheckable(checkable);
+//}
 
-void GGConnectionEditorWidget::setEditable(bool editable)
-{
-    m_editable = editable;
-    setConnection(m_page, m_slot);
-}
+//void GGConnectionEditorWidget::setEditable(bool editable)
+//{
+//    m_editable = editable;
+//    setConnection(m_page, m_slot);
+//}
 
 void GGConnectionEditorWidget::setChecked(bool checked)
 {
@@ -135,10 +148,10 @@ void GGConnectionEditorWidget::setChecked(bool checked)
     }
 }
 
-void GGConnectionEditorWidget::setDeletable(bool canDelete)
-{
-    ui->btnDelete->setVisible(canDelete);
-}
+//void GGConnectionEditorWidget::setDeletable(bool canDelete)
+//{
+//    ui->btnDelete->setVisible(canDelete);
+//}
 
 void GGConnectionEditorWidget::activateClicked()
 {
@@ -156,7 +169,7 @@ void GGConnectionEditorWidget::activateToggled(bool toggled)
 
 void GGConnectionEditorWidget::captionEdited()
 {
-    if (m_editable) {
+    if (m_actions.testFlag(Edit)) {
         emit updateCaption(m_page, m_slot, ui->txtCaption->text());
     }
 }
