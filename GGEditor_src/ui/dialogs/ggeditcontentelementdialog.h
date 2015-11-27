@@ -22,12 +22,6 @@ public:
 public slots:
     void setContentElement(GGContentElement *elem);
 
-private slots:
-    void changePage();
-    void on_btnBrowseImage_clicked();   
-
-    void loadImagePreview();
-
 private:
     Ui::GGEditContentElementDialog *ui;
 };
