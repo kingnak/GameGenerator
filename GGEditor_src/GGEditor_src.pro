@@ -78,7 +78,8 @@ HEADERS += \
     ui/panes/ggdecisioneditorpane.h \
     ui/components/ggeditcontentelementwidget.h \
     ui/panes/ggmappingeditorpane.h \
-    ui/components/ggconnectionlisteditorwidget.h
+    ui/components/ggconnectionlisteditorwidget.h \
+    view/ggresizableitem.h
 unix {
     target.path = /usr/lib
     INSTALLS += target

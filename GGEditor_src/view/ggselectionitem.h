@@ -3,7 +3,7 @@
 
 #include <QGraphicsItem>
 
-class GGPageItem;
+class GGResizableItem;
 
 class GGSelectionItem : public QGraphicsItem
 {
@@ -13,8 +13,8 @@ public:
 
     GGSelectionItem(QGraphicsItem *parent = 0);
 
-    void setWrappedItem(GGPageItem *item);
-    GGPageItem *wrappedItem() const { return m_wrapped; }
+    void setWrappedItem(GGResizableItem *item);
+    GGResizableItem *wrappedItem() const { return m_wrapped; }
 
     QRectF boundingRect() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
@@ -29,7 +29,7 @@ private:
     QRectF wrappedRect() const;
 
 private:
-    GGPageItem *m_wrapped;
+    GGResizableItem *m_wrapped;
 
     class GGCornerGrabber;
     QList<GGCornerGrabber *> m_grabbers;

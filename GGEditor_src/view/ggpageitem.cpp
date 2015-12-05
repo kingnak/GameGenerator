@@ -9,10 +9,11 @@
 #include <QDebug>
 
 GGPageItem::GGPageItem(GGViewPage *page, QGraphicsItem *parent)
-    : QGraphicsItem(parent),
+    : GGResizableItem(parent),
       m_page(page)
 {
-    setDrawingGeometry(page->bounds());
+    QRectF rf = page->bounds();
+    resizeToRect(rf);
     setFlag(QGraphicsItem::ItemIsMovable);
     setFlag(QGraphicsItem::ItemIsSelectable);
     setFlag(QGraphicsItem::ItemSendsScenePositionChanges);
@@ -137,7 +138,7 @@ void GGPageItem::updateConnectionPositions()
     }
 }
 
-void GGPageItem::setDrawingGeometry(QRectF f)
+void GGPageItem::resizeToRect(QRectF &f)
 {
     switch (m_page->page()->type()) {
     case GGStartPage::Type:
@@ -160,11 +161,19 @@ void GGPageItem::setDrawingGeometry(QRectF f)
         setPos(f.center());
         m_geo = mapFromScene(f).boundingRect();
     }
+
+    updateConnectionPositions();
+}
+
+QRectF GGPageItem::resizeRect() const
+{
+    return innerBoundingRect();
 }
 
 void GGPageItem::updateDrawingGeometry()
 {
-    setDrawingGeometry(m_page->bounds());
+    QRectF rf = m_page->bounds();
+    resizeToRect(rf);
 }
 
 QVariant GGPageItem::itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant &value)

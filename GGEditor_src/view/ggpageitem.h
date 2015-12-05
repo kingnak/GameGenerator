@@ -1,14 +1,14 @@
 #ifndef GGPAGEITEM_H
 #define GGPAGEITEM_H
 
-#include <QGraphicsItem>
+#include "ggresizableitem.h"
 #include <QSet>
 
 class GGViewPage;
 class GGEditorScene;
 class GGConnectionItem;
 
-class GGPageItem : public QGraphicsItem
+class GGPageItem : public GGResizableItem
 {
 public:
     enum { Type = QGraphicsItem::UserType + 1 };
@@ -30,8 +30,8 @@ public:
 
     void updateConnectionPositions();
 
-    void setDrawingGeometry(QRectF f);
-//    void commitPageGeometry();
+    void resizeToRect(QRectF &rect);
+    QRectF resizeRect() const;
     void updateDrawingGeometry();
     QRectF innerBoundingRect() const;
 

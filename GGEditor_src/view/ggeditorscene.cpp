@@ -344,7 +344,7 @@ GGPageItem *GGEditorScene::getItemAtPos(QPointF pos)
     GGPageItem *src = qgraphicsitem_cast<GGPageItem*> (srcItm);
     if (!src)
         if (srcItm == m_selItem)
-            src = m_selItem->wrappedItem();
+            src = qgraphicsitem_cast<GGPageItem*> (m_selItem->wrappedItem());
     return src;
 }
 

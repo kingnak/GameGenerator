@@ -1,5 +1,5 @@
 #include "ggselectionitem.h"
-#include "ggpageitem.h"
+#include "ggresizableitem.h"
 #include <QtGui>
 #include <QGraphicsSceneMouseEvent>
 
@@ -31,7 +31,7 @@ GGSelectionItem::GGSelectionItem(QGraphicsItem *parent)
 {
 }
 
-void GGSelectionItem::setWrappedItem(GGPageItem *item)
+void GGSelectionItem::setWrappedItem(GGResizableItem *item)
 {
     setVisible(false);
     m_wrapped = item;
@@ -102,10 +102,9 @@ bool GGSelectionItem::sceneEventFilter(QGraphicsItem *watched, QEvent *event)
         r.adjust(dx,dy,dw,dh);
 
         prepareGeometryChange();
-        m_wrapped->setDrawingGeometry(r);
+        m_wrapped->resizeToRect(r);
         setPos(m_wrapped->pos());
         updateCornerGrabberPos();
-        m_wrapped->updateConnectionPositions();
         corner->m_dragStart = mevent->scenePos();
         m_wrapped->setFlag(QGraphicsItem::ItemSendsScenePositionChanges, sendsScenePos);
         return true;
@@ -132,5 +131,5 @@ void GGSelectionItem::updateCornerGrabberPos()
 QRectF GGSelectionItem::wrappedRect() const
 {
     if (!m_wrapped) return QRectF();
-    return m_wrapped->innerBoundingRect();
+    return m_wrapped->resizeRect();
 }
