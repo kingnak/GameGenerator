@@ -1,5 +1,6 @@
 #include "ggcommandstack.h"
 #include "ggabstractcommand.h"
+#include "ggcommandgroup.h"
 
 GGCommandStack::GGCommandStack()
     : m_commandIndex(-1), m_lastCommand(NULL)
@@ -21,7 +22,7 @@ bool GGCommandStack::execute(GGAbstractCommand *cmd, bool deleteIfFailed)
         }
         return false;
     }
-    m_lastError.clear();;
+    m_lastError.clear();
 
     m_stack << cmd;
     m_commandIndex++;
@@ -92,12 +93,12 @@ GGAbstractCommand *GGCommandStack::redoCommand()
     return (!m_stack.empty() && m_commandIndex < m_stack.size()-1) ? m_stack[m_commandIndex+1] : NULL;
 }
 
-QList<GGAbstractCommand *> GGCommandStack::getAllCommands()
+QList<GGAbstractCommand *> GGCommandStack::getAllCommands() const
 {
     return m_stack;
 }
 
-QList<GGAbstractCommand *> GGCommandStack::getUndoCommands()
+QList<GGAbstractCommand *> GGCommandStack::getUndoCommands() const
 {
     // There is no reverse???
     QList<GGAbstractCommand *> ret;
@@ -108,9 +109,57 @@ QList<GGAbstractCommand *> GGCommandStack::getUndoCommands()
     return ret;
 }
 
-QList<GGAbstractCommand *> GGCommandStack::getRedoCommands()
+QList<GGAbstractCommand *> GGCommandStack::getRedoCommands() const
 {
     return m_stack.mid(m_commandIndex+1);
+}
+
+void GGCommandStack::merge(GGCommandStack &other)
+{
+    if (other.getUndoCommands().isEmpty()) {
+        // Don't merge empty stack
+        return;
+    }
+
+    purge();
+    m_stack << other.m_stack;
+    m_lastCommand = other.m_lastCommand;
+    m_lastError = other.m_lastError;
+    m_commandIndex += other.m_commandIndex + 1;
+
+    other.m_stack.clear();
+    other.clear();
+}
+
+void GGCommandStack::mergeAsGroup(GGCommandStack &other)
+{
+    GGCommandGroup *grp = other.toCommandGroup();
+    // Don't merge an empty group
+    if (!grp || grp->commands().isEmpty()) {
+        return;
+    }
+
+    purge();
+    m_lastError.clear();
+
+    m_stack << grp;
+    m_commandIndex++;
+    m_lastCommand = grp;
+}
+
+GGCommandGroup *GGCommandStack::toCommandGroup()
+{
+    // TODO: Return NULL if empty stack?
+
+    purge();
+
+    GGCommandGroup *ret = new GGCommandGroup;
+    ret->m_commands << m_stack;
+    ret->m_state = GGAbstractCommand::Executed;
+
+    m_stack.clear();
+    clear();
+    return ret;
 }
 
 void GGCommandStack::purge()

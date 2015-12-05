@@ -5,6 +5,7 @@
 #include <QString>
 
 class GGAbstractCommand;
+class GGCommandGroup;
 
 class GGCommandStack
 {
@@ -24,9 +25,13 @@ public:
     GGAbstractCommand *undoCommand();
     GGAbstractCommand *redoCommand();
 
-    QList<GGAbstractCommand *> getAllCommands();
-    QList<GGAbstractCommand *> getUndoCommands();
-    QList<GGAbstractCommand *> getRedoCommands();
+    QList<GGAbstractCommand *> getAllCommands() const;
+    QList<GGAbstractCommand *> getUndoCommands() const;
+    QList<GGAbstractCommand *> getRedoCommands() const;
+
+    void merge(GGCommandStack &other);
+    void mergeAsGroup(GGCommandStack &other);
+    GGCommandGroup *toCommandGroup();
 
 private:
     void purge();

@@ -4,6 +4,8 @@
 #include "ggabstractcommand.h"
 #include <QList>
 
+class GGCommandStack;
+
 class GGCommandGroup : public GGAbstractCommand
 {
 public:
@@ -22,6 +24,8 @@ protected:
 
 private:
     QList<GGAbstractCommand *> m_commands;
+
+    friend class GGCommandStack;
 };
 
 #endif // GGCOMMANDGROUP_H
