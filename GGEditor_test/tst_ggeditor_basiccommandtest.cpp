@@ -418,13 +418,22 @@ void GGEditor_BasicCommandTest::testCommandStackMerge()
 
     {
         GGCommandStack stk2;
+        // For redoability
+        stk1.execute(new Incer(i));
+        stk1.undo();
+
         QVERIFY(i == 150);
         stk1.merge(stk2);
         QVERIFY2(stk1.getUndoCommands().size() == 6, "Stack size not correct after merge with empty stack");
+        QVERIFY2(stk1.redoCommand() != NULL, "Redoability gone after merging with empty stack");
     }
 
     {
         GGCommandStack stk2;
+        // For redoability
+        stk1.execute(new Incer(i));
+        stk1.undo();
+
         QVERIFY(stk2.execute(new Incer(i)));
         QVERIFY(stk2.execute(new Doubler(i)));
         QVERIFY(stk2.undo());
@@ -432,6 +441,7 @@ void GGEditor_BasicCommandTest::testCommandStackMerge()
         QVERIFY(i == 150);
         stk1.merge(stk2);
         QVERIFY2(stk1.getUndoCommands().size() == 6, "Stack size not correct after merge with stack having all commands undone");
+        QVERIFY2(stk1.redoCommand() != NULL, "Redoability gone after merging with empty stack");
     }
 
     QVERIFY(stk1.undo());
@@ -497,6 +507,29 @@ void GGEditor_BasicCommandTest::testCommandStackMergeGroup()
     QVERIFY2(grp->commands().size() == 2, "Group size wrong after merging group");
     QVERIFY2(grp->commands()[0] == inc, "First command wrong in group");
     QVERIFY2(grp->commands()[1] == dbl, "second command wrong in group");
+
+    {
+        GGCommandStack stk2;
+        Incer *inc2 = new Incer(i);
+        // For redoability
+        stk1.execute(inc2);
+        stk1.undo();
+        stk1.mergeAsGroup(stk2);
+        QVERIFY2(stk1.redoCommand() == inc2, "Redoability gone after merging with empty stack");
+    }
+
+    {
+        GGCommandStack stk2;
+        Incer *inc2 = new Incer(i);
+        // For redoability
+        stk1.execute(inc2);
+        stk1.undo();
+
+        stk2.execute(new Doubler(i));
+        stk2.undo();
+        stk1.mergeAsGroup(stk2);
+        QVERIFY2(stk1.redoCommand() == inc2, "Redoability gone after merging with all undone stack");
+    }
 }
 
 void GGEditor_BasicCommandTest::testCommandGroup_data()
