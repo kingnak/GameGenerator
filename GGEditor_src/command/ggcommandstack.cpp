@@ -149,8 +149,6 @@ void GGCommandStack::mergeAsGroup(GGCommandStack &other)
 
 GGCommandGroup *GGCommandStack::toCommandGroup()
 {
-    // TODO: Return NULL if empty stack?
-
     purge();
 
     GGCommandGroup *ret = new GGCommandGroup;
@@ -159,6 +157,12 @@ GGCommandGroup *GGCommandStack::toCommandGroup()
 
     m_stack.clear();
     clear();
+
+    if (ret->commands().isEmpty()) {
+        delete ret;
+        ret = NULL;
+    }
+
     return ret;
 }
 
