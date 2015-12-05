@@ -14,7 +14,16 @@
    <string>Form</string>
   </property>
   <layout class="QFormLayout" name="formLayout">
-   <property name="margin">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
     <number>0</number>
    </property>
    <item row="0" column="0">
@@ -56,17 +65,21 @@
        <property name="text">
         <string/>
        </property>
-       <property name="scaledContents">
-        <bool>true</bool>
-       </property>
       </widget>
      </item>
      <item>
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
-        <widget class="QPushButton" name="btnChange">
+        <widget class="QPushButton" name="btnChangeContent">
          <property name="text">
-          <string>...</string>
+          <string>Edit &amp;Content</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="btnChangeMapping">
+         <property name="text">
+          <string>Edit &amp;Mapping</string>
          </property>
         </widget>
        </item>

@@ -42,7 +42,9 @@ SOURCES += \
     ui/panes/ggdecisioneditorpane.cpp \
     ui/components/ggeditcontentelementwidget.cpp \
     ui/panes/ggmappingeditorpane.cpp \
-    ui/components/ggconnectionlisteditorwidget.cpp
+    ui/components/ggconnectionlisteditorwidget.cpp \
+    ui/dialogs/ggeditcontentmappingdialog.cpp \
+    view/ggmappingscene.cpp
 
 HEADERS += \
     model/ggeditmodel.h \
@@ -79,7 +81,9 @@ HEADERS += \
     ui/components/ggeditcontentelementwidget.h \
     ui/panes/ggmappingeditorpane.h \
     ui/components/ggconnectionlisteditorwidget.h \
-    view/ggresizableitem.h
+    view/ggresizableitem.h \
+    ui/dialogs/ggeditcontentmappingdialog.h \
+    view/ggmappingscene.h
 unix {
     target.path = /usr/lib
     INSTALLS += target
@@ -107,7 +111,8 @@ FORMS += \
     ui/panes/ggdecisioneditorpane.ui \
     ui/components/ggeditcontentelementwidget.ui \
     ui/panes/ggmappingeditorpane.ui \
-    ui/components/ggconnectionlisteditorwidget.ui
+    ui/components/ggconnectionlisteditorwidget.ui \
+    ui/dialogs/ggeditcontentmappingdialog.ui
 
 RESOURCES += \
     ui/resources.qrc

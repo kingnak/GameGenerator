@@ -25,7 +25,8 @@ public slots:
 
 private slots:
     void on_txtCaption_editingFinished();
-    void on_btnChange_clicked();
+    void on_btnChangeContent_clicked();
+    void on_btnChangeMapping_clicked();
 
 private:
     Ui::GGMappingEditorPane *ui;

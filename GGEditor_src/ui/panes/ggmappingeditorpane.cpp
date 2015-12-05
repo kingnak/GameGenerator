@@ -1,6 +1,7 @@
 #include "ggmappingeditorpane.h"
 #include "ui_ggmappingeditorpane.h"
 #include "../dialogs/ggeditcontentelementdialog.h"
+#include "../dialogs/ggeditcontentmappingdialog.h"
 #include <view/gguicontroller.h>
 #include <model/ggpage.h>
 #include <model/ggcontentelement.h>
@@ -38,7 +39,7 @@ void GGMappingEditorPane::on_txtCaption_editingFinished()
     m_ctrl->changeContentPageCaption(m_page, ui->txtCaption->text());
 }
 
-void GGMappingEditorPane::on_btnChange_clicked()
+void GGMappingEditorPane::on_btnChangeContent_clicked()
 {
     GGEditContentElementDialog dlg;
     dlg.setContentElement(m_page->content());
@@ -46,4 +47,11 @@ void GGMappingEditorPane::on_btnChange_clicked()
         GGContentElement *e = dlg.getContentElement();
         m_ctrl->changeContentElement(m_page, e);
     }
+}
+
+void GGMappingEditorPane::on_btnChangeMapping_clicked()
+{
+    GGEditContentMappingDialog dlg;
+    dlg.setMappedPage(m_page);
+    dlg.exec();
 }

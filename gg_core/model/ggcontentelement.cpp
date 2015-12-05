@@ -38,13 +38,16 @@ void GGTextContent::setTextContent(QString content)
 
 QPixmap GGTextContent::preview(QSize sz) const
 {
+    QRect bound;
+    if (!sz.isEmpty()) {
+        bound = QRect(QPoint(), sz);
+    }
     QPixmap ret(sz);
     ret.fill(Qt::transparent);
     QPainter p(&ret);
     QTextDocument doc;
     doc.setHtml(m_textContent);
-    doc.drawContents(&p, QRect(QPoint(), sz));
-    //p.drawText(QRect(QPoint(), sz), m_textContent);
+    doc.drawContents(&p, bound);
     return ret;
 }
 
@@ -63,5 +66,8 @@ void GGImageContent::setImageFilePath(QString path)
 QPixmap GGImageContent::preview(QSize sz) const
 {
     QImage img(m_imageFilePath);
-    return QPixmap::fromImage(img.scaled(sz, Qt::KeepAspectRatio));
+    if (!sz.isEmpty()) {
+        img = img.scaled(sz, Qt::KeepAspectRatio);
+    }
+    return QPixmap::fromImage(img);
 }
