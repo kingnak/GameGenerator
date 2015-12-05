@@ -383,6 +383,122 @@ void GGEditor_BasicCommandTest::testCommandStackOrder()
     QVERIFY(i == 20);
 }
 
+void GGEditor_BasicCommandTest::testCommandStackMerge()
+{
+    int i = 10;
+    //Incer *inc1 = new Incer(i);
+    //Doubler *dbl1 = new Doubler(i);
+    GGCommandStack stk1;
+
+    QVERIFY(stk1.execute(new Incer(i)));
+    QVERIFY(stk1.execute(new Doubler(i)));
+    QVERIFY(stk1.execute(new Doubler(i)));
+    QVERIFY(stk1.undo());
+    QVERIFY(i == 30);
+
+    {
+        GGCommandStack stk2;
+        QVERIFY(stk2.execute(new Incer(i)));
+        QVERIFY(stk2.execute(new Doubler(i)));
+        QVERIFY(i == 70);
+        stk1.merge(stk2);
+        QVERIFY2(stk1.getUndoCommands().size() == 4, "Stack size not correct after merge");
+    }
+
+    {
+        GGCommandStack stk2;
+        QVERIFY(stk2.execute(new Incer(i)));
+        QVERIFY(stk2.execute(new Doubler(i)));
+        QVERIFY(stk2.execute(new Doubler(i)));
+        QVERIFY(stk2.undo());
+        QVERIFY(i == 150);
+        stk1.merge(stk2);
+        QVERIFY2(stk1.getUndoCommands().size() == 6, "Stack size not correct after merge with stack having undone command");
+    }
+
+    {
+        GGCommandStack stk2;
+        QVERIFY(i == 150);
+        stk1.merge(stk2);
+        QVERIFY2(stk1.getUndoCommands().size() == 6, "Stack size not correct after merge with empty stack");
+    }
+
+    {
+        GGCommandStack stk2;
+        QVERIFY(stk2.execute(new Incer(i)));
+        QVERIFY(stk2.execute(new Doubler(i)));
+        QVERIFY(stk2.undo());
+        QVERIFY(stk2.undo());
+        QVERIFY(i == 150);
+        stk1.merge(stk2);
+        QVERIFY2(stk1.getUndoCommands().size() == 6, "Stack size not correct after merge with stack having all commands undone");
+    }
+
+    QVERIFY(stk1.undo());
+    QVERIFY(stk1.undo());
+    QVERIFY(stk1.undo());
+    QVERIFY(stk1.undo());
+    QVERIFY(stk1.undo());
+    QVERIFY(stk1.undo());
+    QVERIFY(i == 10);
+
+}
+
+void GGEditor_BasicCommandTest::testCommandGroupFromStack()
+{
+    int i = 10;
+    Incer *inc = new Incer(i);
+    Doubler *dbl = new Doubler(i);
+    GGCommandGroup *grp = NULL;
+
+    {
+        GGCommandStack stk;
+        QVERIFY(stk.execute(inc));
+        QVERIFY(stk.execute(dbl));
+        QVERIFY(stk.execute(new Incer(i)));
+        QVERIFY(stk.undo());
+        QVERIFY(i == 30);
+        grp = stk.toCommandGroup();
+    }
+
+    QVERIFY2(grp->state() == GGCommandGroup::Executed, "Command group from stack is not executed");
+    QVERIFY2(grp->commands().size() == 2, "Command group has wrong size");
+    QVERIFY2(grp->commands()[0] == inc, "Fist command not correct");
+    QVERIFY2(grp->commands()[1] == dbl, "Fist command not correct");
+    delete grp;
+}
+
+void GGEditor_BasicCommandTest::testCommandStackMergeGroup()
+{
+    int i = 10;
+    Incer *inc = new Incer(i);
+    Doubler *dbl = new Doubler(i);
+
+    GGCommandStack stk1;
+    QVERIFY(stk1.execute(new Incer(i)));
+    QVERIFY(stk1.execute(new Doubler(i)));
+    QVERIFY(stk1.undo());
+    QVERIFY(i == 15);
+
+    {
+        GGCommandStack stk2;
+        stk2.execute(inc);
+        stk2.execute(dbl);
+        stk2.execute(new Incer(i));
+        stk2.undo();
+        QVERIFY(i == 40);
+
+        stk1.mergeAsGroup(stk2);
+    }
+
+    QVERIFY2(stk1.getUndoCommands().size() == 2, "Stack size wrong after merging as group");
+    QVERIFY2(dynamic_cast<GGCommandGroup*>(stk1.undoCommand()), "Undo command is not a group after merging group");
+    GGCommandGroup *grp = dynamic_cast<GGCommandGroup*>(stk1.undoCommand());
+    QVERIFY2(grp->commands().size() == 2, "Group size wrong after merging group");
+    QVERIFY2(grp->commands()[0] == inc, "First command wrong in group");
+    QVERIFY2(grp->commands()[1] == dbl, "second command wrong in group");
+}
+
 void GGEditor_BasicCommandTest::testCommandGroup_data()
 {
     QTest::addColumn<QString>("failing");

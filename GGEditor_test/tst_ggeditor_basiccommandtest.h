@@ -20,6 +20,9 @@ private slots:
     void testCommandGroupOrder();
     void testCommandStackOrder();
 
+    void testCommandStackMerge();
+    void testCommandGroupFromStack();
+    void testCommandStackMergeGroup();
 
 };
 
