@@ -3,6 +3,7 @@
 #include "../dialogs/ggeditcontentelementdialog.h"
 #include "../dialogs/ggeditcontentmappingdialog.h"
 #include <view/gguicontroller.h>
+#include <viewmodel/ggviewmodel.h>
 #include <model/ggpage.h>
 #include <model/ggcontentelement.h>
 
@@ -32,6 +33,8 @@ void GGMappingEditorPane::setMappedPage(GGMappedContentPage *p)
     if (p->content())
         pix = p->content()->preview(ui->lblPreview->minimumSize());
     ui->lblPreview->setPixmap(pix);
+    QList<GGConnectionSlot> slts = GGConnectionSlot::enumerateConnections(p, GGConnectionSlot::MappedConnection);
+    ui->wgtMappedConnections->setConnections(p, slts);
 }
 
 void GGMappingEditorPane::on_txtCaption_editingFinished()
@@ -51,7 +54,10 @@ void GGMappingEditorPane::on_btnChangeContent_clicked()
 
 void GGMappingEditorPane::on_btnChangeMapping_clicked()
 {
-    GGEditContentMappingDialog dlg;
+    GGEditContentMappingDialog dlg(m_ctrl->model()->editModel());
     dlg.setMappedPage(m_page);
-    dlg.exec();
+    int res = dlg.exec();
+    if (res == QDialog::Accepted) {
+        m_ctrl->applySubcommandsAsSingle(dlg.getExecutedCommands());
+    }
 }

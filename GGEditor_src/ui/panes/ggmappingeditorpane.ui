@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>401</width>
+    <width>500</width>
     <height>228</height>
    </rect>
   </property>
@@ -44,7 +44,7 @@
     </widget>
    </item>
    <item row="1" column="1">
-    <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0,0">
+    <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,0,1,0">
      <item>
       <widget class="QLabel" name="lblPreview">
        <property name="sizePolicy">
@@ -99,6 +99,9 @@
       </layout>
      </item>
      <item>
+      <widget class="GGConnectionListEditorWidget" name="wgtMappedConnections" native="true"/>
+     </item>
+     <item>
       <spacer name="horizontalSpacer">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
@@ -115,6 +118,14 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>GGConnectionListEditorWidget</class>
+   <extends>QWidget</extends>
+   <header>ui/components/ggconnectionlisteditorwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
