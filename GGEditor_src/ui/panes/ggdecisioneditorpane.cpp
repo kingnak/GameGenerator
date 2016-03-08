@@ -26,10 +26,7 @@ void GGDecisionEditorPane::setController(GGUIController *ctrl)
 void GGDecisionEditorPane::setPage(GGDecisionPage *page)
 {
     m_page = page;
-    QList<GGConnectionSlot> slts;
-    for (int i = 0; i < page->getDecisionLinks().size(); ++i) {
-        slts << GGConnectionSlot(GGConnectionSlot::DecisionConnection, i);
-    }
+    QList<GGConnectionSlot> slts = GGConnectionSlot::enumerateConnections(page, GGConnectionSlot::DecisionConnection);
     ui->wgtDecisions->setConnections(m_page, slts);
 }
 
