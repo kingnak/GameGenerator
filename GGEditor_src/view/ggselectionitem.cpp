@@ -29,19 +29,25 @@ GGSelectionItem::GGSelectionItem(QGraphicsItem *parent)
     : QGraphicsItem(parent),
       m_wrapped(NULL)
 {
-    setFlag(QGraphicsItem::ItemIsMovable);
-    setFlag(QGraphicsItem::ItemSendsScenePositionChanges);
+}
+
+GGSelectionItem::~GGSelectionItem()
+{
+    if (m_wrapped) {
+        m_wrapped->setSelectionItem(NULL);
+    }
 }
 
 void GGSelectionItem::setWrappedItem(GGResizableItem *item)
 {
     setVisible(false);
+    if (m_wrapped) m_wrapped->setSelectionItem(NULL);
     m_wrapped = item;
     if (!m_wrapped) return;
+    m_wrapped->setSelectionItem(this);
     setPos(m_wrapped->pos());
     setVisible(true);
     updateCornerGrabberPos();
-    setSelected(true);
     update();
 }
 
@@ -71,14 +77,6 @@ void GGSelectionItem::init()
                << new GGCornerGrabber( 0,+1, 0, 1, 0, 0,this)
                << new GGCornerGrabber(+1,+1, 1, 1, 0, 0,this)
                   ;
-}
-
-QVariant GGSelectionItem::itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant &value)
-{
-    if (change == QGraphicsItem::ItemScenePositionHasChanged) {
-        m_wrapped->setPos(value.toPointF());
-    }
-    return value;
 }
 
 bool GGSelectionItem::sceneEventFilter(QGraphicsItem *watched, QEvent *event)

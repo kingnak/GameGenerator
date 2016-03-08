@@ -12,6 +12,7 @@ public:
     int type() const { return Type; }
 
     GGSelectionItem(QGraphicsItem *parent = 0);
+    ~GGSelectionItem();
 
     void setWrappedItem(GGResizableItem *item);
     GGResizableItem *wrappedItem() const { return m_wrapped; }
@@ -22,7 +23,6 @@ public:
     void init();
 
 protected:
-    QVariant itemChange(GraphicsItemChange change, const QVariant &value);
     bool sceneEventFilter(QGraphicsItem *watched, QEvent *event);
 
 private:
