@@ -31,6 +31,9 @@ public:
 
     void setModel(GGViewModel *model);
 
+    void applySubcommandsAsGroup(GGCommandStack *stack);
+    void applySubcommandsAsSingle(GGCommandStack *stack);
+
     enum CreationMode {
         CreateNone, CreateStartPage, CreateEndPage, CreateConditionPage, CreateActionPage, CreateDecisionPage, CreateConnection, CreateConnectionDirect
     };

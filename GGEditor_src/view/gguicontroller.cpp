@@ -41,6 +41,16 @@ void GGUIController::setModel(GGViewModel *model)
     saveCheckpoint();
 }
 
+void GGUIController::applySubcommandsAsGroup(GGCommandStack *stack)
+{
+    m_stack->mergeAsGroup(*stack);
+}
+
+void GGUIController::applySubcommandsAsSingle(GGCommandStack *stack)
+{
+    m_stack->merge(*stack);
+}
+
 void GGUIController::setCreationMode(GGUIController::CreationMode mode)
 {
     m_directConnSlot = GGConnectionSlot::NoConnection;
