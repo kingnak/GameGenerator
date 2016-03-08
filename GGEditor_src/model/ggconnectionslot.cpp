@@ -195,26 +195,33 @@ GGConnectionSlot GGConnectionSlot::findConnection(const GGPage *page, const GGCo
     return GGConnectionSlot(NoConnection);
 }
 
-QList<GGConnectionSlot> GGConnectionSlot::enumerateConnections(const GGPage *page)
+QList<GGConnectionSlot> GGConnectionSlot::enumerateConnections(const GGPage *page, SlotTypes types)
 {
     QList<GGConnectionSlot> ret;
-    if (GG::as<const GGStartPage>(page)) {
+    if (types.testFlag(StartConnection) && GG::as<const GGStartPage>(page)) {
         ret << StartConnection;
     }
     if (GG::as<const GGConditionPage>(page)) {
-        ret << TrueConnection << FalseConnection;
+        if (types.testFlag(TrueConnection))
+            ret << TrueConnection;
+        if (types.testFlag(FalseConnection))
+            ret << FalseConnection;
     }
-    if (GG::as<const GGActionPage>(page)) {
+    if (types.testFlag(ActionConnection) && GG::as<const GGActionPage>(page)) {
         ret << ActionConnection;
     }
-    if (const GGDecisionPage *dp = GG::as<const GGDecisionPage>(page)) {
-        for (int i = 0; i < dp->getDecisionLinks().size(); ++i) {
-            ret << GGConnectionSlot(DecisionConnection, i);
+    if (types.testFlag(DecisionConnection)) {
+        if (const GGDecisionPage *dp = GG::as<const GGDecisionPage>(page)) {
+            for (int i = 0; i < dp->getDecisionLinks().size(); ++i) {
+                ret << GGConnectionSlot(DecisionConnection, i);
+            }
         }
     }
-    if (const GGMappedContentPage *mcp = GG::as<const GGMappedContentPage>(page)) {
-        for (int i = 0; i < mcp->getLinkMap().size(); ++i) {
-            ret << GGConnectionSlot(MappedConnection, i);
+    if (types.testFlag(MappedConnection)) {
+        if (const GGMappedContentPage *mcp = GG::as<const GGMappedContentPage>(page)) {
+            for (int i = 0; i < mcp->getLinkMap().size(); ++i) {
+                ret << GGConnectionSlot(MappedConnection, i);
+            }
         }
     }
     return ret;
