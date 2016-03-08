@@ -31,6 +31,7 @@ public:
     GGSetActionLinkCmd *setActionLink(GGActionPage *p, const GGLink &lnk);
 
     GGMappedLinkCmd *addMappedLink(GGMappedContentPage *p);
+    GGMappedLinkCmd *addMappedLink(GGMappedContentPage *p, const GGMappedLink &lnk);
     GGMappedLinkCmd *removeMappedLink(GGMappedContentPage *p, int idx);
     GGMappedLinkCmd *setMappedLink(GGMappedContentPage *p, int idx, const GGMappedLink &lnk);
 

@@ -85,6 +85,11 @@ GGMappedLinkCmd *GGEditCommandFactory::addMappedLink(GGMappedContentPage *p)
     return new GGMappedLinkCmd(m_model, p, GGMappedLink::rectangle(QRect()), GGMappedLinkCmd::Add, -1);
 }
 
+GGMappedLinkCmd *GGEditCommandFactory::addMappedLink(GGMappedContentPage *p, const GGMappedLink &lnk)
+{
+    return new GGMappedLinkCmd(m_model, p, lnk, GGMappedLinkCmd::Add, -1);
+}
+
 GGMappedLinkCmd *GGEditCommandFactory::removeMappedLink(GGMappedContentPage *p, int idx)
 {
     return new GGMappedLinkCmd(m_model, p, GGMappedLink::rectangle(QRect()), GGMappedLinkCmd::Remove, idx);

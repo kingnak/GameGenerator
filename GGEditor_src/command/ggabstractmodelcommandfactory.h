@@ -53,6 +53,7 @@ public:
     virtual GGSetActionLinkCmd *setActionLink(GGActionPage *p, const GGLink &lnk) = 0;
 
     virtual GGMappedLinkCmd *addMappedLink(GGMappedContentPage *p) = 0;
+    virtual GGMappedLinkCmd *addMappedLink(GGMappedContentPage *p, const GGMappedLink &lnk) = 0;
     virtual GGMappedLinkCmd *removeMappedLink(GGMappedContentPage *p, int idx) = 0;
     virtual GGMappedLinkCmd *setMappedLink(GGMappedContentPage *p, int idx, const GGMappedLink &lnk) = 0;
 
