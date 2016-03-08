@@ -44,7 +44,8 @@ SOURCES += \
     ui/panes/ggmappingeditorpane.cpp \
     ui/components/ggconnectionlisteditorwidget.cpp \
     ui/dialogs/ggeditcontentmappingdialog.cpp \
-    view/ggmappingscene.cpp
+    view/ggmappingscene.cpp \
+    view/ggmappinguicontroller.cpp
 
 HEADERS += \
     model/ggeditmodel.h \
@@ -83,7 +84,8 @@ HEADERS += \
     ui/components/ggconnectionlisteditorwidget.h \
     view/ggresizableitem.h \
     ui/dialogs/ggeditcontentmappingdialog.h \
-    view/ggmappingscene.h
+    view/ggmappingscene.h \
+    view/ggmappinguicontroller.h
 unix {
     target.path = /usr/lib
     INSTALLS += target
