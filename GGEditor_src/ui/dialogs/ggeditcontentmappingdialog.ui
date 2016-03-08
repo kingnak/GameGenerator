@@ -13,16 +13,18 @@
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
+  <layout class="QVBoxLayout" name="verticalLayout" stretch="1,0">
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,0">
-     <item>
-      <widget class="QGraphicsView" name="graphicsView"/>
-     </item>
-     <item>
-      <widget class="GGConnectionListEditorWidget" name="wgtLinks" native="true"/>
-     </item>
-    </layout>
+    <widget class="QSplitter" name="splitter">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="childrenCollapsible">
+      <bool>false</bool>
+     </property>
+     <widget class="QGraphicsView" name="graphicsView"/>
+     <widget class="GGConnectionListEditorWidget" name="wgtLinks" native="true"/>
+    </widget>
    </item>
    <item>
     <widget class="QDialogButtonBox" name="buttonBox">
@@ -35,6 +37,16 @@
     </widget>
    </item>
   </layout>
+  <action name="actionUndo">
+   <property name="text">
+    <string>Undo</string>
+   </property>
+  </action>
+  <action name="actionRedo">
+   <property name="text">
+    <string>Redo</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>
