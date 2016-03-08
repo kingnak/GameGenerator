@@ -22,6 +22,7 @@ public:
     void init();
 
 protected:
+    QVariant itemChange(GraphicsItemChange change, const QVariant &value);
     bool sceneEventFilter(QGraphicsItem *watched, QEvent *event);
 
 private:

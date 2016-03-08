@@ -14,6 +14,10 @@ public:
 public slots:
     void setMappedElement(QPixmap p);
 
+signals:
+    void addedItem(QRect pos);
+    void movedItem();
+
 protected:
     virtual void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent);
     virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent);

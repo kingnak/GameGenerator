@@ -225,6 +225,7 @@ void GGUIController::handleSceneClick(QPointF pos)
         cmd = m_cmdFactory->createDecisionPage(r);
         break;
     case CreateConnection:
+    case CreateConnectionDirect:
         return;
     }
     if (cmd) {

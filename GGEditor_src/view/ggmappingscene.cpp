@@ -36,6 +36,12 @@ void GGMappingScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
             return;
         }
 
+        QGraphicsItem *itm = this->itemAt(mouseEvent->scenePos(), QTransform());
+        if (itm && itm->type() != QGraphicsPixmapItem::Type) {
+            return;
+        }
+
+
         m_createStart = mouseEvent->scenePos();
         m_createItem = new QGraphicsRectItem(QRectF(m_createStart, QSizeF()));
         addItem(m_createItem);
@@ -76,7 +82,11 @@ void GGMappingScene::updateSelection()
 {
     initSelectionItem();
     if (selectedItems().size() == 1) {
-        m_selItem->setWrappedItem(qgraphicsitem_cast<GGResizableItem*> (selectedItems()[0]));
+        if (selectedItems()[0] != m_selItem) {
+            GGResizableItem *itm = qgraphicsitem_cast<GGResizableItem*> (selectedItems()[0]);
+            clearSelection();
+            m_selItem->setWrappedItem(itm);
+        }
     } else {
         m_selItem->setWrappedItem(NULL);
     }

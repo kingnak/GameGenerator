@@ -20,7 +20,7 @@ class GGEditorScene : public QGraphicsScene
     Q_OBJECT
 public:
     GGEditorScene(GGUIController *ctrl, QObject *parent = 0);
-    void itemMoved(GGPageItem *item);
+//    void itemMoved(GGPageItem *item);
     void connectToController(GGUIController *ctrl);
 
     GGPageItem *itemForPage(GGViewPage *page);

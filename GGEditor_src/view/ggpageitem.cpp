@@ -179,7 +179,8 @@ void GGPageItem::updateDrawingGeometry()
 QVariant GGPageItem::itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant &value)
 {
     if (change == QGraphicsItem::ItemScenePositionHasChanged && scene()) {
-        editScene()->itemMoved(this);
+//        editScene()->itemMoved(this);
+        updateConnectionPositions();
     }
     return value;
 }

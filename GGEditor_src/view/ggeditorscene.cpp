@@ -28,6 +28,7 @@ GGEditorScene::GGEditorScene(GGUIController *ctrl, QObject *parent)
         connectToController(ctrl);
 }
 
+/*
 void GGEditorScene::itemMoved(GGPageItem *item)
 {
     if (item == m_selItem->wrappedItem()) {
@@ -36,6 +37,7 @@ void GGEditorScene::itemMoved(GGPageItem *item)
 
     item->updateConnectionPositions();
 }
+*/
 
 void GGEditorScene::connectToController(GGUIController *ctrl)
 {
@@ -122,6 +124,7 @@ void GGEditorScene::setSelection(QSet<GGViewPage *> pages, QSet<GGViewConnection
             m_connMap[c]->setSelected(true);
     }
     if (pages.size() == 1 && conns.isEmpty()) {
+        clearSelection();
         m_selItem->setWrappedItem(m_pageMap.value(*pages.begin()));
     }
     m_inUpdateSelection = false;
