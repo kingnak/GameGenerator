@@ -117,9 +117,8 @@ void GGMappingScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
         }
     } else {
         QGraphicsScene::mouseReleaseEvent(mouseEvent);
-        auto sel = selectedItems();
-        if (sel.size() == 1) {
-            this->itemMoved(qgraphicsitem_cast<LinkRectItem*>(sel[0]));
+        if (selectedItems().size() == 1) {
+            this->itemMoved(qgraphicsitem_cast<LinkRectItem*>(selectedItems()[0]));
         }
     }
 }
