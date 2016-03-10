@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
+  <layout class="QVBoxLayout" name="verticalLayout" stretch="0,1,0">
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,1">
      <item>
@@ -33,21 +33,7 @@
     </layout>
    </item>
    <item>
-    <widget class="GGConnectionListEditorWidget" name="wgtConnections">
-     <property name="widgetResizable">
-      <bool>true</bool>
-     </property>
-     <widget class="QWidget" name="scrollAreaWidgetContents">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>386</width>
-        <height>237</height>
-       </rect>
-      </property>
-     </widget>
-    </widget>
+    <widget class="GGConnectionListEditorWidget" name="wgtConnections" native="true"/>
    </item>
    <item>
     <widget class="QDialogButtonBox" name="buttonBox">
@@ -64,7 +50,7 @@
  <customwidgets>
   <customwidget>
    <class>GGConnectionListEditorWidget</class>
-   <extends>QScrollArea</extends>
+   <extends>QWidget</extends>
    <header>ui/components/ggconnectionlisteditorwidget.h</header>
    <container>1</container>
   </customwidget>

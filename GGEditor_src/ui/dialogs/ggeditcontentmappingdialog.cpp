@@ -24,6 +24,9 @@ GGEditContentMappingDialog::GGEditContentMappingDialog(GGEditModel *model, QWidg
     this->addAction(ui->actionUndo);
     this->addAction(ui->actionRedo);
 
+    ui->wgtLinks->setFields(GGConnectionEditorWidget::Action | GGConnectionEditorWidget::Caption | GGConnectionEditorWidget::Page | GGConnectionEditorWidget::Number);
+    ui->wgtLinks->setActions(GGConnectionEditorWidget::Edit | GGConnectionEditorWidget::Delete);
+
     connect(ui->actionUndo, SIGNAL(triggered(bool)), m_ctrl, SLOT(undo()));
     connect(ui->actionRedo, SIGNAL(triggered(bool)), m_ctrl, SLOT(redo()));
 
@@ -50,6 +53,7 @@ GGCommandStack *GGEditContentMappingDialog::getExecutedCommands()
 
 void GGEditContentMappingDialog::reject()
 {
+    disconnect(this, SLOT(updatePage(GGPage*)));
     m_ctrl->undoAll();
 
     QDialog::reject();
