@@ -2,9 +2,11 @@
 #define GGMAPPINGEDITORPANE_H
 
 #include <QWidget>
+#include <model/ggconnectionslot.h>
 
 class GGMappedContentPage;
 class GGUIController;
+class GGPage;
 
 namespace Ui {
 class GGMappingEditorPane;
@@ -24,6 +26,8 @@ public slots:
     void setMappedPage(GGMappedContentPage *p);
 
 private slots:
+    void deleteLink(GGPage *, const GGConnectionSlot &slt);
+    void connectLink(GGPage *, const GGConnectionSlot &slt);
     void on_txtCaption_editingFinished();
     void on_btnChangeContent_clicked();
     void on_btnChangeMapping_clicked();

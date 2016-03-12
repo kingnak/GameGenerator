@@ -31,7 +31,8 @@ public:
         Connect = 0x0002,
         Select  = 0x0004,
         Edit    = 0x0008,
-        AllActions  = Delete | Connect | Edit
+        Hover   = 0x0010,
+        DefaultActions  = Delete | Connect | Edit
     };
     Q_DECLARE_FLAGS(ConnectionActions, ConnectionAction)
 
@@ -56,6 +57,8 @@ signals:
     void updateCaption(GGPage *page, GGConnectionSlot slot, QString caption);
     void updateAction(GGPage *page, GGConnectionSlot slot, GGAction action);
     void deleteConnection(GGPage *page, GGConnectionSlot slot);
+    void hoverEnter(GGPage *page, GGConnectionSlot slot);
+    void hoverLeave(GGPage *page, GGConnectionSlot slot);
 
 private slots:
     void activateClicked();
@@ -63,6 +66,8 @@ private slots:
     void captionEdited();
     void actionUpdated();
     void deleteMe();
+    void numberHoverEnter();
+    void numberHoverLeave();
 
 private:
     Ui::GGConnectionEditorWidget *ui;
@@ -71,6 +76,8 @@ private:
     //bool m_editable;
     Fields m_fields;
     ConnectionActions m_actions;
+    QString m_numberBaseStyle;
+    QString m_numberHoverStyle;
 };
 
 #endif // GGCONNECTIONEDITORWIDGET_H

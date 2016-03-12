@@ -170,6 +170,11 @@ void GGUIController::addDecisionLink(GGDecisionPage *page)
     doExecCmd(m_cmdFactory->addDecisionLink(page));
 }
 
+void GGUIController::removeMappedLink(GGMappedContentPage *page, int idx)
+{
+    doExecCmd(m_cmdFactory->removeMappedLink(page, idx));
+}
+
 void GGUIController::connnectPagesDialog(GGViewPage *src, GGViewPage *dest)
 {
     setCreationMode(CreateNone);

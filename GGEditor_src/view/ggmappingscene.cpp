@@ -19,6 +19,24 @@ public:
 
 ///////////////////////////////////
 
+class GGXorGraphicsRectItem : public QGraphicsRectItem
+{
+public:
+    GGXorGraphicsRectItem(QGraphicsItem *parent = 0) : QGraphicsRectItem(parent) {}
+    GGXorGraphicsRectItem(const QRectF &rect, QGraphicsItem *parent = 0) : QGraphicsRectItem(rect, parent) {}
+    GGXorGraphicsRectItem(qreal x, qreal y, qreal w, qreal h, QGraphicsItem *parent = 0) : QGraphicsRectItem(x,y,w,h,parent) {}
+
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
+        painter->setCompositionMode(QPainter::RasterOp_NotSourceXorDestination);
+        QGraphicsRectItem::paint(painter, option, widget);
+    }
+};
+
+///////////////////////////////////
+
+const QColor GGMappingScene::s_defaultColor = Qt::red;
+const QColor GGMappingScene::s_highColor = Qt::blue;
+
 GGMappingScene::GGMappingScene(QObject *parent)
     : QGraphicsScene(parent),
       m_selItem(NULL),
@@ -35,6 +53,15 @@ GGMappingScene::~GGMappingScene()
 
 }
 
+GGConnectionSlot GGMappingScene::getSelectedSlot()
+{
+    LinkRectItem *itm = qgraphicsitem_cast<LinkRectItem *> (selectedItems().at(0));
+    if (itm) {
+        return itm->slt;
+    }
+    return GGConnectionSlot(GGConnectionSlot::NoConnection);
+}
+
 void GGMappingScene::setMappedElement(QPixmap p)
 {
     delete m_pixItem;
@@ -48,8 +75,7 @@ void GGMappingScene::setMappedElement(QPixmap p)
 
 void GGMappingScene::setConnections(GGMappedContentPage *page, QList<GGConnectionSlot> slts)
 {
-    //delete m_selItem;
-    m_selItem->setWrappedItem(NULL);
+    clearSelection();
     qDeleteAll(m_mapItems);
     m_mapItems.clear();
     foreach (GGConnectionSlot s, slts) {
@@ -58,7 +84,7 @@ void GGMappingScene::setConnections(GGMappedContentPage *page, QList<GGConnectio
             LinkRectItem *r = new LinkRectItem;
             QRectF bounds = lnk.rectangle();
             r->resizeToRect(bounds);
-            r->setPen(QPen(Qt::red, 3));
+            r->setPen(QPen(s_defaultColor, s_penWidth));
             r->slt = s;
             addItem(r);
             m_mapItems << r;
@@ -66,7 +92,18 @@ void GGMappingScene::setConnections(GGMappedContentPage *page, QList<GGConnectio
     }
     initSelectionItem();
     if (m_lastSelIdx >= 0 && m_lastSelIdx < m_mapItems.size()) {
-        m_selItem->setWrappedItem(m_mapItems[m_lastSelIdx]);
+        m_mapItems[m_lastSelIdx]->setSelected(true);
+    }
+}
+
+void GGMappingScene::hoverItem(int idx)
+{
+    foreach (GGResizableRectItem *itm, m_mapItems) {
+        itm->setPen(QPen(s_defaultColor, s_penWidth));
+    }
+
+    if (idx >=0 && idx < m_mapItems.size()) {
+        m_mapItems[idx]->setPen(QPen(s_highColor, s_penWidth));
     }
 }
 
@@ -84,9 +121,8 @@ void GGMappingScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
         }
 
         m_createStart = mouseEvent->scenePos();
-        m_createItem = new QGraphicsRectItem(QRectF(m_createStart, QSizeF()));
+        m_createItem = new GGXorGraphicsRectItem(QRectF(m_createStart, QSizeF()));
         addItem(m_createItem);
-
     } else {
         QGraphicsScene::mousePressEvent(mouseEvent);
     }
@@ -96,7 +132,7 @@ void GGMappingScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
     if (m_createItem) {
         QPointF diff = mouseEvent->scenePos()-m_createStart;
-        m_createItem->setRect(QRectF(m_createStart, QSizeF(diff.x(), diff.y())));
+        m_createItem->setRect(QRectF(m_createStart, QSizeF(diff.x(), diff.y())).normalized());
     } else {
         QGraphicsScene::mouseMoveEvent(mouseEvent);
     }
@@ -105,7 +141,7 @@ void GGMappingScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 void GGMappingScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
     if (m_createItem) {
-        QRectF bounds = m_createItem->boundingRect().toRect();
+        QRectF bounds = m_createItem->boundingRect().toRect().normalized();
 
         delete m_createItem;
         m_createItem = NULL;
@@ -114,11 +150,18 @@ void GGMappingScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
         if (bounds.width() > 3 && bounds.height() > 3) {
             m_lastSelIdx = m_mapItems.size();
             emit addedItem(bounds.toRect());
+        } else {
+            QGraphicsScene::mouseReleaseEvent(mouseEvent);
+            clearSelection();
         }
     } else {
         QGraphicsScene::mouseReleaseEvent(mouseEvent);
         if (selectedItems().size() == 1) {
-            this->itemMoved(qgraphicsitem_cast<LinkRectItem*>(selectedItems()[0]));
+            LinkRectItem *itm = qgraphicsitem_cast<LinkRectItem*>(selectedItems()[0]);
+            if (itm->hasMoved()) {
+                itm->commitMove();
+                this->itemMoved(itm);
+            }
         }
     }
 }
@@ -128,7 +171,7 @@ void GGMappingScene::updateSelection()
     initSelectionItem();
     if (selectedItems().size() == 1) {
         if (selectedItems()[0] != m_selItem) {
-            GGResizableItem *itm = qgraphicsitem_cast<GGResizableItem*> (selectedItems()[0]);
+            GGResizableRectItem *itm = qgraphicsitem_cast<GGResizableRectItem*> (selectedItems()[0]);
             //clearSelection();
             m_selItem->setWrappedItem(itm);
             m_lastSelIdx = m_mapItems.indexOf(itm);

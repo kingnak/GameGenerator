@@ -27,7 +27,7 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="QLabel" name="lblNumber">
+    <widget class="GGMouseLabel" name="lblNumber">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
        <horstretch>0</horstretch>
@@ -114,6 +114,15 @@
    <extends>QWidget</extends>
    <header>ui/components/ggactioneditorwidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>GGMouseLabel</class>
+   <extends>QLabel</extends>
+   <header>ui/basic/ggmouselabel.h</header>
+   <slots>
+    <signal>hoverEnter()</signal>
+    <signal>hoverLeave()</signal>
+   </slots>
   </customwidget>
  </customwidgets>
  <resources>

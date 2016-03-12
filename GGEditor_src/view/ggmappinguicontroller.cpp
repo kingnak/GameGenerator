@@ -36,6 +36,11 @@ void GGMappingUIController::moveLink(GGMappedContentPage *page, int idx, QRect r
     m_stack->execute(m_fac->setMappedLink(page, idx, lnk));
 }
 
+void GGMappingUIController::deleteLink(GGMappedContentPage *page, int idx)
+{
+    m_stack->execute(m_fac->removeMappedLink(page, idx));
+}
+
 void GGMappingUIController::undo()
 {
     m_stack->undo();

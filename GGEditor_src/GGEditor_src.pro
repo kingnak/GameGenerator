@@ -45,7 +45,8 @@ SOURCES += \
     ui/components/ggconnectionlisteditorwidget.cpp \
     ui/dialogs/ggeditcontentmappingdialog.cpp \
     view/ggmappingscene.cpp \
-    view/ggmappinguicontroller.cpp
+    view/ggmappinguicontroller.cpp \
+    ui/basic/ggmouselabel.cpp
 
 HEADERS += \
     model/ggeditmodel.h \
@@ -85,7 +86,8 @@ HEADERS += \
     view/ggresizableitem.h \
     ui/dialogs/ggeditcontentmappingdialog.h \
     view/ggmappingscene.h \
-    view/ggmappinguicontroller.h
+    view/ggmappinguicontroller.h \
+    ui/basic/ggmouselabel.h
 unix {
     target.path = /usr/lib
     INSTALLS += target

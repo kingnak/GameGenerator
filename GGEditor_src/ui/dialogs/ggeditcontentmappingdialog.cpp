@@ -20,19 +20,27 @@ GGEditContentMappingDialog::GGEditContentMappingDialog(GGEditModel *model, QWidg
 
     ui->actionUndo->setShortcut(QKeySequence::Undo);
     ui->actionRedo->setShortcut(QKeySequence::Redo);
+    ui->actionDelete->setShortcut(QKeySequence::Delete);
 
     this->addAction(ui->actionUndo);
     this->addAction(ui->actionRedo);
+    ui->graphicsView->addAction(ui->actionDelete);
 
     ui->wgtLinks->setFields(GGConnectionEditorWidget::Action | GGConnectionEditorWidget::Caption | GGConnectionEditorWidget::Page | GGConnectionEditorWidget::Number);
-    ui->wgtLinks->setActions(GGConnectionEditorWidget::Edit | GGConnectionEditorWidget::Delete);
+    ui->wgtLinks->setActions(GGConnectionEditorWidget::Edit | GGConnectionEditorWidget::Delete | GGConnectionEditorWidget::Hover);
 
     connect(ui->actionUndo, SIGNAL(triggered(bool)), m_ctrl, SLOT(undo()));
     connect(ui->actionRedo, SIGNAL(triggered(bool)), m_ctrl, SLOT(redo()));
+    connect(ui->actionDelete, SIGNAL(triggered(bool)), this, SLOT(deleteSelectedItem()));
 
     connect(model, SIGNAL(pageUpdated(GGPage*)), this, SLOT(updatePage(GGPage*)));
     connect(m_scene, SIGNAL(addedItem(QRect)), this, SLOT(addLink(QRect)));
     connect(m_scene, SIGNAL(movedItem(int,QRect)), this, SLOT(moveLink(int,QRect)));
+
+    connect(ui->wgtLinks, SIGNAL(hoverEnteredConnection(GGPage*,GGConnectionSlot)), this, SLOT(handleHoverEnter(GGPage*,GGConnectionSlot)));
+    connect(ui->wgtLinks, SIGNAL(hoverLeftConnection(GGPage*,GGConnectionSlot)), this, SLOT(handleHoverLeave(GGPage*,GGConnectionSlot)));
+
+    connect(ui->wgtLinks, SIGNAL(deleteConnection(GGPage*,GGConnectionSlot)), this, SLOT(deleteConnect(GGPage*,GGConnectionSlot)));
 }
 
 GGEditContentMappingDialog::~GGEditContentMappingDialog()
@@ -80,5 +88,32 @@ void GGEditContentMappingDialog::updatePage(GGPage *page)
         QList<GGConnectionSlot> slts = GGConnectionSlot::enumerateConnections(m_page, GGConnectionSlot::MappedConnection);
         ui->wgtLinks->setConnections(m_page, slts);
         m_scene->setConnections(m_page, slts);
+    }
+}
+
+void GGEditContentMappingDialog::deleteConnect(GGPage *page, GGConnectionSlot slt)
+{
+    Q_UNUSED(page);
+    m_ctrl->deleteLink(m_page, slt.index());
+}
+
+void GGEditContentMappingDialog::handleHoverEnter(GGPage *page, GGConnectionSlot slt)
+{
+    Q_UNUSED(page);
+    m_scene->hoverItem(slt.index());
+}
+
+void GGEditContentMappingDialog::handleHoverLeave(GGPage *page, GGConnectionSlot slt)
+{
+    Q_UNUSED(page);
+    Q_UNUSED(slt);
+    m_scene->hoverItem(-1);
+}
+
+void GGEditContentMappingDialog::deleteSelectedItem()
+{
+    GGConnectionSlot slt = m_scene->getSelectedSlot();
+    if (slt.type() == GGConnectionSlot::MappedConnection) {
+        m_ctrl->deleteLink(m_page, slt.index());
     }
 }

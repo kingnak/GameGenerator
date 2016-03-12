@@ -2,6 +2,7 @@
 #define GGEDITCONTENTMAPPINGDIALOG_H
 
 #include <QDialog>
+#include <model/ggconnectionslot.h>
 
 class GGEditModel;
 class GGPage;
@@ -33,6 +34,10 @@ private slots:
     void addLink(QRect rect);
     void moveLink(int idx, QRect rect);
     void updatePage(GGPage *page);
+    void deleteConnect(GGPage *page, GGConnectionSlot slt);
+    void handleHoverEnter(GGPage *page, GGConnectionSlot slt);
+    void handleHoverLeave(GGPage *page, GGConnectionSlot slt);
+    void deleteSelectedItem();
 
 private:
     Ui::GGEditContentMappingDialog *ui;

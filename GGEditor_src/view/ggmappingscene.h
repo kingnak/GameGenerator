@@ -9,6 +9,8 @@
 
 class GGMappedContentPage;
 class LinkRectItem;
+class GGResizableRectItem;
+class GGXorGraphicsRectItem;
 
 class GGMappingScene : public QGraphicsScene
 {
@@ -17,9 +19,12 @@ public:
     GGMappingScene(QObject *parent = 0);
     ~GGMappingScene();
 
+    GGConnectionSlot getSelectedSlot();
+
 public slots:
     void setMappedElement(QPixmap p);
     void setConnections(GGMappedContentPage *page, QList<GGConnectionSlot> slts);
+    void hoverItem(int idx);
 
 signals:
     void addedItem(QRect pos);
@@ -42,11 +47,14 @@ private:
 
 private:
     GGSelectionItem *m_selItem;
-    QGraphicsRectItem *m_createItem;
+    GGXorGraphicsRectItem *m_createItem;
     QGraphicsItem *m_pixItem;
     QPointF m_createStart;
-    QList<GGResizableItem *> m_mapItems;
+    QList<GGResizableRectItem *> m_mapItems;
     int m_lastSelIdx;
+    static const QColor s_defaultColor;
+    static const QColor s_highColor;
+    static const int s_penWidth = 3;
 };
 
 #endif // GGMAPPINGSCENE_H

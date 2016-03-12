@@ -7,7 +7,7 @@ GGConnectionListEditorWidget::GGConnectionListEditorWidget(QWidget *parent) :
     ui(new Ui::GGConnectionListEditorWidget),
     m_page(NULL),
     m_fields(GGConnectionEditorWidget::AllFields),
-    m_actions(GGConnectionEditorWidget::AllActions)
+    m_actions(GGConnectionEditorWidget::DefaultActions)
 {
     ui->setupUi(this);
     ui->scrollAreaWidgetContents->setLayout(new QVBoxLayout);
@@ -44,6 +44,8 @@ void GGConnectionListEditorWidget::setConnections(GGPage *page, QList<GGConnecti
         connect(w, SIGNAL(deleteConnection(GGPage*,GGConnectionSlot)), this, SIGNAL(deleteConnection(GGPage*,GGConnectionSlot)));
         connect(w, SIGNAL(activated(GGPage*,GGConnectionSlot)), this, SIGNAL(connectConnection(GGPage*,GGConnectionSlot)));
         connect(w, SIGNAL(toggled(bool,GGPage*,GGConnectionSlot)), this, SLOT(handleToggle()));
+        connect(w, SIGNAL(hoverEnter(GGPage*,GGConnectionSlot)), this, SIGNAL(hoverEnteredConnection(GGPage*,GGConnectionSlot)));
+        connect(w, SIGNAL(hoverLeave(GGPage*,GGConnectionSlot)), this, SIGNAL(hoverLeftConnection(GGPage*,GGConnectionSlot)));
         l->addWidget(w, 0);
     }
     l->addStretch(1);

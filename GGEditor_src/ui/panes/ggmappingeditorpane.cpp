@@ -13,6 +13,8 @@ GGMappingEditorPane::GGMappingEditorPane(QWidget *parent) :
     m_ctrl(NULL)
 {
     ui->setupUi(this);
+    connect(ui->wgtMappedConnections, SIGNAL(connectConnection(GGPage*,GGConnectionSlot)), this, SLOT(connectLink(GGPage*,GGConnectionSlot)));
+    connect(ui->wgtMappedConnections, SIGNAL(deleteConnection(GGPage*,GGConnectionSlot)), this, SLOT(deleteLink(GGPage*,GGConnectionSlot)));
 }
 
 GGMappingEditorPane::~GGMappingEditorPane()
@@ -35,6 +37,16 @@ void GGMappingEditorPane::setMappedPage(GGMappedContentPage *p)
     ui->lblPreview->setPixmap(pix);
     QList<GGConnectionSlot> slts = GGConnectionSlot::enumerateConnections(p, GGConnectionSlot::MappedConnection);
     ui->wgtMappedConnections->setConnections(p, slts);
+}
+
+void GGMappingEditorPane::deleteLink(GGPage *, const GGConnectionSlot &slt)
+{
+    m_ctrl->removeMappedLink(m_page, slt.index());
+}
+
+void GGMappingEditorPane::connectLink(GGPage *, const GGConnectionSlot &slt)
+{
+    m_ctrl->connectPageDirect(m_page, slt);
 }
 
 void GGMappingEditorPane::on_txtCaption_editingFinished()

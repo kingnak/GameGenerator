@@ -34,6 +34,8 @@ signals:
     void connectConnection(GGPage *page, GGConnectionSlot slot);
     void selectedConnection(GGPage *page, GGConnectionSlot slot);
     void selectedConnection(int idx);
+    void hoverEnteredConnection(GGPage *page, GGConnectionSlot slot);
+    void hoverLeftConnection(GGPage *page, GGConnectionSlot slot);
 
 private slots:
     void handleToggle();

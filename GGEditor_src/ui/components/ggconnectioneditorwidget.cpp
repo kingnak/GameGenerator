@@ -9,12 +9,17 @@ GGConnectionEditorWidget::GGConnectionEditorWidget(QWidget *parent) :
     m_page(NULL),
     m_slot(GGConnectionSlot::NoConnection),
     m_fields(AllFields),
-    m_actions(AllActions)/*,
+    m_actions(DefaultActions)/*,
     m_editable(true)*/
 {
     ui->setupUi(this);
 //    ui->btnDelete->setVisible(false);
     connect(ui->wgtAction, SIGNAL(actionUpdated(GGAction)), this, SLOT(actionUpdated()));
+    connect(ui->lblNumber, SIGNAL(hoverEnter()), this, SLOT(numberHoverEnter()));
+    connect(ui->lblNumber, SIGNAL(hoverLeave()), this, SLOT(numberHoverLeave()));
+
+    m_numberBaseStyle = ui->lblNumber->styleSheet();
+    m_numberHoverStyle = m_numberBaseStyle + "\ncolor: rgb(255, 255, 255);";
 }
 
 GGConnectionEditorWidget::~GGConnectionEditorWidget()
@@ -71,6 +76,7 @@ void GGConnectionEditorWidget::setConnection(GGPage *page, GGConnectionSlot slot
     ui->txtCaption->setVisible(false);
     ui->btnActivate->setChecked(false);
     ui->btnActivate->setCheckable(m_actions.testFlag(Select));
+    ui->btnActivate->setEnabled(m_actions.testFlag(Select) || m_actions.testFlag(Connect));
 
     if (slot.isLink()) {
         if (m_fields.testFlag(Action)) ui->wgtAction->setVisible(true);
@@ -94,7 +100,7 @@ void GGConnectionEditorWidget::setConnection(GGPage *page, GGConnectionSlot slot
         }
         switch (m_slot.type()) {
         case GGConnectionSlot::NoConnection:
-            qFatal("Can never reach this");
+            qFatal("GGConnectionEditorWidget::setConnection: NoConnection. Can never reach this");
             break;
         case GGConnectionSlot::StartConnection:
             ui->lblType->setText(tr("Start Connection"));
@@ -182,4 +188,20 @@ void GGConnectionEditorWidget::actionUpdated()
 void GGConnectionEditorWidget::deleteMe()
 {
     emit deleteConnection(m_page, m_slot);
+}
+
+void GGConnectionEditorWidget::numberHoverEnter()
+{
+    if (m_actions.testFlag(Hover)) {
+        static_cast<QLabel*> (sender())->setStyleSheet(m_numberHoverStyle);
+        emit hoverEnter(m_page, m_slot);
+    }
+}
+
+void GGConnectionEditorWidget::numberHoverLeave()
+{
+    if (m_actions.testFlag(Hover)) {
+        static_cast<QLabel*> (sender())->setStyleSheet(m_numberBaseStyle);
+        emit hoverLeave(m_page, m_slot);
+    }
 }

@@ -15,6 +15,7 @@ class GGAbstractCommand;
 class GGPage;
 class GGContentPage;
 class GGDecisionPage;
+class GGMappedContentPage;
 class GGContentElement;
 class GGLink;
 class GGViewPage;
@@ -59,6 +60,8 @@ public slots:
     void changeLink(GGPage *page, GGConnectionSlot slot, const GGLink &link);
     void removeDecisionLink(GGDecisionPage *page, int idx);
     void addDecisionLink(GGDecisionPage *page);
+
+    void removeMappedLink(GGMappedContentPage *page, int idx);
 
     void connnectPagesDialog(GGViewPage *src, GGViewPage *dest);
 
