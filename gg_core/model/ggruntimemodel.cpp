@@ -97,6 +97,11 @@ QSet<GGVariable> GGRuntimeModel::variables() const
     return m_variables.values().toSet();
 }
 
+QList<QString> GGRuntimeModel::variableNames() const
+{
+    return m_variables.keys();
+}
+
 GGVariable GGRuntimeModel::variableByName(QString name) const
 {
     if (m_variables.contains(name))
@@ -109,11 +114,16 @@ bool GGRuntimeModel::addVariable(GGVariable v)
     if (!v.isValid()) return false;
     if (m_variables.contains(v.name())) return false;
     m_variables[v.name()] = v;
+    emit variablesUpdated();
     return true;
 }
 
 bool GGRuntimeModel::removeVariable(GGVariable v)
 {
     if (!v.isValid()) return false;
-    return m_variables.remove(v.name()) > 0;
+    if (m_variables.remove(v.name()) > 0) {
+        emit variablesUpdated();
+        return true;
+    }
+    return false;
 }

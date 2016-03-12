@@ -1,6 +1,7 @@
 #include "ggmainwindow.h"
 #include "ui_ggmainwindow.h"
 #include <QtWidgets>
+#include <ui/dialogs/ggvariableeditdialog.h>
 #include <view/gguicontroller.h>
 #include <view/ggeditorscene.h>
 #include <viewmodel/ggviewmodel.h>
@@ -28,6 +29,7 @@ GGMainWindow::GGMainWindow(QWidget *parent) :
     connect(m_ctrl, SIGNAL(redoAvailable(bool)), ui->actionRedo, SLOT(setEnabled(bool)));
     connect(m_ctrl, SIGNAL(creationModeChanged(CreationMode)), this, SLOT(setCreationMode()));
     connect(m_ctrl, SIGNAL(connectingDirect(GGPage*,GGConnectionSlot)), this, SLOT(handleConnectDirect(GGPage*,GGConnectionSlot)));
+    connect(ui->action_Variables, SIGNAL(triggered(bool)), this, SLOT(showVariables()));
 
     m_editorScene = new GGEditorScene(m_ctrl, this);
     m_editorScene->setSceneRect(-400,-400,800,800);
@@ -167,4 +169,11 @@ void GGMainWindow::setCreationMode()
 void GGMainWindow::handleConnectDirect(GGPage *page, const GGConnectionSlot &slot)
 {
     ui->stkDetailEdits->setCurrentWidget(ui->pageLinkDirect);
+}
+
+void GGMainWindow::showVariables()
+{
+    GGVariableEditDialog dlg;
+    dlg.setModel(m_ctrl->model()->editModel());
+    dlg.exec();
 }

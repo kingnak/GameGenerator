@@ -39,6 +39,10 @@ public:
     GGDecisionLinkCmd *removeDecisionLink(GGDecisionPage *p, int idx);
     GGDecisionLinkCmd *setDecisionLink(GGDecisionPage *p, int idx, const GGLink &lnk);
 
+    GGAddVariableCmd *addVariable(const QString &name);
+    GGRemoveVariableCmd *removeVariable(const QString &name);
+    GGChangeVariableCmd *updateVariable(const QString &name, const GGVariable &newData);
+
 private:
     GGEditModel *m_model;
 };

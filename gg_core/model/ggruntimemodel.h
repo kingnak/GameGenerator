@@ -6,6 +6,7 @@
 
 class GG_CORESHARED_EXPORT GGRuntimeModel : public GGAbstractModel
 {
+    Q_OBJECT
 public:
     explicit GGRuntimeModel(GGAbstractFactory *factory, QObject *parent = 0);
     ~GGRuntimeModel();
@@ -22,9 +23,13 @@ public:
     bool registerConnectionWithId(GGConnection *conn);
 
     QSet<GGVariable> variables() const;
+    QList<QString> variableNames() const;
     GGVariable variableByName(QString name) const;
     bool addVariable(GGVariable v);
     bool removeVariable(GGVariable v);
+
+signals:
+    void variablesUpdated();
 
 protected:
     GGAbstractFactory *m_factory;

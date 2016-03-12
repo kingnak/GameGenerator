@@ -1,6 +1,7 @@
 #include "ggeditcommandfactory.h"
 #include "ggmodelpagecommands.h"
 #include "ggmodelconnectioncommands.h"
+#include "ggmodelgeneralcommands.h"
 #include <model/ggpage.h>
 #include <model/ggmappedlink.h>
 
@@ -113,5 +114,20 @@ GGDecisionLinkCmd *GGEditCommandFactory::removeDecisionLink(GGDecisionPage *p, i
 GGDecisionLinkCmd *GGEditCommandFactory::setDecisionLink(GGDecisionPage *p, int idx, const GGLink &lnk)
 {
     return new GGDecisionLinkCmd(m_model, p, lnk, GGDecisionLinkCmd::Set, idx);
+}
+
+GGAddVariableCmd *GGEditCommandFactory::addVariable(const QString &name)
+{
+    return new GGAddVariableCmd(m_model, name);
+}
+
+GGRemoveVariableCmd *GGEditCommandFactory::removeVariable(const QString &name)
+{
+    return new GGRemoveVariableCmd(m_model, name);
+}
+
+GGChangeVariableCmd *GGEditCommandFactory::updateVariable(const QString &name, const GGVariable &newData)
+{
+    return new GGChangeVariableCmd(m_model, name, newData);
 }
 

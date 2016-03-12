@@ -29,7 +29,8 @@ QString GGVariable::name() const
 
 void GGVariable::setName(const QString &name)
 {
-    m_name = name;
+    // Sanitize name
+    m_name = sanitizeName(name);
 }
 
 QString GGVariable::value() const
@@ -60,6 +61,15 @@ QString GGVariable::initValue() const
 void GGVariable::setInitValue(const QString &initValue)
 {
     m_initValue = initValue;
+}
+
+QString GGVariable::sanitizeName(QString name)
+{
+    name = name.trimmed();
+    name.remove(QRegExp("[^\\d_\\w]"));
+    if (name.isEmpty()) name = "var";
+    if (name.at(0).isDigit()) name.prepend('_');
+    return name;
 }
 
 bool operator ==(const GGVariable &v1, const GGVariable &v2)

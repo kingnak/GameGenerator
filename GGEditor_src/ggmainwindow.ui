@@ -138,6 +138,7 @@
     </property>
     <addaction name="actionUndo"/>
     <addaction name="actionRedo"/>
+    <addaction name="action_Variables"/>
    </widget>
    <addaction name="menu_File"/>
    <addaction name="menu_Edit"/>
@@ -344,6 +345,11 @@
    </property>
    <property name="shortcut">
     <string>Del</string>
+   </property>
+  </action>
+  <action name="action_Variables">
+   <property name="text">
+    <string>&amp;Variables</string>
    </property>
   </action>
  </widget>

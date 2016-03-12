@@ -15,6 +15,7 @@ class GGDecisionPage;
 class GGContentElement;
 class GGLink;
 class GGMappedLink;
+class GGVariable;
 
 class GGCreatePageCmd;
 class GGDeletePageCmd;
@@ -26,6 +27,9 @@ class GGExchangeContentCmd;
 class GGSetActionLinkCmd;
 class GGMappedLinkCmd;
 class GGDecisionLinkCmd;
+class GGAddVariableCmd;
+class GGRemoveVariableCmd;
+class GGChangeVariableCmd;
 
 class GGAbstractModelCommandFactory : public GGAbstractCommandFactory
 {
@@ -60,6 +64,10 @@ public:
     virtual GGDecisionLinkCmd *addDecisionLink(GGDecisionPage *p) = 0;
     virtual GGDecisionLinkCmd *removeDecisionLink(GGDecisionPage *p, int idx) = 0;
     virtual GGDecisionLinkCmd *setDecisionLink(GGDecisionPage *p, int idx, const GGLink &lnk) = 0;
+
+    virtual GGAddVariableCmd *addVariable(const QString &name) = 0;
+    virtual GGRemoveVariableCmd *removeVariable(const QString &name) = 0;
+    virtual GGChangeVariableCmd *updateVariable(const QString &name, const GGVariable &newData) = 0;
 };
 
 #endif // GGABSTRACTMODELCOMMANDFACTORY_H

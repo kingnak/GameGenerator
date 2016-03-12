@@ -40,6 +40,7 @@ private slots:
     void handleAction(QAction *act);
     void setCreationMode();
     void handleConnectDirect(GGPage *page, const GGConnectionSlot &slot);
+    void showVariables();
 
 private:
     Ui::GGMainWindow *ui;

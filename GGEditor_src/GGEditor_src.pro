@@ -46,7 +46,9 @@ SOURCES += \
     ui/dialogs/ggeditcontentmappingdialog.cpp \
     view/ggmappingscene.cpp \
     view/ggmappinguicontroller.cpp \
-    ui/basic/ggmouselabel.cpp
+    ui/basic/ggmouselabel.cpp \
+    ui/dialogs/ggvariableeditdialog.cpp \
+    command/ggmodelgeneralcommands.cpp
 
 HEADERS += \
     model/ggeditmodel.h \
@@ -87,7 +89,9 @@ HEADERS += \
     ui/dialogs/ggeditcontentmappingdialog.h \
     view/ggmappingscene.h \
     view/ggmappinguicontroller.h \
-    ui/basic/ggmouselabel.h
+    ui/basic/ggmouselabel.h \
+    ui/dialogs/ggvariableeditdialog.h \
+    command/ggmodelgeneralcommands.h
 unix {
     target.path = /usr/lib
     INSTALLS += target
@@ -116,7 +120,8 @@ FORMS += \
     ui/components/ggeditcontentelementwidget.ui \
     ui/panes/ggmappingeditorpane.ui \
     ui/components/ggconnectionlisteditorwidget.ui \
-    ui/dialogs/ggeditcontentmappingdialog.ui
+    ui/dialogs/ggeditcontentmappingdialog.ui \
+    ui/dialogs/ggvariableeditdialog.ui
 
 RESOURCES += \
     ui/resources.qrc

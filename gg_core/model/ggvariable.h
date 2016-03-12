@@ -29,6 +29,8 @@ public:
     QString initValue() const;
     void setInitValue(const QString &initValue);
 
+    static QString sanitizeName(QString name);
+
 private:
     QString m_name;
     QString m_value;
