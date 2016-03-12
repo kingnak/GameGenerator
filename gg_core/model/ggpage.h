@@ -6,6 +6,7 @@
 #include <QString>
 #include "ggmappedlink.h"
 #include "gglink.h"
+#include "ggsearch.h"
 
 class GGConnection;
 class GGAbstractModel;
@@ -30,6 +31,8 @@ public:
 
     void setSceneName(QString sn);
     void setName(QString n);
+
+    virtual bool match(const GGSearchRequest &req, GGSearchResultList &results) const;
 
     // TODO: Entry Action (as own class between contentPage and mappedContenPage?)
 
@@ -73,6 +76,8 @@ public:
     QList<GGConnection *> getConnections() const;
     bool removeConnection(GGConnection *connection);
 
+    virtual bool match(const GGSearchRequest &req, GGSearchResultList &results) const;
+
 private:
     GGConnection *m_true;
     GGConnection *m_false;
@@ -92,6 +97,8 @@ public:
     GGContentElement *content();
     void setContent(GGContentElement *cont);
     GGContentElement *exchangeContent(GGContentElement *cont);
+
+    virtual bool match(const GGSearchRequest &req, GGSearchResultList &results) const;
 
 protected:
     QString m_caption;
@@ -152,6 +159,8 @@ public:
     bool removeMappedLink(int idx);
     QList<GGMappedLink> getLinkMap() const;
 
+    virtual bool match(const GGSearchRequest &req, GGSearchResultList &results) const;
+
 protected:
     QList<GGMappedLink> m_mappedLinks;
 };
@@ -173,6 +182,8 @@ public:
 
     bool removeConnection(GGConnection *connection);
     QList<GGConnection *> getConnections() const;
+
+    virtual bool match(const GGSearchRequest &req, GGSearchResultList &results) const;
 
 protected:
     GGLink m_actionLink;
@@ -199,6 +210,8 @@ public:
 
     QList<GGConnection *> getConnections() const;
     bool removeConnection(GGConnection *connection);
+
+    virtual bool match(const GGSearchRequest &req, GGSearchResultList &results) const;
 
 protected:
     QList<GGLink> m_decisionLinks;

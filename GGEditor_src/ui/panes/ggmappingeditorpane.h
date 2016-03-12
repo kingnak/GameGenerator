@@ -7,6 +7,7 @@
 class GGMappedContentPage;
 class GGUIController;
 class GGPage;
+class GGAction;
 
 namespace Ui {
 class GGMappingEditorPane;
@@ -26,6 +27,8 @@ public slots:
     void setMappedPage(GGMappedContentPage *p);
 
 private slots:
+    void updateLinkCaption(GGPage *, const GGConnectionSlot &slt, const QString &cap);
+    void updateLinkAction(GGPage *, const GGConnectionSlot &slt, const GGAction &act);
     void deleteLink(GGPage *, const GGConnectionSlot &slt);
     void connectLink(GGPage *, const GGConnectionSlot &slt);
     void on_txtCaption_editingFinished();

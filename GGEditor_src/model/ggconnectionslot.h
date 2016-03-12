@@ -2,46 +2,30 @@
 #define GGCONNECTIONSLOT_H
 
 #include <QList>
+#include <model/ggconnectionslotdata.h>
 
 class GGPage;
 class GGConnection;
 class GGEditModel;
 
-class GGConnectionSlot
+class GGConnectionSlot : public GGConnectionSlotData
 {
 public:
-    enum SlotType {
-        NoConnection        = 0x0000,
-        StartConnection     = 0x0001,
-        TrueConnection      = 0x0002,
-        FalseConnection     = 0x0004,
-        MappedConnection    = 0x0008,
-        ActionConnection    = 0x0010,
-        DecisionConnection  = 0x0020,
-        AllConnections      = 0x00FF
-    };
-    Q_DECLARE_FLAGS(SlotTypes, SlotType)
-
     GGConnectionSlot(SlotType type, int index = -1)
-        : m_type(type), m_idx(index) {}
+        : GGConnectionSlotData(type, index) {}
+    GGConnectionSlot(GGConnectionSlotData data)
+        : GGConnectionSlotData(data) {}
 
-    SlotType type() const { return m_type; }
-    int index() const { return m_idx; }
-    bool isLink() const;
+    GGConnection *getExistingConnection(GGPage *page);
 
     bool connect(GGPage *page, GGConnection *conn, GGConnection **oldConnection = 0);
-    GGConnection *getExistingConnection(GGPage *page);
     bool canConnect(GGPage *page);
 
-    static GGConnectionSlot findConnection(const GGPage *page, const GGConnection *conn);
     static QList<GGConnectionSlot> enumerateConnections(const GGPage *page, SlotTypes types = AllConnections);
 
 private:
     bool doConnectTest(bool doSet, GGPage *page, GGConnection *conn, GGConnection **oldConnection = 0);
 
-private:
-    SlotType m_type;
-    int m_idx;
 };
 
 #endif // GGCONNECTIONSLOT_H

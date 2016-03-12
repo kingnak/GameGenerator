@@ -9,6 +9,20 @@ void GGAbstractModel::notifyPageUpdate(GG::PageID id)
     }
 }
 
+GGSearchResultList GGAbstractModel::search(GGSearchRequest req) const
+{
+    GGSearchResultList res;
+    foreach (const GGPage *p, getPages()) {
+        if (p->match(req, res)) {
+            // -1 mean find all
+            if (req.maxResults() >= 0 && res.size() >= req.maxResults()) {
+                break;
+            }
+        }
+    }
+    return res;
+}
+
 void GGAbstractModel::setPageId(GGPage *page, GG::PageID id)
 {
     Q_ASSERT(page->m_model == NULL || page->m_model == this);

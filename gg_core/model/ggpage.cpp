@@ -31,6 +31,20 @@ void GGPage::setName(QString n)
     }
 }
 
+bool GGPage::match(const GGSearchRequest &req, GGSearchResultList &results) const
+{
+    bool res = false;
+    if (req.what().testFlag(GGSearchRequest::PageName) && req.matches(m_name)) {
+        results << GGSearchResult(GGSearchResult::PageName, GGSearchRequest::PageName, m_name, m_id);
+        res = true;
+    }
+    if (req.what().testFlag(GGSearchRequest::PageScene) && req.matches(m_sceneName)) {
+        results << GGSearchResult(GGSearchResult::PageScene, GGSearchRequest::PageScene, m_sceneName, m_id);
+        res = true;
+    }
+    return res;
+}
+
 void GGPage::notifyChanged()
 {
     if (m_model) m_model->notifyPageUpdate(m_id);
@@ -98,6 +112,13 @@ bool GGConditionPage::removeConnection(GGConnection *connection)
     }
     return false;
 }
+
+bool GGConditionPage::match(const GGSearchRequest &req, GGSearchResultList &results) const
+{
+    bool res = GGPage::match(req, results);
+    // TODO: Condition
+    return res;
+}
 /////////////////////////////////////////
 
 GGContentPage::GGContentPage()
@@ -142,6 +163,17 @@ GGContentElement *GGContentPage::exchangeContent(GGContentElement *cont)
         return oldContent;
     }
     return cont;
+}
+
+bool GGContentPage::match(const GGSearchRequest &req, GGSearchResultList &results) const
+{
+    bool res = GGPage::match(req, results);
+    if (req.what().testFlag(GGSearchRequest::PageCaption) && req.matches(m_caption)) {
+        results << GGSearchResult(GGSearchResult::PageCaption, GGSearchRequest::PageCaption, m_caption, id());
+        res = true;
+    }
+    // TODO: Content
+    return res;
 }
 
 /////////////////////////////////////////
@@ -240,6 +272,18 @@ QList<GGMappedLink> GGMappedContentPage::getLinkMap() const
     return m_mappedLinks;
 }
 
+bool GGMappedContentPage::match(const GGSearchRequest &req, GGSearchResultList &results) const
+{
+    bool res = GGContentPage::match(req, results);
+    if (req.searchLinks()) {
+        QList<GGConnectionSlotData> mapSlots = GGConnectionSlotData::enumerateConnections(this, GGConnectionSlotData::MappedConnection);
+        foreach (GGConnectionSlotData d, mapSlots) {
+            res |= m_mappedLinks[d.index()].link().match(req, results, id(), d);
+        }
+    }
+    return res;
+}
+
 QList<GGConnection *> GGMappedContentPage::getMappedConnections() const
 {
     QList<GGConnection *> conns;
@@ -326,6 +370,15 @@ QList<GGConnection *> GGActionPage::getConnections() const
     return conns;
 }
 
+bool GGActionPage::match(const GGSearchRequest &req, GGSearchResultList &results) const
+{
+    bool res = GGMappedContentPage::match(req, results);
+    if (req.searchLinks()) {
+        res |= m_actionLink.match(req, results, id(), GGConnectionSlotData(GGConnectionSlotData::ActionConnection));
+    }
+    return res;
+}
+
 //////////////////////////////////////////
 
 
@@ -405,4 +458,16 @@ bool GGDecisionPage::removeConnection(GGConnection *connection)
         }
     }
     return GGMappedContentPage::removeConnection(connection);
+}
+
+bool GGDecisionPage::match(const GGSearchRequest &req, GGSearchResultList &results) const
+{
+    bool res = GGMappedContentPage::match(req, results);
+    if (req.searchLinks()) {
+        QList<GGConnectionSlotData> decisionLinks = GGConnectionSlotData::enumerateConnections(this, GGConnectionSlotData::DecisionConnection);
+        foreach (GGConnectionSlotData d, decisionLinks) {
+            res |= m_decisionLinks[d.index()].match(req, results, id(), d);
+        }
+    }
+    return res;
 }

@@ -1,5 +1,6 @@
 #include "ggvariableeditdialog.h"
 #include "ui_ggvariableeditdialog.h"
+#include <QPushButton>
 #include <model/ggeditmodel.h>
 #include <command/ggeditcommandfactory.h>
 #include <command/ggmodelgeneralcommands.h>
@@ -9,6 +10,7 @@ GGVariableEditModel::GGVariableEditModel(GGEditModel *model, QWidget *parent)
       m_model(model)
 {
     connect(m_model, SIGNAL(variablesUpdated()), this, SLOT(reloadData()));
+    reloadData();
 }
 
 int GGVariableEditModel::rowCount(const QModelIndex &parent) const
@@ -19,7 +21,8 @@ int GGVariableEditModel::rowCount(const QModelIndex &parent) const
 
 int GGVariableEditModel::columnCount(const QModelIndex &parent) const
 {
-    return 3;
+    Q_UNUSED(parent);
+    return 4;
 }
 
 QVariant GGVariableEditModel::data(const QModelIndex &index, int role) const
@@ -75,7 +78,7 @@ bool GGVariableEditModel::setData(const QModelIndex &index, const QVariant &valu
     case 2: if (role == Qt::CheckStateRole) v.setType(value.toInt() == Qt::Checked ? GGVariable::Persistent : GGVariable::Transient); break;
     }
 
-    GGAbstractCommandFactory::oneShotCommand(GGEditCommandFactory(m_model).updateVariable(m_sortedList[index.row()], v));
+    return GGAbstractCommandFactory::oneShotCommand(GGEditCommandFactory(m_model).updateVariable(m_sortedList[index.row()], v));
 }
 
 void GGVariableEditModel::addVariable()
@@ -115,6 +118,9 @@ GGVariableEditDialog::~GGVariableEditDialog()
 void GGVariableEditDialog::setModel(GGEditModel *model)
 {
     ui->lstVariables->setModel(new GGVariableEditModel(model, this));
+    connect(ui->lstVariables->model(), SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(setButtons()));
+    connect(ui->lstVariables->model(), SIGNAL(modelReset()), this, SLOT(setButtons()));
+    setButtons();
 }
 
 void GGVariableEditDialog::on_btnAdd_clicked()
@@ -126,3 +132,23 @@ void GGVariableEditDialog::on_btnRemove_clicked()
 {
     static_cast<GGVariableEditModel *> (ui->lstVariables->model())->removeVariable(ui->lstVariables->currentIndex().row());
 }
+
+void GGVariableEditDialog::setButtons()
+{
+    for (int i = 0; i < ui->lstVariables->model()->rowCount(); ++i) {
+        QPushButton *btn = new QPushButton("Show Usages");
+        btn->setProperty("INDEX", i);
+        ui->lstVariables->setIndexWidget(ui->lstVariables->model()->index(i, 3), btn);
+        connect(btn, SIGNAL(clicked(bool)), this, SLOT(showVarUsage()));
+    }
+}
+
+void GGVariableEditDialog::showVarUsage()
+{
+    int idx = sender()->property("INDEX").toInt();
+    QString varName = ui->lstVariables->model()->data(ui->lstVariables->model()->index(idx, 0)).toString();
+
+    GGSearchRequest req(varName, GGSearchRequest::CaseSensitive | GGSearchRequest::Exact, GGSearchRequest::Variable);
+    GGSearchResultList res = static_cast<GGVariableEditModel*> (ui->lstVariables->model())->dataModel()->search(req);
+}
+

@@ -10,6 +10,7 @@ class GGMappedContentPage;
 class GGMappingScene;
 class GGMappingUIController;
 class GGCommandStack;
+class GGAction;
 
 namespace Ui {
 class GGEditContentMappingDialog;
@@ -33,6 +34,8 @@ public slots:
 private slots:
     void addLink(QRect rect);
     void moveLink(int idx, QRect rect);
+    void updateLinkCaption(GGPage *, const GGConnectionSlot &slt, const QString &cap);
+    void updateLinkAction(GGPage *, const GGConnectionSlot &slt, const GGAction &act);
     void updatePage(GGPage *page);
     void deleteConnect(GGPage *page, GGConnectionSlot slt);
     void handleHoverEnter(GGPage *page, GGConnectionSlot slt);

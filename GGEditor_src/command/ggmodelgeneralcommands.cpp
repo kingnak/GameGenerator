@@ -91,7 +91,7 @@ bool GGChangeVariableCmd::doExchange(const GGVariable &o, const GGVariable &n)
 {
     if (o.name() != n.name()) {
         if (m_model->addVariable(n)) {
-            m_model->removeVariable(o);
+            return m_model->removeVariable(o);
         } else {
             return false;
         }

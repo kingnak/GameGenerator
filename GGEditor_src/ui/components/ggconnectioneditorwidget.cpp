@@ -1,5 +1,6 @@
 #include "ggconnectioneditorwidget.h"
 #include "ui_ggconnectioneditorwidget.h"
+#include <model/ggabstractmodel.h>
 #include <model/ggpage.h>
 #include <model/ggconnection.h>
 
@@ -88,6 +89,8 @@ void GGConnectionEditorWidget::setConnection(GGPage *page, GGConnectionSlot slot
     ui->btnDelete->setEnabled(m_actions.testFlag(Edit));
     ui->btnDelete->setVisible(m_actions.testFlag(Delete));
 
+    ui->wgtAction->setVariables(m_page->model()->variableNames());
+
     if (m_page && m_slot.type() != GGConnectionSlot::NoConnection) {
         setEnabled(true);
         GGConnection *c = slot.getExistingConnection(page);
@@ -129,6 +132,9 @@ void GGConnectionEditorWidget::setConnection(GGPage *page, GGConnectionSlot slot
             ui->lblType->setText("Mapped");
             ui->txtCaption->setText(GG::as<GGMappedContentPage>(page)->getLinkMap().value(m_slot.index()).link().name());
             ui->wgtAction->setAction(GG::as<GGMappedContentPage>(page)->getLinkMap().value(m_slot.index()).link().action());
+            break;
+        case GGConnectionSlot::AllConnections:
+            // Sentinel to disable Warning
             break;
         }
     } else {

@@ -15,6 +15,8 @@ GGMappingEditorPane::GGMappingEditorPane(QWidget *parent) :
     ui->setupUi(this);
     connect(ui->wgtMappedConnections, SIGNAL(connectConnection(GGPage*,GGConnectionSlot)), this, SLOT(connectLink(GGPage*,GGConnectionSlot)));
     connect(ui->wgtMappedConnections, SIGNAL(deleteConnection(GGPage*,GGConnectionSlot)), this, SLOT(deleteLink(GGPage*,GGConnectionSlot)));
+    connect(ui->wgtMappedConnections, SIGNAL(updateLinkCaption(GGPage*,GGConnectionSlot,QString)), this, SLOT(updateLinkCaption(GGPage*,GGConnectionSlot,QString)));
+    connect(ui->wgtMappedConnections, SIGNAL(updateLinkAction(GGPage*,GGConnectionSlot,GGAction)), this, SLOT(updateLinkAction(GGPage*,GGConnectionSlot,GGAction)));
 }
 
 GGMappingEditorPane::~GGMappingEditorPane()
@@ -37,6 +39,20 @@ void GGMappingEditorPane::setMappedPage(GGMappedContentPage *p)
     ui->lblPreview->setPixmap(pix);
     QList<GGConnectionSlot> slts = GGConnectionSlot::enumerateConnections(p, GGConnectionSlot::MappedConnection);
     ui->wgtMappedConnections->setConnections(p, slts);
+}
+
+void GGMappingEditorPane::updateLinkCaption(GGPage *, const GGConnectionSlot &slt, const QString &cap)
+{
+    GGLink l = m_page->getLinkMap()[slt.index()].link();
+    l.setName(cap);
+    m_ctrl->changeLink(m_page, slt, l);
+}
+
+void GGMappingEditorPane::updateLinkAction(GGPage *, const GGConnectionSlot &slt, const GGAction &act)
+{
+    GGLink l = m_page->getLinkMap()[slt.index()].link();
+    l.setAction(act);
+    m_ctrl->changeLink(m_page, slt, l);
 }
 
 void GGMappingEditorPane::deleteLink(GGPage *, const GGConnectionSlot &slt)

@@ -5,6 +5,7 @@
 #include <gg_definitions.h>
 #include <QObject>
 #include "ggvariable.h"
+#include "ggsearch.h"
 
 class GGPage;
 class GGConnection;
@@ -21,7 +22,7 @@ public:
     virtual GGPage *getPage(GG::PageID id) = 0;
     virtual GGConnection *getConnection(GG::ConnectionID id) = 0;
 
-    virtual QList<GGPage *> getPages() = 0;
+    virtual QList<GGPage *> getPages() const = 0;
     virtual QList<GGConnection *> getConnections() = 0;
 
     virtual bool registerPageWithId(GGPage *page) = 0;
@@ -30,9 +31,12 @@ public:
     virtual void notifyPageUpdate(GG::PageID id);
 
     virtual QSet<GGVariable> variables() const = 0;
+    virtual QList<QString> variableNames() const = 0;
     virtual GGVariable variableByName(QString name) const = 0;
     virtual bool addVariable(GGVariable v) = 0;
     virtual bool removeVariable(GGVariable v) = 0;
+
+    GGSearchResultList search(GGSearchRequest req) const;
 
 signals:
     void pageRegistered(GGPage *page);

@@ -7,6 +7,7 @@ class GGUIController;
 class GGPage;
 class GGDecisionPage;
 class GGConnectionSlot;
+class GGAction;
 
 namespace Ui {
 class GGDecisionEditorPane;
@@ -26,6 +27,8 @@ public slots:
     void setPage(GGDecisionPage *page);
 
 private slots:
+    void updateLinkCaption(GGPage *, const GGConnectionSlot &slt, const QString &cap);
+    void updateLinkAction(GGPage *, const GGConnectionSlot &slt, const GGAction &act);
     void deleteLink(GGPage *, const GGConnectionSlot &slt);
     void connectLink(GGPage *, const GGConnectionSlot &slt);
     void on_btnAdd_clicked();

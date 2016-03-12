@@ -98,18 +98,6 @@ bool GGConnectionSlot::doConnectTest(bool doSet, GGPage *page, GGConnection *con
     }
 }
 
-bool GGConnectionSlot::isLink() const
-{
-    switch (m_type) {
-    case StartConnection:
-    case TrueConnection:
-    case FalseConnection:
-        return false;
-    default:
-        return true;
-    }
-}
-
 bool GGConnectionSlot::connect(GGPage *page, GGConnection *conn, GGConnection **oldConnection)
 {
     return doConnectTest(true, page, conn, oldConnection);
@@ -127,102 +115,13 @@ bool GGConnectionSlot::canConnect(GGPage *page)
     return doConnectTest(false, page, NULL);
 }
 
-GGConnectionSlot GGConnectionSlot::findConnection(const GGPage *page, const GGConnection *conn)
+QList<GGConnectionSlot> GGConnectionSlot::enumerateConnections(const GGPage *page, GGConnectionSlotData::SlotTypes types)
 {
-    if (!page || !conn) {
-        return GGConnectionSlot(NoConnection);
+    QList<GGConnectionSlotData> sltsData = GGConnectionSlotData::enumerateConnections(page, types);
+    QList<GGConnectionSlot> slts;
+    foreach (GGConnectionSlotData d, sltsData) {
+        slts << d;
     }
-
-    // Const cast ok, as we don't access the value
-    if (!page->getConnections().contains(const_cast<GGConnection *> (conn))) {
-        return GGConnectionSlot(NoConnection);
-    }
-
-    if (const GGStartPage *sp = ggpage_cast<const GGStartPage*> (page)) {
-        if (sp->startConnection() == conn) {
-            return GGConnectionSlot(StartConnection);
-        }
-        Q_ASSERT_X(false, "GGConnectionSlot::findConnection", "Connection is in list of connections, but page is a StartPage and it is not its start connection");
-        return GGConnectionSlot(NoConnection);
-    }
-
-    if (ggpage_cast<const GGEndPage*> (page)) {
-        Q_ASSERT_X(false, "GGConnectionSlot::findConnection", "Connection is in list of connections, but page is a EndPage. EndPages don't have outgoing connections");
-        return GGConnectionSlot(NoConnection);
-    }
-
-    if (const GGConditionPage *cp = ggpage_cast<const GGConditionPage*> (page)) {
-        if (cp->trueConnection() == conn) {
-            return GGConnectionSlot(TrueConnection);
-        }
-        if (cp->falseConnection() == conn) {
-            return GGConnectionSlot(FalseConnection);
-        }
-        Q_ASSERT_X(false, "GGConnectionSlot::findConnection", "Connection is neither true nor false connection for condition page");
-        return GGConnectionSlot(NoConnection);
-    }
-
-    const GGActionPage *ap = ggpage_cast<const GGActionPage*> (page);
-    const GGDecisionPage *dp = ggpage_cast<const GGDecisionPage*> (page);
-    const GGMappedContentPage *mcp = ap ? static_cast<const GGMappedContentPage *> (ap) : dp;
-    if (mcp) {
-        // Const cast ok, as we don't access the value
-        int idx = mcp->getMappedConnections().indexOf(const_cast<GGConnection *> (conn));
-        if (idx >= 0) {
-            return GGConnectionSlot(MappedConnection, idx);
-        }
-    }
-
-    if (ap) {
-        if (conn == ap->actionLink().connection()) {
-            return GGConnectionSlot(ActionConnection);
-        }
-        Q_ASSERT_X(false, "GGConnectionSlot::findConnection", "Connection is neither mapped nor action connection for action page");
-        return GGConnectionSlot(NoConnection);
-    }
-
-    if (dp) {
-        // Const cast ok, as we don't access the value
-        int idx = dp->getDecisionConnections().indexOf(const_cast<GGConnection *> (conn));
-        if (idx >= 0) {
-            return GGConnectionSlot(DecisionConnection, idx);
-        }
-        Q_ASSERT_X(false, "GGConnectionSlot::findConnection", "Connection is neither mapped nor decision connection for decision page");
-        return GGConnectionSlot(NoConnection);
-    }
-
-    Q_ASSERT_X(false, "GGConnectionSlot::findConnection", "Cannot determine connection slot");
-    return GGConnectionSlot(NoConnection);
+    return slts;
 }
 
-QList<GGConnectionSlot> GGConnectionSlot::enumerateConnections(const GGPage *page, SlotTypes types)
-{
-    QList<GGConnectionSlot> ret;
-    if (types.testFlag(StartConnection) && GG::as<const GGStartPage>(page)) {
-        ret << StartConnection;
-    }
-    if (GG::as<const GGConditionPage>(page)) {
-        if (types.testFlag(TrueConnection))
-            ret << TrueConnection;
-        if (types.testFlag(FalseConnection))
-            ret << FalseConnection;
-    }
-    if (types.testFlag(ActionConnection) && GG::as<const GGActionPage>(page)) {
-        ret << ActionConnection;
-    }
-    if (types.testFlag(DecisionConnection)) {
-        if (const GGDecisionPage *dp = GG::as<const GGDecisionPage>(page)) {
-            for (int i = 0; i < dp->getDecisionLinks().size(); ++i) {
-                ret << GGConnectionSlot(DecisionConnection, i);
-            }
-        }
-    }
-    if (types.testFlag(MappedConnection)) {
-        if (const GGMappedContentPage *mcp = GG::as<const GGMappedContentPage>(page)) {
-            for (int i = 0; i < mcp->getLinkMap().size(); ++i) {
-                ret << GGConnectionSlot(MappedConnection, i);
-            }
-        }
-    }
-    return ret;
-}

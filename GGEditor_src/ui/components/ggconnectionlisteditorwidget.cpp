@@ -41,6 +41,8 @@ void GGConnectionListEditorWidget::setConnections(GGPage *page, QList<GGConnecti
         w->setFields(m_fields);
         w->setActions(m_actions);
         //w->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::MinimumExpanding);
+        connect(w, SIGNAL(updateCaption(GGPage*,GGConnectionSlot,QString)), this, SIGNAL(updateLinkCaption(GGPage*,GGConnectionSlot,QString)));
+        connect(w, SIGNAL(updateAction(GGPage*,GGConnectionSlot,GGAction)), this, SIGNAL(updateLinkAction(GGPage*,GGConnectionSlot,GGAction)));
         connect(w, SIGNAL(deleteConnection(GGPage*,GGConnectionSlot)), this, SIGNAL(deleteConnection(GGPage*,GGConnectionSlot)));
         connect(w, SIGNAL(activated(GGPage*,GGConnectionSlot)), this, SIGNAL(connectConnection(GGPage*,GGConnectionSlot)));
         connect(w, SIGNAL(toggled(bool,GGPage*,GGConnectionSlot)), this, SLOT(handleToggle()));
@@ -57,7 +59,11 @@ void GGConnectionListEditorWidget::cleanConnections()
         delete ui->scrollAreaWidgetContents->layout()->takeAt(0);
     }
     QList<GGConnectionEditorWidget*> l = ui->scrollAreaWidgetContents->findChildren<GGConnectionEditorWidget*>();
-    qDeleteAll(l);
+    // Cannot delete direclty. Might be in update, triggered by the widget!
+    foreach (GGConnectionEditorWidget *w, l) {
+        w->setVisible(false);
+        w->deleteLater();
+    }
     m_curSelected = -1;
 }
 

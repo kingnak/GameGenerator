@@ -8,6 +8,7 @@ class GGEditModel;
 class GGMappedContentPage;
 class GGCommandStack;
 class GGAbstractModelCommandFactory;
+class GGLink;
 
 class GGMappingUIController : public QObject
 {
@@ -19,6 +20,7 @@ public:
     GGCommandStack *getCommandStack();
 
 public slots:
+    void changeLink(GGMappedContentPage *page, int idx, const GGLink &link);
     void createLink(GGMappedContentPage *page, QRect rect);
     void moveLink(GGMappedContentPage *page, int idx, QRect rect);
     void deleteLink(GGMappedContentPage *page, int idx);

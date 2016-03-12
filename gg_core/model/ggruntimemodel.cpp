@@ -33,7 +33,7 @@ GGConnection *GGRuntimeModel::getConnection(GG::ConnectionID id)
     return m_connections.value(id);
 }
 
-QList<GGPage *> GGRuntimeModel::getPages()
+QList<GGPage *> GGRuntimeModel::getPages() const
 {
     return m_pages.values();
 }

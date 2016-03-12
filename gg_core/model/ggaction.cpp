@@ -42,3 +42,30 @@ void GGAction::setValue(const QString &value)
 {
     m_value = value;
 }
+
+QString GGAction::toString() const
+{
+    QString val;
+    if (m_type != GGAction::None) {
+        if (m_type == GGAction::Unset) {
+            val = QString("Unset %1").arg(m_variableName);
+        } else {
+            val = QString("%1 %2 %3").arg(m_variableName, getActionStringForType(m_type), m_value);
+        }
+    }
+    return val;
+}
+
+QString GGAction::getActionStringForType(GGAction::Type type)
+{
+    switch (type) {
+    case GGAction::None: return "";
+    case GGAction::Add: return "+=";
+    case GGAction::Sub: return "-=";
+    case GGAction::Multiply: return "*=";
+    case GGAction::Divide: return "/=";
+    case GGAction::Set: return "=";
+    case GGAction::Unset: return "X";
+    }
+    return "";
+}

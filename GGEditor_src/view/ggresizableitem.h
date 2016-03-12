@@ -16,7 +16,7 @@ public:
         setFlag(QGraphicsItem::ItemSendsScenePositionChanges, true);
     }
 
-    virtual void resizeToRect(QRectF &r) = 0 { Q_UNUSED(r); m_hasMoved = true; }
+    virtual void inline resizeToRect(QRectF &r) = 0;
     virtual QRectF resizeRect() const { return boundingRect(); }
 
     void setSelectionItem(GGSelectionItem *itm) { m_selectionItem = itm; }
@@ -37,6 +37,8 @@ protected:
     GGSelectionItem *m_selectionItem;
     bool m_hasMoved;
 };
+void GGResizableItem::resizeToRect(QRectF &r)
+ { Q_UNUSED(r); m_hasMoved = true; }
 
 class GGResizableRectItem : public GGResizableItem
 {

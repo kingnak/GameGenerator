@@ -28,6 +28,8 @@ public:
     void addVariable();
     void removeVariable(int idx);
 
+    GGEditModel *dataModel() { return m_model; }
+
 private slots:
     void reloadData();
 
@@ -51,6 +53,8 @@ public:
 private slots:
     void on_btnAdd_clicked();
     void on_btnRemove_clicked();
+    void setButtons();
+    void showVarUsage();
 
 private:
     Ui::GGVariableEditDialog *ui;

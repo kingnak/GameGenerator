@@ -23,6 +23,13 @@ GGCommandStack *GGMappingUIController::getCommandStack()
     return m_stack;
 }
 
+void GGMappingUIController::changeLink(GGMappedContentPage *page, int idx, const GGLink &link)
+{
+    GGMappedLink ml = page->getLinkMap()[idx];
+    ml.setLink(link);
+    m_stack->execute(m_fac->setMappedLink(page, idx, ml));
+}
+
 void GGMappingUIController::createLink(GGMappedContentPage *page, QRect rect)
 {
     GGMappedLink lnk = GGMappedLink::rectangle(rect);

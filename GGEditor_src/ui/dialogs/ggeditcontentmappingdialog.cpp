@@ -40,6 +40,8 @@ GGEditContentMappingDialog::GGEditContentMappingDialog(GGEditModel *model, QWidg
     connect(ui->wgtLinks, SIGNAL(hoverEnteredConnection(GGPage*,GGConnectionSlot)), this, SLOT(handleHoverEnter(GGPage*,GGConnectionSlot)));
     connect(ui->wgtLinks, SIGNAL(hoverLeftConnection(GGPage*,GGConnectionSlot)), this, SLOT(handleHoverLeave(GGPage*,GGConnectionSlot)));
 
+    connect(ui->wgtLinks, SIGNAL(updateLinkCaption(GGPage*,GGConnectionSlot,QString)), this, SLOT(updateLinkCaption(GGPage*,GGConnectionSlot,QString)));
+    connect(ui->wgtLinks, SIGNAL(updateLinkAction(GGPage*,GGConnectionSlot,GGAction)), this, SLOT(updateLinkAction(GGPage*,GGConnectionSlot,GGAction)));
     connect(ui->wgtLinks, SIGNAL(deleteConnection(GGPage*,GGConnectionSlot)), this, SLOT(deleteConnect(GGPage*,GGConnectionSlot)));
 }
 
@@ -75,6 +77,20 @@ void GGEditContentMappingDialog::addLink(QRect rect)
 void GGEditContentMappingDialog::moveLink(int idx, QRect rect)
 {
     m_ctrl->moveLink(m_page, idx, rect);
+}
+
+void GGEditContentMappingDialog::updateLinkCaption(GGPage *, const GGConnectionSlot &slt, const QString &cap)
+{
+    GGLink l = m_page->getLinkMap()[slt.index()].link();
+    l.setName(cap);
+    m_ctrl->changeLink(m_page, slt.index(), l);
+}
+
+void GGEditContentMappingDialog::updateLinkAction(GGPage *, const GGConnectionSlot &slt, const GGAction &act)
+{
+    GGLink l = m_page->getLinkMap()[slt.index()].link();
+    l.setAction(act);
+    m_ctrl->changeLink(m_page, slt.index(), l);
 }
 
 void GGEditContentMappingDialog::updatePage(GGPage *page)

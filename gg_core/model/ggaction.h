@@ -25,6 +25,10 @@ public:
     QString value() const;
     void setValue(const QString &value);
 
+    QString toString() const;
+
+    static QString getActionStringForType(Type type);
+
 private:
     Type m_type;
     QString m_variableName;

@@ -19,7 +19,8 @@ public:
     GGAction getAction();
 
 public slots:
-    void setAction(GGAction action);
+    void setVariables(QStringList vars);
+    void setAction(const GGAction &action);
     void setEditable(bool editable);
 
 signals:
@@ -30,9 +31,9 @@ private slots:
     void on_btnAbort_clicked();
     void on_btnOk_clicked();
     void on_cmbOp_currentIndexChanged(int);
-    void updateAction();
 
 private:
+    GGAction buildAction();
     Ui::GGActionEditorWidget *ui;
     GGAction m_action;
 };

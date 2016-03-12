@@ -22,7 +22,9 @@ SOURCES += \
     model/ggmappedlink.cpp \
     model/ggvariable.cpp \
     model/ggaction.cpp \
-    model/ggcondition.cpp
+    model/ggcondition.cpp \
+    model/ggsearch.cpp \
+    model/ggconnectionslotdata.cpp
 
 HEADERS +=\
         gg_core_global.h \
@@ -38,7 +40,9 @@ HEADERS +=\
     model/ggmappedlink.h \
     model/ggvariable.h \
     model/ggaction.h \
-    model/ggcondition.h
+    model/ggcondition.h \
+    model/ggconnectionslotdata.h \
+    model/ggsearch.h
 
 unix {
     target.path = /usr/lib

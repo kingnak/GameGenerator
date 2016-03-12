@@ -30,6 +30,8 @@ public slots:
     void setActions(int a);
 
 signals:
+    void updateLinkCaption(GGPage *page, GGConnectionSlot slot, const QString &caption);
+    void updateLinkAction(GGPage *page, GGConnectionSlot slot, const GGAction &action);
     void deleteConnection(GGPage *page, GGConnectionSlot slot);
     void connectConnection(GGPage *page, GGConnectionSlot slot);
     void selectedConnection(GGPage *page, GGConnectionSlot slot);
