@@ -43,11 +43,17 @@ private slots:
     void handleToggle();
 
 private:
+    void ensureEditors(int ct);
+
     Ui::GGConnectionListEditorWidget *ui;
     GGPage *m_page;
     GGConnectionEditorWidget::Fields m_fields;
     GGConnectionEditorWidget::ConnectionActions m_actions;
     int m_curSelected;
+    QList<GGConnectionEditorWidget *> m_editors;
+
+    static const int MIN_EDITORS = 5;
+
 };
 
 #endif // GGCONNECTIONLISTEDITORWIDGET_H
