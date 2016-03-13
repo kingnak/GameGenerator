@@ -32,7 +32,7 @@ GGMainWindow::GGMainWindow(QWidget *parent) :
     connect(ui->action_Variables, SIGNAL(triggered(bool)), this, SLOT(showVariables()));
 
     m_editorScene = new GGEditorScene(m_ctrl, this);
-    m_editorScene->setSceneRect(-400,-400,800,800);
+    //m_editorScene->setSceneRect(0,0,800,800);
     ui->scEditView->setScene(m_editorScene);
 
     // Group Click Mode actions
@@ -59,6 +59,16 @@ GGMainWindow::~GGMainWindow()
 {
     closeModel();
     delete ui;
+}
+
+GGViewModel *GGMainWindow::currentModel()
+{
+    return m_viewModel;
+}
+
+GGUIController *GGMainWindow::controller()
+{
+    return m_ctrl;
 }
 
 void GGMainWindow::newModel()

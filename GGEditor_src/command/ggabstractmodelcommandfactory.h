@@ -44,13 +44,13 @@ public:
 
     virtual GGDeletePageCmd *deletePage(GGPage *page) = 0;
 
-    virtual GGCreateConnectionCmd *createConnection(GGPage *src, GGPage *dest, GGConnectionSlot slot) = 0;
-    virtual GGExchangeConnectionCmd *exchangeConnection(GGPage *src, GGPage *dest, GGConnectionSlot slot) = 0;
+    virtual GGCreateConnectionCmd *createConnection(GGPage *src, GGPage *dest, const GGConnectionSlot &slot) = 0;
+    virtual GGExchangeConnectionCmd *exchangeConnection(GGPage *src, GGPage *dest, const GGConnectionSlot &slot) = 0;
     virtual GGDeleteConnectionCmd *deleteConnection(GGConnection *conn) = 0;
 
-    virtual GGSetPageStringCmd *setPageName(GGPage *p, QString name) = 0;
-    virtual GGSetPageStringCmd *setPageScene(GGPage *p, QString sceneName) = 0;
-    virtual GGSetPageStringCmd *setPageCaption(GGContentPage *p, QString caption) = 0;
+    virtual GGSetPageStringCmd *setPageName(GGPage *p, const QString &name) = 0;
+    virtual GGSetPageStringCmd *setPageScene(GGPage *p, const QString &sceneName) = 0;
+    virtual GGSetPageStringCmd *setPageCaption(GGContentPage *p, const QString &caption) = 0;
 
     virtual GGExchangeContentCmd *exchangeContent(GGContentPage *p, GGContentElement *elem) = 0;
 

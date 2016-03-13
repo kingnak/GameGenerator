@@ -6,3 +6,8 @@ win32 {
 
 #Required for TEST project in Debug mode
 # DEFINES += QT_NO_DEBUG
+
+
+#QMAKE_CXXFLAGS_RELEASE += -gdwarf-2
+#QMAKE_CFLAGS_RELEASE += -gdwarf-2
+#QMAKE_LFLAGS_RELEASE =

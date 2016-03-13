@@ -6,7 +6,7 @@
 #include <command/ggabstractmodelcommandfactory.h>
 #include <model/ggpage.h>
 
-GGCreateViewPageCmd::GGCreateViewPageCmd(GGViewModel *model, GGCreatePageCmd::PageType type, QRect bounds)
+GGCreateViewPageCmd::GGCreateViewPageCmd(GGViewModel *model, GGCreatePageCmd::PageType type, const QRect &bounds)
     : GGAbstractViewForwardCommand(model),
       m_bounds(bounds)
 {
@@ -50,7 +50,7 @@ GGDeleteViewPageCmd::GGDeleteViewPageCmd(GGViewModel *model, GGViewPage *page)
 
 /////////////////////////
 
-GGMoveViewPageCmd::GGMoveViewPageCmd(GGViewModel *model, GGViewPage *page, QRect pos)
+GGMoveViewPageCmd::GGMoveViewPageCmd(GGViewModel *model, GGViewPage *page, const QRect &pos)
     : GGAbstractViewCommand(model),
       m_page(page),
       m_new(pos)
@@ -83,7 +83,7 @@ bool GGMoveViewPageCmd::doRedo()
 
 /////////////////////////
 
-GGCreateViewConnectionCmd::GGCreateViewConnectionCmd(GGViewModel *model, GGConnectionSlot slot, GGViewPage *src, GGViewPage *dest)
+GGCreateViewConnectionCmd::GGCreateViewConnectionCmd(GGViewModel *model, const GGConnectionSlot &slot, GGViewPage *src, GGViewPage *dest)
     : GGAbstractViewForwardCommand(model)
 {
     m_cmd = new GGExchangeConnectionCmd(model->editModel(), src->page(), dest->page(), slot);

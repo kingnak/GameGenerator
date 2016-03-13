@@ -66,7 +66,7 @@ bool GGAbstractViewForwardCommand<CMD>::doRedo() {
 class GGCreateViewPageCmd : public GGAbstractViewForwardCommand<GGCreatePageCmd>
 {
 public:
-    GGCreateViewPageCmd(GGViewModel *model, GGCreatePageCmd::PageType type, QRect bounds);
+    GGCreateViewPageCmd(GGViewModel *model, GGCreatePageCmd::PageType type, const QRect &bounds);
 
     GGViewPage *createdPage();
 
@@ -90,7 +90,7 @@ public:
 class GGMoveViewPageCmd : public GGAbstractViewCommand
 {
 public:
-    GGMoveViewPageCmd(GGViewModel *model, GGViewPage *page, QRect pos);
+    GGMoveViewPageCmd(GGViewModel *model, GGViewPage *page, const QRect &pos);
 
     QString description() const;
 
@@ -110,7 +110,7 @@ private:
 class GGCreateViewConnectionCmd : public GGAbstractViewForwardCommand<GGExchangeConnectionCmd>
 {
 public:
-    GGCreateViewConnectionCmd(GGViewModel *model, GGConnectionSlot slot, GGViewPage *src, GGViewPage *dest);
+    GGCreateViewConnectionCmd(GGViewModel *model, const GGConnectionSlot &slot, GGViewPage *src, GGViewPage *dest);
     GGViewConnection *createdConnection();
 protected:
     // Maybe in future needed

@@ -2,6 +2,7 @@
 #define GGPAGEEDITPANEL_H
 
 #include <QWidget>
+#include <model/ggabstractmodel.h>
 
 class GGPage;
 class GGUIController;
@@ -20,24 +21,24 @@ public:
     ~GGPageEditPanel();
 
 public slots:
-    void displayPage(GGPage *page);
+    void displayPage(GGPage *page, GGAbstractModel::PageSections updateSections = GGAbstractModel::AllSections);
 
 private slots:
-    void pageUpdated(GGPage *page);
+    void pageUpdated(GGPage *page, GGAbstractModel::PageSections sections);
     void modelReset();
     void on_txtName_editingFinished();
     void on_txtScene_editingFinished();
 
 private:
-    void setCommon();
-    void setStart();
-    void setEnd();
-    void setCondition();
-    void setAction();
-    void setDecision();
+    void setCommon(GGAbstractModel::PageSections updateSections);
+    void setStart(GGAbstractModel::PageSections updateSections);
+    void setEnd(GGAbstractModel::PageSections updateSections);
+    void setCondition(GGAbstractModel::PageSections updateSections);
+    void setAction(GGAbstractModel::PageSections updateSections);
+    void setDecision(GGAbstractModel::PageSections updateSections);
 
-    void setContent();
-    void setMappedContent();
+    void setContent(GGAbstractModel::PageSections updateSections);
+    void setMappedContent(GGAbstractModel::PageSections updateSections);
 
 private:
     Ui::GGPageEditPanel *ui;

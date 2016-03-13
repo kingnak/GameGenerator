@@ -4,6 +4,7 @@
 #include <gg_core_global.h>
 #include <gg_definitions.h>
 #include <QString>
+#include "ggabstractmodel.h"
 #include "ggmappedlink.h"
 #include "gglink.h"
 #include "ggsearch.h"
@@ -44,7 +45,7 @@ private:
     GGAbstractModel *m_model;
 
 protected:
-    void notifyChanged();
+    void notifyChanged(int sections);
 
 protected:
     QString m_sceneName;

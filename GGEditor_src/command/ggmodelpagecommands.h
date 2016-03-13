@@ -79,7 +79,7 @@ public:
     enum Type {
         Name, SceneName, Caption
     };
-    GGSetPageStringCmd(GGEditModel *model, GGPage *page, QString str, Type type);
+    GGSetPageStringCmd(GGEditModel *model, GGPage *page, const QString &str, Type type);
 
     QString description() const;
 
@@ -125,7 +125,7 @@ private:
 class GGSetActionLinkCmd : public GGAbstractModelCommand
 {
 public:
-    GGSetActionLinkCmd(GGEditModel *model, GGActionPage *page, GGLink lnk);
+    GGSetActionLinkCmd(GGEditModel *model, GGActionPage *page, const GGLink &lnk);
 
     QString description() const;
 
@@ -148,7 +148,7 @@ public:
     enum Type {
         Add, Remove, Set
     };
-    GGMappedLinkCmd(GGEditModel *model, GGMappedContentPage *page, GGMappedLink lnk, Type type, int idx);
+    GGMappedLinkCmd(GGEditModel *model, GGMappedContentPage *page, const GGMappedLink &lnk, Type type, int idx);
     ~GGMappedLinkCmd();
 
     QString description() const;
@@ -177,7 +177,7 @@ public:
     enum Type {
         Add, Remove, Set
     };
-    GGDecisionLinkCmd(GGEditModel *model, GGDecisionPage *page, GGLink lnk, Type type, int idx);
+    GGDecisionLinkCmd(GGEditModel *model, GGDecisionPage *page, const GGLink &lnk, Type type, int idx);
     ~GGDecisionLinkCmd();
 
     QString description() const;

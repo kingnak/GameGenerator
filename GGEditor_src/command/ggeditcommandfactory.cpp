@@ -41,12 +41,12 @@ GGDeletePageCmd *GGEditCommandFactory::deletePage(GGPage *page)
     return new GGDeletePageCmd(m_model, page);
 }
 
-GGCreateConnectionCmd *GGEditCommandFactory::createConnection(GGPage *src, GGPage *dest, GGConnectionSlot slot)
+GGCreateConnectionCmd *GGEditCommandFactory::createConnection(GGPage *src, GGPage *dest, const GGConnectionSlot &slot)
 {
     return new GGCreateConnectionCmd(m_model, slot, src, dest);
 }
 
-GGExchangeConnectionCmd *GGEditCommandFactory::exchangeConnection(GGPage *src, GGPage *dest, GGConnectionSlot slot)
+GGExchangeConnectionCmd *GGEditCommandFactory::exchangeConnection(GGPage *src, GGPage *dest, const GGConnectionSlot &slot)
 {
     return new GGExchangeConnectionCmd(m_model, src, dest, slot);
 }
@@ -56,17 +56,17 @@ GGDeleteConnectionCmd *GGEditCommandFactory::deleteConnection(GGConnection *conn
     return new GGDeleteConnectionCmd(m_model, conn);
 }
 
-GGSetPageStringCmd *GGEditCommandFactory::setPageName(GGPage *p, QString name)
+GGSetPageStringCmd *GGEditCommandFactory::setPageName(GGPage *p, const QString &name)
 {
     return new GGSetPageStringCmd(m_model, p, name, GGSetPageStringCmd::Name);
 }
 
-GGSetPageStringCmd *GGEditCommandFactory::setPageScene(GGPage *p, QString sceneName)
+GGSetPageStringCmd *GGEditCommandFactory::setPageScene(GGPage *p, const QString &sceneName)
 {
     return new GGSetPageStringCmd(m_model, p, sceneName, GGSetPageStringCmd::SceneName);
 }
 
-GGSetPageStringCmd *GGEditCommandFactory::setPageCaption(GGContentPage *p, QString caption)
+GGSetPageStringCmd *GGEditCommandFactory::setPageCaption(GGContentPage *p, const QString &caption)
 {
     return new GGSetPageStringCmd(m_model, p, caption, GGSetPageStringCmd::Caption);
 }

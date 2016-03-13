@@ -2,10 +2,10 @@
 #include "ggpage.h"
 #include "ggconnection.h"
 
-void GGAbstractModel::notifyPageUpdate(GG::PageID id)
+void GGAbstractModel::notifyPageUpdate(GG::PageID id, PageSections sections)
 {
     if (GGPage *p = getPage(id)) {
-        emit pageUpdated(p);
+        emit pageUpdated(p, sections);
     }
 }
 

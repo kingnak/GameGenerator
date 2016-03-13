@@ -11,7 +11,7 @@ class GGCommandGroup;
 class GGCreateConnectionCmd : public GGAbstractModelCommand
 {
 public:
-    GGCreateConnectionCmd(GGEditModel *model, GGConnectionSlot slot, GGPage *src, GGPage *dest);
+    GGCreateConnectionCmd(GGEditModel *model, const GGConnectionSlot &slot, GGPage *src, GGPage *dest);
     ~GGCreateConnectionCmd();
 
     QString description() const;
@@ -57,7 +57,7 @@ private:
 class GGExchangeConnectionCmd : public GGAbstractModelCommand
 {
 public:
-    GGExchangeConnectionCmd(GGEditModel *model, GGPage *src, GGPage *dest, GGConnectionSlot slot);
+    GGExchangeConnectionCmd(GGEditModel *model, GGPage *src, GGPage *dest, const GGConnectionSlot &slot);
     ~GGExchangeConnectionCmd();
 
     QString description() const;

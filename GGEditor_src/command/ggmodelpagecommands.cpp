@@ -178,7 +178,7 @@ bool GGDeletePageCmd::doRedo()
 
 ///////////////////////////
 
-GGSetPageStringCmd::GGSetPageStringCmd(GGEditModel *model, GGPage *page, QString str, GGSetPageStringCmd::Type type)
+GGSetPageStringCmd::GGSetPageStringCmd(GGEditModel *model, GGPage *page, const QString &str, GGSetPageStringCmd::Type type)
     : GGAbstractModelCommand(model),
       m_page(page),
       m_new(str),
@@ -298,7 +298,7 @@ bool GGExchangeContentCmd::doRedo()
 
 ///////////////////////////
 
-GGSetActionLinkCmd::GGSetActionLinkCmd(GGEditModel *model, GGActionPage *page, GGLink lnk)
+GGSetActionLinkCmd::GGSetActionLinkCmd(GGEditModel *model, GGActionPage *page, const GGLink &lnk)
     : GGAbstractModelCommand(model), m_page(page), m_new(lnk)
 {
 
@@ -338,7 +338,7 @@ bool GGSetActionLinkCmd::doRedo()
 
 ///////////////////////////
 
-GGMappedLinkCmd::GGMappedLinkCmd(GGEditModel *model, GGMappedContentPage *page, GGMappedLink lnk, GGMappedLinkCmd::Type type, int idx)
+GGMappedLinkCmd::GGMappedLinkCmd(GGEditModel *model, GGMappedContentPage *page, const GGMappedLink &lnk, GGMappedLinkCmd::Type type, int idx)
     : GGAbstractModelCommand(model),
       m_page(page),
       m_new(lnk),
@@ -498,7 +498,7 @@ bool GGMappedLinkCmd::doRedo()
 
 ///////////////////////////
 
-GGDecisionLinkCmd::GGDecisionLinkCmd(GGEditModel *model, GGDecisionPage *page, GGLink lnk, Type type, int idx)
+GGDecisionLinkCmd::GGDecisionLinkCmd(GGEditModel *model, GGDecisionPage *page, const GGLink &lnk, Type type, int idx)
     : GGAbstractModelCommand(model),
       m_page(page),
       m_new(lnk),

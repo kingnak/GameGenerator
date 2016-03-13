@@ -18,13 +18,13 @@ public:
 
     GGDeletePageCmd *deletePage(GGPage *page);
 
-    GGCreateConnectionCmd *createConnection(GGPage *src, GGPage *dest, GGConnectionSlot slot);
-    GGExchangeConnectionCmd *exchangeConnection(GGPage *src, GGPage *dest, GGConnectionSlot slot);
+    GGCreateConnectionCmd *createConnection(GGPage *src, GGPage *dest, const GGConnectionSlot &slot);
+    GGExchangeConnectionCmd *exchangeConnection(GGPage *src, GGPage *dest, const GGConnectionSlot &slot);
     GGDeleteConnectionCmd *deleteConnection(GGConnection *conn);
 
-    GGSetPageStringCmd *setPageName(GGPage *p, QString name);
-    GGSetPageStringCmd *setPageScene(GGPage *p, QString sceneName);
-    GGSetPageStringCmd *setPageCaption(GGContentPage *p, QString caption);
+    GGSetPageStringCmd *setPageName(GGPage *p, const QString &name);
+    GGSetPageStringCmd *setPageScene(GGPage *p, const QString &sceneName);
+    GGSetPageStringCmd *setPageCaption(GGContentPage *p, const QString &caption);
 
     GGExchangeContentCmd *exchangeContent(GGContentPage *p, GGContentElement *elem);
 

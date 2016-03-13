@@ -16,6 +16,16 @@ class GG_CORESHARED_EXPORT GGAbstractModel : public QObject
     Q_OBJECT
 
 public:
+    enum PageSection {
+        PageData        = 0x0001,
+        Connections     = 0x0002,
+        Content         = 0x0004,
+        MappedLinks     = 0x0008,
+        DecisionLinks   = 0x0010,
+        AllSections = PageData | Connections | Content | MappedLinks | DecisionLinks
+    };
+    Q_DECLARE_FLAGS(PageSections, PageSection)
+
     explicit GGAbstractModel(QObject *parent = 0) : QObject(parent) {}
     virtual GGAbstractFactory *factory() = 0;
 
@@ -28,7 +38,7 @@ public:
     virtual bool registerPageWithId(GGPage *page) = 0;
     virtual bool registerConnectionWithId(GGConnection *conn) = 0;
 
-    virtual void notifyPageUpdate(GG::PageID id);
+    virtual void notifyPageUpdate(GG::PageID id, PageSections sections);
 
     virtual QSet<GGVariable> variables() const = 0;
     virtual QList<QString> variableNames() const = 0;
@@ -43,7 +53,7 @@ signals:
     void pageUnregistered(GG::PageID id, GGPage *page);
     void connectionRegistered(GGConnection *conn);
     void connectionUnregistered(GG::ConnectionID id, GGConnection *conn);
-    void pageUpdated(GGPage *page);
+    void pageUpdated(GGPage *page, GGAbstractModel::PageSections sections);
 
 protected:
     void setPageId(GGPage *page, GG::PageID id);

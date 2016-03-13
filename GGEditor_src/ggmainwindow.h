@@ -25,6 +25,9 @@ public:
     explicit GGMainWindow(QWidget *parent = 0);
     ~GGMainWindow();
 
+    GGViewModel *currentModel();
+    GGUIController *controller();
+
 public slots:
     void newModel();
     void closeModel();

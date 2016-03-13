@@ -5,7 +5,7 @@
 #include <model/ggconnection.h>
 #include <model/ggpage.h>
 
-GGCreateConnectionCmd::GGCreateConnectionCmd(GGEditModel *model, GGConnectionSlot slot, GGPage *src, GGPage *dest)
+GGCreateConnectionCmd::GGCreateConnectionCmd(GGEditModel *model, const GGConnectionSlot &slot, GGPage *src, GGPage *dest)
 :   GGAbstractModelCommand(model),
     m_createdConn(NULL),
     m_slot(slot),
@@ -157,7 +157,7 @@ bool GGDeleteConnectionCmd::doRedo()
 
 ///////////////////////////
 
-GGExchangeConnectionCmd::GGExchangeConnectionCmd(GGEditModel *model, GGPage *src, GGPage *dest, GGConnectionSlot slot)
+GGExchangeConnectionCmd::GGExchangeConnectionCmd(GGEditModel *model, GGPage *src, GGPage *dest, const GGConnectionSlot &slot)
     : GGAbstractModelCommand(model),
       m_src(src),
       m_dest(dest),

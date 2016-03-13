@@ -14,7 +14,7 @@ GGViewModel::GGViewModel(GGEditModel *model, QObject *parent)
     connect(m_model, SIGNAL(pageUnregistered(GG::PageID,GGPage*)), this, SLOT(unregPage(GG::PageID,GGPage*)));
     connect(m_model, SIGNAL(connectionRegistered(GGConnection*)), this, SLOT(regConn(GGConnection*)));
     connect(m_model, SIGNAL(connectionUnregistered(GG::ConnectionID,GGConnection*)), this, SLOT(unregConn(GG::ConnectionID,GGConnection*)));
-    connect(m_model, SIGNAL(pageUpdated(GGPage*)), this, SLOT(updPage(GGPage*)));
+    connect(m_model, SIGNAL(pageUpdated(GGPage*,GGAbstractModel::PageSections)), this, SLOT(updPage(GGPage*)));
 }
 
 GGViewModel::~GGViewModel()
