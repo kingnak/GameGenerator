@@ -58,5 +58,5 @@ int main(int argc, char *argv[])
 
     massTest(&w);
 
-    //return a.exec();
+    return a.exec();
 }
