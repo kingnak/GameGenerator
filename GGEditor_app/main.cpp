@@ -5,6 +5,8 @@
 #include <vld.h>
 #endif
 
+//#define MASS_TEST
+#ifdef MASS_TEST
 #include <view/gguicontroller.h>
 #include <viewmodel/ggviewmodel.h>
 #include <viewmodel/ggviewpage.h>
@@ -12,10 +14,16 @@
 #include <model/gglink.h>
 #include <model/ggpage.h>
 
+#include <model/ggsearch.h>
+
+#include <QTime>
+
 void massTest(GGMainWindow *w)
 {
-    const int COLS = 10;
-    const int ROWS = 10;
+    QTime timer;
+    timer.start();
+    const int COLS = 50;
+    const int ROWS = 50;
     GGPage *prev = NULL;
     for (int i = 0; i < ROWS; ++i) {
         for (int j = 0; j < COLS; ++j) {
@@ -47,7 +55,16 @@ void massTest(GGMainWindow *w)
             prev = cur;
         }
     }
+    qDebug(qPrintable(QString("Create %1 items: %2 ms").arg(ROWS*COLS).arg(timer.elapsed())));
+
+
+    GGSearchRequest req("ri");
+    timer.restart();
+    GGSearchResultList res = w->controller()->model()->editModel()->search(req);
+    qDebug(qPrintable(QString("Search %1 items: %2 ms").arg(res.size()).arg(timer.elapsed())));
+
 }
+#endif
 
 int main(int argc, char *argv[])
 {
@@ -56,7 +73,9 @@ int main(int argc, char *argv[])
     GGMainWindow w;
     w.show();
 
+#ifdef MASS_TEST
     massTest(&w);
+#endif
 
     return a.exec();
 }
