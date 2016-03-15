@@ -369,16 +369,16 @@ QString GGMappedLinkCmd::description() const
 
 bool GGMappedLinkCmd::doExecute()
 {
-    Q_ASSERT_X(!m_new.link().connection(), "GGMappedLinkCmd::doExecute", "New link has a connection");
-    if (m_new.link().connection()) {
-        return setError("New link has a connection");
-    }
     if (m_type != Add) {
         Q_ASSERT(0 <= m_idx && m_idx < m_page->getLinkMap().size());
         m_old = m_page->getLinkMap().value(m_idx);
         // Same as Redo
         return doRedo();
     } else {
+        Q_ASSERT_X(!m_new.link().connection(), "GGMappedLinkCmd::doExecute", "New link has a connection");
+        if (m_new.link().connection()) {
+            return setError("New link has a connection");
+        }
         m_idx = m_page->getLinkMap().size();
         m_page->addMappedLink(m_new);
         return true;
@@ -529,16 +529,16 @@ QString GGDecisionLinkCmd::description() const
 
 bool GGDecisionLinkCmd::doExecute()
 {
-    Q_ASSERT_X(!m_new.connection(), "GGDecisionLinkCmd::doExecute", "New link has a connection");
-    if (m_new.connection()) {
-        return setError("New link has a connection");
-    }
     if (m_type != Add) {
         Q_ASSERT(0 <= m_idx && m_idx < m_page->getDecisionLinks().size());
         m_old = m_page->getDecisionLinks().value(m_idx);
         // Same as Redo
         return doRedo();
     } else {
+        Q_ASSERT_X(!m_new.connection(), "GGDecisionLinkCmd::doExecute", "New link has a connection");
+        if (m_new.connection()) {
+            return setError("New link has a connection");
+        }
         m_idx = m_page->getDecisionLinks().size();
         m_page->addDecisionLink(m_new);
         return true;
