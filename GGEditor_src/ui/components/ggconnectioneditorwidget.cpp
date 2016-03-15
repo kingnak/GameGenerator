@@ -89,7 +89,10 @@ void GGConnectionEditorWidget::setConnection(GGPage *page, GGConnectionSlot slot
     ui->btnDelete->setEnabled(m_actions.testFlag(Edit));
     ui->btnDelete->setVisible(m_actions.testFlag(Delete));
 
-    ui->wgtAction->setVariables(m_page->model()->variableNames());
+    if (m_page)
+        ui->wgtAction->setVariables(m_page->model()->variableNames());
+    else
+        ui->wgtAction->setVariables(QStringList());
 
     if (m_page && m_slot.type() != GGConnectionSlot::NoConnection) {
         setEnabled(true);

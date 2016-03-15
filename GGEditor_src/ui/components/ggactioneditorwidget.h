@@ -36,6 +36,7 @@ private:
     GGAction buildAction();
     Ui::GGActionEditorWidget *ui;
     GGAction m_action;
+    QStringList m_varCache;
 };
 
 #endif // GGACTIONEDITORWIDGET_H

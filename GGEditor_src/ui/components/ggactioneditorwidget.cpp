@@ -29,10 +29,15 @@ GGAction GGActionEditorWidget::getAction()
 
 void GGActionEditorWidget::setVariables(QStringList vars)
 {
-    qSort(vars);
-    ui->cmbVar->clear();
-    ui->cmbVar->addItem("");
-    ui->cmbVar->addItems(vars);
+    if (vars != m_varCache) {
+        qSort(vars);
+        m_varCache = vars;
+        ui->cmbVar->clear();
+        ui->cmbVar->addItem("");
+        ui->cmbVar->addItems(vars);
+    } else {
+        ui->cmbVar->setCurrentIndex(0);
+    }
 }
 
 void GGActionEditorWidget::setAction(const GGAction &action)
