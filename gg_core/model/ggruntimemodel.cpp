@@ -23,12 +23,12 @@ GGAbstractFactory *GGRuntimeModel::factory()
     return m_factory;
 }
 
-GGPage *GGRuntimeModel::getPage(GG::PageID id)
+GGPage *GGRuntimeModel::getPage(GG::PageID id) const
 {
     return m_pages.value(id);
 }
 
-GGConnection *GGRuntimeModel::getConnection(GG::ConnectionID id)
+GGConnection *GGRuntimeModel::getConnection(GG::ConnectionID id) const
 {
     return m_connections.value(id);
 }

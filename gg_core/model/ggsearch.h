@@ -8,6 +8,8 @@
 #include <QList>
 #include <model/ggconnectionslotdata.h>
 
+class GGAbstractModel;
+
 class GG_CORESHARED_EXPORT GGSearchRequest
 {
 public:
@@ -109,11 +111,12 @@ private:
 class GG_CORESHARED_EXPORT GGSearchResult
 {
 public:
-    GGSearchResult() {}
-    GGSearchResult(const GGSearchRequest &req) : m_req(req) {}
+    GGSearchResult() : m_model(NULL) {}
+    GGSearchResult(const GGSearchRequest &req, const GGAbstractModel *model) : m_model(model), m_req(req) {}
 
     QList<GGSearchResultItem> resultItems() { return m_items; }
     GGSearchRequest request() const { return m_req; }
+    const GGAbstractModel *model() const { return m_model; }
     int count() const { return m_items.size(); }
 
     void append(const GGSearchResultItem &item) { m_items.append(item); }
@@ -129,6 +132,7 @@ public:
 
 private:
     QList<GGSearchResultItem> m_items;
+    const GGAbstractModel *m_model;
     GGSearchRequest m_req;
 };
 

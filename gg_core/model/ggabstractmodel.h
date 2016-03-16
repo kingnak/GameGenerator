@@ -29,8 +29,8 @@ public:
     explicit GGAbstractModel(QObject *parent = 0) : QObject(parent) {}
     virtual GGAbstractFactory *factory() = 0;
 
-    virtual GGPage *getPage(GG::PageID id) = 0;
-    virtual GGConnection *getConnection(GG::ConnectionID id) = 0;
+    virtual GGPage *getPage(GG::PageID id) const = 0;
+    virtual GGConnection *getConnection(GG::ConnectionID id) const = 0;
 
     virtual QList<GGPage *> getPages() const = 0;
     virtual QList<GGConnection *> getConnections() = 0;

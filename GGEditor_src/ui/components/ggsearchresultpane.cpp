@@ -11,7 +11,7 @@ GGSearchResultPane::GGSearchResultPane(QWidget *parent) :
     GGSearchResultModel *model = new GGSearchResultModel;
     model->setMatchHighlightDecoration("<span style=\"background-color: rgb(255,255,0);}\">", "</span>");
     ui->lstResults->setModel(model);
-    ui->lstResults->setItemDelegateForColumn(0, new GGHtmlItemDelegate);
+    ui->lstResults->setItemDelegateForColumn(GGSearchResultModel::MATCH_COLUMN, new GGHtmlItemDelegate);
 }
 
 GGSearchResultPane::~GGSearchResultPane()
@@ -29,3 +29,13 @@ void GGSearchResultPane::newSearch()
 {
     emit requestNewSearch();
 }
+
+void GGSearchResultPane::on_lstResults_activated(const QModelIndex &idx)
+{
+    bool ok;
+    GG::PageID id = static_cast<GG::PageID> (ui->lstResults->model()->data(idx, GGSearchResultModel::PageIdRole).toInt(&ok));
+    if (ok && id != GG::InvalidPageId) {
+        emit highlightPage(id);
+    }
+}
+

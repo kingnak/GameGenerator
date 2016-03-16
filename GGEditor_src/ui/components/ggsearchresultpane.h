@@ -23,9 +23,11 @@ public slots:
 
 signals:
     void requestNewSearch();
+    void highlightPage(GG::PageID id);
 
 private slots:
     void newSearch();
+    void on_lstResults_activated(const QModelIndex &idx);
 
 private:
     Ui::GGSearchResultPane *ui;

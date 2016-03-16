@@ -17,6 +17,18 @@ public:
 
     void setMatchHighlightDecoration(const QString &preFix, const QString &postFix);
 
+    enum Columns {
+        WHAT_COLUMN = 0,
+        WHERE_COLUMN = 1,
+        PAGE_COLUMN = 2,
+        MATCH_COLUMN = 3
+    };
+
+    enum {
+        PageIdRole = Qt::UserRole + 1
+    };
+
+
 signals:
 
 public slots:
@@ -26,6 +38,8 @@ private:
     GGSearchResult m_results;
     QString m_highPre;
     QString m_highPost;
+
+    static const int COLUMN_COUNT = 4;
 };
 
 #endif // GGSEARCHRESULTMODEL_H

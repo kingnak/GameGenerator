@@ -21,6 +21,7 @@ GGMainWindow::GGMainWindow(QWidget *parent) :
 
     ui->dckSearchResults->setVisible(false);
     connect(ui->wgtSearchResults, SIGNAL(requestNewSearch()), this, SLOT(showSearchDialog()));
+    connect(ui->wgtSearchResults, SIGNAL(highlightPage(GG::PageID)), this, SLOT(highlightPage(GG::PageID)));
 
     m_ctrl = new GGUIController(this);
     ui->wgtPageContent->setController(m_ctrl);
@@ -96,6 +97,13 @@ void GGMainWindow::closeModel()
     m_viewModel = NULL;
     ui->stkDetailEdits->setCurrentWidget(ui->pageEmpty);
     ui->scEditView->setEnabled(false);
+}
+
+void GGMainWindow::highlightPage(GG::PageID id)
+{
+    GGViewPage *vp = m_viewModel->getViewPageForPage(m_viewModel->editModel()->getPage(id));
+    m_editorScene->setSelection(QSet<GGViewPage*> () << vp, QSet<GGViewConnection*> ());
+    ui->scEditView->ensureVisible(vp->bounds());
 }
 
 void GGMainWindow::selectPage(GGViewPage *page)

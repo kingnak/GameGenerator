@@ -3,6 +3,8 @@
 
 #include <QMainWindow>
 
+#include <gg_definitions.h>
+
 class QActionGroup;
 
 class GGUIController;
@@ -34,6 +36,7 @@ public slots:
     void newModel();
     void closeModel();
 
+    void highlightPage(GG::PageID id);
     void selectPage(GGViewPage *page);
     void selectConnection(GGViewConnection *conn);
     void clearSelection();

@@ -13,8 +13,8 @@ public:
 
     GGAbstractFactory *factory();
 
-    GGPage *getPage(GG::PageID id);
-    GGConnection *getConnection(GG::ConnectionID id);
+    GGPage *getPage(GG::PageID id) const;
+    GGConnection *getConnection(GG::ConnectionID id) const;
 
     QList<GGPage *> getPages() const;
     QList<GGConnection *> getConnections();

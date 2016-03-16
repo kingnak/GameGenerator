@@ -11,7 +11,7 @@ void GGAbstractModel::notifyPageUpdate(GG::PageID id, PageSections sections)
 
 GGSearchResult GGAbstractModel::search(GGSearchRequest req) const
 {
-    GGSearchResult res(req);
+    GGSearchResult res(req, this);
     foreach (const GGPage *p, getPages()) {
         if (p->match(req, res)) {
             // -1 mean find all
