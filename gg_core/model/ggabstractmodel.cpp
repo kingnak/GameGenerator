@@ -9,13 +9,13 @@ void GGAbstractModel::notifyPageUpdate(GG::PageID id, PageSections sections)
     }
 }
 
-GGSearchResultList GGAbstractModel::search(GGSearchRequest req) const
+GGSearchResult GGAbstractModel::search(GGSearchRequest req) const
 {
-    GGSearchResultList res;
+    GGSearchResult res(req);
     foreach (const GGPage *p, getPages()) {
         if (p->match(req, res)) {
             // -1 mean find all
-            if (req.maxResults() >= 0 && res.size() >= req.maxResults()) {
+            if (req.maxResults() >= 0 && res.count() >= req.maxResults()) {
                 break;
             }
         }

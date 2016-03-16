@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>GGSearchResultPane</class>
+ <widget class="QWidget" name="GGSearchResultPane">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>287</width>
+    <height>383</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,0">
+     <item>
+      <widget class="QLabel" name="lblResultCount">
+       <property name="text">
+        <string notr="true"/>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="bntNewSearch">
+       <property name="text">
+        <string>New Search</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QTreeView" name="lstResults"/>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>bntNewSearch</sender>
+   <signal>clicked()</signal>
+   <receiver>GGSearchResultPane</receiver>
+   <slot>newSearch()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>215</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>192</x>
+     <y>3</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>newSearch()</slot>
+ </slots>
+</ui>

@@ -21,7 +21,7 @@ public:
     void setConnection(GGConnection *conn) { m_connection = conn; }
     void setAction(const GGAction &action);
 
-    bool match(const GGSearchRequest &req, GGSearchResultList &results, GG::PageID pageId, GGConnectionSlotData asSlot) const;
+    bool match(const GGSearchRequest &req, GGSearchResult &results, GG::PageID pageId, GGConnectionSlotData asSlot) const;
 
 protected:
     QString m_name;

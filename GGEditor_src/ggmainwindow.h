@@ -12,6 +12,8 @@ class GGViewPage;
 class GGViewConnection;
 class GGPage;
 class GGConnectionSlot;
+class GGSearchDialog;
+class GGSearchRequest;
 
 namespace Ui {
 class GGMainWindow;
@@ -36,6 +38,10 @@ public slots:
     void selectConnection(GGViewConnection *conn);
     void clearSelection();
 
+    void executeSearch(const GGSearchRequest &req);
+    void showSearchDialog(bool reset);
+    void showSearchDialog();
+
 private slots:
     void showError(QString err);
     void setClickMode(QAction *act);
@@ -51,6 +57,7 @@ private:
     GGEditorScene *m_editorScene;
     GGViewModel *m_viewModel;
     QActionGroup *m_createActions;
+    GGSearchDialog *m_searchDlg;
 
 };
 

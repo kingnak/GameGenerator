@@ -31,15 +31,15 @@ void GGPage::setName(QString n)
     }
 }
 
-bool GGPage::match(const GGSearchRequest &req, GGSearchResultList &results) const
+bool GGPage::match(const GGSearchRequest &req, GGSearchResult &results) const
 {
     bool res = false;
     if (req.what().testFlag(GGSearchRequest::PageName) && req.matches(m_name)) {
-        results << GGSearchResult(GGSearchResult::PageName, GGSearchRequest::PageName, m_name, m_id);
+        results << GGSearchResultItem(GGSearchResultItem::PageName, GGSearchRequest::PageName, m_name, m_id);
         res = true;
     }
     if (req.what().testFlag(GGSearchRequest::PageScene) && req.matches(m_sceneName)) {
-        results << GGSearchResult(GGSearchResult::PageScene, GGSearchRequest::PageScene, m_sceneName, m_id);
+        results << GGSearchResultItem(GGSearchResultItem::PageScene, GGSearchRequest::PageScene, m_sceneName, m_id);
         res = true;
     }
     return res;
@@ -113,7 +113,7 @@ bool GGConditionPage::removeConnection(GGConnection *connection)
     return false;
 }
 
-bool GGConditionPage::match(const GGSearchRequest &req, GGSearchResultList &results) const
+bool GGConditionPage::match(const GGSearchRequest &req, GGSearchResult &results) const
 {
     bool res = GGPage::match(req, results);
     // TODO: Condition
@@ -165,11 +165,11 @@ GGContentElement *GGContentPage::exchangeContent(GGContentElement *cont)
     return cont;
 }
 
-bool GGContentPage::match(const GGSearchRequest &req, GGSearchResultList &results) const
+bool GGContentPage::match(const GGSearchRequest &req, GGSearchResult &results) const
 {
     bool res = GGPage::match(req, results);
     if (req.what().testFlag(GGSearchRequest::PageCaption) && req.matches(m_caption)) {
-        results << GGSearchResult(GGSearchResult::PageCaption, GGSearchRequest::PageCaption, m_caption, id());
+        results << GGSearchResultItem(GGSearchResultItem::PageCaption, GGSearchRequest::PageCaption, m_caption, id());
         res = true;
     }
     // TODO: Content
@@ -272,7 +272,7 @@ QList<GGMappedLink> GGMappedContentPage::getLinkMap() const
     return m_mappedLinks;
 }
 
-bool GGMappedContentPage::match(const GGSearchRequest &req, GGSearchResultList &results) const
+bool GGMappedContentPage::match(const GGSearchRequest &req, GGSearchResult &results) const
 {
     bool res = GGContentPage::match(req, results);
     if (req.searchLinks()) {
@@ -370,7 +370,7 @@ QList<GGConnection *> GGActionPage::getConnections() const
     return conns;
 }
 
-bool GGActionPage::match(const GGSearchRequest &req, GGSearchResultList &results) const
+bool GGActionPage::match(const GGSearchRequest &req, GGSearchResult &results) const
 {
     bool res = GGMappedContentPage::match(req, results);
     if (req.searchLinks()) {
@@ -460,7 +460,7 @@ bool GGDecisionPage::removeConnection(GGConnection *connection)
     return GGMappedContentPage::removeConnection(connection);
 }
 
-bool GGDecisionPage::match(const GGSearchRequest &req, GGSearchResultList &results) const
+bool GGDecisionPage::match(const GGSearchRequest &req, GGSearchResult &results) const
 {
     bool res = GGMappedContentPage::match(req, results);
     if (req.searchLinks()) {

@@ -21,7 +21,9 @@ void GGSearchRequest::setTerm(const QString &term)
     }
 
     if (m_type.testFlag(WholeWord)) {
-        cp = QString("\\b%1\\b").arg(cp);
+        cp = QString("\\b(%1)\\b").arg(cp);
+    } else {
+        cp = QString("(%1)").arg(cp);
     }
     m_matcher = QRegExp(cp);
     if (m_type.testFlag(CaseSensitive)) {
@@ -46,4 +48,23 @@ bool GGSearchRequest::matches(const QString &str) const
 bool GGSearchRequest::searchLinks() const
 {
     return (m_what & (Variable | Function | LinkName)) != 0;
+}
+
+QString GGSearchRequest::formatMatch(const QString &str, const QString &preFix, const QString &postFix) const
+{
+    if (!matches(str)) return str;
+
+    if (m_type.testFlag(Exact)) {
+        // Exact. Whole string must match
+        return preFix + str + postFix;
+    }
+    if (m_type.testFlag(StartsWith)) {
+        // Starts with. Can only be at start
+        return preFix + m_term + postFix + str.mid(m_term.length());
+    }
+
+    // Find ALL matches and highlight them
+    QString s = str;
+    s.replace(m_matcher, preFix+m_matcher.cap(1)+postFix);
+    return s;
 }

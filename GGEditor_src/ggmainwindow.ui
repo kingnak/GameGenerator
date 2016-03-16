@@ -86,7 +86,7 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>764</width>
+              <width>683</width>
               <height>182</height>
              </rect>
             </property>
@@ -168,6 +168,17 @@
    <addaction name="actionL"/>
    <addaction name="separator"/>
    <addaction name="actionDelete"/>
+   <addaction name="separator"/>
+   <addaction name="actionFind"/>
+  </widget>
+  <widget class="QDockWidget" name="dckSearchResults">
+   <property name="windowTitle">
+    <string>SearchResults</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>2</number>
+   </attribute>
+   <widget class="GGSearchResultPane" name="wgtSearchResults"/>
   </widget>
   <action name="action_New">
    <property name="icon">
@@ -352,6 +363,11 @@
     <string>&amp;Variables</string>
    </property>
   </action>
+  <action name="actionFind">
+   <property name="text">
+    <string>Find</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>
@@ -363,6 +379,12 @@
    <class>GGPageEditPanel</class>
    <extends>QWidget</extends>
    <header>ui/ggpageeditpanel.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>GGSearchResultPane</class>
+   <extends>QWidget</extends>
+   <header>ui/components/ggsearchresultpane.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

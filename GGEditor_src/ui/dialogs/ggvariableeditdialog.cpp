@@ -149,6 +149,6 @@ void GGVariableEditDialog::showVarUsage()
     QString varName = ui->lstVariables->model()->data(ui->lstVariables->model()->index(idx, 0)).toString();
 
     GGSearchRequest req(varName, GGSearchRequest::CaseSensitive | GGSearchRequest::Exact, GGSearchRequest::Variable);
-    GGSearchResultList res = static_cast<GGVariableEditModel*> (ui->lstVariables->model())->dataModel()->search(req);
+    GGSearchResult res = static_cast<GGVariableEditModel*> (ui->lstVariables->model())->dataModel()->search(req);
 }
 

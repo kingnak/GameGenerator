@@ -33,7 +33,7 @@ public:
     void setSceneName(QString sn);
     void setName(QString n);
 
-    virtual bool match(const GGSearchRequest &req, GGSearchResultList &results) const;
+    virtual bool match(const GGSearchRequest &req, GGSearchResult &results) const;
 
     // TODO: Entry Action (as own class between contentPage and mappedContenPage?)
 
@@ -77,7 +77,7 @@ public:
     QList<GGConnection *> getConnections() const;
     bool removeConnection(GGConnection *connection);
 
-    virtual bool match(const GGSearchRequest &req, GGSearchResultList &results) const;
+    virtual bool match(const GGSearchRequest &req, GGSearchResult &results) const;
 
 private:
     GGConnection *m_true;
@@ -99,7 +99,7 @@ public:
     void setContent(GGContentElement *cont);
     GGContentElement *exchangeContent(GGContentElement *cont);
 
-    virtual bool match(const GGSearchRequest &req, GGSearchResultList &results) const;
+    virtual bool match(const GGSearchRequest &req, GGSearchResult &results) const;
 
 protected:
     QString m_caption;
@@ -160,7 +160,7 @@ public:
     bool removeMappedLink(int idx);
     QList<GGMappedLink> getLinkMap() const;
 
-    virtual bool match(const GGSearchRequest &req, GGSearchResultList &results) const;
+    virtual bool match(const GGSearchRequest &req, GGSearchResult &results) const;
 
 protected:
     QList<GGMappedLink> m_mappedLinks;
@@ -184,7 +184,7 @@ public:
     bool removeConnection(GGConnection *connection);
     QList<GGConnection *> getConnections() const;
 
-    virtual bool match(const GGSearchRequest &req, GGSearchResultList &results) const;
+    virtual bool match(const GGSearchRequest &req, GGSearchResult &results) const;
 
 protected:
     GGLink m_actionLink;
@@ -212,7 +212,7 @@ public:
     QList<GGConnection *> getConnections() const;
     bool removeConnection(GGConnection *connection);
 
-    virtual bool match(const GGSearchRequest &req, GGSearchResultList &results) const;
+    virtual bool match(const GGSearchRequest &req, GGSearchResult &results) const;
 
 protected:
     QList<GGLink> m_decisionLinks;

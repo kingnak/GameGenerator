@@ -9,13 +9,18 @@
 #include <model/ggeditmodel.h>
 #include <model/ggsimplefactory.h>
 #include <model/ggpage.h>
+#include <ui/dialogs/ggsearchdialog.h>
 
 GGMainWindow::GGMainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::GGMainWindow),
-    m_viewModel(NULL)
+    m_viewModel(NULL),
+    m_searchDlg(NULL)
 {
     ui->setupUi(this);
+
+    ui->dckSearchResults->setVisible(false);
+    connect(ui->wgtSearchResults, SIGNAL(requestNewSearch()), this, SLOT(showSearchDialog()));
 
     m_ctrl = new GGUIController(this);
     ui->wgtPageContent->setController(m_ctrl);
@@ -48,6 +53,7 @@ GGMainWindow::GGMainWindow(QWidget *parent) :
     // Set proper undo/redo shortcuts
     ui->actionUndo->setShortcut(QKeySequence::Undo);
     ui->actionRedo->setShortcut(QKeySequence::Redo);
+    ui->actionFind->setShortcut(QKeySequence::Find);
 
     // Always go back to pointer after a scene click
     connect(m_editorScene, SIGNAL(clickedEmptySpace(QPointF)), this, SLOT(setPointerMode()));
@@ -115,6 +121,31 @@ void GGMainWindow::showError(QString err)
     QMessageBox::critical(this, "Error", err);
 }
 
+void GGMainWindow::executeSearch(const GGSearchRequest &req)
+{
+    GGSearchResult lst = m_viewModel->editModel()->search(req);
+    ui->wgtSearchResults->setResults(lst);
+    ui->dckSearchResults->setVisible(true);
+}
+
+void GGMainWindow::showSearchDialog()
+{
+    showSearchDialog(true);
+}
+
+void GGMainWindow::showSearchDialog(bool reset)
+{
+    if (!m_searchDlg) {
+        m_searchDlg = new GGSearchDialog(this);
+        connect(m_searchDlg, SIGNAL(executeSearch(GGSearchRequest)), this, SLOT(executeSearch(GGSearchRequest)));
+    }
+    if (reset) {
+        m_searchDlg->resetSearch();
+    }
+    m_searchDlg->show();
+    m_searchDlg->activateWindow();
+}
+
 void GGMainWindow::setClickMode(QAction *act)
 {
     if (act == ui->actionP) {
@@ -154,6 +185,9 @@ void GGMainWindow::handleAction(QAction *act)
     }
     if (act == ui->actionDelete) {
         m_editorScene->deleteCurrentSelection();
+    }
+    if (act == ui->actionFind) {
+        showSearchDialog(false);
     }
 }
 

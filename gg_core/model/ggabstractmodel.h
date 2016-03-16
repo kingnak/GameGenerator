@@ -46,7 +46,7 @@ public:
     virtual bool addVariable(GGVariable v) = 0;
     virtual bool removeVariable(GGVariable v) = 0;
 
-    GGSearchResultList search(GGSearchRequest req) const;
+    GGSearchResult search(GGSearchRequest req) const;
 
 signals:
     void pageRegistered(GGPage *page);

@@ -48,7 +48,11 @@ SOURCES += \
     view/ggmappinguicontroller.cpp \
     ui/basic/ggmouselabel.cpp \
     ui/dialogs/ggvariableeditdialog.cpp \
-    command/ggmodelgeneralcommands.cpp
+    command/ggmodelgeneralcommands.cpp \
+    ui/components/ggsearchresultpane.cpp \
+    view/ggsearchresultmodel.cpp \
+    ui/dialogs/ggsearchdialog.cpp \
+    ui/basic/gghtmlitemdelegate.cpp
 
 HEADERS += \
     model/ggeditmodel.h \
@@ -91,7 +95,11 @@ HEADERS += \
     view/ggmappinguicontroller.h \
     ui/basic/ggmouselabel.h \
     ui/dialogs/ggvariableeditdialog.h \
-    command/ggmodelgeneralcommands.h
+    command/ggmodelgeneralcommands.h \
+    ui/components/ggsearchresultpane.h \
+    view/ggsearchresultmodel.h \
+    ui/dialogs/ggsearchdialog.h \
+    ui/basic/gghtmlitemdelegate.h
 unix {
     target.path = /usr/lib
     INSTALLS += target
@@ -121,7 +129,9 @@ FORMS += \
     ui/panes/ggmappingeditorpane.ui \
     ui/components/ggconnectionlisteditorwidget.ui \
     ui/dialogs/ggeditcontentmappingdialog.ui \
-    ui/dialogs/ggvariableeditdialog.ui
+    ui/dialogs/ggvariableeditdialog.ui \
+    ui/components/ggsearchresultpane.ui \
+    ui/dialogs/ggsearchdialog.ui
 
 RESOURCES += \
     ui/resources.qrc
