@@ -60,8 +60,8 @@ void massTest(GGMainWindow *w)
 
     GGSearchRequest req("ri");
     timer.restart();
-    GGSearchResultList res = w->controller()->model()->editModel()->search(req);
-    qDebug(qPrintable(QString("Search %1 items: %2 ms").arg(res.size()).arg(timer.elapsed())));
+    GGSearchResult res = w->controller()->model()->editModel()->search(req);
+    qDebug(qPrintable(QString("Search %1 items: %2 ms").arg(res.count()).arg(timer.elapsed())));
 
 }
 #endif
