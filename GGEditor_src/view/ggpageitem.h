@@ -35,6 +35,8 @@ public:
     void updateDrawingGeometry();
     QRectF innerBoundingRect() const;
 
+    static QPixmap getPageTypeIcon(int type, QSize drawSize = QSize(48,32), QSize outSize = QSize());
+
 protected:
     QVariant itemChange(GraphicsItemChange change, const QVariant &value);
 
@@ -42,11 +44,15 @@ private:
     GGEditorScene *editScene();
     const GGEditorScene *editScene() const;
 
-    void paintStart(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
-    void paintEnd(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
-    void paintCondition(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
-    void paintAction(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
-    void paintDecision(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+    static void paintStart(QPainter *painter, const QRectF &rect, QColor border, QColor fill);
+    static void paintEnd(QPainter *painter, const QRectF &rect, QColor border, QColor fill);
+    static void paintCondition(QPainter *painter, const QRectF &rect, QColor border, QColor fill);
+    static void paintAction(QPainter *painter, const QRectF &rect, QColor border, QColor fill);
+    static void paintDecision(QPainter *painter, const QRectF &rect, QColor border, QColor fill);
+
+    static QPainterPath roundShape(const QRectF &rect);
+    static QPainterPath roundedRectShape(const QRectF &rect);
+    static QPainterPath diamondShape(const QRectF &rect);
 
 private:
     GGViewPage *m_page;

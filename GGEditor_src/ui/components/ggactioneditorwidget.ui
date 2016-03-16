@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>230</width>
+    <width>231</width>
     <height>24</height>
    </rect>
   </property>
@@ -102,12 +102,21 @@
            <property name="text">
             <string notr="true"/>
            </property>
+           <property name="icon">
+            <iconset>
+             <normalon>:/icons/ok</normalon>
+            </iconset>
+           </property>
           </widget>
          </item>
          <item>
           <widget class="QToolButton" name="btnAbort">
            <property name="text">
             <string notr="true"/>
+           </property>
+           <property name="icon">
+            <iconset resource="../resources.qrc">
+             <normaloff>:/icons/abort</normaloff>:/icons/abort</iconset>
            </property>
           </widget>
          </item>
@@ -155,7 +164,12 @@
        <item>
         <widget class="QToolButton" name="btnEdit">
          <property name="text">
-          <string>...</string>
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normalon>:/icons/edit</normalon>
+          </iconset>
          </property>
         </widget>
        </item>
@@ -178,7 +192,9 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="../resources.qrc"/>
+ </resources>
  <connections/>
  <slots>
   <signal>actionUpdated(GGAction)</signal>

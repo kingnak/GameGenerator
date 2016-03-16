@@ -10,6 +10,7 @@
 #include <model/ggsimplefactory.h>
 #include <model/ggpage.h>
 #include <ui/dialogs/ggsearchdialog.h>
+#include <view/ggpageitem.h>
 
 GGMainWindow::GGMainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -50,6 +51,12 @@ GGMainWindow::GGMainWindow(QWidget *parent) :
     m_createActions->addAction(ui->actionD);
     m_createActions->addAction(ui->actionL);
     m_createActions->addAction(ui->actionP);
+
+    ui->actionS->setIcon(GGPageItem::getPageTypeIcon(GGStartPage::Type));
+    ui->actionE->setIcon(GGPageItem::getPageTypeIcon(GGEndPage::Type));
+    ui->actionC->setIcon(GGPageItem::getPageTypeIcon(GGConditionPage::Type));
+    ui->actionA->setIcon(GGPageItem::getPageTypeIcon(GGActionPage::Type));
+    ui->actionD->setIcon(GGPageItem::getPageTypeIcon(GGDecisionPage::Type));
 
     // Set proper undo/redo shortcuts
     ui->actionUndo->setShortcut(QKeySequence::Undo);
@@ -104,6 +111,7 @@ void GGMainWindow::highlightPage(GG::PageID id)
     GGViewPage *vp = m_viewModel->getViewPageForPage(m_viewModel->editModel()->getPage(id));
     m_editorScene->setSelection(QSet<GGViewPage*> () << vp, QSet<GGViewConnection*> ());
     ui->scEditView->ensureVisible(vp->bounds());
+    selectPage(vp);
 }
 
 void GGMainWindow::selectPage(GGViewPage *page)

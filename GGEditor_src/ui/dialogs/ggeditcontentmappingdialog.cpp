@@ -33,7 +33,7 @@ GGEditContentMappingDialog::GGEditContentMappingDialog(GGEditModel *model, QWidg
     connect(ui->actionRedo, SIGNAL(triggered(bool)), m_ctrl, SLOT(redo()));
     connect(ui->actionDelete, SIGNAL(triggered(bool)), this, SLOT(deleteSelectedItem()));
 
-    connect(model, SIGNAL(pageUpdated(GGPage*)), this, SLOT(updatePage(GGPage*)));
+    connect(model, SIGNAL(pageUpdated(GGPage*,GGAbstractModel::PageSections)), this, SLOT(updatePage(GGPage*)));
     connect(m_scene, SIGNAL(addedItem(QRect)), this, SLOT(addLink(QRect)));
     connect(m_scene, SIGNAL(movedItem(int,QRect)), this, SLOT(moveLink(int,QRect)));
 

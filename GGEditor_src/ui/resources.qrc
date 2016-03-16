@@ -6,5 +6,16 @@
         <file alias="redo">icons/redo.png</file>
         <file alias="undo">icons/undo.png</file>
         <file alias="add">icons/edit_add.png</file>
+        <file alias="ok">icons/apply.png</file>
+        <file alias="remove">icons/edit_remove.png</file>
+        <file>icons/editcopy.png</file>
+        <file>icons/editcut.png</file>
+        <file>icons/editpaste.png</file>
+        <file alias="abort">icons/editdelete.png</file>
+        <file alias="edit">icons/edit.png</file>
+        <file alias="find">icons/viewmag.png</file>
+        <file>icons/pointer.png</file>
+        <file alias="pointer">icons/pointer2.png</file>
+        <file alias="link">icons/link.png</file>
     </qresource>
 </RCC>
