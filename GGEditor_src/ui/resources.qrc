@@ -17,5 +17,7 @@
         <file>icons/pointer.png</file>
         <file alias="pointer">icons/pointer2.png</file>
         <file alias="link">icons/link.png</file>
+        <file alias="function">icons/func.png</file>
+        <file alias="variable">icons/var.png</file>
     </qresource>
 </RCC>

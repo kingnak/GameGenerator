@@ -1,6 +1,7 @@
 #include "ggsearchresultmodel.h"
 #include <model/ggabstractmodel.h>
 #include <model/ggpage.h>
+#include <QIcon>
 
 GGSearchResultModel::GGSearchResultModel(QObject *parent)
     : QAbstractListModel(parent)
@@ -16,52 +17,59 @@ QVariant GGSearchResultModel::data(const QModelIndex &index, int role) const
         return m_results[index.row()].pageId();
     }
 
-    if (role != Qt::DisplayRole) return QVariant();
     switch (index.column()) {
     case WHAT_COLUMN:
         switch (m_results[index.row()].what()) {
-        case GGSearchRequest::PageName: return "N";
-        case GGSearchRequest::PageScene: return "S";
-        case GGSearchRequest::PageCaption: return "T";
-        case GGSearchRequest::PageContent: return "C";
-        case GGSearchRequest::Variable: return "V";
-        case GGSearchRequest::Function: return "F";
-        case GGSearchRequest::LinkName: return "L";
+        case GGSearchRequest::PageName: if (role == Qt::DisplayRole) return "N"; break;
+        case GGSearchRequest::PageScene: if (role == Qt::DisplayRole) return "S"; break;
+        case GGSearchRequest::PageCaption: if (role == Qt::DisplayRole) return "T"; break;
+        case GGSearchRequest::PageContent: if (role == Qt::DisplayRole) return "C"; break;
+        case GGSearchRequest::Variable: if (role == Qt::DecorationRole) return QIcon(":/icons/variable"); break;
+        case GGSearchRequest::Function: if (role == Qt::DecorationRole) return QIcon(":/icons/function");  break;
+        case GGSearchRequest::LinkName: if (role == Qt::DisplayRole) return "L";  break;
         default: return "O";
         }
         break;
 
     case WHERE_COLUMN:
-        switch (m_results[index.row()].where()) {
-        case GGSearchResultItem::PageName: return "N";
-        case GGSearchResultItem::PageScene: return "S";
-        case GGSearchResultItem::PageCaption: return "T";
-        case GGSearchResultItem::LinkName: return "L";
-        case GGSearchResultItem::Action: return "A";
-        case GGSearchResultItem::Condition: return "C";
-        case GGSearchResultItem::Definition: return "D";
-        default: return "O";
+        if (role == Qt::DisplayRole)
+        {
+            switch (m_results[index.row()].where()) {
+            case GGSearchResultItem::PageName: return "N";
+            case GGSearchResultItem::PageScene: return "S";
+            case GGSearchResultItem::PageCaption: return "T";
+            case GGSearchResultItem::LinkName: return "L";
+            case GGSearchResultItem::Action: return "A";
+            case GGSearchResultItem::Condition: return "C";
+            case GGSearchResultItem::Definition: return "D";
+            default: return "O";
+            }
         }
         break;
 
     case PAGE_COLUMN:
-        if (m_results[index.row()].pageId() != GG::InvalidPageId) {
-            QString name = m_results.model()->getPage(m_results[index.row()].pageId())->name();
-            if (name.isEmpty()) {
-                return QString("{Page %1}").arg(m_results[index.row()].pageId());
+        if (role == Qt::DisplayRole) {
+            if (m_results[index.row()].pageId() != GG::InvalidPageId) {
+                QString name = m_results.model()->getPage(m_results[index.row()].pageId())->name();
+                if (name.isEmpty()) {
+                    return QString("{Page %1}").arg(m_results[index.row()].pageId());
+                } else {
+                    return name;
+                }
             } else {
-                return name;
+                return "";
             }
-        } else {
-            return "";
         }
 
     case MATCH_COLUMN:
-        if (m_highPre.isEmpty() && m_highPost.isEmpty()) {
-            return m_results[index.row()].matchString();
-        } else {
-            QString match = m_results[index.row()].matchString();
-            return m_results.request().formatMatch(match, m_highPre, m_highPost);
+        if (role == Qt::DisplayRole)
+        {
+            if (m_highPre.isEmpty() && m_highPost.isEmpty()) {
+                return m_results[index.row()].matchString();
+            } else {
+                QString match = m_results[index.row()].matchString();
+                return m_results.request().formatMatch(match, m_highPre, m_highPost);
+            }
         }
     }
     return QVariant();
