@@ -36,6 +36,7 @@ public slots:
 
 private:
     static QVariant getWhatData(GGSearchRequest::What what, int role);
+    static QVariant getWhereData(GGSearchResultItem::Where where, int role);
 
 private:
     GGSearchResult m_results;

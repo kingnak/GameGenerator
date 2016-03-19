@@ -22,20 +22,7 @@ QVariant GGSearchResultModel::data(const QModelIndex &index, int role) const
         return getWhatData(m_results[index.row()].what(), role);
 
     case WHERE_COLUMN:
-        if (role == Qt::DisplayRole)
-        {
-            switch (m_results[index.row()].where()) {
-            case GGSearchResultItem::PageName: return "N";
-            case GGSearchResultItem::PageScene: return "S";
-            case GGSearchResultItem::PageCaption: return "T";
-            case GGSearchResultItem::LinkName: return "L";
-            case GGSearchResultItem::Action: return "A";
-            case GGSearchResultItem::Condition: return "C";
-            case GGSearchResultItem::Definition: return "D";
-            default: return "O";
-            }
-        }
-        break;
+        return getWhereData(m_results[index.row()].where(), role);
 
     case PAGE_COLUMN:
         if (role == Qt::DisplayRole) {
@@ -152,6 +139,46 @@ QVariant GGSearchResultModel::getWhatData(GGSearchRequest::What what, int role)
             return QIcon(":/search/other");
         if (role == Qt::ToolTipRole)
             return "Other";
+        break;
+    }
+    return QVariant();
+}
+
+QVariant GGSearchResultModel::getWhereData(GGSearchResultItem::Where where, int role)
+{
+    switch (where) {
+    //case GGSearchResultItem::PageName: return "N";
+    //case GGSearchResultItem::PageScene: return "S";
+    //case GGSearchResultItem::PageCaption: return "T";
+    case GGSearchResultItem::LinkAction:
+        if (role == Qt::DecorationRole)
+            return QPixmap(":/search/link");
+        if (role == Qt::ToolTipRole)
+            return "In Link Action";
+        break;
+    case GGSearchResultItem::Action:
+        if (role == Qt::DecorationRole)
+            return QPixmap(":/search/actionpage");
+        if (role == Qt::ToolTipRole)
+            return "In Page Action";
+        break;
+    case GGSearchResultItem::Condition:
+        if (role == Qt::DecorationRole)
+            return QPixmap(":/search/condition");
+        if (role == Qt::ToolTipRole)
+            return "In Condition";
+        break;
+    case GGSearchResultItem::Definition:
+        if (role == Qt::DecorationRole)
+            return QPixmap(":/search/definition");
+        if (role == Qt::ToolTipRole)
+            return "In Definition";
+        break;
+    default:
+        if (role == Qt::DecorationRole)
+            return QPixmap(":/search/other");
+        if (role == Qt::ToolTipRole)
+            return "Elsewhere";
         break;
     }
     return QVariant();

@@ -24,7 +24,7 @@ bool GGLink::match(const GGSearchRequest &req, GGSearchResult &results, GG::Page
         res = true;
     }
     if (req.what().testFlag(GGSearchRequest::Variable) && req.matches(m_action.variableName())) {
-        results << GGSearchResultItem(GGSearchResultItem::Action, GGSearchRequest::Variable, m_action.toString(), pageId, asSlot);
+        results << GGSearchResultItem(GGSearchResultItem::LinkAction, GGSearchRequest::Variable, m_action.toString(), pageId, asSlot);
         res = true;
     }
     return res;

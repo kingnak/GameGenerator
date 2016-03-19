@@ -27,5 +27,8 @@
         <file alias="page">icons/page.png</file>
         <file alias="pages">icons/pages.png</file>
         <file alias="other">icons/other.png</file>
+        <file alias="definition">icons/definition.png</file>
+        <file alias="actionpage">icons/actionpage.png</file>
+        <file alias="condition">icons/condition.png</file>
     </qresource>
 </RCC>
