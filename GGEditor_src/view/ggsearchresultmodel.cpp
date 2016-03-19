@@ -19,17 +19,7 @@ QVariant GGSearchResultModel::data(const QModelIndex &index, int role) const
 
     switch (index.column()) {
     case WHAT_COLUMN:
-        switch (m_results[index.row()].what()) {
-        case GGSearchRequest::PageName: if (role == Qt::DisplayRole) return "N"; break;
-        case GGSearchRequest::PageScene: if (role == Qt::DisplayRole) return "S"; break;
-        case GGSearchRequest::PageCaption: if (role == Qt::DisplayRole) return "T"; break;
-        case GGSearchRequest::PageContent: if (role == Qt::DisplayRole) return "C"; break;
-        case GGSearchRequest::Variable: if (role == Qt::DecorationRole) return QIcon(":/icons/variable"); break;
-        case GGSearchRequest::Function: if (role == Qt::DecorationRole) return QIcon(":/icons/function");  break;
-        case GGSearchRequest::LinkName: if (role == Qt::DisplayRole) return "L";  break;
-        default: return "O";
-        }
-        break;
+        return getWhatData(m_results[index.row()].what(), role);
 
     case WHERE_COLUMN:
         if (role == Qt::DisplayRole)
@@ -78,12 +68,11 @@ QVariant GGSearchResultModel::data(const QModelIndex &index, int role) const
 QVariant GGSearchResultModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
     if (orientation != Qt::Horizontal) return QVariant();
-    if (role != Qt::DisplayRole) return QVariant();
     switch (section) {
-    case WHAT_COLUMN: return "T";
-    case WHERE_COLUMN: return "W";
-    case PAGE_COLUMN: return "Page";
-    case MATCH_COLUMN: return "Match";
+    case WHAT_COLUMN: if (role == Qt::DisplayRole) return "T"; else if (role == Qt::ToolTipRole) return "Type"; break;
+    case WHERE_COLUMN: if (role == Qt::DisplayRole) return "W"; else if (role == Qt::ToolTipRole) return "Where"; break;
+    case PAGE_COLUMN: if (role == Qt::DisplayRole) return "Page"; break;
+    case MATCH_COLUMN: if (role == Qt::DisplayRole) return "Match"; break;
     }
     return QVariant();
 }
@@ -111,5 +100,60 @@ void GGSearchResultModel::setSearchResults(const GGSearchResult &results)
     beginResetModel();
     m_results = results;
     endResetModel();
+}
+
+QVariant GGSearchResultModel::getWhatData(GGSearchRequest::What what, int role)
+{
+    switch (what) {
+    case GGSearchRequest::PageName:
+        if (role == Qt::DecorationRole)
+            return QIcon(":/search/page");
+        if (role == Qt::ToolTipRole)
+            return "Page Name";
+        break;
+    case GGSearchRequest::PageScene:
+        if (role == Qt::DecorationRole)
+            return QIcon(":/search/pages");
+        if (role == Qt::ToolTipRole)
+            return "Scene Name";
+        break;
+    case GGSearchRequest::PageCaption:
+        if (role == Qt::DecorationRole)
+            return QIcon(":/search/title");
+        if (role == Qt::ToolTipRole)
+            return "Page Caption";
+        break;
+    case GGSearchRequest::PageContent:
+        if (role == Qt::DecorationRole)
+            return QIcon(":/search/content");
+        if (role == Qt::ToolTipRole)
+            return "Page Content";
+        break;
+    case GGSearchRequest::Variable:
+        if (role == Qt::DecorationRole)
+            return QIcon(":/search/variable");
+        if (role == Qt::ToolTipRole)
+            return "Variable";
+        break;
+    case GGSearchRequest::Function:
+        if (role == Qt::DecorationRole)
+            return QIcon(":/search/function");
+        if (role == Qt::ToolTipRole)
+            return "Function";
+        break;
+    case GGSearchRequest::LinkName:
+        if (role == Qt::DecorationRole)
+            return QIcon(":/search/link");
+        if (role == Qt::ToolTipRole)
+                return "Link";
+        break;
+    default:
+        if (role == Qt::DecorationRole)
+            return QIcon(":/search/other");
+        if (role == Qt::ToolTipRole)
+            return "Other";
+        break;
+    }
+    return QVariant();
 }
 

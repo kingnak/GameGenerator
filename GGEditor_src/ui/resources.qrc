@@ -17,7 +17,15 @@
         <file>icons/pointer.png</file>
         <file alias="pointer">icons/pointer2.png</file>
         <file alias="link">icons/link.png</file>
+    </qresource>
+    <qresource prefix="/search">
         <file alias="function">icons/func.png</file>
+        <file alias="link">icons/link_symbol.png</file>
         <file alias="variable">icons/var.png</file>
+        <file alias="content">icons/media.png</file>
+        <file alias="title">icons/title.png</file>
+        <file alias="page">icons/page.png</file>
+        <file alias="pages">icons/pages.png</file>
+        <file alias="other">icons/other.png</file>
     </qresource>
 </RCC>

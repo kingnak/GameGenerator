@@ -12,6 +12,8 @@ GGSearchResultPane::GGSearchResultPane(QWidget *parent) :
     model->setMatchHighlightDecoration("<span style=\"background-color: rgb(255,255,0);}\">", "</span>");
     ui->lstResults->setModel(model);
     ui->lstResults->setItemDelegateForColumn(GGSearchResultModel::MATCH_COLUMN, new GGHtmlItemDelegate);
+    ui->lstResults->setColumnWidth(GGSearchResultModel::WHAT_COLUMN, 20);
+    ui->lstResults->setColumnWidth(GGSearchResultModel::WHERE_COLUMN, 20);
 }
 
 GGSearchResultPane::~GGSearchResultPane()
