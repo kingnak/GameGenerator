@@ -8,6 +8,8 @@ namespace Ui {
 class GGActionEditorWidget;
 }
 
+class GGVarValidator;
+
 class GGActionEditorWidget : public QWidget
 {
     Q_OBJECT
@@ -37,6 +39,7 @@ private:
     Ui::GGActionEditorWidget *ui;
     GGAction m_action;
     QStringList m_varCache;
+    GGVarValidator *m_varValidator;
 };
 
 #endif // GGACTIONEDITORWIDGET_H
