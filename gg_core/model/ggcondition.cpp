@@ -8,6 +8,11 @@ GGCondition::GGCondition(Type type, QString varName, QString value)
 
 }
 
+bool GGCondition::isValid() const
+{
+    return m_type != None && !m_variableName.isEmpty();
+}
+
 GGCondition::Type GGCondition::type() const
 {
     return m_type;
@@ -36,5 +41,26 @@ QString GGCondition::value() const
 void GGCondition::setValue(const QString &value)
 {
     m_value = value;
+}
+
+QString GGCondition::toString() const
+{
+    if (isValid())
+        return QString("%1 %2 %3").arg(m_variableName, getConditionStringForType(m_type), m_value);
+    return "";
+}
+
+QString GGCondition::getConditionStringForType(GGCondition::Type type)
+{
+    switch (type) {
+    case None: return "";
+    case Equals: return "==";
+    case NotEquals: return "!=";
+    case LessThen: return "<";
+    case LessEqual: return "<=";
+    case GreaterThen: return ">";
+    case GreaterEquals: return ">=";
+    default: return "";
+    }
 }
 

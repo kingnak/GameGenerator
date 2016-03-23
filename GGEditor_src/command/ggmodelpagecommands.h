@@ -4,9 +4,11 @@
 #include "ggabstractmodelcommand.h"
 #include <model/ggconnectionslot.h>
 #include <model/ggmappedlink.h>
+#include <model/ggcondition.h>
 #include <QList>
 
 class GGPage;
+class GGConditionPage;
 class GGContentPage;
 class GGActionPage;
 class GGMappedContentPage;
@@ -97,6 +99,27 @@ private:
     QString m_new;
     QString m_old;
     Type m_type;
+};
+
+///////////////////////////
+
+class GGExchangeConditionCmd : public GGAbstractModelCommand
+{
+public:
+    GGExchangeConditionCmd(GGEditModel *model, GGConditionPage *page, const GGCondition &newCond);
+    ~GGExchangeConditionCmd();
+
+    QString description() const;
+
+protected:
+    bool doExecute();
+    bool doUndo();
+    bool doRedo();
+
+private:
+    GGConditionPage *m_page;
+    GGCondition m_new;
+    GGCondition m_old;
 };
 
 ///////////////////////////

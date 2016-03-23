@@ -7,11 +7,13 @@
 #include <model/ggconnectionslot.h>
 
 class GGPage;
+class GGConditionPage;
 class GGContentPage;
 class GGActionPage;
 class GGMappedContentPage;
 class GGDecisionPage;
 
+class GGCondition;
 class GGContentElement;
 class GGLink;
 class GGMappedLink;
@@ -23,6 +25,7 @@ class GGCreateConnectionCmd;
 class GGDeleteConnectionCmd;
 class GGExchangeConnectionCmd;
 class GGSetPageStringCmd;
+class GGExchangeConditionCmd;
 class GGExchangeContentCmd;
 class GGSetActionLinkCmd;
 class GGMappedLinkCmd;
@@ -51,6 +54,8 @@ public:
     virtual GGSetPageStringCmd *setPageName(GGPage *p, const QString &name) = 0;
     virtual GGSetPageStringCmd *setPageScene(GGPage *p, const QString &sceneName) = 0;
     virtual GGSetPageStringCmd *setPageCaption(GGContentPage *p, const QString &caption) = 0;
+
+    virtual GGExchangeConditionCmd *exchangeCondition(GGConditionPage *p, const GGCondition &cond) = 0;
 
     virtual GGExchangeContentCmd *exchangeContent(GGContentPage *p, GGContentElement *elem) = 0;
 

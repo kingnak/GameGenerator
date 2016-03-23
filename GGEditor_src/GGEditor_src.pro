@@ -52,7 +52,9 @@ SOURCES += \
     ui/components/ggsearchresultpane.cpp \
     view/ggsearchresultmodel.cpp \
     ui/dialogs/ggsearchdialog.cpp \
-    ui/basic/gghtmlitemdelegate.cpp
+    ui/basic/gghtmlitemdelegate.cpp \
+    ui/components/ggconditioneditorwidget.cpp \
+    ui/basic/ggstringlistvalidator.cpp
 
 HEADERS += \
     model/ggeditmodel.h \
@@ -99,7 +101,9 @@ HEADERS += \
     ui/components/ggsearchresultpane.h \
     view/ggsearchresultmodel.h \
     ui/dialogs/ggsearchdialog.h \
-    ui/basic/gghtmlitemdelegate.h
+    ui/basic/gghtmlitemdelegate.h \
+    ui/components/ggconditioneditorwidget.h \
+    ui/basic/ggstringlistvalidator.h
 unix {
     target.path = /usr/lib
     INSTALLS += target
@@ -131,7 +135,8 @@ FORMS += \
     ui/dialogs/ggeditcontentmappingdialog.ui \
     ui/dialogs/ggvariableeditdialog.ui \
     ui/components/ggsearchresultpane.ui \
-    ui/dialogs/ggsearchdialog.ui
+    ui/dialogs/ggsearchdialog.ui \
+    ui/components/ggconditioneditorwidget.ui
 
 RESOURCES += \
     ui/resources.qrc

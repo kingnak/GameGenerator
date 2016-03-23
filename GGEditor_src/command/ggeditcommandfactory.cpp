@@ -71,6 +71,11 @@ GGSetPageStringCmd *GGEditCommandFactory::setPageCaption(GGContentPage *p, const
     return new GGSetPageStringCmd(m_model, p, caption, GGSetPageStringCmd::Caption);
 }
 
+GGExchangeConditionCmd *GGEditCommandFactory::exchangeCondition(GGConditionPage *p, const GGCondition &cond)
+{
+    return new GGExchangeConditionCmd(m_model, p, cond);
+}
+
 GGExchangeContentCmd *GGEditCommandFactory::exchangeContent(GGContentPage *p, GGContentElement *elem)
 {
     return new GGExchangeContentCmd(m_model, p, elem);

@@ -89,6 +89,17 @@ void GGConditionPage::setFalseConnection(GGConnection *f)
     }
 }
 
+GGCondition GGConditionPage::getCondition() const
+{
+    return m_cond;
+}
+
+void GGConditionPage::setCondition(const GGCondition &cond)
+{
+    m_cond = cond;
+    notifyChanged(GGAbstractModel::Condition);
+}
+
 QList<GGConnection *> GGConditionPage::getConnections() const
 {
     QList<GGConnection *> ret;
@@ -116,7 +127,12 @@ bool GGConditionPage::removeConnection(GGConnection *connection)
 bool GGConditionPage::match(const GGSearchRequest &req, GGSearchResult &results) const
 {
     bool res = GGPage::match(req, results);
-    // TODO: Condition
+
+    if (m_cond.isValid()) {
+        if (req.what().testFlag(GGSearchRequest::Variable) && req.matches(m_cond.variableName())) {
+            results << GGSearchResultItem(GGSearchResultItem::Condition, GGSearchRequest::Variable, m_cond.toString(), id());
+        }
+    }
     return res;
 }
 /////////////////////////////////////////

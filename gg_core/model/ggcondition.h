@@ -8,10 +8,13 @@ class GG_CORESHARED_EXPORT GGCondition
 {
 public:
     enum Type {
-        Equals, NotEquals, LessThen, LessEqual, GreaterThen, GreaterEquals
+        None, Equals, NotEquals, LessThen, LessEqual, GreaterThen, GreaterEquals
     };
 
+    GGCondition() : m_type(None) {}
     GGCondition(Type type, QString varName, QString value);
+
+    bool isValid() const;
 
     Type type() const;
     void setType(const Type &type);
@@ -21,6 +24,10 @@ public:
 
     QString value() const;
     void setValue(const QString &value);
+
+    QString toString() const;
+
+    static QString getConditionStringForType(Type type);
 
 private:
     Type m_type;

@@ -26,6 +26,7 @@ public:
     GGSetPageStringCmd *setPageScene(GGPage *p, const QString &sceneName);
     GGSetPageStringCmd *setPageCaption(GGContentPage *p, const QString &caption);
 
+    GGExchangeConditionCmd *exchangeCondition(GGConditionPage *p, const GGCondition &cond);
     GGExchangeContentCmd *exchangeContent(GGContentPage *p, GGContentElement *elem);
 
     GGSetActionLinkCmd *setActionLink(GGActionPage *p, const GGLink &lnk);

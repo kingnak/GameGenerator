@@ -7,6 +7,7 @@
 #include "ggabstractmodel.h"
 #include "ggmappedlink.h"
 #include "gglink.h"
+#include "ggcondition.h"
 #include "ggsearch.h"
 
 class GGConnection;
@@ -72,7 +73,8 @@ public:
     void setTrueConnection(GGConnection *t);
     void setFalseConnection(GGConnection *f);
 
-    // TODO: Condition
+    GGCondition getCondition() const;
+    void setCondition(const GGCondition &cond);
 
     QList<GGConnection *> getConnections() const;
     bool removeConnection(GGConnection *connection);
@@ -82,6 +84,8 @@ public:
 private:
     GGConnection *m_true;
     GGConnection *m_false;
+
+    GGCondition m_cond;
 };
 
 /////////////////////////////////////////

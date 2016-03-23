@@ -98,7 +98,7 @@ void GGPageEditPanel::setEnd(GGAbstractModel::PageSections updateSections)
 void GGPageEditPanel::setCondition(GGAbstractModel::PageSections updateSections)
 {
     if (GGConditionPage *cp = GG::as<GGConditionPage>(m_page)) {
-        if (updateSections.testFlag(GGAbstractModel::Connections))
+        if (updateSections.testFlag(GGAbstractModel::Connections) || updateSections.testFlag(GGAbstractModel::Condition))
             ui->wgtCondition->setPage(cp);
 
         ui->grpCondition->setVisible(true);

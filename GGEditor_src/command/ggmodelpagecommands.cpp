@@ -253,6 +253,45 @@ QString GGSetPageStringCmd::cmdDesc() const
 
 ///////////////////////////
 
+GGExchangeConditionCmd::GGExchangeConditionCmd(GGEditModel *model, GGConditionPage *page, const GGCondition &newCond)
+    : GGAbstractModelCommand(model),
+      m_page(page),
+      m_new(newCond)
+{
+
+}
+
+GGExchangeConditionCmd::~GGExchangeConditionCmd()
+{
+
+}
+
+QString GGExchangeConditionCmd::description() const
+{
+    return "Change Condition";
+}
+
+bool GGExchangeConditionCmd::doExecute()
+{
+    m_old = m_page->getCondition();
+    return doRedo();
+}
+
+bool GGExchangeConditionCmd::doUndo()
+{
+    m_page->setCondition(m_old);
+    return true;
+}
+
+bool GGExchangeConditionCmd::doRedo()
+{
+    m_page->setCondition(m_new);
+    return true;
+}
+
+
+///////////////////////////
+
 GGExchangeContentCmd::GGExchangeContentCmd(GGEditModel *model, GGContentPage *page, GGContentElement *newElement)
     : GGAbstractModelCommand(model),
       m_page(page),

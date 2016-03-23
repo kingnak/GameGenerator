@@ -10,6 +10,8 @@ GGConditionEditorPane::GGConditionEditorPane(QWidget *parent) :
     m_page(NULL)
 {
     ui->setupUi(this);
+
+    connect(ui->wgtCondition, SIGNAL(conditionUpdated(GGCondition)), this, SLOT(updateCondition(GGCondition)));
 }
 
 GGConditionEditorPane::~GGConditionEditorPane()
@@ -27,6 +29,8 @@ void GGConditionEditorPane::setPage(GGConditionPage *page)
     m_page = page;
     ui->wgtTrue->setConnection(page, GGConnectionSlot::TrueConnection);
     ui->wgtFalse->setConnection(page, GGConnectionSlot::FalseConnection);
+    ui->wgtCondition->setCondition(page->getCondition());
+    ui->wgtCondition->setVariables(page->model()->variableNames());
 }
 
 void GGConditionEditorPane::connectPage()
@@ -51,4 +55,9 @@ void GGConditionEditorPane::deleteConn()
     } else {
         Q_ASSERT(false);
     }
+}
+
+void GGConditionEditorPane::updateCondition(const GGCondition &cond)
+{
+    m_ctrl->changeCondition(m_page, cond);
 }

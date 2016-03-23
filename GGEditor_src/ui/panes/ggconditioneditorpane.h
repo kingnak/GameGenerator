@@ -5,6 +5,7 @@
 
 class GGUIController;
 class GGConditionPage;
+class GGCondition;
 
 namespace Ui {
 class GGConditionEditorPane;
@@ -26,6 +27,7 @@ public slots:
 private slots:
     void connectPage();
     void deleteConn();
+    void updateCondition(const GGCondition &cond);
 
 private:
     Ui::GGConditionEditorPane *ui;

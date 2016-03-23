@@ -1,34 +1,6 @@
 #include "ggactioneditorwidget.h"
 #include "ui_ggactioneditorwidget.h"
-
-class GGVarValidator : public QValidator {
-public:
-    GGVarValidator(QObject *parent = NULL) : QValidator(parent) {}
-
-    void setVariables(const QStringList &vars) { m_vars = vars; }
-
-    State validate(QString &input, int &pos) const;
-
-private:
-    QStringList m_vars;
-};
-
-QValidator::State GGVarValidator::validate(QString &input, int &pos) const
-{
-    Q_UNUSED(pos);
-
-    if (m_vars.contains(input)) {
-        return Acceptable;
-    }
-
-    if (m_vars.indexOf(QRegExp(input + ".*")) >= 0) {
-        return Intermediate;
-    }
-
-    return Invalid;
-}
-
-//////////////////////////////////////
+#include <ui/basic/ggstringlistvalidator.h>
 
 GGActionEditorWidget::GGActionEditorWidget(QWidget *parent) :
     QWidget(parent),
@@ -45,7 +17,7 @@ GGActionEditorWidget::GGActionEditorWidget(QWidget *parent) :
     ui->cmbOp->addItem(GGAction::getActionStringForType(GGAction::Set), GGAction::Set);
     ui->cmbOp->addItem(GGAction::getActionStringForType(GGAction::Unset), GGAction::Unset);
 
-    m_varValidator = new GGVarValidator(this);
+    m_varValidator = new GGStringListValidator(this);
     ui->cmbVar->setValidator(m_varValidator);
 }
 
@@ -62,10 +34,10 @@ GGAction GGActionEditorWidget::getAction()
 void GGActionEditorWidget::setVariables(QStringList vars)
 {
     if (vars != m_varCache) {
-        qSort(vars);
         m_varCache = vars;
+        qSort(vars);
         ui->cmbVar->clear();
-        m_varValidator->setVariables(vars);
+        m_varValidator->setStrings(vars);
         ui->cmbVar->addItem("");
         ui->cmbVar->addItems(vars);
     } else {

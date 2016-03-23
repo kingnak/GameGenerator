@@ -141,6 +141,11 @@ void GGUIController::changeContentElement(GGContentPage *page, GGContentElement 
     doExecCmd(m_cmdFactory->exchangeContent(page, elem));
 }
 
+void GGUIController::changeCondition(GGConditionPage *page, const GGCondition &cond)
+{
+    doExecCmd(m_cmdFactory->exchangeCondition(page, cond));
+}
+
 void GGUIController::changeLink(GGPage *page, GGConnectionSlot slot, const GGLink &link)
 {
     GGAbstractCommand *cmd = NULL;

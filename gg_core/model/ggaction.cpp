@@ -46,7 +46,7 @@ void GGAction::setValue(const QString &value)
 QString GGAction::toString() const
 {
     QString val;
-    if (m_type != GGAction::None) {
+    if (isValid()) {
         if (m_type == GGAction::Unset) {
             val = QString("Unset %1").arg(m_variableName);
         } else {

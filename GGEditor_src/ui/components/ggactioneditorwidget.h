@@ -8,7 +8,7 @@ namespace Ui {
 class GGActionEditorWidget;
 }
 
-class GGVarValidator;
+class GGStringListValidator;
 
 class GGActionEditorWidget : public QWidget
 {
@@ -39,7 +39,7 @@ private:
     Ui::GGActionEditorWidget *ui;
     GGAction m_action;
     QStringList m_varCache;
-    GGVarValidator *m_varValidator;
+    GGStringListValidator *m_varValidator;
 };
 
 #endif // GGACTIONEDITORWIDGET_H
