@@ -6,6 +6,7 @@
 #include <QSize>
 
 class QPixmap;
+class GGAbstractMediaResolver;
 
 class GG_CORESHARED_EXPORT GGContentElement
 {
@@ -14,7 +15,7 @@ protected:
 public:
     virtual ~GGContentElement() {}
 
-    virtual QPixmap preview(QSize sz) const = 0;
+    virtual QPixmap preview(GGAbstractMediaResolver *resolver, QSize sz) const = 0;
 
     // Maybe needed by Copy Page
     //virtual GGContentElement *clone() = 0;
@@ -51,7 +52,7 @@ public:
     QString textContent() const;
     void setTextContent(QString content);
 
-    QPixmap preview(QSize sz) const;
+    QPixmap preview(GGAbstractMediaResolver *resolver, QSize sz) const;
 
 protected:
     QString m_textContent;
@@ -66,7 +67,7 @@ public:
     QString imageFilePath() const;
     void setImageFilePath(QString path);
 
-    QPixmap preview(QSize sz) const;
+    QPixmap preview(GGAbstractMediaResolver *resolver, QSize sz) const;
 
 protected:
     QString m_imageFilePath;

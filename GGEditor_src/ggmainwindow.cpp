@@ -11,6 +11,7 @@
 #include <model/ggpage.h>
 #include <ui/dialogs/ggsearchdialog.h>
 #include <view/ggpageitem.h>
+#include <model/ggmediaresolver.h>
 
 GGMainWindow::GGMainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -88,7 +89,7 @@ GGUIController *GGMainWindow::controller()
 void GGMainWindow::newModel()
 {
     closeModel();
-    GGEditModel *em = new GGEditModel(new GGSimpleFactory);
+    GGEditModel *em = new GGEditModel(new GGSimpleFactory, new GGFileSystemResolver);
     m_viewModel = new GGViewModel(em);
     m_ctrl->setModel(m_viewModel);
     ui->scEditView->setEnabled(true);

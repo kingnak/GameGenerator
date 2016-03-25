@@ -54,7 +54,8 @@ SOURCES += \
     ui/dialogs/ggsearchdialog.cpp \
     ui/basic/gghtmlitemdelegate.cpp \
     ui/components/ggconditioneditorwidget.cpp \
-    ui/basic/ggstringlistvalidator.cpp
+    ui/basic/ggstringlistvalidator.cpp \
+    model/ggeditdisplaymodel.cpp
 
 HEADERS += \
     model/ggeditmodel.h \
@@ -103,7 +104,8 @@ HEADERS += \
     ui/dialogs/ggsearchdialog.h \
     ui/basic/gghtmlitemdelegate.h \
     ui/components/ggconditioneditorwidget.h \
-    ui/basic/ggstringlistvalidator.h
+    ui/basic/ggstringlistvalidator.h \
+    model/ggeditdisplaymodel.h
 unix {
     target.path = /usr/lib
     INSTALLS += target

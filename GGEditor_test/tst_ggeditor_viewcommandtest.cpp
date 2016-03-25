@@ -18,7 +18,7 @@ GGEditor_ViewCommandTest::GGEditor_ViewCommandTest(QObject *parent) : QObject(pa
 
 void GGEditor_ViewCommandTest::init()
 {
-    m_em = new GGEditModel(new GGSimpleFactory);
+    m_em = new GGEditModel(new GGSimpleFactory, new GGFileSystemResolver);
     m_vm = new GGViewModel(m_em);
     m_vf = new GGViewCommandFactory(m_vm);
     m_vmsc = new ViewModelSignalChecker(m_vm);

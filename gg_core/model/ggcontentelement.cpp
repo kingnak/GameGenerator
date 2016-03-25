@@ -3,6 +3,7 @@
 #include <QPixmap>
 #include <QPainter>
 #include <QTextDocument>
+#include <model/ggmediaresolver.h>
 
 QString GGAudioContent::audioFilePath() const
 {
@@ -36,8 +37,9 @@ void GGTextContent::setTextContent(QString content)
     m_textContent = content;
 }
 
-QPixmap GGTextContent::preview(QSize sz) const
+QPixmap GGTextContent::preview(GGAbstractMediaResolver *resolver, QSize sz) const
 {
+    Q_UNUSED(resolver);
     QRect bound;
     if (!sz.isEmpty()) {
         bound = QRect(QPoint(), sz);
@@ -63,9 +65,14 @@ void GGImageContent::setImageFilePath(QString path)
     m_imageFilePath = path;
 }
 
-QPixmap GGImageContent::preview(QSize sz) const
+QPixmap GGImageContent::preview(GGAbstractMediaResolver *resolver, QSize sz) const
 {
-    QImage img(m_imageFilePath);
+    QImage img;
+    QIODevice *data = resolver->resolve(m_imageFilePath);
+    if (data) {
+        img.load(data, NULL);
+        delete data;
+    }
     if (!sz.isEmpty()) {
         img = img.scaled(sz, Qt::KeepAspectRatio);
     }

@@ -12,7 +12,7 @@ class GGConnection;
 class GGEditModel : public GGRuntimeModel
 {
 public:
-    explicit GGEditModel(GGAbstractFactory *factory, QObject *parent = 0);
+    explicit GGEditModel(GGAbstractFactory *factory, GGAbstractMediaResolver *resolver, QObject *parent = 0);
 
     bool registerNewPage(GGPage *page);
 

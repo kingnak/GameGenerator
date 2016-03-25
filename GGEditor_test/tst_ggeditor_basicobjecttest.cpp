@@ -91,7 +91,7 @@ void GGEditor_BasicObjectTest::testPageCast()
 
 void GGEditor_BasicObjectTest::testConnectionSlot()
 {
-    GGEditModel m(new GGSimpleFactory);
+    GGEditModel m(new GGSimpleFactory, new GGFileSystemResolver);
     GGStartPage *s = m.factory()->createStartPage();
     GGEndPage *e = m.factory()->createEndPage();
     m.registerNewPage(s);
@@ -116,7 +116,7 @@ void GGEditor_BasicObjectTest::testConnectionSlot()
 
 void GGEditor_BasicObjectTest::testConnectionSlotCanConnect()
 {
-    GGEditModel m(new GGSimpleFactory);
+    GGEditModel m(new GGSimpleFactory, new GGFileSystemResolver);
     GGStartPage *s = m.factory()->createStartPage();
     GGEndPage *e = m.factory()->createEndPage();
     GGConditionPage *c = m.factory()->createConditionPage();

@@ -1,5 +1,6 @@
 #include "tst_ggeditor_basicmodeltest.h"
 #include "testsignalchecker.h"
+#include <model/ggmediaresolver.h>
 
 GGEditor_BasicModelTest::GGEditor_BasicModelTest()
 {
@@ -12,7 +13,7 @@ void GGEditor_BasicModelTest::initTestCase()
 
 void GGEditor_BasicModelTest::init()
 {
-    model = new GGEditModel(new GGSimpleFactory);
+    model = new GGEditModel(new GGSimpleFactory, new GGFileSystemResolver);
     sc = new ModelSignalChecker(model);
 
     s = model->factory()->createStartPage();

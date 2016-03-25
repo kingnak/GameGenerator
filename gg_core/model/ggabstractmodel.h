@@ -10,6 +10,7 @@
 class GGPage;
 class GGConnection;
 class GGAbstractFactory;
+class GGAbstractMediaResolver;
 
 class GG_CORESHARED_EXPORT GGAbstractModel : public QObject
 {
@@ -29,6 +30,8 @@ public:
 
     explicit GGAbstractModel(QObject *parent = 0) : QObject(parent) {}
     virtual GGAbstractFactory *factory() = 0;
+
+    virtual GGAbstractMediaResolver *mediaResolver() = 0;
 
     virtual GGPage *getPage(GG::PageID id) const = 0;
     virtual GGConnection *getConnection(GG::ConnectionID id) const = 0;

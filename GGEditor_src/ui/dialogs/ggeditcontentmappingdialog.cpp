@@ -97,7 +97,7 @@ void GGEditContentMappingDialog::updatePage(GGPage *page)
 {
     if (page && page == m_page) {
         if (m_page->content()) {
-            QPixmap p = m_page->content()->preview(QSize());
+            QPixmap p = m_page->content()->preview(page->model()->mediaResolver(), QSize());
             m_scene->setMappedElement(p);
         }
 

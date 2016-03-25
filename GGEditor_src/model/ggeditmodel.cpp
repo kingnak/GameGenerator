@@ -2,8 +2,8 @@
 #include <model/ggpage.h>
 #include <model/ggconnection.h>
 
-GGEditModel::GGEditModel(GGAbstractFactory *factory, QObject *parent)
-    : GGRuntimeModel(factory, parent), m_nextPageId(0), m_nextConnId(0), m_unregisteringPage(NULL)
+GGEditModel::GGEditModel(GGAbstractFactory *factory, GGAbstractMediaResolver *resolver, QObject *parent)
+    : GGRuntimeModel(factory, resolver, parent), m_nextPageId(0), m_nextConnId(0), m_unregisteringPage(NULL)
 {
 
 }

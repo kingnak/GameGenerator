@@ -4,9 +4,10 @@
 #include "ggabstractfactory.h"
 #include <QSet>
 
-GGRuntimeModel::GGRuntimeModel(GGAbstractFactory *factory, QObject *parent)
+GGRuntimeModel::GGRuntimeModel(GGAbstractFactory *factory, GGAbstractMediaResolver *resolver, QObject *parent)
     : GGAbstractModel(parent),
-      m_factory(factory)
+      m_factory(factory),
+      m_resolver(resolver)
 {
 
 }
@@ -21,6 +22,11 @@ GGRuntimeModel::~GGRuntimeModel()
 GGAbstractFactory *GGRuntimeModel::factory()
 {
     return m_factory;
+}
+
+GGAbstractMediaResolver *GGRuntimeModel::mediaResolver()
+{
+    return m_resolver;
 }
 
 GGPage *GGRuntimeModel::getPage(GG::PageID id) const

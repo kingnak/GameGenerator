@@ -13,7 +13,7 @@
 
 void GGEditor_ConnectionSlotTest::init()
 {
-    m_model = new GGEditModel(new GGSimpleFactory);
+    m_model = new GGEditModel(new GGSimpleFactory, new GGFileSystemResolver);
     m_cmdFac = new GGEditCommandFactory(m_model);
     m_stack = new GGCommandStack;
     m_sc = new ModelSignalChecker(m_model);

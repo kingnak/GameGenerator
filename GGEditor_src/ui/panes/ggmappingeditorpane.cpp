@@ -35,7 +35,7 @@ void GGMappingEditorPane::setMappedPage(GGMappedContentPage *p)
     ui->txtCaption->setText(p->caption());
     QPixmap pix;
     if (p->content())
-        pix = p->content()->preview(ui->lblPreview->minimumSize());
+        pix = p->content()->preview(p->model()->mediaResolver(), ui->lblPreview->minimumSize());
     ui->lblPreview->setPixmap(pix);
     QList<GGConnectionSlot> slts = GGConnectionSlot::enumerateConnections(p, GGConnectionSlot::MappedConnection);
     ui->wgtMappedConnections->setConnections(p, slts);
