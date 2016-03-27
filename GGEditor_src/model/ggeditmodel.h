@@ -6,6 +6,7 @@
 #include <QSet>
 #include <model/ggruntimemodel.h>
 
+class GGScene;
 class GGPage;
 class GGConnection;
 
@@ -13,6 +14,8 @@ class GGEditModel : public GGRuntimeModel
 {
 public:
     explicit GGEditModel(GGAbstractFactory *factory, GGAbstractMediaResolver *resolver, QObject *parent = 0);
+
+    bool registerNewScene(GGScene *scene);
 
     bool registerNewPage(GGPage *page);
 
@@ -28,6 +31,7 @@ public:
 private:
     QMap<GG::PageID, QSet<GG::ConnectionID> > m_incommingConns;
 
+    GG::SceneID m_nextSceneId;
     GG::PageID m_nextPageId;
     GG::ConnectionID m_nextConnId;
 

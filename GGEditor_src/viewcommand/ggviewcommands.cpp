@@ -6,11 +6,11 @@
 #include <command/ggabstractmodelcommandfactory.h>
 #include <model/ggpage.h>
 
-GGCreateViewPageCmd::GGCreateViewPageCmd(GGViewModel *model, GGCreatePageCmd::PageType type, const QRect &bounds)
+GGCreateViewPageCmd::GGCreateViewPageCmd(GGViewModel *model, GGScene *scene, GGCreatePageCmd::PageType type, const QRect &bounds)
     : GGAbstractViewForwardCommand(model),
       m_bounds(bounds)
 {
-    m_cmd = new GGCreatePageCmd(model->editModel(), type);
+    m_cmd = new GGCreatePageCmd(model->editModel(), scene, type);
 }
 
 GGViewPage *GGCreateViewPageCmd::createdPage()

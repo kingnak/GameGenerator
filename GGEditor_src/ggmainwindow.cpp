@@ -8,6 +8,7 @@
 #include <viewmodel/ggviewpage.h>
 #include <model/ggeditmodel.h>
 #include <model/ggsimplefactory.h>
+#include <model/ggscene.h>
 #include <model/ggpage.h>
 #include <ui/dialogs/ggsearchdialog.h>
 #include <view/ggpageitem.h>
@@ -40,6 +41,7 @@ GGMainWindow::GGMainWindow(QWidget *parent) :
     connect(ui->action_Variables, SIGNAL(triggered(bool)), this, SLOT(showVariables()));
 
     m_editorScene = new GGEditorScene(m_ctrl, this);
+
     //m_editorScene->setSceneRect(0,0,800,800);
     ui->scEditView->setScene(m_editorScene);
 
@@ -90,8 +92,15 @@ void GGMainWindow::newModel()
 {
     closeModel();
     GGEditModel *em = new GGEditModel(new GGSimpleFactory, new GGFileSystemResolver);
+
     m_viewModel = new GGViewModel(em);
     m_ctrl->setModel(m_viewModel);
+
+    // TODO: As Command???? => No, must always be there, cannot be undone
+    GGScene *defaultScene = new GGScene;
+    em->registerNewScene(defaultScene);
+    m_ctrl->setModelScene(defaultScene);
+
     ui->scEditView->setEnabled(true);
 }
 

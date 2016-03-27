@@ -7,6 +7,7 @@
 #include "ggvariable.h"
 #include "ggsearch.h"
 
+class GGScene;
 class GGPage;
 class GGConnection;
 class GGAbstractFactory;
@@ -18,12 +19,13 @@ class GG_CORESHARED_EXPORT GGAbstractModel : public QObject
 
 public:
     enum PageSection {
-        PageData        = 0x0001,
-        Connections     = 0x0002,
-        Content         = 0x0004,
-        MappedLinks     = 0x0008,
-        DecisionLinks   = 0x0010,
-        Condition       = 0x0020,
+        PageScene       = 0x0001,
+        PageData        = 0x0002,
+        Connections     = 0x0004,
+        Content         = 0x0008,
+        MappedLinks     = 0x0010,
+        DecisionLinks   = 0x0020,
+        Condition       = 0x0040,
         AllSections = PageData | Connections | Content | MappedLinks | DecisionLinks | Condition
     };
     Q_DECLARE_FLAGS(PageSections, PageSection)
@@ -33,12 +35,15 @@ public:
 
     virtual GGAbstractMediaResolver *mediaResolver() = 0;
 
+    virtual GGScene *getScene(GG::SceneID id) const = 0;
     virtual GGPage *getPage(GG::PageID id) const = 0;
     virtual GGConnection *getConnection(GG::ConnectionID id) const = 0;
 
+    virtual QList<GGScene *> getScenes() const = 0;
     virtual QList<GGPage *> getPages() const = 0;
     virtual QList<GGConnection *> getConnections() = 0;
 
+    virtual bool registerSceneWithId(GGScene *scene) = 0;
     virtual bool registerPageWithId(GGPage *page) = 0;
     virtual bool registerConnectionWithId(GGConnection *conn) = 0;
 
@@ -53,6 +58,8 @@ public:
     GGSearchResult search(GGSearchRequest req) const;
 
 signals:
+    void sceneRegistered(GGScene *scene);
+    void pageUnregistered(GG::SceneID id, GGScene *scene);
     void pageRegistered(GGPage *page);
     void pageUnregistered(GG::PageID id, GGPage *page);
     void connectionRegistered(GGConnection *conn);
@@ -60,8 +67,10 @@ signals:
     void pageUpdated(GGPage *page, GGAbstractModel::PageSections sections);
 
 protected:
+    void setSceneId(GGScene *scene, GG::SceneID id);
     void setPageId(GGPage *page, GG::PageID id);
     void setConnectionId(GGConnection *connection, GG::ConnectionID id);
+    void unsetModel(GGScene *scene) const;
     void unsetModel(GGPage *page) const;
     void unsetModel(GGConnection *connection) const;
     void resolveConnectionPages(GGConnection *connection, GGPage *source, GGPage *destination) const;

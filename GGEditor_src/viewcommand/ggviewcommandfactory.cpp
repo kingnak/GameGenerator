@@ -8,29 +8,29 @@ GGViewCommandFactory::GGViewCommandFactory(GGViewModel *model)
 
 }
 
-GGCreateViewPageCmd *GGViewCommandFactory::createStartPage(const QRect &bounds)
+GGCreateViewPageCmd *GGViewCommandFactory::createStartPage(GGScene *scene, const QRect &bounds)
 {
-    return new GGCreateViewPageCmd(m_model, GGCreatePageCmd::StartPage, bounds);
+    return new GGCreateViewPageCmd(m_model, scene, GGCreatePageCmd::StartPage, bounds);
 }
 
-GGCreateViewPageCmd *GGViewCommandFactory::createEndPage(const QRect &bounds)
+GGCreateViewPageCmd *GGViewCommandFactory::createEndPage(GGScene *scene, const QRect &bounds)
 {
-    return new GGCreateViewPageCmd(m_model, GGCreatePageCmd::EndPage, bounds);
+    return new GGCreateViewPageCmd(m_model, scene, GGCreatePageCmd::EndPage, bounds);
 }
 
-GGCreateViewPageCmd *GGViewCommandFactory::createConditionPage(const QRect &bounds)
+GGCreateViewPageCmd *GGViewCommandFactory::createConditionPage(GGScene *scene, const QRect &bounds)
 {
-    return new GGCreateViewPageCmd(m_model, GGCreatePageCmd::ConditionPage, bounds);
+    return new GGCreateViewPageCmd(m_model, scene, GGCreatePageCmd::ConditionPage, bounds);
 }
 
-GGCreateViewPageCmd *GGViewCommandFactory::createActionPage(const QRect &bounds)
+GGCreateViewPageCmd *GGViewCommandFactory::createActionPage(GGScene *scene, const QRect &bounds)
 {
-    return new GGCreateViewPageCmd(m_model, GGCreatePageCmd::ActionPage, bounds);
+    return new GGCreateViewPageCmd(m_model, scene, GGCreatePageCmd::ActionPage, bounds);
 }
 
-GGCreateViewPageCmd *GGViewCommandFactory::createDecisionPage(const QRect &bounds)
+GGCreateViewPageCmd *GGViewCommandFactory::createDecisionPage(GGScene *scene, const QRect &bounds)
 {
-    return new GGCreateViewPageCmd(m_model, GGCreatePageCmd::DecisionPage, bounds);
+    return new GGCreateViewPageCmd(m_model, scene, GGCreatePageCmd::DecisionPage, bounds);
 }
 
 GGDeleteViewPageCmd *GGViewCommandFactory::deletePage(GGViewPage *page)

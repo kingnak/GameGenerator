@@ -1,12 +1,16 @@
 #include "ggmodelpagecommands.h"
 #include "../model/ggeditmodel.h"
 #include <model/ggabstractfactory.h>
+#include <model/ggscene.h>
 #include <model/ggpage.h>
 #include <model/ggconnection.h>
 #include <model/ggcontentelement.h>
 
-GGCreatePageCmd::GGCreatePageCmd(GGEditModel *model, PageType type)
-    : GGAbstractModelCommand(model), m_type(type), m_createdPage(NULL)
+GGCreatePageCmd::GGCreatePageCmd(GGEditModel *model, GGScene *scene, PageType type)
+    : GGAbstractModelCommand(model),
+      m_scene(scene),
+      m_type(type),
+      m_createdPage(NULL)
 {
 
 }
@@ -40,7 +44,9 @@ bool GGCreatePageCmd::doExecute()
         return setError("Unknown Page Type");
     }
 
+    m_scene->addPage(m_createdPage);
     if (!m_model->registerNewPage(m_createdPage)) {
+        m_scene->removePage(m_createdPage);
         delete m_createdPage;
         m_createdPage = NULL;
         return setError("Cannot register page");
@@ -62,7 +68,9 @@ bool GGCreatePageCmd::doUndo()
 
 bool GGCreatePageCmd::doRedo()
 {
+    m_scene->addPage(m_createdPage);
     if (!m_model->registerPageWithId(m_createdPage)) {
+        m_scene->removePage(m_createdPage);
         return setError("Cannot register page");
     }
     return true;
@@ -225,10 +233,10 @@ bool GGSetPageStringCmd::doSet(QString v, QString *old)
         *old = m_page->name();
         m_page->setName(v);
         return true;
-    case SceneName:
-        *old = m_page->sceneName();
-        m_page->setSceneName(v);
-        return true;
+//    case SceneName:
+//        *old = m_page->sceneName();
+//        m_page->setSceneName(v);
+//        return true;
     case Caption:
     {
         GGContentPage *c = GG::as<GGContentPage>(m_page);
@@ -245,7 +253,7 @@ QString GGSetPageStringCmd::cmdDesc() const
 {
     switch (m_type) {
     case Name: return "page name";
-    case SceneName: return "page scene";
+//    case SceneName: return "page scene";
     case Caption: return "page caption";
     default: return "?";
     }

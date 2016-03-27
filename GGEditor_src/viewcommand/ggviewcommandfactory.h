@@ -19,11 +19,11 @@ class GGViewCommandFactory : public GGEditCommandFactory
 public:
     GGViewCommandFactory(GGViewModel *model);
 
-    GGCreateViewPageCmd *createStartPage(const QRect &bounds);
-    GGCreateViewPageCmd *createEndPage(const QRect &bounds);
-    GGCreateViewPageCmd *createConditionPage(const QRect &bounds);
-    GGCreateViewPageCmd *createActionPage(const QRect &bounds);
-    GGCreateViewPageCmd *createDecisionPage(const QRect &bounds);
+    GGCreateViewPageCmd *createStartPage(GGScene *scene, const QRect &bounds);
+    GGCreateViewPageCmd *createEndPage(GGScene *scene, const QRect &bounds);
+    GGCreateViewPageCmd *createConditionPage(GGScene *scene, const QRect &bounds);
+    GGCreateViewPageCmd *createActionPage(GGScene *scene, const QRect &bounds);
+    GGCreateViewPageCmd *createDecisionPage(GGScene *scene, const QRect &bounds);
 
     GGDeleteViewPageCmd *deletePage(GGViewPage *page);
 

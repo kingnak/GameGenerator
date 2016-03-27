@@ -13,6 +13,7 @@
 GGUIController::GGUIController(QObject *parent)
     : QObject(parent),
       m_model(NULL),
+      m_modelScene(NULL),
       m_cmdFactory(NULL),
       m_createMode(CreateNone),
       m_saveCommand(NULL),
@@ -39,6 +40,11 @@ void GGUIController::setModel(GGViewModel *model)
         m_cmdFactory = NULL;
     emit modelReset(m_model);
     saveCheckpoint();
+}
+
+void GGUIController::setModelScene(GGScene *scene)
+{
+    m_modelScene = scene;
 }
 
 void GGUIController::applySubcommandsAsGroup(GGCommandStack *stack)
@@ -126,10 +132,10 @@ void GGUIController::changePageName(GGPage *page, QString name)
     doExecCmd(m_cmdFactory->setPageName(page, name));
 }
 
-void GGUIController::changePageScene(GGPage *page, QString scene)
-{
-    doExecCmd(m_cmdFactory->setPageScene(page, scene));
-}
+//void GGUIController::changePageScene(GGPage *page, QString scene)
+//{
+//    doExecCmd(m_cmdFactory->setPageScene(page, scene));
+//}
 
 void GGUIController::changeContentPageCaption(GGContentPage *page, QString cap)
 {
@@ -230,19 +236,19 @@ void GGUIController::handleSceneClick(QPointF pos)
     case CreateNone:
         return;
     case CreateStartPage:
-        cmd = m_cmdFactory->createStartPage(r);
+        cmd = m_cmdFactory->createStartPage(m_modelScene, r);
         break;
     case CreateEndPage:
-        cmd = m_cmdFactory->createEndPage(r);
+        cmd = m_cmdFactory->createEndPage(m_modelScene, r);
         break;
     case CreateConditionPage:
-        cmd = m_cmdFactory->createConditionPage(r);
+        cmd = m_cmdFactory->createConditionPage(m_modelScene, r);
         break;
     case CreateActionPage:
-        cmd = m_cmdFactory->createActionPage(r);
+        cmd = m_cmdFactory->createActionPage(m_modelScene, r);
         break;
     case CreateDecisionPage:
-        cmd = m_cmdFactory->createDecisionPage(r);
+        cmd = m_cmdFactory->createDecisionPage(m_modelScene, r);
         break;
     case CreateConnection:
     case CreateConnectionDirect:

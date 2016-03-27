@@ -11,29 +11,29 @@ GGEditCommandFactory::GGEditCommandFactory(GGEditModel *model)
 
 }
 
-GGCreatePageCmd *GGEditCommandFactory::createStartPage()
+GGCreatePageCmd *GGEditCommandFactory::createStartPage(GGScene *scene)
 {
-    return new GGCreatePageCmd(m_model, GGCreatePageCmd::StartPage);
+    return new GGCreatePageCmd(m_model, scene, GGCreatePageCmd::StartPage);
 }
 
-GGCreatePageCmd *GGEditCommandFactory::createEndPage()
+GGCreatePageCmd *GGEditCommandFactory::createEndPage(GGScene *scene)
 {
-    return new GGCreatePageCmd(m_model, GGCreatePageCmd::EndPage);
+    return new GGCreatePageCmd(m_model, scene, GGCreatePageCmd::EndPage);
 }
 
-GGCreatePageCmd *GGEditCommandFactory::createConditionPage()
+GGCreatePageCmd *GGEditCommandFactory::createConditionPage(GGScene *scene)
 {
-    return new GGCreatePageCmd(m_model, GGCreatePageCmd::ConditionPage);
+    return new GGCreatePageCmd(m_model, scene, GGCreatePageCmd::ConditionPage);
 }
 
-GGCreatePageCmd *GGEditCommandFactory::createActionPage()
+GGCreatePageCmd *GGEditCommandFactory::createActionPage(GGScene *scene)
 {
-    return new GGCreatePageCmd(m_model, GGCreatePageCmd::ActionPage);
+    return new GGCreatePageCmd(m_model, scene, GGCreatePageCmd::ActionPage);
 }
 
-GGCreatePageCmd *GGEditCommandFactory::createDecisionPage()
+GGCreatePageCmd *GGEditCommandFactory::createDecisionPage(GGScene *scene)
 {
-    return new GGCreatePageCmd(m_model, GGCreatePageCmd::DecisionPage);
+    return new GGCreatePageCmd(m_model, scene, GGCreatePageCmd::DecisionPage);
 }
 
 GGDeletePageCmd *GGEditCommandFactory::deletePage(GGPage *page)
@@ -61,10 +61,10 @@ GGSetPageStringCmd *GGEditCommandFactory::setPageName(GGPage *p, const QString &
     return new GGSetPageStringCmd(m_model, p, name, GGSetPageStringCmd::Name);
 }
 
-GGSetPageStringCmd *GGEditCommandFactory::setPageScene(GGPage *p, const QString &sceneName)
-{
-    return new GGSetPageStringCmd(m_model, p, sceneName, GGSetPageStringCmd::SceneName);
-}
+//GGSetPageStringCmd *GGEditCommandFactory::setPageScene(GGPage *p, const QString &sceneName)
+//{
+//    return new GGSetPageStringCmd(m_model, p, sceneName, GGSetPageStringCmd::SceneName);
+//}
 
 GGSetPageStringCmd *GGEditCommandFactory::setPageCaption(GGContentPage *p, const QString &caption)
 {

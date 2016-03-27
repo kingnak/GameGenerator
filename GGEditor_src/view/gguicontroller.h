@@ -12,6 +12,7 @@ class GGViewModel;
 class GGViewCommandFactory;
 class GGCommandStack;
 class GGAbstractCommand;
+class GGScene;
 class GGPage;
 class GGConditionPage;
 class GGContentPage;
@@ -31,8 +32,10 @@ public:
     ~GGUIController();
 
     GGViewModel *model() { return m_model; }
+    GGScene *modelScene() { return m_modelScene; }
 
     void setModel(GGViewModel *model);
+    void setModelScene(GGScene *scene);
 
     void applySubcommandsAsGroup(GGCommandStack *stack);
     void applySubcommandsAsSingle(GGCommandStack *stack);
@@ -56,7 +59,7 @@ public slots:
     void deleteMultipleObjects(QSet<GGViewPage*> pages, QSet<GGViewConnection*> connections);
 
     void changePageName(GGPage *page, QString name);
-    void changePageScene(GGPage *page, QString scene);
+//    void changePageScene(GGPage *page, QString scene);
     void changeContentPageCaption(GGContentPage *page, QString cap);
     void changeContentElement(GGContentPage *page, GGContentElement *elem);
     void changeCondition(GGConditionPage *page, const GGCondition &cond);
@@ -97,6 +100,7 @@ private:
 
 private:
     GGViewModel *m_model;
+    GGScene *m_modelScene;
     GGCommandStack *m_stack;
     GGViewCommandFactory *m_cmdFactory;
     CreationMode m_createMode;

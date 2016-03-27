@@ -1,16 +1,45 @@
 #include "ggeditmodel.h"
+#include <model/ggscene.h>
 #include <model/ggpage.h>
 #include <model/ggconnection.h>
 
 GGEditModel::GGEditModel(GGAbstractFactory *factory, GGAbstractMediaResolver *resolver, QObject *parent)
-    : GGRuntimeModel(factory, resolver, parent), m_nextPageId(0), m_nextConnId(0), m_unregisteringPage(NULL)
+    : GGRuntimeModel(factory, resolver, parent),
+      m_nextSceneId(0),
+      m_nextPageId(0),
+      m_nextConnId(0),
+      m_unregisteringPage(NULL)
 {
 
 }
 
+bool GGEditModel::registerNewScene(GGScene *scene)
+{
+    Q_ASSERT(scene);
+    Q_ASSERT(scene->id() == GG::InvalidSceneId);
+    Q_ASSERT(!scene->model());
+    if (!scene || scene->model() || scene->id() != GG::InvalidSceneId) {
+        return false;
+    }
+
+    setSceneId(scene, m_nextSceneId++);
+    m_scenes[scene->id()] = scene;
+
+    emit sceneRegistered(scene);
+    return true;
+}
+
 bool GGEditModel::registerNewPage(GGPage *page)
 {
+    Q_ASSERT(page);
+    Q_ASSERT(page->id() == GG::InvalidPageId);
+    Q_ASSERT(!page->model());
     if (!page || page->model() || page->id() != GG::InvalidPageId) {
+        return false;
+    }
+
+    Q_ASSERT(page->scene());
+    if (!page->scene()) {
         return false;
     }
 
@@ -88,6 +117,7 @@ GGPage *GGEditModel::unregisterPage(GG::PageID id, QList<GGConnection *> *affect
     m_unregisteringPage = NULL;
 
     m_pages.remove(id);
+    ret->scene()->removePage(ret);
     unsetModel(ret);
     if (affectedConnections) *affectedConnections = aConns;
 

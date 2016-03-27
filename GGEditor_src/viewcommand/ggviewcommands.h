@@ -66,7 +66,7 @@ bool GGAbstractViewForwardCommand<CMD>::doRedo() {
 class GGCreateViewPageCmd : public GGAbstractViewForwardCommand<GGCreatePageCmd>
 {
 public:
-    GGCreateViewPageCmd(GGViewModel *model, GGCreatePageCmd::PageType type, const QRect &bounds);
+    GGCreateViewPageCmd(GGViewModel *model, GGScene *scene, GGCreatePageCmd::PageType type, const QRect &bounds);
 
     GGViewPage *createdPage();
 

@@ -2,11 +2,13 @@
 #include "ggconnection.h"
 #include "ggcontentelement.h"
 #include "ggabstractmodel.h"
+#include "ggscene.h"
 #include <QList>
 
 GGPage::GGPage()
 :   m_id(GG::InvalidPageId),
-    m_model(NULL)
+    m_model(NULL),
+    m_scene(NULL)
 {
 
 }
@@ -15,11 +17,11 @@ GGPage::~GGPage()
 {
 }
 
-void GGPage::setSceneName(QString sn)
+void GGPage::setScene(GGScene *scene)
 {
-    if (sn != m_sceneName) {
-        m_sceneName = sn;
-        notifyChanged(GGAbstractModel::PageData);
+    if (scene != m_scene) {
+        m_scene = scene;
+        notifyChanged(GGAbstractModel::PageScene);
     }
 }
 
@@ -38,10 +40,10 @@ bool GGPage::match(const GGSearchRequest &req, GGSearchResult &results) const
         results << GGSearchResultItem(GGSearchResultItem::PageName, GGSearchRequest::PageName, m_name, m_id);
         res = true;
     }
-    if (req.what().testFlag(GGSearchRequest::PageScene) && req.matches(m_sceneName)) {
-        results << GGSearchResultItem(GGSearchResultItem::PageScene, GGSearchRequest::PageScene, m_sceneName, m_id);
-        res = true;
-    }
+//    if (req.what().testFlag(GGSearchRequest::PageScene) && req.matches(m_sceneName)) {
+//        results << GGSearchResultItem(GGSearchResultItem::PageScene, GGSearchRequest::PageScene, m_sceneName, m_id);
+//        res = true;
+//    }
     return res;
 }
 

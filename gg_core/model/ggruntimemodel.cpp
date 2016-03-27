@@ -1,4 +1,5 @@
 #include "ggruntimemodel.h"
+#include "ggscene.h"
 #include "ggpage.h"
 #include "ggconnection.h"
 #include "ggabstractfactory.h"
@@ -16,6 +17,7 @@ GGRuntimeModel::~GGRuntimeModel()
 {
     qDeleteAll(m_connections);
     qDeleteAll(m_pages);
+    qDeleteAll(m_scenes);
     delete m_factory;
 }
 
@@ -29,6 +31,11 @@ GGAbstractMediaResolver *GGRuntimeModel::mediaResolver()
     return m_resolver;
 }
 
+GGScene *GGRuntimeModel::getScene(GG::SceneID id) const
+{
+    return m_scenes.value(id);
+}
+
 GGPage *GGRuntimeModel::getPage(GG::PageID id) const
 {
     return m_pages.value(id);
@@ -39,6 +46,11 @@ GGConnection *GGRuntimeModel::getConnection(GG::ConnectionID id) const
     return m_connections.value(id);
 }
 
+QList<GGScene *> GGRuntimeModel::getScenes() const
+{
+    return m_scenes.values();
+}
+
 QList<GGPage *> GGRuntimeModel::getPages() const
 {
     return m_pages.values();
@@ -47,6 +59,22 @@ QList<GGPage *> GGRuntimeModel::getPages() const
 QList<GGConnection *> GGRuntimeModel::getConnections()
 {
     return m_connections.values();
+}
+
+bool GGRuntimeModel::registerSceneWithId(GGScene *scene)
+{
+    if (!scene || scene->model()) {
+        return false;
+    }
+    if (scene->id() == GG::InvalidSceneId || m_scenes.contains(scene->id())) {
+        return false;
+    }
+
+    setSceneId(scene, scene->id());
+    m_scenes[scene->id()] = scene;
+
+    emit sceneRegistered(scene);
+    return true;
 }
 
 bool GGRuntimeModel::registerPageWithId(GGPage *page)
@@ -78,7 +106,7 @@ bool GGRuntimeModel::registerConnectionWithId(GGConnection *conn)
     }
 
     if (!conn->destination() || !conn->source()) {
-        Q_ASSERT_X(false, "GGModel::registerConnectionWithId", "Source and Dest msut be set");
+        Q_ASSERT_X(false, "GGModel::registerConnectionWithId", "Source and Dest must be set");
         return false;
     }
 

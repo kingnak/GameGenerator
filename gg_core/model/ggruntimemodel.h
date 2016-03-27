@@ -14,12 +14,15 @@ public:
     GGAbstractFactory *factory();
     GGAbstractMediaResolver *mediaResolver();
 
+    GGScene *getScene(GG::SceneID id) const;
     GGPage *getPage(GG::PageID id) const;
     GGConnection *getConnection(GG::ConnectionID id) const;
 
+    QList<GGScene *> getScenes() const;
     QList<GGPage *> getPages() const;
     QList<GGConnection *> getConnections();
 
+    bool registerSceneWithId(GGScene *scene);
     bool registerPageWithId(GGPage *page);
     bool registerConnectionWithId(GGConnection *conn);
 
@@ -35,6 +38,7 @@ signals:
 protected:
     GGAbstractFactory *m_factory;
     GGAbstractMediaResolver *m_resolver;
+    QMap<GG::SceneID, GGScene *> m_scenes;
     QMap<GG::PageID, GGPage *> m_pages;
     QMap<GG::ConnectionID, GGConnection *> m_connections;
     QMap<QString, GGVariable> m_variables;

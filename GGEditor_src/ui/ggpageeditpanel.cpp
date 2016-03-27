@@ -69,10 +69,10 @@ void GGPageEditPanel::on_txtName_editingFinished()
     m_ctrl->changePageName(m_page, ui->txtName->text());
 }
 
-void GGPageEditPanel::on_txtScene_editingFinished()
-{
-    m_ctrl->changePageScene(m_page, ui->txtScene->text());
-}
+//void GGPageEditPanel::on_txtScene_editingFinished()
+//{
+//    m_ctrl->changePageScene(m_page, ui->txtScene->text());
+//}
 
 void GGPageEditPanel::setCommon(GGAbstractModel::PageSections updateSections)
 {
@@ -80,7 +80,7 @@ void GGPageEditPanel::setCommon(GGAbstractModel::PageSections updateSections)
     Q_UNUSED(updateSections)
 
     ui->txtName->setText(m_page->name());
-    ui->txtScene->setText(m_page->sceneName());
+//    ui->txtScene->setText(m_page->sceneName());
 }
 
 void GGPageEditPanel::setStart(GGAbstractModel::PageSections updateSections)

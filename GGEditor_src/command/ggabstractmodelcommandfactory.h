@@ -6,6 +6,8 @@
 #include "ggabstractcommand.h"
 #include <model/ggconnectionslot.h>
 
+class GGScene;
+
 class GGPage;
 class GGConditionPage;
 class GGContentPage;
@@ -39,11 +41,11 @@ class GGAbstractModelCommandFactory : public GGAbstractCommandFactory
 public:
     GGAbstractModelCommandFactory() {}
 
-    virtual GGCreatePageCmd *createStartPage() = 0;
-    virtual GGCreatePageCmd *createEndPage() = 0;
-    virtual GGCreatePageCmd *createConditionPage() = 0;
-    virtual GGCreatePageCmd *createActionPage() = 0;
-    virtual GGCreatePageCmd *createDecisionPage() = 0;
+    virtual GGCreatePageCmd *createStartPage(GGScene *scene) = 0;
+    virtual GGCreatePageCmd *createEndPage(GGScene *scene) = 0;
+    virtual GGCreatePageCmd *createConditionPage(GGScene *scene) = 0;
+    virtual GGCreatePageCmd *createActionPage(GGScene *scene) = 0;
+    virtual GGCreatePageCmd *createDecisionPage(GGScene *scene) = 0;
 
     virtual GGDeletePageCmd *deletePage(GGPage *page) = 0;
 
@@ -52,7 +54,7 @@ public:
     virtual GGDeleteConnectionCmd *deleteConnection(GGConnection *conn) = 0;
 
     virtual GGSetPageStringCmd *setPageName(GGPage *p, const QString &name) = 0;
-    virtual GGSetPageStringCmd *setPageScene(GGPage *p, const QString &sceneName) = 0;
+//    virtual GGSetPageStringCmd *setPageScene(GGPage *p, const QString &sceneName) = 0;
     virtual GGSetPageStringCmd *setPageCaption(GGContentPage *p, const QString &caption) = 0;
 
     virtual GGExchangeConditionCmd *exchangeCondition(GGConditionPage *p, const GGCondition &cond) = 0;

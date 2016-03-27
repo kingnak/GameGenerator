@@ -7,6 +7,7 @@
 #include <model/ggcondition.h>
 #include <QList>
 
+class GGScene;
 class GGPage;
 class GGConditionPage;
 class GGContentPage;
@@ -27,7 +28,7 @@ public:
         DecisionPage
     };
 
-    GGCreatePageCmd(GGEditModel *model, PageType type);
+    GGCreatePageCmd(GGEditModel *model, GGScene *scene, PageType type);
     ~GGCreatePageCmd();
 
     QString description() const;
@@ -40,6 +41,7 @@ protected:
     bool doRedo();
 
 private:
+    GGScene *m_scene;
     PageType m_type;
     GGPage *m_createdPage;
 };
@@ -79,7 +81,9 @@ class GGSetPageStringCmd : public GGAbstractModelCommand
 {
 public:
     enum Type {
-        Name, SceneName, Caption
+        Name,
+        //SceneName,
+        Caption
     };
     GGSetPageStringCmd(GGEditModel *model, GGPage *page, const QString &str, Type type);
 

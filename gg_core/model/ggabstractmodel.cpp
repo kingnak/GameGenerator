@@ -1,4 +1,5 @@
 #include "ggabstractmodel.h"
+#include "ggscene.h"
 #include "ggpage.h"
 #include "ggconnection.h"
 
@@ -21,6 +22,13 @@ GGSearchResult GGAbstractModel::search(GGSearchRequest req) const
         }
     }
     return res;
+}
+
+void GGAbstractModel::setSceneId(GGScene *scene, GG::SceneID id)
+{
+    Q_ASSERT(scene->m_model == NULL || scene->m_model == this);
+    scene->m_id = id;
+    scene->m_model = this;
 }
 
 void GGAbstractModel::setPageId(GGPage *page, GG::PageID id)

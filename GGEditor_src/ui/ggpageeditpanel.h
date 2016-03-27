@@ -27,7 +27,7 @@ private slots:
     void pageUpdated(GGPage *page, GGAbstractModel::PageSections sections);
     void modelReset();
     void on_txtName_editingFinished();
-    void on_txtScene_editingFinished();
+//    void on_txtScene_editingFinished();
 
 private:
     void setCommon(GGAbstractModel::PageSections updateSections);

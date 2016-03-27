@@ -27,11 +27,11 @@ public:
     virtual int type() const = 0;
 
     GG::PageID id() const { return m_id; }
-    QString sceneName() const { return m_sceneName; }
+    GGScene *scene() const { return m_scene; }
     QString name() const { return m_name; }
     GGAbstractModel *model() const { return m_model; }
 
-    void setSceneName(QString sn);
+    void setScene(GGScene *scene);
     void setName(QString n);
 
     virtual bool match(const GGSearchRequest &req, GGSearchResult &results) const;
@@ -44,12 +44,12 @@ public:
 private:
     GG::PageID m_id;
     GGAbstractModel *m_model;
+    GGScene *m_scene;
 
 protected:
     void notifyChanged(int sections);
 
 protected:
-    QString m_sceneName;
     QString m_name;
 
     friend class GGAbstractModel;
