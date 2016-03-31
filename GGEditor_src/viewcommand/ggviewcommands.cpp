@@ -1,10 +1,11 @@
 #include "ggviewcommands.h"
+#include <model/ggeditmodel.h>
+#include <model/ggpage.h>
+#include <model/ggconnection.h>
 #include <viewmodel/ggviewmodel.h>
 #include <viewmodel/ggviewpage.h>
 #include <viewmodel/ggviewconnection.h>
-#include <model/ggeditmodel.h>
 #include <command/ggabstractmodelcommandfactory.h>
-#include <model/ggpage.h>
 
 GGCreateViewPageCmd::GGCreateViewPageCmd(GGViewModel *model, GGScene *scene, GGCreatePageCmd::PageType type, const QRect &bounds)
     : GGAbstractViewForwardCommand(model),
@@ -16,7 +17,7 @@ GGCreateViewPageCmd::GGCreateViewPageCmd(GGViewModel *model, GGScene *scene, GGC
 GGViewPage *GGCreateViewPageCmd::createdPage()
 {
     if (state() == Executed) {
-        return m_model->getViewPageForPage(getInnerCommand()->createdPage());
+        return m_model->getViewPageForPage(getInnerCommand()->createdPage(), getInnerCommand()->createdPage()->sceneId());
     }
     return NULL;
 }
@@ -34,7 +35,7 @@ bool GGCreateViewPageCmd::doExecute()
         return setError("Cannot register page");
     }
     */
-    GGViewPage *vp = m_model->getViewPageForPage(m_cmd->createdPage());
+    GGViewPage *vp = m_model->getViewPageForPage(m_cmd->createdPage(), m_cmd->createdPage()->sceneId());
     Q_ASSERT(vp);
     vp->setBounds(m_bounds);
     return true;
@@ -92,7 +93,7 @@ GGCreateViewConnectionCmd::GGCreateViewConnectionCmd(GGViewModel *model, const G
 GGViewConnection *GGCreateViewConnectionCmd::createdConnection()
 {
     if (state() == Executed) {
-        return m_model->getViewConectionForConnection(this->getInnerCommand()->newConnection());
+        return m_model->getViewConectionForConnection(this->getInnerCommand()->newConnection(), this->getInnerCommand()->newConnection()->source()->sceneId());
     }
     return NULL;
 }

@@ -103,7 +103,8 @@ HEADERS += \
     ui/dialogs/ggsearchdialog.h \
     ui/basic/gghtmlitemdelegate.h \
     ui/components/ggconditioneditorwidget.h \
-    ui/basic/ggstringlistvalidator.h
+    ui/basic/ggstringlistvalidator.h \
+    viewmodel/ggviewscene.h
 unix {
     target.path = /usr/lib
     INSTALLS += target

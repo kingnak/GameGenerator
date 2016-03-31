@@ -7,6 +7,7 @@
 #include <model/ggeditmodel.h>
 #include <viewmodel/ggviewpage.h>
 #include <viewmodel/ggviewconnection.h>
+#include <model/ggscene.h>
 #include <model/ggpage.h>
 #include <model/ggconnection.h>
 #include <QDebug>
@@ -50,6 +51,11 @@ GGPageItem *GGEditorScene::itemForPage(GGViewPage *page)
     return m_pageMap.value(page);
 }
 
+GGScene *GGEditorScene::modelScene()
+{
+    return m_ctrl->modelScene();
+}
+
 void GGEditorScene::resetModel(GGViewModel *model)
 {
     if (m_model) {
@@ -82,14 +88,14 @@ void GGEditorScene::refresh()
     // Populate with items
     if (m_model) {
         foreach (GGPage *p, m_model->editModel()->getPages()) {
-            if (GGViewPage *vp = m_model->getViewPageForPage(p)) {
+            if (GGViewPage *vp = m_model->getViewPageForPage(p, m_ctrl->modelScene()->id())) {
                 pageReg(vp);
             } else {
                 qCritical("No ViewPage for Page");
             }
         }
         foreach (GGConnection *c, m_model->editModel()->getConnections()) {
-            if (GGViewConnection *vc = m_model->getViewConectionForConnection(c)) {
+            if (GGViewConnection *vc = m_model->getViewConectionForConnection(c, m_ctrl->modelScene()->id())) {
                 connReg(vc);
             } else {
                 qCritical("No ViewConnection for Connection");
@@ -264,12 +270,12 @@ void GGEditorScene::connReg(GGViewConnection *c)
     m_connMap[c] = item;
     this->addItem(item);
 
-    if (GGViewPage *vp = m_model->getViewPageForPage(c->connection()->source())) {
+    if (GGViewPage *vp = m_model->getViewPageForPage(c->connection()->source(), m_ctrl->modelScene()->id())) {
         if (GGPageItem *it = m_pageMap.value(vp)) {
             it->addConnection(item);
         }
     }
-    if (GGViewPage *vp = m_model->getViewPageForPage(c->connection()->destination())) {
+    if (GGViewPage *vp = m_model->getViewPageForPage(c->connection()->destination(), m_ctrl->modelScene()->id())) {
         if (GGPageItem *it = m_pageMap.value(vp)) {
             it->addConnection(item);
         }

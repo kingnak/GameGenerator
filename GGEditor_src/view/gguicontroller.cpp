@@ -1,6 +1,7 @@
 #include "gguicontroller.h"
 #include <model/ggeditmodel.h>
 #include <model/ggsimplefactory.h>
+#include <model/ggscene.h>
 #include <model/ggpage.h>
 #include <command/ggcommandstack.h>
 #include <command/ggcommandgroup.h>
@@ -272,7 +273,7 @@ void GGUIController::connectPageDirect(GGPage *src, GGConnectionSlot slot)
 
 void GGUIController::setDirectConnectionPage(GGPage *dest)
 {
-    doExecCmd(m_cmdFactory->createConnection(m_model->getViewPageForPage(m_directConnSource), m_model->getViewPageForPage(dest), m_directConnSlot));
+    doExecCmd(m_cmdFactory->createConnection(m_model->getViewPageForPage(m_directConnSource, m_modelScene->id()), m_model->getViewPageForPage(dest, m_modelScene->id()), m_directConnSlot));
     abortDirectConnection();
 }
 
@@ -284,7 +285,7 @@ void GGUIController::abortDirectConnection()
 bool GGUIController::doExecCmd(GGAbstractCommand *cmd)
 {
     if (!m_stack->execute(cmd)) {
-        emit commandError(cmd->error());
+        emit commandError(m_stack->lastError());
         return false;
     }
     checkSaveCheckpoint();

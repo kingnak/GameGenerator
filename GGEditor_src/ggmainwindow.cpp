@@ -118,7 +118,7 @@ void GGMainWindow::closeModel()
 
 void GGMainWindow::highlightPage(GG::PageID id)
 {
-    GGViewPage *vp = m_viewModel->getViewPageForPage(m_viewModel->editModel()->getPage(id));
+    GGViewPage *vp = m_viewModel->getViewPageForPage(m_viewModel->editModel()->getPage(id), m_editorScene->modelScene()->id());
     m_editorScene->setSelection(QSet<GGViewPage*> () << vp, QSet<GGViewConnection*> ());
     ui->scEditView->ensureVisible(vp->bounds());
     selectPage(vp);

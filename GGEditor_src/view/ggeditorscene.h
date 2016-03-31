@@ -8,6 +8,7 @@
 #include <QPair>
 
 class GGUIController;
+class GGScene;
 class GGViewModel;
 class GGViewPage;
 class GGViewConnection;
@@ -25,6 +26,7 @@ public:
     GGPageItem *itemForPage(GGViewPage *page);
 
     GGViewModel *model() { return m_model; }
+    GGScene *modelScene();
 
     qreal pageBorderWidth() const { return 3; }
     QColor pageColor() const { return Qt::black; }

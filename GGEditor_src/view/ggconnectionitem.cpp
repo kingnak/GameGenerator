@@ -3,8 +3,9 @@
 #include <QGraphicsSceneMoveEvent>
 #include <viewmodel/ggviewconnection.h>
 #include <viewmodel/ggviewmodel.h>
-#include <model/ggconnection.h>
+#include <model/ggscene.h>
 #include <model/ggpage.h>
+#include <model/ggconnection.h>
 #include "ggeditorscene.h"
 #include "ggpageitem.h"
 
@@ -130,9 +131,9 @@ void GGConnectionItem::fetchPageItems()
 {
     if (scene()) {
         GGPage *s = m_conn->connection()->source();
-        m_source = editScene()->itemForPage(editScene()->model()->getViewPageForPage(s));
+        m_source = editScene()->itemForPage(editScene()->model()->getViewPageForPage(s, editScene()->modelScene()->id()));
         GGPage *d = m_conn->connection()->destination();
-        m_dest = editScene()->itemForPage(editScene()->model()->getViewPageForPage(d));
+        m_dest = editScene()->itemForPage(editScene()->model()->getViewPageForPage(d, editScene()->modelScene()->id()));
     } else {
         m_source = m_dest = NULL;
     }
