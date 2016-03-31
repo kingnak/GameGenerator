@@ -46,7 +46,6 @@ HEADERS +=\
     model/ggconnectionslotdata.h \
     model/ggsearch.h \
     model/ggmediaresolver.h \
-    model/ggabstractdisplaymodel.h \
     model/ggscene.h
 
 unix {
