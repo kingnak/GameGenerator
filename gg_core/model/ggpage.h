@@ -19,7 +19,7 @@ class GG_CORESHARED_EXPORT GGPage
     Q_DISABLE_COPY(GGPage)
 
 protected:
-    GGPage();
+    GGPage(GG::SceneID scene);
 
 public:
     virtual ~GGPage();
@@ -27,11 +27,12 @@ public:
     virtual int type() const = 0;
 
     GG::PageID id() const { return m_id; }
-    GGScene *scene() const { return m_scene; }
     QString name() const { return m_name; }
     GGAbstractModel *model() const { return m_model; }
 
-    void setScene(GGScene *scene);
+    GG::SceneID sceneId() const { return m_sceneId; }
+    GGScene *scene() const { return m_scene; }
+    bool setSceneId(GG::SceneID sceneId);
     void setName(QString n);
 
     virtual bool match(const GGSearchRequest &req, GGSearchResult &results) const;
@@ -44,6 +45,7 @@ public:
 private:
     GG::PageID m_id;
     GGAbstractModel *m_model;
+    GG::SceneID m_sceneId;
     GGScene *m_scene;
 
 protected:
@@ -60,7 +62,7 @@ protected:
 class GG_CORESHARED_EXPORT GGConditionPage : public GGPage
 {
 public:
-    GGConditionPage();
+    GGConditionPage(GG::SceneID scene);
 
     enum {
         Type = 0x0003
@@ -93,7 +95,7 @@ private:
 class GG_CORESHARED_EXPORT GGContentPage : public GGPage
 {
 public:
-    GGContentPage();
+    GGContentPage(GG::SceneID scene);
     ~GGContentPage();
 
     QString caption() const { return m_caption; }
@@ -115,7 +117,7 @@ protected:
 class GG_CORESHARED_EXPORT GGStartPage : public GGContentPage
 {
 public:
-    GGStartPage();
+    GGStartPage(GG::SceneID scene);
 
     enum {
         Type = 0x0001
@@ -137,7 +139,7 @@ private:
 class GG_CORESHARED_EXPORT GGEndPage : public GGContentPage
 {
 public:
-    GGEndPage();
+    GGEndPage(GG::SceneID scene);
 
     enum {
         Type = 0x0002
@@ -153,7 +155,7 @@ public:
 class GG_CORESHARED_EXPORT GGMappedContentPage : public GGContentPage
 {
 public:
-    GGMappedContentPage();
+    GGMappedContentPage(GG::SceneID scene);
 
     bool removeConnection(GGConnection *connection);
 
@@ -175,7 +177,7 @@ protected:
 class GG_CORESHARED_EXPORT GGActionPage : public GGMappedContentPage
 {
 public:
-    GGActionPage();
+    GGActionPage(GG::SceneID scene);
 
     enum {
         Type = 0x0004
@@ -199,7 +201,7 @@ protected:
 class GG_CORESHARED_EXPORT GGDecisionPage : public GGMappedContentPage
 {
 public:
-    GGDecisionPage();
+    GGDecisionPage(GG::SceneID scene);
 
     enum {
         Type = 0x0005

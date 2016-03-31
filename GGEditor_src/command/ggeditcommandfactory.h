@@ -10,6 +10,9 @@ class GGEditCommandFactory : public GGAbstractModelCommandFactory
 public:
     GGEditCommandFactory(GGEditModel *model);
 
+    GGCreateSceneCmd *createScene();
+    GGDeleteSceneCmd *deleteScene(GGScene *scene);
+
     GGCreatePageCmd *createStartPage(GGScene *scene);
     GGCreatePageCmd *createEndPage(GGScene *scene);
     GGCreatePageCmd *createConditionPage(GGScene *scene);

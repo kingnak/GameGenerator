@@ -5,9 +5,10 @@
 #include "ggscene.h"
 #include <QList>
 
-GGPage::GGPage()
+GGPage::GGPage(GG::SceneID scene)
 :   m_id(GG::InvalidPageId),
     m_model(NULL),
+    m_sceneId(scene),
     m_scene(NULL)
 {
 
@@ -17,12 +18,15 @@ GGPage::~GGPage()
 {
 }
 
-void GGPage::setScene(GGScene *scene)
+bool GGPage::setSceneId(GG::SceneID sceneId)
 {
-    if (scene != m_scene) {
-        m_scene = scene;
-        notifyChanged(GGAbstractModel::PageScene);
+    Q_ASSERT(!m_model);
+    Q_ASSERT(!m_scene);
+    if (m_model || m_scene) {
+        return false;
     }
+    m_sceneId = sceneId;
+    return true;
 }
 
 void GGPage::setName(QString n)
@@ -54,8 +58,8 @@ void GGPage::notifyChanged(int sections)
 
 /////////////////////////////////////////
 
-GGConditionPage::GGConditionPage()
-    : m_true(NULL), m_false(NULL)
+GGConditionPage::GGConditionPage(GG::SceneID scene)
+    : GGPage(scene), m_true(NULL), m_false(NULL)
 {
 
 }
@@ -139,8 +143,8 @@ bool GGConditionPage::match(const GGSearchRequest &req, GGSearchResult &results)
 }
 /////////////////////////////////////////
 
-GGContentPage::GGContentPage()
-    : m_content(NULL)
+GGContentPage::GGContentPage(GG::SceneID scene)
+    : GGPage(scene), m_content(NULL)
 {
 
 }
@@ -196,8 +200,8 @@ bool GGContentPage::match(const GGSearchRequest &req, GGSearchResult &results) c
 
 /////////////////////////////////////////
 
-GGStartPage::GGStartPage()
-    : m_conn(NULL)
+GGStartPage::GGStartPage(GG::SceneID scene)
+    : GGContentPage(scene), m_conn(NULL)
 {
 
 }
@@ -241,7 +245,8 @@ bool GGStartPage::removeConnection(GGConnection *connection)
 
 /////////////////////////////////////////
 
-GGEndPage::GGEndPage()
+GGEndPage::GGEndPage(GG::SceneID scene)
+    : GGContentPage(scene)
 {
 
 }
@@ -264,7 +269,8 @@ bool GGEndPage::removeConnection(GGConnection *connection)
 
 //////////////////////////////////////////
 
-GGMappedContentPage::GGMappedContentPage()
+GGMappedContentPage::GGMappedContentPage(GG::SceneID scene)
+    : GGContentPage(scene)
 {
 
 }
@@ -349,7 +355,8 @@ bool GGMappedContentPage::removeMappedLink(int idx)
 
 //////////////////////////////////////////
 
-GGActionPage::GGActionPage()
+GGActionPage::GGActionPage(GG::SceneID scene)
+    : GGMappedContentPage(scene)
 {
 
 }
@@ -400,7 +407,8 @@ bool GGActionPage::match(const GGSearchRequest &req, GGSearchResult &results) co
 //////////////////////////////////////////
 
 
-GGDecisionPage::GGDecisionPage()
+GGDecisionPage::GGDecisionPage(GG::SceneID scene)
+    : GGMappedContentPage(scene)
 {
 
 }

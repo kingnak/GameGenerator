@@ -1,4 +1,5 @@
 #include "ggsimplefactory.h"
+#include <model/ggscene.h>
 #include <model/ggpage.h>
 #include <model/ggconnection.h>
 
@@ -7,29 +8,34 @@ GGSimpleFactory::GGSimpleFactory()
 
 }
 
-GGConditionPage *GGSimpleFactory::createConditionPage()
+GGScene *GGSimpleFactory::createScene()
 {
-    return new GGConditionPage();
+    return new GGScene();
 }
 
-GGStartPage *GGSimpleFactory::createStartPage()
+GGConditionPage *GGSimpleFactory::createConditionPage(GG::SceneID scene)
 {
-    return new GGStartPage();
+    return new GGConditionPage(scene);
 }
 
-GGEndPage *GGSimpleFactory::createEndPage()
+GGStartPage *GGSimpleFactory::createStartPage(GG::SceneID scene)
 {
-    return new GGEndPage();
+    return new GGStartPage(scene);
 }
 
-GGActionPage *GGSimpleFactory::createActionPage()
+GGEndPage *GGSimpleFactory::createEndPage(GG::SceneID scene)
 {
-    return new GGActionPage();
+    return new GGEndPage(scene);
 }
 
-GGDecisionPage *GGSimpleFactory::createDecisionPage()
+GGActionPage *GGSimpleFactory::createActionPage(GG::SceneID scene)
 {
-    return new GGDecisionPage();
+    return new GGActionPage(scene);
+}
+
+GGDecisionPage *GGSimpleFactory::createDecisionPage(GG::SceneID scene)
+{
+    return new GGDecisionPage(scene);
 }
 
 GGConnection *GGSimpleFactory::createConnection(GG::PageID src, GG::PageID dest)

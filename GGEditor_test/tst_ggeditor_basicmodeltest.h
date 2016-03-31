@@ -34,6 +34,7 @@ private:
 
 private:
     GGEditModel *model;
+    GGScene *scn;
     GGPage *s, *e;
     GGConnection *c;
     bool m_warnedAboutConnectionHack;

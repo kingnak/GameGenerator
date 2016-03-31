@@ -12,12 +12,14 @@ class ModelSignalChecker : public QObject
 public:
     explicit ModelSignalChecker(GGAbstractModel *m, QObject *parent = 0);
 
-    void verify(QString s, int pr, int pu, int cr, int cu, int pc, bool r = true);
-    bool verifyFL(QString s, QString f, int l, int pr, int pu, int cr, int cu, int pc, bool r = true);
+    void verify(QString s, int sr, int su, int pr, int pu, int cr, int cu, int pc, bool r = true);
+    bool verifyFL(QString s, QString f, int l, int sr, int su, int pr, int pu, int cr, int cu, int pc, bool r = true);
     void verifyNull(QString s, bool r = true);
     void reset();
 
 private slots:
+    void sceneReg();
+    void sceneUnreg();
     void pageReg();
     void pageUnReg();
     void connReg();
@@ -25,23 +27,23 @@ private slots:
     void pageCh();
 
 private:
-    int m_pr, m_pu, m_cr, m_cu, m_pc;
+    int m_sr, m_su, m_pr, m_pu, m_cr, m_cu, m_pc;
 };
 
-#define VERIFYSIGR_STOP(sc, statement, PR, PU, CR, CU, PC, R) \
+#define VERIFYSIGR_STOP(sc, statement, SR, SU, PR, PU, CR, CU, PC, R) \
 do {\
-    if (!(sc)->verifyFL(statement, __FILE__, __LINE__, PR, PU, CR, CU, PC, R)) {\
+    if (!(sc)->verifyFL(statement, __FILE__, __LINE__, SR, SU, PR, PU, CR, CU, PC, R)) {\
         return;\
     }\
 } while (0)
 
-#define VERIFYSIGR(sc, statement, PR, PU, CR, CU, PC, R) \
-    (sc)->verifyFL(statement, __FILE__, __LINE__, PR, PU, CR, CU, PC, R)
+#define VERIFYSIGR(sc, statement, SR, SU, PR, PU, CR, CU, PC, R) \
+    (sc)->verifyFL(statement, __FILE__, __LINE__, SR, SU, PR, PU, CR, CU, PC, R)
 
-#define VERIFYSIG(sc, statement, PR, PU, CR, CU, PC) VERIFYSIGR(sc, statement, PR, PU, CR, CU, PC, true)
-#define VERIFYSIG_STOP(sc, statement, PR, PU, CR, CU, PC) VERIFYSIGR_STOP(sc, statement, PR, PU, CR, CU, PC, true)
+#define VERIFYSIG(sc, statement, SR, SU, PR, PU, CR, CU, PC) VERIFYSIGR(sc, statement, SR, SU, PR, PU, CR, CU, PC, true)
+#define VERIFYSIG_STOP(sc, statement, SR, SU, PR, PU, CR, CU, PC) VERIFYSIGR_STOP(sc, statement, SR, SU, PR, PU, CR, CU, PC, true)
 
-#define VERIFYSIGNULL(sc, statement) VERIFYSIGR(sc, statement, 0, 0, 0, 0, 0, true)
+#define VERIFYSIGNULL(sc, statement) VERIFYSIGR(sc, statement, 0, 0, 0, 0, 0, 0, 0, true)
 
 ///////////////////////////////
 

@@ -4,18 +4,20 @@
 #include <QtTest>
 
 ModelSignalChecker::ModelSignalChecker(GGAbstractModel *m, QObject *parent) :
-    QObject(parent), m_pr(0), m_pu(0), m_cr(0), m_cu(0), m_pc(0)
+    QObject(parent), m_sr(0), m_su(0), m_pr(0), m_pu(0), m_cr(0), m_cu(0), m_pc(0)
 {
+    connect(m, SIGNAL(sceneRegistered(GGScene*)), this, SLOT(sceneReg()));
+    connect(m, SIGNAL(sceneUnregistered(GG::SceneID,GGScene*)), this, SLOT(sceneUnreg()));
     connect(m, SIGNAL(pageRegistered(GGPage*)), this, SLOT(pageReg()));
     connect(m, SIGNAL(pageUnregistered(GG::PageID, GGPage*)), this, SLOT(pageUnReg()));
     connect(m, SIGNAL(connectionRegistered(GGConnection*)), this, SLOT(connReg()));
     connect(m, SIGNAL(connectionUnregistered(GG::ConnectionID,GGConnection*)), this, SLOT(connUnReg()));
-    connect(m, SIGNAL(pageUpdated(GGPage*)), this, SLOT(pageCh()));
+    connect(m, SIGNAL(pageUpdated(GGPage*, GGAbstractModel::PageSections)), this, SLOT(pageCh()));
 }
 
-void ModelSignalChecker::verify(QString s, int pr, int pu, int cr, int cu, int pc, bool r)
+void ModelSignalChecker::verify(QString s, int sr, int su, int pr, int pu, int cr, int cu, int pc, bool r)
 {
-    VERIFYSIGR(this, s, pr, pu, cr, cu, pc, r);
+    VERIFYSIGR(this, s, sr, su, pr, pu, cr, cu, pc, r);
 }
 /*
 #define QVERIFY2(statement, description) \
@@ -31,7 +33,7 @@ do {\
 */
 
 
-bool ModelSignalChecker::verifyFL(QString s, QString f, int l, int pr, int pu, int cr, int cu, int pc, bool r)
+bool ModelSignalChecker::verifyFL(QString s, QString f, int l, int sr, int su, int pr, int pu, int cr, int cu, int pc, bool r)
 {
     bool ok = true;
 #define LOCVERIFY(statement, description, file, line) \
@@ -46,8 +48,10 @@ bool ModelSignalChecker::verifyFL(QString s, QString f, int l, int pr, int pu, i
 
 
 
-    int lpr = m_pr, lpu = m_pu, lcr = m_cr, lcu = m_cu, lpc = m_pc;
+    int lsr = m_sr, lsu = m_su, lpr = m_pr, lpu = m_pu, lcr = m_cr, lcu = m_cu, lpc = m_pc;
     if (r) reset();
+    LOCVERIFY(lsr == sr, qPrintable(QString("%3: Expected %1 scene registrations, got %2").arg(sr).arg(lsr).arg(s)), qPrintable(f), l);
+    LOCVERIFY(lsu == su, qPrintable(QString("%3: Expected %1 scene unregistrations, got %2").arg(su).arg(lsu).arg(s)), qPrintable(f), l);
     LOCVERIFY(lpr == pr, qPrintable(QString("%3: Expected %1 page registrations, got %2").arg(pr).arg(lpr).arg(s)), qPrintable(f), l);
     LOCVERIFY(lpu == pu, qPrintable(QString("%3: Expected %1 page unregistrations, got %2").arg(pu).arg(lpu).arg(s)), qPrintable(f), l);
     LOCVERIFY(lcr == cr, qPrintable(QString("%3: Expected %1 connection registrations, got %2").arg(cr).arg(lcr).arg(s)), qPrintable(f), l);
@@ -66,12 +70,22 @@ bool ModelSignalChecker::verifyFL(QString s, QString f, int l, int pr, int pu, i
 
 void ModelSignalChecker::verifyNull(QString s, bool r)
 {
-    verify(s, 0,0,0,0,0, r);
+    verify(s, 0,0,0,0,0,0,0, r);
 }
 
 void ModelSignalChecker::reset()
 {
-    m_pr = m_pu = m_cr = m_cu = m_pc = 0;
+    m_sr = m_su = m_pr = m_pu = m_cr = m_cu = m_pc = 0;
+}
+
+void ModelSignalChecker::sceneReg()
+{
+    m_sr++;
+}
+
+void ModelSignalChecker::sceneUnreg()
+{
+    m_su++;
 }
 
 void ModelSignalChecker::pageReg()

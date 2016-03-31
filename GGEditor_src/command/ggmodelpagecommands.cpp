@@ -6,6 +6,100 @@
 #include <model/ggconnection.h>
 #include <model/ggcontentelement.h>
 
+GGCreateSceneCmd::GGCreateSceneCmd(GGEditModel *model)
+    : GGAbstractModelCommand(model),
+      m_createdScene(NULL)
+{
+
+}
+
+GGCreateSceneCmd::~GGCreateSceneCmd()
+{
+    if (state() != Executed) {
+        delete m_createdScene;
+    }
+}
+
+QString GGCreateSceneCmd::description() const
+{
+    return "Create Scene";
+}
+
+GGScene *GGCreateSceneCmd::createdScene()
+{
+    return m_createdScene;
+}
+
+bool GGCreateSceneCmd::doExecute()
+{
+    m_createdScene = m_model->factory()->createScene();
+    if (!m_model->registerNewScene(m_createdScene)) {
+        delete m_createdScene;
+        m_createdScene = NULL;
+        return setError("Cannot register scene");
+    }
+    return true;
+}
+
+bool GGCreateSceneCmd::doUndo()
+{
+    return m_model->unregisterScene(m_createdScene->id());
+}
+
+bool GGCreateSceneCmd::doRedo()
+{
+    return m_model->registerSceneWithId(m_createdScene);
+}
+
+///////////////////////////
+
+GGDeleteSceneCmd::GGDeleteSceneCmd(GGEditModel *model, GGScene *scene)
+    : GGAbstractModelCommand(model),
+      m_deletedScene(scene)
+{
+
+}
+
+GGDeleteSceneCmd::~GGDeleteSceneCmd()
+{
+    if (state() == Executed) {
+        delete m_deletedScene;
+    }
+}
+
+QString GGDeleteSceneCmd::description() const
+{
+    return "Delete Scene";
+}
+
+GGScene *GGDeleteSceneCmd::deletedScene()
+{
+    return m_deletedScene;
+}
+
+bool GGDeleteSceneCmd::doExecute()
+{
+    if (!m_deletedScene) {
+        return setError("No scene set");
+    }
+    if (m_deletedScene->model() != m_model) {
+        return setError("Scene is not in this model");
+    }
+    return m_model->unregisterScene(m_deletedScene->id());
+}
+
+bool GGDeleteSceneCmd::doUndo()
+{
+    return m_model->registerSceneWithId(m_deletedScene);
+}
+
+bool GGDeleteSceneCmd::doRedo()
+{
+    return m_model->unregisterScene(m_deletedScene->id());
+}
+
+///////////////////////////
+
 GGCreatePageCmd::GGCreatePageCmd(GGEditModel *model, GGScene *scene, PageType type)
     : GGAbstractModelCommand(model),
       m_scene(scene),
@@ -26,27 +120,25 @@ bool GGCreatePageCmd::doExecute()
 {
     switch (m_type) {
     case StartPage:
-        m_createdPage = m_model->factory()->createStartPage();
+        m_createdPage = m_model->factory()->createStartPage(m_scene->id());
         break;
     case EndPage:
-        m_createdPage = m_model->factory()->createEndPage();
+        m_createdPage = m_model->factory()->createEndPage(m_scene->id());
         break;
     case ConditionPage:
-        m_createdPage = m_model->factory()->createConditionPage();
+        m_createdPage = m_model->factory()->createConditionPage(m_scene->id());
         break;
     case ActionPage:
-        m_createdPage = m_model->factory()->createActionPage();
+        m_createdPage = m_model->factory()->createActionPage(m_scene->id());
         break;
     case DecisionPage:
-        m_createdPage = m_model->factory()->createDecisionPage();
+        m_createdPage = m_model->factory()->createDecisionPage(m_scene->id());
         break;
     default:
         return setError("Unknown Page Type");
     }
 
-    m_scene->addPage(m_createdPage);
     if (!m_model->registerNewPage(m_createdPage)) {
-        m_scene->removePage(m_createdPage);
         delete m_createdPage;
         m_createdPage = NULL;
         return setError("Cannot register page");
@@ -68,9 +160,7 @@ bool GGCreatePageCmd::doUndo()
 
 bool GGCreatePageCmd::doRedo()
 {
-    m_scene->addPage(m_createdPage);
     if (!m_model->registerPageWithId(m_createdPage)) {
-        m_scene->removePage(m_createdPage);
         return setError("Cannot register page");
     }
     return true;
@@ -419,6 +509,10 @@ bool GGMappedLinkCmd::doExecute()
     if (m_type != Add) {
         Q_ASSERT(0 <= m_idx && m_idx < m_page->getLinkMap().size());
         m_old = m_page->getLinkMap().value(m_idx);
+        Q_ASSERT_X(!m_new.link().connection() || m_new.link().connection() == m_old.link().connection(), "GGMappedLinkCmd::doExecute", "New link has a connection");
+        if (m_new.link().connection() && m_new.link().connection() != m_old.link().connection()) {
+            return setError("New link has a connection");
+        }
         // Same as Redo
         return doRedo();
     } else {
@@ -579,6 +673,10 @@ bool GGDecisionLinkCmd::doExecute()
     if (m_type != Add) {
         Q_ASSERT(0 <= m_idx && m_idx < m_page->getDecisionLinks().size());
         m_old = m_page->getDecisionLinks().value(m_idx);
+        Q_ASSERT_X(!m_new.connection() || m_new.connection() == m_old.connection(), "GGDecisionLinkCmd::doExecute", "New link has a connection");
+        if (m_new.connection() && m_new.connection() != m_old.connection()) {
+            return setError("New link has a connection");
+        }
         // Same as Redo
         return doRedo();
     } else {

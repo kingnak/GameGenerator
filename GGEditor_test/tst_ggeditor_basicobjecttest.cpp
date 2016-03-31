@@ -1,9 +1,11 @@
 #include "tst_ggeditor_basicobjecttest.h"
+#include <model/ggscene.h>
 #include <model/ggpage.h>
 #include <model/ggconnectionslot.h>
 #include <model/ggeditmodel.h>
 #include <model/ggconnection.h>
 #include <model/ggsimplefactory.h>
+#include <model/ggmediaresolver.h>
 #include "testsignalchecker.h"
 
 GGEditor_BasicObjectTest::GGEditor_BasicObjectTest()
@@ -13,7 +15,7 @@ GGEditor_BasicObjectTest::GGEditor_BasicObjectTest()
 
 void GGEditor_BasicObjectTest::testPageCast()
 {
-    GGPage *p = new GGStartPage();
+    GGPage *p = new GGStartPage(GG::InvalidSceneId);
     QVERIFY2(ggpage_cast<GGStartPage*>(p) == p, "Cannot cast Startpage to itself");
     QVERIFY2(ggpage_cast<GGEndPage*>(p) == 0, "Can cast Startpage to EndPage");
     QVERIFY2(ggpage_cast<GGConditionPage*>(p) == 0, "Can cast Startpage to ConditionPage");
@@ -28,7 +30,7 @@ void GGEditor_BasicObjectTest::testPageCast()
     QVERIFY2(ggpage_cast<const GGDecisionPage*>(cp) == 0, "Can cast const Startpage to DecisionPage");
     delete p;
 
-    p = new GGEndPage();
+    p = new GGEndPage(GG::InvalidSceneId);
     QVERIFY2(ggpage_cast<GGEndPage*>(p) == p, "Cannot cast EndPage to itself");
     QVERIFY2(ggpage_cast<GGStartPage*>(p) == 0, "Can cast EndPage to StartPage");
     QVERIFY2(ggpage_cast<GGConditionPage*>(p) == 0, "Can cast EndPage to ConditionPage");
@@ -43,7 +45,7 @@ void GGEditor_BasicObjectTest::testPageCast()
     QVERIFY2(ggpage_cast<const GGDecisionPage*>(cp) == 0, "Can cast const EndPage to DecisionPage");
     delete p;
 
-    p = new GGConditionPage();
+    p = new GGConditionPage(GG::InvalidSceneId);
     QVERIFY2(ggpage_cast<GGConditionPage*>(p) == p, "Cannot cast ConditionPage to itself");
     QVERIFY2(ggpage_cast<GGEndPage*>(p) == 0, "Can cast ConditionPage to EndPage");
     QVERIFY2(ggpage_cast<GGStartPage*>(p) == 0, "Can cast ConditionPage to StartPage");
@@ -58,7 +60,7 @@ void GGEditor_BasicObjectTest::testPageCast()
     QVERIFY2(ggpage_cast<const GGDecisionPage*>(cp) == 0, "Can cast const ConditionPage to DecisionPage");
     delete p;
 
-    p = new GGActionPage();
+    p = new GGActionPage(GG::InvalidSceneId);
     QVERIFY2(ggpage_cast<GGActionPage*>(p) == p, "Cannot cast ActionPage to itself");
     QVERIFY2(ggpage_cast<GGStartPage*>(p) == 0, "Can cast ActionPage to StartPage");
     QVERIFY2(ggpage_cast<GGEndPage*>(p) == 0, "Can cast ActionPage to EndPage");
@@ -73,7 +75,7 @@ void GGEditor_BasicObjectTest::testPageCast()
     QVERIFY2(ggpage_cast<const GGDecisionPage*>(cp) == 0, "Can cast const ActionPage to DecisionPage");
     delete p;
 
-    p = new GGDecisionPage();
+    p = new GGDecisionPage(GG::InvalidSceneId);
     QVERIFY2(ggpage_cast<GGDecisionPage*>(p) == p, "Cannot cast DecisionPage to itself");
     QVERIFY2(ggpage_cast<GGStartPage*>(p) == 0, "Can cast DecisionPage to StartPage");
     QVERIFY2(ggpage_cast<GGEndPage*>(p) == 0, "Can cast DecisionPage to EndPage");
@@ -89,11 +91,56 @@ void GGEditor_BasicObjectTest::testPageCast()
     delete p;
 }
 
+void GGEditor_BasicObjectTest::testRegister()
+{
+    GGEditModel m(new GGSimpleFactory, new GGFileSystemResolver);
+
+    GGStartPage *s1 = m.factory()->createStartPage(GG::InvalidSceneId);
+    QVERIFY2(!m.registerNewPage(s1), "Can register page with invalid scene");
+    QVERIFY(m.getPages().isEmpty());
+
+
+    GGScene *sc = m.factory()->createScene();
+    QVERIFY2(m.registerNewScene(sc), "Cannot register scene");
+    QVERIFY2(m.getScenes()[0] == sc, "Scene not in model");
+    QVERIFY2(m.unregisterScene(sc->id()), "Cannot unregister empty scene");
+    QVERIFY(m.getScenes().isEmpty());
+    QVERIFY2(m.registerSceneWithId(sc), "Cannot re-register scene");
+    QVERIFY(m.getScenes()[0] == sc);
+
+    QVERIFY2(s1->setSceneId(sc->id()), "Cannot set Scene Id on page that is not registered");
+    QVERIFY(s1->sceneId() == sc->id());
+    QVERIFY2(s1->scene() == NULL, "Not registered page has scene after setting scene Id");
+
+    GGStartPage *s = m.factory()->createStartPage(sc->id());
+    QVERIFY2(m.registerNewPage(s), "Cannot register page");
+    QVERIFY2(sc->pages().contains(s), "Scene does not contain page");
+    QVERIFY(m.getPages()[0] == s);
+    QVERIFY2(m.unregisterPage(s->id()) == s, "Cannot unregister page");
+    QVERIFY2(sc->pages().isEmpty(), "Scene is not empty");
+    QVERIFY(m.getPages().isEmpty());
+    QVERIFY2(m.registerPageWithId(s), "Cannot re-register page");
+    QVERIFY2(sc->pages().contains(s), "Scene does not contain page after re-register");
+    QVERIFY(m.getPages()[0] == s);
+
+    QVERIFY2(!s->setSceneId(GG::InvalidSceneId), "Can set scene id on registered page");
+    QVERIFY(s->scene() == sc);
+    QVERIFY(s->sceneId() == sc->id());
+
+    QVERIFY2(!m.unregisterScene(sc->id()), "Can unregister non-empty scene");
+    m.unregisterPage(s->id());
+    QVERIFY2(m.unregisterScene(sc->id()) == sc, "Cannot unretister emptied scene");
+
+    QVERIFY2(!m.registerPageWithId(s), "Can register page to removed scene");
+}
+
 void GGEditor_BasicObjectTest::testConnectionSlot()
 {
     GGEditModel m(new GGSimpleFactory, new GGFileSystemResolver);
-    GGStartPage *s = m.factory()->createStartPage();
-    GGEndPage *e = m.factory()->createEndPage();
+    GGScene *sc = m.factory()->createScene();
+    m.registerNewScene(sc);
+    GGStartPage *s = m.factory()->createStartPage(sc->id());
+    GGEndPage *e = m.factory()->createEndPage(sc->id());
     m.registerNewPage(s);
     m.registerNewPage(e);
 
@@ -117,12 +164,14 @@ void GGEditor_BasicObjectTest::testConnectionSlot()
 void GGEditor_BasicObjectTest::testConnectionSlotCanConnect()
 {
     GGEditModel m(new GGSimpleFactory, new GGFileSystemResolver);
-    GGStartPage *s = m.factory()->createStartPage();
-    GGEndPage *e = m.factory()->createEndPage();
-    GGConditionPage *c = m.factory()->createConditionPage();
-    GGActionPage *a = m.factory()->createActionPage();
-    GGDecisionPage *d = m.factory()->createDecisionPage();
-    GGPage *dest = m.factory()->createEndPage();
+    GGScene *scn = m.factory()->createScene();
+    m.registerNewScene(scn);
+    GGStartPage *s = m.factory()->createStartPage(scn->id());
+    GGEndPage *e = m.factory()->createEndPage(scn->id());
+    GGConditionPage *c = m.factory()->createConditionPage(scn->id());
+    GGActionPage *a = m.factory()->createActionPage(scn->id());
+    GGDecisionPage *d = m.factory()->createDecisionPage(scn->id());
+    GGPage *dest = m.factory()->createEndPage(scn->id());
     m.registerNewPage(s);
     m.registerNewPage(e);
     m.registerNewPage(c);

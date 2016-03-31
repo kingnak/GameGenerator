@@ -11,6 +11,7 @@ public:
 
 private slots:
     void testPageCast();
+    void testRegister();
     void testConnectionSlot();
     void testConnectionSlotCanConnect();
 };

@@ -38,14 +38,24 @@ bool GGEditModel::registerNewPage(GGPage *page)
         return false;
     }
 
-    Q_ASSERT(page->scene());
-    if (!page->scene()) {
+    Q_ASSERT(!page->scene());
+    if (page->scene()) {
+        return false;
+    }
+
+    GGScene *scene = m_scenes.value(page->sceneId());
+    Q_ASSERT(scene);
+    if (!scene) {
         return false;
     }
 
     // Associate with model
     setPageId(page, m_nextPageId++);
     m_pages[page->id()] = page;
+
+    // Resolve scene
+    resolvePageScene(page, scene);
+    scene->addPage(page);
 
     emit pageRegistered(page);
     return true;
@@ -97,6 +107,20 @@ bool GGEditModel::registerConnectionWithId(GGConnection *conn)
     return ret;
 }
 
+GGScene *GGEditModel::unregisterScene(GG::SceneID id)
+{
+    GGScene *scene = m_scenes.value(id);
+    if (scene) {
+        // Can only unregister empty scenes
+        if (scene->pages().isEmpty()) {
+            m_scenes.remove(id);
+            unsetModel(scene);
+            return scene;
+        }
+    }
+    return NULL;
+}
+
 
 GGPage *GGEditModel::unregisterPage(GG::PageID id, QList<GGConnection *> *affectedConnections)
 {
@@ -118,7 +142,9 @@ GGPage *GGEditModel::unregisterPage(GG::PageID id, QList<GGConnection *> *affect
 
     m_pages.remove(id);
     ret->scene()->removePage(ret);
+    resolvePageScene(ret, NULL);
     unsetModel(ret);
+
     if (affectedConnections) *affectedConnections = aConns;
 
     emit pageUnregistered(id, ret);

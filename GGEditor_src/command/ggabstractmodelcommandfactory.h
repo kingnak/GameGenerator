@@ -21,6 +21,8 @@ class GGLink;
 class GGMappedLink;
 class GGVariable;
 
+class GGCreateSceneCmd;
+class GGDeleteSceneCmd;
 class GGCreatePageCmd;
 class GGDeletePageCmd;
 class GGCreateConnectionCmd;
@@ -40,6 +42,9 @@ class GGAbstractModelCommandFactory : public GGAbstractCommandFactory
 {
 public:
     GGAbstractModelCommandFactory() {}
+
+    virtual GGCreateSceneCmd *createScene() = 0;
+    virtual GGDeleteSceneCmd *deleteScene(GGScene *scene) = 0;
 
     virtual GGCreatePageCmd *createStartPage(GGScene *scene) = 0;
     virtual GGCreatePageCmd *createEndPage(GGScene *scene) = 0;

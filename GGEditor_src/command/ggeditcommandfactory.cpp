@@ -11,6 +11,16 @@ GGEditCommandFactory::GGEditCommandFactory(GGEditModel *model)
 
 }
 
+GGCreateSceneCmd *GGEditCommandFactory::createScene()
+{
+    return new GGCreateSceneCmd(m_model);
+}
+
+GGDeleteSceneCmd *GGEditCommandFactory::deleteScene(GGScene *scene)
+{
+    return  new GGDeleteSceneCmd(m_model, scene);
+}
+
 GGCreatePageCmd *GGEditCommandFactory::createStartPage(GGScene *scene)
 {
     return new GGCreatePageCmd(m_model, scene, GGCreatePageCmd::StartPage);

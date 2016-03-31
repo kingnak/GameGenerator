@@ -45,6 +45,11 @@ void GGAbstractModel::setConnectionId(GGConnection *connection, GG::ConnectionID
     connection->m_model = this;
 }
 
+void GGAbstractModel::unsetModel(GGScene *scene) const
+{
+    scene->m_model = NULL;
+}
+
 void GGAbstractModel::unsetModel(GGPage *page) const
 {
     page->m_model = NULL;
@@ -59,4 +64,9 @@ void GGAbstractModel::resolveConnectionPages(GGConnection *connection, GGPage *s
 {
     connection->m_src = source;
     connection->m_dest = destination;
+}
+
+void GGAbstractModel::resolvePageScene(GGPage *page, GGScene *scene) const
+{
+    page->m_scene = scene;
 }

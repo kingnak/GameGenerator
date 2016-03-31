@@ -59,7 +59,7 @@ public:
 
 signals:
     void sceneRegistered(GGScene *scene);
-    void pageUnregistered(GG::SceneID id, GGScene *scene);
+    void sceneUnregistered(GG::SceneID id, GGScene *scene);
     void pageRegistered(GGPage *page);
     void pageUnregistered(GG::PageID id, GGPage *page);
     void connectionRegistered(GGConnection *conn);
@@ -74,6 +74,7 @@ protected:
     void unsetModel(GGPage *page) const;
     void unsetModel(GGConnection *connection) const;
     void resolveConnectionPages(GGConnection *connection, GGPage *source, GGPage *destination) const;
+    void resolvePageScene(GGPage *page, GGScene *scene) const;
 };
 
 #endif // GGABSTRACTMODEL_H

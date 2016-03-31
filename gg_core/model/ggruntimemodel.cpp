@@ -87,9 +87,19 @@ bool GGRuntimeModel::registerPageWithId(GGPage *page)
         return false;
     }
 
+    GGScene *scene = m_scenes.value(page->sceneId());
+    Q_ASSERT(scene);
+    if (!scene) {
+        return false;
+    }
+
     // Re-Associate with model
     setPageId(page, page->id());
     m_pages[page->id()] = page;
+
+    // Reassign to scene
+    resolvePageScene(page, scene);
+    scene->addPage(page);
 
     emit pageRegistered(page);
     return true;

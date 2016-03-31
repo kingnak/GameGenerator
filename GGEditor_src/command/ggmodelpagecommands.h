@@ -17,6 +17,48 @@ class GGDecisionPage;
 class GGConnection;
 class GGContentElement;
 
+class GGCreateSceneCmd : public GGAbstractModelCommand
+{
+public:
+    GGCreateSceneCmd(GGEditModel *model);
+    ~GGCreateSceneCmd();
+
+    QString description() const;
+
+    GGScene *createdScene();
+
+protected:
+    bool doExecute();
+    bool doUndo();
+    bool doRedo();
+
+private:
+    GGScene *m_createdScene;
+};
+
+///////////////////////////
+
+class GGDeleteSceneCmd : public GGAbstractModelCommand
+{
+public:
+    GGDeleteSceneCmd(GGEditModel *model, GGScene *scene);
+    ~GGDeleteSceneCmd();
+
+    QString description() const;
+
+    GGScene *deletedScene();
+
+protected:
+    bool doExecute();
+    bool doUndo();
+    bool doRedo();
+
+private:
+    GGScene *m_deletedScene;
+};
+
+///////////////////////////
+
 class GGCreatePageCmd : public GGAbstractModelCommand
 {
 public:
