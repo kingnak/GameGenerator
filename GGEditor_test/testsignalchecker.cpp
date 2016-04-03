@@ -118,8 +118,10 @@ void ModelSignalChecker::pageCh()
 
 
 ViewModelSignalChecker::ViewModelSignalChecker(GGViewModel *m, QObject *parent) :
-    QObject(parent), m_pr(0), m_pu(0), m_cr(0), m_cu(0), m_pc(0), m_vpc(0)
+    QObject(parent), m_sr(0), m_su(0), m_pr(0), m_pu(0), m_cr(0), m_cu(0), m_pc(0), m_vpc(0)
 {
+    connect(m, SIGNAL(viewSceneRegistered(GGViewScene*)), this, SLOT(sceneReg()));
+    connect(m, SIGNAL(viewSceneUnregistered(GGViewScene*)), this, SLOT(sceneUnreg()));
     connect(m, SIGNAL(viewPageRegistered(GGViewPage*)), this, SLOT(pageReg()));
     connect(m, SIGNAL(viewPageUnregistered(GGViewPage*)), this, SLOT(pageUnReg()));
     connect(m, SIGNAL(viewConnectionRegistered(GGViewConnection*)), this, SLOT(connReg()));
@@ -128,12 +130,12 @@ ViewModelSignalChecker::ViewModelSignalChecker(GGViewModel *m, QObject *parent) 
     connect(m, SIGNAL(viewPageUpdated(GGViewPage*)), this, SLOT(viewpageCh()));
 }
 
-void ViewModelSignalChecker::verify(QString s, int pr, int pu, int cr, int cu, int pc, int vpc, bool r)
+void ViewModelSignalChecker::verify(QString s, int sr, int su, int pr, int pu, int cr, int cu, int pc, int vpc, bool r)
 {
-    VERIFYVSIGR(this, s, pr, pu, cr, cu, pc, vpc, r);
+    VERIFYVSIGR(this, s, sr, su, pr, pu, cr, cu, pc, vpc, r);
 }
 
-bool ViewModelSignalChecker::verifyFL(QString s, QString f, int l, int pr, int pu, int cr, int cu, int pc, int vpc, bool r)
+bool ViewModelSignalChecker::verifyFL(QString s, QString f, int l, int sr, int su, int pr, int pu, int cr, int cu, int pc, int vpc, bool r)
 {
     bool ok = true;
 #define LOCVERIFY(statement, description, file, line) \
@@ -148,8 +150,10 @@ bool ViewModelSignalChecker::verifyFL(QString s, QString f, int l, int pr, int p
 
 
 
-    int lpr = m_pr, lpu = m_pu, lcr = m_cr, lcu = m_cu, lpc = m_pc, lvpc = m_vpc;
+    int lsr = m_sr, lsu = m_su, lpr = m_pr, lpu = m_pu, lcr = m_cr, lcu = m_cu, lpc = m_pc, lvpc = m_vpc;
     if (r) reset();
+    LOCVERIFY(lsr == sr, qPrintable(QString("%3: Expected %1 view scene registrations, got %2").arg(sr).arg(lsr).arg(s)), qPrintable(f), l);
+    LOCVERIFY(lsu == su, qPrintable(QString("%3: Expected %1 view scene unregistrations, got %2").arg(su).arg(lsu).arg(s)), qPrintable(f), l);
     LOCVERIFY(lpr == pr, qPrintable(QString("%3: Expected %1 view page registrations, got %2").arg(pr).arg(lpr).arg(s)), qPrintable(f), l);
     LOCVERIFY(lpu == pu, qPrintable(QString("%3: Expected %1 view page unregistrations, got %2").arg(pu).arg(lpu).arg(s)), qPrintable(f), l);
     LOCVERIFY(lcr == cr, qPrintable(QString("%3: Expected %1 view connection registrations, got %2").arg(cr).arg(lcr).arg(s)), qPrintable(f), l);
@@ -162,12 +166,22 @@ bool ViewModelSignalChecker::verifyFL(QString s, QString f, int l, int pr, int p
 
 void ViewModelSignalChecker::verifyNull(QString s, bool r)
 {
-    verify(s, 0,0,0,0,0,0, r);
+    verify(s, 0,0,0,0,0,0,0,0, r);
 }
 
 void ViewModelSignalChecker::reset()
 {
-    m_pr = m_pu = m_cr = m_cu = m_pc = m_vpc = 0;
+    m_sr = m_su = m_pr = m_pu = m_cr = m_cu = m_pc = m_vpc = 0;
+}
+
+void ViewModelSignalChecker::sceneReg()
+{
+    m_sr++;
+}
+
+void ViewModelSignalChecker::sceneUnreg()
+{
+    m_su++;
 }
 
 void ViewModelSignalChecker::pageReg()
@@ -199,5 +213,3 @@ void ViewModelSignalChecker::viewpageCh()
 {
     m_vpc++;
 }
-
-

@@ -22,6 +22,8 @@ private slots:
     void testCreateViewPage();
     void testCreateViewConnection();
     void testDeleteViewPage();
+    void testViewScenes();
+    void testViewScenePages();
 
 private:
     GGEditModel *m_em;

@@ -190,3 +190,52 @@ void GGEditor_BasicModelTest::testReregister()
     ((GGStartPage*)s)->setStartConnection(c);
     VERIFYSIG(sc, "Set connection", 0, 0, 0, 0, 0, 0, 1);
 }
+
+void GGEditor_BasicModelTest::testScenes()
+{
+    sc->reset();
+    GGScene *scn2 = model->factory()->createScene();
+    QVERIFY(model->registerNewScene(scn2));
+    VERIFYSIG(sc, "Register 2nd scene", 1,0, 0,0, 0,0, 0);
+    QVERIFY2(!model->unregisterScene(scn->id()), "Can unregister non-empty scene");
+    VERIFYSIGNULL(sc, "Remove non-empty scene");
+    QVERIFY(scn->pages().size() == 2);
+    QVERIFY(scn2->pages().isEmpty());
+    QVERIFY(model->unregisterScene(scn2->id()));
+    VERIFYSIG(sc, "Unregister 2nd scene (empty)", 0,1, 0,0, 0,0, 0);
+    QVERIFY2(model->registerSceneWithId(scn2), "Cannot reregister scene");
+    VERIFYSIG(sc, "Reregister 2nd scene", 1,0, 0,0, 0,0, 0);
+
+    QVERIFY2(!s->setSceneId(scn2->id()), "Can set scene on registered page");
+
+    QList<GGConnection*> conList;
+    model->unregisterPage(s->id(), &conList);
+    VERIFYSIG(sc, "", 0,0, 0,1, 0,1, 0);
+    QVERIFY2(scn->pages().size() == 1, "Page still in scene after unregister");
+
+    QVERIFY2(s->setSceneId(scn2->id()), "Cannot set scene on unregistered page");
+    QVERIFY2(model->registerPageWithId(s), "Cannot register page with changed scene");
+    VERIFYSIG(sc, "After register of changed scene", 0,0, 1,0, 0,0, 0);
+    QVERIFY2(scn->pages().size() == 1, "Page in wrong scene after re-register");
+    QVERIFY2(scn2->pages().size() == 1, "Page not in correct scene");
+    QVERIFY(scn->pages().contains(e));
+    QVERIFY(scn2->pages().contains(s));
+
+    QVERIFY2(model->registerConnectionWithId(conList[0]), "Cannot re-register connection after changing scene");
+    // HACK
+    ((GGStartPage*)s)->setStartConnection(conList[0]);
+    VERIFYSIG(sc, "After reregister in scene", 0,0, 0,0, 1,0, 1);
+
+    model->unregisterPage(e->id(), &conList);
+    QVERIFY(scn->pages().isEmpty());
+    QVERIFY(e->setSceneId(scn2->id()));
+    QVERIFY(model->registerPageWithId(e));
+    QVERIFY(scn->pages().isEmpty());
+    QVERIFY(scn2->pages().size() == 2);
+    QVERIFY(scn2->pages().contains(e));
+    // HACK
+    ((GGStartPage*)s)->setStartConnection(conList[0]);
+    QVERIFY(model->registerConnectionWithId(conList[0]));
+
+    VERIFYSIG(sc, "After moving 2nd page to other scene", 0,0, 1,1, 1,1, 2);
+}

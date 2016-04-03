@@ -28,6 +28,7 @@ private Q_SLOTS:
     void testUnregisterEnd();
     void testUnregisterConnection();
     void testReregister();
+    void testScenes();
 
 private:
     void setupModel(GGPage *&s, GGPage *&e, GGConnection *&c);
