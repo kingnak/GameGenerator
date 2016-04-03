@@ -115,6 +115,7 @@ GGScene *GGEditModel::unregisterScene(GG::SceneID id)
         if (scene->pages().isEmpty()) {
             m_scenes.remove(id);
             unsetModel(scene);
+            emit sceneUnregistered(id, scene);
             return scene;
         }
     }
