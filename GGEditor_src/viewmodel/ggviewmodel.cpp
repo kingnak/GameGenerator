@@ -36,6 +36,11 @@ GGViewModel::~GGViewModel()
         qDeleteAll(m.values());
 }
 
+GGViewScene *GGViewModel::getViewSceneForScene(GGScene *scene)
+{
+    return m_sceneMap.value(scene->id());
+}
+
 GGViewPage *GGViewModel::getViewPageForPage(GGPage *page, GG::SceneID scene)
 {
     if (!m_pageMap.contains(scene)) {
@@ -122,25 +127,7 @@ void GGViewModel::unregScene(GG::SceneID id, GGScene *scene)
 
 void GGViewModel::regPage(GGPage *page)
 {
-    GGViewPage *vp = NULL;
-    // Page known?
-    if ((vp = m_pageMap.value(page->sceneId()).value(page->id()))) {
-        // TODO: emit signal?
-        emit viewPageRegistered(vp);
-        return;
-    }
-    // Page recycled?
-    if ((vp = m_pageRec[page->sceneId()].take(page->id()))) {
-        m_pageMap[page->sceneId()][page->id()] = vp;
-        // TODO: emit signal?
-        emit viewPageRegistered(vp);
-        return;
-    }
-
-    // Unknown, create one
-    vp = new GGViewPage(page, this, QRect(), page->sceneId());
-    m_pageMap[page->sceneId()][page->id()] = vp;
-    emit viewPageRegistered(vp);
+    doRegPage(page, page->sceneId());
 }
 
 void GGViewModel::unregPage(GG::PageID id, GGPage *page)
@@ -162,6 +149,12 @@ void GGViewModel::regConn(GGConnection *conn)
     doRegConn(conn, conn->source()->sceneId());
     if (conn->source()->sceneId() != conn->destination()->sceneId()) {
         doRegConn(conn, conn->destination()->sceneId());
+
+        // Register pages in foreign scenes, if not present yet
+        if (!m_pageMap.value(conn->destination()->sceneId()).contains(conn->sourceId()))
+            doRegPage(conn->source(), conn->destination()->sceneId());
+        if (!m_pageMap.value(conn->source()->sceneId()).contains(conn->destinationId()))
+            doRegPage(conn->destination(), conn->source()->sceneId());
     }
 }
 
@@ -234,6 +227,7 @@ bool GGViewModel::hasConnectionsInScene(GGPage *page, GG::SceneID scene)
 
 void GGViewModel::updPage(GGPage *page)
 {
+    // This will report page changes for EVERY view page!
     for (QMap<GG::SceneID, PageMap>::iterator it = m_pageMap.begin(); it != m_pageMap.end(); ++it) {
         if (GGViewPage *vp = it.value().value(page->id())) {
             emit pageUpdated(vp);
@@ -248,4 +242,27 @@ void GGViewModel::unregViewPage(GG::PageID pageId, GG::SceneID sceneId)
         m_pageRec[sceneId][pageId] = vp;
         emit viewPageUnregistered(vp);
     }
+}
+
+void GGViewModel::doRegPage(GGPage *page, GG::SceneID sceneId)
+{
+    GGViewPage *vp = NULL;
+    // Page known?
+    if ((vp = m_pageMap.value(sceneId).value(page->id()))) {
+        // TODO: emit signal?
+        emit viewPageRegistered(vp);
+        return;
+    }
+    // Page recycled?
+    if ((vp = m_pageRec[sceneId].take(page->id()))) {
+        m_pageMap[sceneId][page->id()] = vp;
+        // TODO: emit signal?
+        emit viewPageRegistered(vp);
+        return;
+    }
+
+    // Unknown, create one
+    vp = new GGViewPage(page, this, QRect(), sceneId);
+    m_pageMap[sceneId][page->id()] = vp;
+    emit viewPageRegistered(vp);
 }

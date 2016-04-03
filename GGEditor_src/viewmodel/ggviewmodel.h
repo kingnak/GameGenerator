@@ -22,6 +22,7 @@ public:
 
     GGEditModel *editModel() { return m_model; }
 
+    GGViewScene *getViewSceneForScene(GGScene *scene);
     GGViewPage *getViewPageForPage(GGPage *page, GG::SceneID scene);
     GGViewConnection *getViewConectionForConnection(GGConnection *conn, GG::SceneID scene);
 
@@ -53,6 +54,7 @@ private slots:
 
 private:
     void unregViewPage(GG::PageID pageId, GG::SceneID sceneId);
+    void doRegPage(GGPage *page, GG::SceneID sceneId);
     void doRegConn(GGConnection *conn, GG::SceneID sceneId);
     void doUnregConn(GGConnection *conn, GG::SceneID sceneId);
     bool hasConnectionsInScene(GGPage *page, GG::SceneID scene);
