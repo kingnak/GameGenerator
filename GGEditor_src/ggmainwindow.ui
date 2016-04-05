@@ -20,10 +20,24 @@
       <property name="orientation">
        <enum>Qt::Vertical</enum>
       </property>
-      <widget class="GGEditorView" name="scEditView">
-       <property name="dragMode">
-        <enum>QGraphicsView::RubberBandDrag</enum>
+      <widget class="QTabWidget" name="tabScenes">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>200</height>
+        </size>
        </property>
+       <property name="currentIndex">
+        <number>0</number>
+       </property>
+       <property name="tabsClosable">
+        <bool>true</bool>
+       </property>
+       <widget class="QWidget" name="tab_3">
+        <attribute name="title">
+         <string>Tab 1</string>
+        </attribute>
+       </widget>
       </widget>
       <widget class="QStackedWidget" name="stkDetailEdits">
        <property name="minimumSize">
@@ -33,7 +47,7 @@
         </size>
        </property>
        <property name="currentIndex">
-        <number>2</number>
+        <number>1</number>
        </property>
        <widget class="QWidget" name="pageEmpty">
         <widget class="QLabel" name="label">
@@ -86,7 +100,7 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>683</width>
+              <width>69</width>
               <height>182</height>
              </rect>
             </property>
@@ -114,6 +128,10 @@
      </widget>
     </item>
    </layout>
+   <zorder>splitter</zorder>
+   <zorder>tabScenes</zorder>
+   <zorder>scrollArea</zorder>
+   <zorder>splitter</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
@@ -386,11 +404,6 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>GGEditorView</class>
-   <extends>QGraphicsView</extends>
-   <header>view/ggeditorview.h</header>
-  </customwidget>
-  <customwidget>
    <class>GGPageEditPanel</class>
    <extends>QWidget</extends>
    <header>ui/ggpageeditpanel.h</header>
@@ -455,9 +468,43 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>tabScenes</sender>
+   <signal>tabCloseRequested(int)</signal>
+   <receiver>GGMainWindow</receiver>
+   <slot>closeTab(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>115</x>
+     <y>100</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>332</x>
+     <y>-8</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>tabScenes</sender>
+   <signal>currentChanged(int)</signal>
+   <receiver>GGMainWindow</receiver>
+   <slot>changeTab(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>348</x>
+     <y>166</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>400</x>
+     <y>-12</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>newModel()</slot>
   <slot>handleAction(QAction*)</slot>
+  <slot>closeTab(int)</slot>
+  <slot>changeTab(int)</slot>
  </slots>
 </ui>

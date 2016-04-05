@@ -12,10 +12,12 @@ class GGEditorScene;
 class GGViewModel;
 class GGViewPage;
 class GGViewConnection;
+class GGScene;
 class GGPage;
 class GGConnectionSlot;
 class GGSearchDialog;
 class GGSearchRequest;
+class GGGraphPanel;
 
 namespace Ui {
 class GGMainWindow;
@@ -32,9 +34,15 @@ public:
     GGViewModel *currentModel();
     GGUIController *controller();
 
+    GGGraphPanel *currentSceneView();
+    GGGraphPanel *sceneViewForId(GG::SceneID id);
+
 public slots:
     void newModel();
     void closeModel();
+
+    void openSceneView(GGScene *scene);
+    void closeSceneView(GG::SceneID id);
 
     void highlightPage(GG::PageID id);
     void selectPage(GGViewPage *page);
@@ -53,11 +61,12 @@ private slots:
     void setCreationMode();
     void handleConnectDirect(GGPage *page, const GGConnectionSlot &slot);
     void showVariables();
+    void closeTab(int idx);
+    void changeTab(int idx);
 
 private:
     Ui::GGMainWindow *ui;
     GGUIController *m_ctrl;
-    GGEditorScene *m_editorScene;
     GGViewModel *m_viewModel;
     QActionGroup *m_createActions;
     GGSearchDialog *m_searchDlg;

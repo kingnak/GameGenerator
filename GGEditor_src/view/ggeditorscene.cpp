@@ -5,6 +5,7 @@
 #include "ggselectionitem.h"
 #include "gguicontroller.h"
 #include <model/ggeditmodel.h>
+#include <viewmodel/ggviewscene.h>
 #include <viewmodel/ggviewpage.h>
 #include <viewmodel/ggviewconnection.h>
 #include <model/ggscene.h>
@@ -31,7 +32,7 @@ GGEditorScene::GGEditorScene(GGUIController *ctrl, QObject *parent)
 void GGEditorScene::connectToController(GGUIController *ctrl)
 {
     // Inwards
-    connect(ctrl, SIGNAL(modelReset(GGViewModel*)), this, SLOT(resetModel(GGViewModel*)));
+    //connect(ctrl, SIGNAL(modelReset(GGViewModel*)), this, SLOT(resetModel(GGViewModel*)));
     connect(ctrl, SIGNAL(objectsSelected(QSet<GGViewPage*>,QSet<GGViewConnection*>)), this, SLOT(setSelection(QSet<GGViewPage*>,QSet<GGViewConnection*>)));
     connect(ctrl, SIGNAL(selectionCleared()), this, SLOT(clearSelection()));
 
@@ -40,7 +41,7 @@ void GGEditorScene::connectToController(GGUIController *ctrl)
     connect(this, SIGNAL(multiplePagesMoved(QList<QPair<GGViewPage*,QRect> >)), ctrl, SLOT(changeMultiplePagesGeometry(QList<QPair<GGViewPage*,QRect> >)));
     connect(this, SIGNAL(multipleObjectsDeleted(QSet<GGViewPage*>,QSet<GGViewConnection*>)), ctrl, SLOT(deleteMultipleObjects(QSet<GGViewPage*>,QSet<GGViewConnection*>)));
     connect(this, SIGNAL(itemsSelected(QSet<GGViewPage*>,QSet<GGViewConnection*>)), ctrl, SLOT(setSelection(QSet<GGViewPage*>,QSet<GGViewConnection*>)));
-    connect(this, SIGNAL(clickedEmptySpace(QPointF)), ctrl, SLOT(handleSceneClick(QPointF)));
+    connect(this, SIGNAL(clickedEmptySpace(GGViewScene*,QPointF)), ctrl, SLOT(handleSceneClick(GGViewScene*,QPointF)));
     connect(this, SIGNAL(connectPages(GGViewPage*,GGViewPage*)), ctrl, SLOT(connnectPagesDialog(GGViewPage*,GGViewPage*)));
 
     m_ctrl = ctrl;
@@ -51,12 +52,12 @@ GGPageItem *GGEditorScene::itemForPage(GGViewPage *page)
     return m_pageMap.value(page);
 }
 
-GGScene *GGEditorScene::modelScene()
+GGViewScene *GGEditorScene::modelScene()
 {
-    return m_ctrl->modelScene();
+    return m_modelScene;
 }
 
-void GGEditorScene::resetModel(GGViewModel *model)
+void GGEditorScene::resetModel(GGViewModel *model, GGViewScene *scene)
 {
     if (m_model) {
         m_model->disconnect();
@@ -64,6 +65,7 @@ void GGEditorScene::resetModel(GGViewModel *model)
     this->clearSelection();
     this->clear();
     m_model = model;
+    m_modelScene = scene;
     m_pageMap.clear();
     m_connMap.clear();
 
@@ -88,14 +90,14 @@ void GGEditorScene::refresh()
     // Populate with items
     if (m_model) {
         foreach (GGPage *p, m_model->editModel()->getPages()) {
-            if (GGViewPage *vp = m_model->getViewPageForPage(p, m_ctrl->modelScene()->id())) {
+            if (GGViewPage *vp = m_model->getViewPageForPage(p, m_modelScene->scene()->id())) {
                 pageReg(vp);
             } else {
                 qCritical("No ViewPage for Page");
             }
         }
         foreach (GGConnection *c, m_model->editModel()->getConnections()) {
-            if (GGViewConnection *vc = m_model->getViewConectionForConnection(c, m_ctrl->modelScene()->id())) {
+            if (GGViewConnection *vc = m_model->getViewConectionForConnection(c, m_modelScene->scene()->id())) {
                 connReg(vc);
             } else {
                 qCritical("No ViewConnection for Connection");
@@ -171,7 +173,7 @@ void GGEditorScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
             bool empty = selectedItems().isEmpty();
             QGraphicsScene::mousePressEvent(event);
             if (empty && selectedItems().isEmpty()) {
-                emit clickedEmptySpace(event->scenePos());
+                emit clickedEmptySpace(m_modelScene, event->scenePos());
             }
         }
     } else {
@@ -270,12 +272,12 @@ void GGEditorScene::connReg(GGViewConnection *c)
     m_connMap[c] = item;
     this->addItem(item);
 
-    if (GGViewPage *vp = m_model->getViewPageForPage(c->connection()->source(), m_ctrl->modelScene()->id())) {
+    if (GGViewPage *vp = m_model->getViewPageForPage(c->connection()->source(), m_modelScene->scene()->id())) {
         if (GGPageItem *it = m_pageMap.value(vp)) {
             it->addConnection(item);
         }
     }
-    if (GGViewPage *vp = m_model->getViewPageForPage(c->connection()->destination(), m_ctrl->modelScene()->id())) {
+    if (GGViewPage *vp = m_model->getViewPageForPage(c->connection()->destination(), m_modelScene->scene()->id())) {
         if (GGPageItem *it = m_pageMap.value(vp)) {
             it->addConnection(item);
         }

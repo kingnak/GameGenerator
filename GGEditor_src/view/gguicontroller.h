@@ -9,6 +9,7 @@
 #include <model/ggconnectionslot.h>
 
 class GGViewModel;
+class GGViewScene;
 class GGViewCommandFactory;
 class GGCommandStack;
 class GGAbstractCommand;
@@ -32,10 +33,8 @@ public:
     ~GGUIController();
 
     GGViewModel *model() { return m_model; }
-    GGScene *modelScene() { return m_modelScene; }
 
     void setModel(GGViewModel *model);
-    void setModelScene(GGScene *scene);
 
     void applySubcommandsAsGroup(GGCommandStack *stack);
     void applySubcommandsAsSingle(GGCommandStack *stack);
@@ -73,7 +72,7 @@ public slots:
 
     void setSelection(QSet<GGViewPage *> pages, QSet<GGViewConnection *> connections);
 
-    void handleSceneClick(QPointF pos);
+    void handleSceneClick(GGViewScene *scene, QPointF pos);
 
     void connectPageDirect(GGPage *src, GGConnectionSlot slot);
     void setDirectConnectionPage(GGPage *dest);
@@ -100,7 +99,6 @@ private:
 
 private:
     GGViewModel *m_model;
-    GGScene *m_modelScene;
     GGCommandStack *m_stack;
     GGViewCommandFactory *m_cmdFactory;
     CreationMode m_createMode;

@@ -7,6 +7,7 @@
 #include <command/ggcommandgroup.h>
 #include <viewcommand/ggviewcommands.h>
 #include <viewmodel/ggviewmodel.h>
+#include <viewmodel/ggviewscene.h>
 #include <viewmodel/ggviewpage.h>
 #include <viewcommand/ggviewcommandfactory.h>
 #include <ui/dialogs/ggchoseconnectionslotdlg.h>
@@ -14,7 +15,6 @@
 GGUIController::GGUIController(QObject *parent)
     : QObject(parent),
       m_model(NULL),
-      m_modelScene(NULL),
       m_cmdFactory(NULL),
       m_createMode(CreateNone),
       m_saveCommand(NULL),
@@ -41,11 +41,6 @@ void GGUIController::setModel(GGViewModel *model)
         m_cmdFactory = NULL;
     emit modelReset(m_model);
     saveCheckpoint();
-}
-
-void GGUIController::setModelScene(GGScene *scene)
-{
-    m_modelScene = scene;
 }
 
 void GGUIController::applySubcommandsAsGroup(GGCommandStack *stack)
@@ -229,7 +224,7 @@ void GGUIController::setSelection(QSet<GGViewPage *> pages, QSet<GGViewConnectio
     }
 }
 
-void GGUIController::handleSceneClick(QPointF pos)
+void GGUIController::handleSceneClick(GGViewScene *scene, QPointF pos)
 {
     GGCreateViewPageCmd *cmd = NULL;
     QRect r(pos.toPoint(), QSize());
@@ -237,19 +232,19 @@ void GGUIController::handleSceneClick(QPointF pos)
     case CreateNone:
         return;
     case CreateStartPage:
-        cmd = m_cmdFactory->createStartPage(m_modelScene, r);
+        cmd = m_cmdFactory->createStartPage(scene->scene(), r);
         break;
     case CreateEndPage:
-        cmd = m_cmdFactory->createEndPage(m_modelScene, r);
+        cmd = m_cmdFactory->createEndPage(scene->scene(), r);
         break;
     case CreateConditionPage:
-        cmd = m_cmdFactory->createConditionPage(m_modelScene, r);
+        cmd = m_cmdFactory->createConditionPage(scene->scene(), r);
         break;
     case CreateActionPage:
-        cmd = m_cmdFactory->createActionPage(m_modelScene, r);
+        cmd = m_cmdFactory->createActionPage(scene->scene(), r);
         break;
     case CreateDecisionPage:
-        cmd = m_cmdFactory->createDecisionPage(m_modelScene, r);
+        cmd = m_cmdFactory->createDecisionPage(scene->scene(), r);
         break;
     case CreateConnection:
     case CreateConnectionDirect:
@@ -273,7 +268,7 @@ void GGUIController::connectPageDirect(GGPage *src, GGConnectionSlot slot)
 
 void GGUIController::setDirectConnectionPage(GGPage *dest)
 {
-    doExecCmd(m_cmdFactory->createConnection(m_model->getViewPageForPage(m_directConnSource, m_modelScene->id()), m_model->getViewPageForPage(dest, m_modelScene->id()), m_directConnSlot));
+    doExecCmd(m_cmdFactory->createConnection(m_model->getViewPageForPage(m_directConnSource, m_directConnSource->sceneId()), m_model->getViewPageForPage(dest, dest->sceneId()), m_directConnSlot));
     abortDirectConnection();
 }
 

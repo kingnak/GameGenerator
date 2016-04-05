@@ -4,6 +4,7 @@
 #include <ui/dialogs/ggvariableeditdialog.h>
 #include <view/gguicontroller.h>
 #include <view/ggeditorscene.h>
+#include <viewmodel/ggviewscene.h>
 #include <viewmodel/ggviewmodel.h>
 #include <viewmodel/ggviewpage.h>
 #include <model/ggeditmodel.h>
@@ -11,6 +12,8 @@
 #include <model/ggscene.h>
 #include <model/ggpage.h>
 #include <ui/dialogs/ggsearchdialog.h>
+#include <ui/gggraphpanel.h>
+#include <view/ggeditorview.h>
 #include <view/ggpageitem.h>
 #include <model/ggmediaresolver.h>
 
@@ -40,11 +43,6 @@ GGMainWindow::GGMainWindow(QWidget *parent) :
     connect(m_ctrl, SIGNAL(connectingDirect(GGPage*,GGConnectionSlot)), this, SLOT(handleConnectDirect(GGPage*,GGConnectionSlot)));
     connect(ui->action_Variables, SIGNAL(triggered(bool)), this, SLOT(showVariables()));
 
-    m_editorScene = new GGEditorScene(m_ctrl, this);
-
-    //m_editorScene->setSceneRect(0,0,800,800);
-    ui->scEditView->setScene(m_editorScene);
-
     // Group Click Mode actions
     m_createActions = new QActionGroup(this);
     m_createActions->addAction(ui->actionS);
@@ -66,9 +64,6 @@ GGMainWindow::GGMainWindow(QWidget *parent) :
     ui->actionRedo->setShortcut(QKeySequence::Redo);
     ui->actionFind->setShortcut(QKeySequence::Find);
 
-    // Always go back to pointer after a scene click
-    connect(m_editorScene, SIGNAL(clickedEmptySpace(QPointF)), this, SLOT(setPointerMode()));
-
     newModel();
 }
 
@@ -88,6 +83,25 @@ GGUIController *GGMainWindow::controller()
     return m_ctrl;
 }
 
+GGGraphPanel *GGMainWindow::currentSceneView()
+{
+    GGGraphPanel *ret = qobject_cast<GGGraphPanel *> (ui->tabScenes->currentWidget());
+    Q_ASSERT(ret || ui->tabScenes->currentWidget() == NULL);
+    return ret;
+}
+
+GGGraphPanel *GGMainWindow::sceneViewForId(GG::SceneID id)
+{
+    for (int i = 0; i < ui->tabScenes->count(); ++i) {
+        GGGraphPanel *p = qobject_cast<GGGraphPanel *> (ui->tabScenes->widget(i));
+        Q_ASSERT(p);
+        if (p->editorScene()->modelScene()->scene()->id() == id) {
+            return p;
+        }
+    }
+    return NULL;
+}
+
 void GGMainWindow::newModel()
 {
     closeModel();
@@ -96,12 +110,13 @@ void GGMainWindow::newModel()
     m_viewModel = new GGViewModel(em);
     m_ctrl->setModel(m_viewModel);
 
+    connect(em, SIGNAL(sceneRegistered(GGScene*)), this, SLOT(openSceneView(GGScene*)));
+    connect(em, SIGNAL(sceneUnregistered(GG::SceneID,GGScene*)), this, SLOT(closeSceneView(GG::SceneID)));
+
     // TODO: As Command???? => No, must always be there, cannot be undone
     GGScene *defaultScene = new GGScene;
+    defaultScene->setName("Default");
     em->registerNewScene(defaultScene);
-    m_ctrl->setModelScene(defaultScene);
-
-    ui->scEditView->setEnabled(true);
 }
 
 void GGMainWindow::closeModel()
@@ -113,14 +128,42 @@ void GGMainWindow::closeModel()
     }
     m_viewModel = NULL;
     ui->stkDetailEdits->setCurrentWidget(ui->pageEmpty);
-    ui->scEditView->setEnabled(false);
+
+    while (ui->tabScenes->count() > 0)
+        ui->tabScenes->removeTab(0);
+}
+
+void GGMainWindow::openSceneView(GGScene *scene)
+{
+    GGGraphPanel *p = sceneViewForId(scene->id());
+    if (!p) {
+        GGViewScene *vsc = m_viewModel->getViewSceneForScene(scene);
+        Q_ASSERT(vsc);
+        p = new GGGraphPanel(m_ctrl, vsc);
+
+        // Always go back to pointer after a scene click
+        connect(p->editorScene(), SIGNAL(clickedEmptySpace(GGViewScene*,QPointF)), this, SLOT(setPointerMode()));
+
+        ui->tabScenes->addTab(p, scene->name());
+    }
+}
+
+void GGMainWindow::closeSceneView(GG::SceneID id)
+{
+    GGGraphPanel *p = sceneViewForId(id);
+    if (p) {
+        ui->tabScenes->removeTab(ui->tabScenes->indexOf(p));
+    }
 }
 
 void GGMainWindow::highlightPage(GG::PageID id)
 {
-    GGViewPage *vp = m_viewModel->getViewPageForPage(m_viewModel->editModel()->getPage(id), m_editorScene->modelScene()->id());
-    m_editorScene->setSelection(QSet<GGViewPage*> () << vp, QSet<GGViewConnection*> ());
-    ui->scEditView->ensureVisible(vp->bounds());
+    GGPage *p = m_viewModel->editModel()->getPage(id);
+    GGViewPage *vp = m_viewModel->getViewPageForPage(p, p->sceneId());
+    GGScene *sc = m_viewModel->editModel()->getScene(p->sceneId());
+    openSceneView(sc);
+    currentSceneView()->editorScene()->setSelection(QSet<GGViewPage*> () << vp, QSet<GGViewConnection*> ());
+    currentSceneView()->editorView()->ensureVisible(vp->bounds());
     selectPage(vp);
 }
 
@@ -175,10 +218,10 @@ void GGMainWindow::showSearchDialog(bool reset)
 void GGMainWindow::setClickMode(QAction *act)
 {
     if (act == ui->actionP) {
-        ui->scEditView->setDragMode(QGraphicsView::RubberBandDrag);
+        currentSceneView()->editorView()->setDragMode(QGraphicsView::RubberBandDrag);
     } else {
-        ui->scEditView->setDragMode(QGraphicsView::NoDrag);
-        m_editorScene->clearSelection();
+        currentSceneView()->editorView()->setDragMode(QGraphicsView::NoDrag);
+        currentSceneView()->editorScene()->clearSelection();
     }
 
     bool ok;
@@ -210,7 +253,7 @@ void GGMainWindow::handleAction(QAction *act)
         return;
     }
     if (act == ui->actionDelete) {
-        m_editorScene->deleteCurrentSelection();
+        currentSceneView()->editorScene()->deleteCurrentSelection();
     }
     if (act == ui->actionFind) {
         showSearchDialog(false);
@@ -246,4 +289,19 @@ void GGMainWindow::showVariables()
     GGVariableEditDialog dlg;
     dlg.setModel(m_ctrl->model()->editModel());
     dlg.exec();
+}
+
+void GGMainWindow::closeTab(int idx)
+{
+    ui->tabScenes->removeTab(idx);
+}
+
+void GGMainWindow::changeTab(int idx)
+{
+    if (idx < 0) return;
+    GGGraphPanel *p = qobject_cast<GGGraphPanel *> (ui->tabScenes->widget(idx));
+    if (p)
+        p->editorScene()->clearSelection();
+    if (m_ctrl->creationMode() != GGUIController::CreateConnectionDirect)
+        setPointerMode();
 }

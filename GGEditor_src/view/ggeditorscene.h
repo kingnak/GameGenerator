@@ -10,6 +10,7 @@
 class GGUIController;
 class GGScene;
 class GGViewModel;
+class GGViewScene;
 class GGViewPage;
 class GGViewConnection;
 class GGPageItem;
@@ -26,7 +27,7 @@ public:
     GGPageItem *itemForPage(GGViewPage *page);
 
     GGViewModel *model() { return m_model; }
-    GGScene *modelScene();
+    GGViewScene *modelScene();
 
     qreal pageBorderWidth() const { return 3; }
     QColor pageColor() const { return Qt::black; }
@@ -42,7 +43,7 @@ public:
     static const int CONNECTION_ZVALUE = 0;
 
 public slots:
-    void resetModel(GGViewModel *model);
+    void resetModel(GGViewModel *model, GGViewScene *scene);
     void refresh();
     void setSelection(QSet<GGViewPage *> pages, QSet<GGViewConnection *> conns);
     void deleteCurrentSelection();
@@ -53,7 +54,7 @@ signals:
     void multipleObjectsDeleted(QSet<GGViewPage *> pages, QSet<GGViewConnection *> connections);
 
     void itemsSelected(QSet<GGViewPage*> pages, QSet<GGViewConnection*> conns);
-    void clickedEmptySpace(QPointF pos);
+    void clickedEmptySpace(GGViewScene *scene, QPointF pos);
 
     void connectPages(GGViewPage *source, GGViewPage *destination);
 
@@ -63,6 +64,7 @@ protected:
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
 
 private slots:
+
     void pageReg(GGViewPage *p);
     void pageUnreg(GGViewPage *p);
     void connReg(GGViewConnection *c);
@@ -79,6 +81,7 @@ private:
 
 private:
     GGViewModel *m_model;
+    GGViewScene *m_modelScene;
     GGSelectionItem *m_selItem;
     GGUIController *m_ctrl;
     QGraphicsLineItem *m_connectorLine;
