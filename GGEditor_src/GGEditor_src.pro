@@ -55,7 +55,8 @@ SOURCES += \
     ui/basic/gghtmlitemdelegate.cpp \
     ui/components/ggconditioneditorwidget.cpp \
     ui/basic/ggstringlistvalidator.cpp \
-    ui/gggraphpanel.cpp
+    ui/gggraphpanel.cpp \
+    view/ggscenetreemodel.cpp
 
 HEADERS += \
     model/ggeditmodel.h \
@@ -106,7 +107,8 @@ HEADERS += \
     ui/components/ggconditioneditorwidget.h \
     ui/basic/ggstringlistvalidator.h \
     viewmodel/ggviewscene.h \
-    ui/gggraphpanel.h
+    ui/gggraphpanel.h \
+    view/ggscenetreemodel.h
 unix {
     target.path = /usr/lib
     INSTALLS += target

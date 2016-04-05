@@ -18,6 +18,7 @@ class GGConnectionSlot;
 class GGSearchDialog;
 class GGSearchRequest;
 class GGGraphPanel;
+class GGSceneTreeModel;
 
 namespace Ui {
 class GGMainWindow;
@@ -70,7 +71,7 @@ private:
     GGViewModel *m_viewModel;
     QActionGroup *m_createActions;
     GGSearchDialog *m_searchDlg;
-
+    GGSceneTreeModel *m_sceneTree;
 };
 
 #endif // GGMAINWINDOW_H

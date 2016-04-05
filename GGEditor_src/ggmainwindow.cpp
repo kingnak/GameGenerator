@@ -16,6 +16,7 @@
 #include <view/ggeditorview.h>
 #include <view/ggpageitem.h>
 #include <model/ggmediaresolver.h>
+#include <view/ggscenetreemodel.h>
 
 GGMainWindow::GGMainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -64,6 +65,9 @@ GGMainWindow::GGMainWindow(QWidget *parent) :
     ui->actionRedo->setShortcut(QKeySequence::Redo);
     ui->actionFind->setShortcut(QKeySequence::Find);
 
+    m_sceneTree = new GGSceneTreeModel(this);
+    ui->treScenes->setModel(m_sceneTree);
+
     newModel();
 }
 
@@ -109,6 +113,7 @@ void GGMainWindow::newModel()
 
     m_viewModel = new GGViewModel(em);
     m_ctrl->setModel(m_viewModel);
+    m_sceneTree->setModel(em);
 
     connect(em, SIGNAL(sceneRegistered(GGScene*)), this, SLOT(openSceneView(GGScene*)));
     connect(em, SIGNAL(sceneUnregistered(GG::SceneID,GGScene*)), this, SLOT(closeSceneView(GG::SceneID)));
