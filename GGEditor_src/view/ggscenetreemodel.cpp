@@ -21,7 +21,7 @@ public:
         if (col == 0) {
             if (role == Qt::DisplayRole) {
                 return m_scene->name();
-            } else if (role == Qt::UserRole) {
+            } else if (role == GGSceneTreeModel::SceneIdRole) {
                 return m_scene->id();
             }
         }

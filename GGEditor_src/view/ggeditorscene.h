@@ -30,11 +30,15 @@ public:
     GGViewScene *modelScene();
 
     qreal pageBorderWidth() const { return 3; }
-    QColor pageColor() const { return Qt::black; }
+    QColor defaultPageColor() const { return Qt::black; }
+    QColor foreignPageColor() const { return Qt::gray; }
+    QColor pageColor(GGViewPage *page) const;
     QColor pageFillColor() const { return Qt::white; }
     QColor pageHighlightColor() const { return Qt::blue; }
     qreal connectionWidth() const { return 5; }
-    QColor connectionColor() const { return Qt::black; }
+    QColor defaultConnectionColor() const { return Qt::black; }
+    QColor foreignConnectionColor() const { return Qt::gray; }
+    QColor connectionColor(GGViewConnection *conn) const;
     QColor connectionHighlightColor() const { return Qt::blue; }
 
 public:

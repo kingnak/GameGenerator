@@ -83,14 +83,14 @@ void GGEditor_ViewCommandTest::testCreateViewConnection()
     QVERIFY2(m_em->getConnections().size() == 1, "Connection not set in model");
     GGConnection *c = m_em->getConnections()[0];
     QVERIFY2(GG::as<GGStartPage>(s->page())->startConnection() == c, "Connection not set in page");
-    QVERIFY2(m_vm->getViewConectionForConnection(c, m_s->id()) != NULL, "Cannot get ViewConnection for Connection");
-    GGViewConnection *vc = m_vm->getViewConectionForConnection(c, m_s->id());
+    QVERIFY2(m_vm->getViewConnectionForConnection(c, m_s->id()) != NULL, "Cannot get ViewConnection for Connection");
+    GGViewConnection *vc = m_vm->getViewConnectionForConnection(c, m_s->id());
     QVERIFY2(vc->connection() == c, "Connection not set in ViewConnection");
 
     QVERIFY2(m_stk->undo(), "Cannot undo create connection");
     VERIFYVSIG(m_vmsc, "Undo Create View Connection", 0,0, 0, 0, 0, 1, 1, 0);
     QVERIFY2(m_em->getConnections().isEmpty(), "Connection not removed");
-    QVERIFY2(m_vm->getViewConectionForConnection(c, m_s->id()) == NULL, "Can still get viewconnection for Connetion after undo");
+    QVERIFY2(m_vm->getViewConnectionForConnection(c, m_s->id()) == NULL, "Can still get viewconnection for Connetion after undo");
 
     QVERIFY2(m_stk->redo(), "Cannot redo create connection");
     VERIFYVSIG(m_vmsc, "Redo Create Connection", 0,0, 0, 0, 1, 0, 1, 0);
@@ -111,8 +111,8 @@ void GGEditor_ViewCommandTest::testDeleteViewPage()
     QVERIFY(m_stk->execute(m_vf->createConnection(d, e, GGConnectionSlot::TrueConnection)));
     VERIFYVSIG(m_vmsc, "Create connections", 0,0, 0, 0, 2, 0, 2, 0);
 
-    GGViewConnection *c1 = m_vm->getViewConectionForConnection(m_em->getConnections()[0], m_s->id());
-    GGViewConnection *c2 = m_vm->getViewConectionForConnection(m_em->getConnections()[1], m_s->id());
+    GGViewConnection *c1 = m_vm->getViewConnectionForConnection(m_em->getConnections()[0], m_s->id());
+    GGViewConnection *c2 = m_vm->getViewConnectionForConnection(m_em->getConnections()[1], m_s->id());
 
     QVERIFY2(m_stk->execute(m_vf->deletePage(d)), "Cannot delete Page");
     VERIFYVSIG(m_vmsc, "Delete page", 0,0, 0, 1, 0, 2, 1, 0);
@@ -120,8 +120,8 @@ void GGEditor_ViewCommandTest::testDeleteViewPage()
 
     QVERIFY2(m_stk->undo(), "Cannot undo delete page");
     VERIFYVSIG(m_vmsc, "Undo delete page", 0,0, 1, 0, 2, 0, 2, 0);
-    QVERIFY2(m_vm->getViewConectionForConnection(m_em->getConnections()[0], m_s->id()) == c1, "View Connection changed after undo delete page");
-    QVERIFY2(m_vm->getViewConectionForConnection(m_em->getConnections()[1], m_s->id()) == c2, "View Connection changed after undo delete page");
+    QVERIFY2(m_vm->getViewConnectionForConnection(m_em->getConnections()[0], m_s->id()) == c1, "View Connection changed after undo delete page");
+    QVERIFY2(m_vm->getViewConnectionForConnection(m_em->getConnections()[1], m_s->id()) == c2, "View Connection changed after undo delete page");
 
     QVERIFY2(m_stk->redo(), "Cannot redo delete page");
     VERIFYVSIG(m_vmsc, "Redo Delete page", 0,0, 0, 1, 0, 2, 1, 0);
@@ -225,16 +225,16 @@ void GGEditor_ViewCommandTest::testViewScenePages()
     // Create cross-scene connection
     QVERIFY(m_stk->execute(m_vf->createConnection(m_vm->getViewPageForPage(s1p1, m_s->id()), m_vm->getViewPageForPage(s2p1, sc2->id()), GGConnectionSlot::TrueConnection)));
     GGConnection *c1 = s1p1->trueConnection();
-    QVERIFY2(m_vm->getViewConectionForConnection(c1, m_s->id()), "Connection not in source scene");
-    QVERIFY2(m_vm->getViewConectionForConnection(c1, sc2->id()), "Connection not in dest scene");
+    QVERIFY2(m_vm->getViewConnectionForConnection(c1, m_s->id()), "Connection not in source scene");
+    QVERIFY2(m_vm->getViewConnectionForConnection(c1, sc2->id()), "Connection not in dest scene");
     QVERIFY2(m_vm->getViewPageForPage(s1p1, sc2->id()), "Source page not in dest scene");
     QVERIFY2(m_vm->getViewPageForPage(s2p1, m_s->id()), "Destination page not in source scene");
     // As page updates are done for EVERY view page, we get 2 changes!
     VERIFYVSIG(m_vmsc, "Create cross-scene connection", 0,0, 2,0, 2,0, 2,0);
 
     QVERIFY(m_stk->undo());
-    QVERIFY2(m_vm->getViewConectionForConnection(c1, m_s->id()) == NULL, "Connection still in source scene after removing connection");
-    QVERIFY2(m_vm->getViewConectionForConnection(c1, sc2->id()) == NULL, "Connection still in dest scene after removing connection");
+    QVERIFY2(m_vm->getViewConnectionForConnection(c1, m_s->id()) == NULL, "Connection still in source scene after removing connection");
+    QVERIFY2(m_vm->getViewConnectionForConnection(c1, sc2->id()) == NULL, "Connection still in dest scene after removing connection");
     QVERIFY2(m_vm->getViewPageForPage(s2p1, m_s->id()) == NULL, "Dest page still in source scene after removing connection");
     QVERIFY2(m_vm->getViewPageForPage(s1p1, sc2->id()) == NULL, "Source page still in dest scene after removing connection");
     // As page updates are done for EVERY view page and are done before removing the view page, we get 2 changes!
@@ -248,16 +248,16 @@ void GGEditor_ViewCommandTest::testViewScenePages()
     // Create 2nd cross-scene connection
     QVERIFY(m_stk->execute(m_vf->createConnection(m_vm->getViewPageForPage(s1p1, m_s->id()), m_vm->getViewPageForPage(s2p2, sc2->id()), GGConnectionSlot::FalseConnection)));
     GGConnection *c2 = s1p1->falseConnection();
-    QVERIFY2(m_vm->getViewConectionForConnection(c2, m_s->id()), "Connection not in source scene");
-    QVERIFY2(m_vm->getViewConectionForConnection(c2, sc2->id()), "Connection not in dest scene");
+    QVERIFY2(m_vm->getViewConnectionForConnection(c2, m_s->id()), "Connection not in source scene");
+    QVERIFY2(m_vm->getViewConnectionForConnection(c2, sc2->id()), "Connection not in dest scene");
     QVERIFY2(m_vm->getViewPageForPage(s1p1, sc2->id()), "Source page not in dest scene");
     QVERIFY2(m_vm->getViewPageForPage(s2p1, m_s->id()), "Destination page not in source scene");
     // As page updates are done for EVERY view page, we get 2 changes!
     VERIFYVSIG(m_vmsc, "Create cross-scene connection", 0,0, 1,0, 2,0, 2,0);
 
     QVERIFY(m_stk->undo());
-    QVERIFY2(m_vm->getViewConectionForConnection(c2, m_s->id()) == NULL, "Connection still in source scene after removing connection");
-    QVERIFY2(m_vm->getViewConectionForConnection(c2, sc2->id()) == NULL, "Connection still in dest scene after removing connection");
+    QVERIFY2(m_vm->getViewConnectionForConnection(c2, m_s->id()) == NULL, "Connection still in source scene after removing connection");
+    QVERIFY2(m_vm->getViewConnectionForConnection(c2, sc2->id()) == NULL, "Connection still in dest scene after removing connection");
     QVERIFY2(m_vm->getViewPageForPage(s1p1, sc2->id()), "Source page no longer in dest scene after removing 2nd connection");
     QVERIFY2(m_vm->getViewPageForPage(s2p2, m_s->id()) == NULL, "Destination page still in source scene");
     // As page updates are done for EVERY view page, we get 2 changes!

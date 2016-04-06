@@ -105,8 +105,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>100</width>
-               <height>30</height>
+               <width>65</width>
+               <height>16</height>
               </rect>
              </property>
             </widget>
@@ -477,8 +477,8 @@
    <slot>closeTab(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>115</x>
-     <y>100</y>
+     <x>648</x>
+     <y>164</y>
     </hint>
     <hint type="destinationlabel">
      <x>332</x>
@@ -493,12 +493,28 @@
    <slot>changeTab(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>348</x>
-     <y>166</y>
+     <x>709</x>
+     <y>230</y>
     </hint>
     <hint type="destinationlabel">
      <x>400</x>
      <y>-12</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>treScenes</sender>
+   <signal>activated(QModelIndex)</signal>
+   <receiver>GGMainWindow</receiver>
+   <slot>sceneTreeActivated(QModelIndex)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>350</x>
+     <y>339</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>287</x>
+     <y>-16</y>
     </hint>
    </hints>
   </connection>
@@ -508,5 +524,6 @@
   <slot>handleAction(QAction*)</slot>
   <slot>closeTab(int)</slot>
   <slot>changeTab(int)</slot>
+  <slot>sceneTreeActivated(QModelIndex)</slot>
  </slots>
 </ui>

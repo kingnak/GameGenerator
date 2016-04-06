@@ -93,7 +93,7 @@ GGCreateViewConnectionCmd::GGCreateViewConnectionCmd(GGViewModel *model, const G
 GGViewConnection *GGCreateViewConnectionCmd::createdConnection()
 {
     if (state() == Executed) {
-        return m_model->getViewConectionForConnection(this->getInnerCommand()->newConnection(), this->getInnerCommand()->newConnection()->source()->sceneId());
+        return m_model->getViewConnectionForConnection(this->getInnerCommand()->newConnection(), this->getInnerCommand()->newConnection()->source()->sceneId());
     }
     return NULL;
 }

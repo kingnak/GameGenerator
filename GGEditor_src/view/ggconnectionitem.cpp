@@ -53,7 +53,7 @@ void GGConnectionItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
 
     // Draw actual line
     QLineF line(mapFromItem(m_source, 0, 0), mapFromItem(m_dest, 0, 0));
-    painter->setPen(QPen(editScene()->connectionColor(), editScene()->connectionWidth()));
+    painter->setPen(QPen(editScene()->connectionColor(m_conn), editScene()->connectionWidth()));
     painter->drawLine(line);
 
     if (isSelected()) {
@@ -94,7 +94,7 @@ void GGConnectionItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
     QPolygonF head = QPolygonF(QVector<QPointF>() << a1 << a2 << a3 << a4);
     QPainterPath headPath;
     headPath.addPolygon(head);
-    painter->fillPath(headPath, editScene()->connectionColor());
+    painter->fillPath(headPath, editScene()->connectionColor(m_conn));
     m_head = headPath;
 }
 

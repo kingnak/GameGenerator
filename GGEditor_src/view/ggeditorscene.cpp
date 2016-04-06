@@ -57,6 +57,24 @@ GGViewScene *GGEditorScene::modelScene()
     return m_modelScene;
 }
 
+QColor GGEditorScene::pageColor(GGViewPage *page) const
+{
+    if (page->page()->sceneId() == m_modelScene->scene()->id()) {
+        return defaultPageColor();
+    } else {
+        return foreignPageColor();
+    }
+}
+
+QColor GGEditorScene::connectionColor(GGViewConnection *conn) const
+{
+    if (conn->connection()->source()->sceneId() == m_modelScene->scene()->id()) {
+        return defaultConnectionColor();
+    } else {
+        return foreignConnectionColor();
+    }
+}
+
 void GGEditorScene::resetModel(GGViewModel *model, GGViewScene *scene)
 {
     if (m_model) {
@@ -89,19 +107,11 @@ void GGEditorScene::refresh()
     initSelItem();
     // Populate with items
     if (m_model) {
-        foreach (GGPage *p, m_model->editModel()->getPages()) {
-            if (GGViewPage *vp = m_model->getViewPageForPage(p, m_modelScene->scene()->id())) {
-                pageReg(vp);
-            } else {
-                qCritical("No ViewPage for Page");
-            }
+        foreach (GGViewPage *vp, m_model->getViewPagesInScene(m_modelScene->scene())) {
+            pageReg(vp);
         }
-        foreach (GGConnection *c, m_model->editModel()->getConnections()) {
-            if (GGViewConnection *vc = m_model->getViewConectionForConnection(c, m_modelScene->scene()->id())) {
-                connReg(vc);
-            } else {
-                qCritical("No ViewConnection for Connection");
-            }
+        foreach (GGViewConnection *vc, m_model->getViewConnectionsInScene(m_modelScene->scene())) {
+            connReg(vc);
         }
     }
 }
@@ -235,6 +245,9 @@ void GGEditorScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 
 void GGEditorScene::pageReg(GGViewPage *p)
 {
+    if (p->viewSceneId() != m_modelScene->scene()->id())
+        return;
+
     GGPageItem *item = new GGPageItem(p);
     item->setZValue(PAGE_ZVALUE);
     m_pageMap[p] = item;
@@ -267,6 +280,9 @@ void GGEditorScene::pageUnreg(GGViewPage *p)
 
 void GGEditorScene::connReg(GGViewConnection *c)
 {
+    if (c->viewSceneId() != m_modelScene->scene()->id())
+        return;
+
     GGConnectionItem *item = new GGConnectionItem(c);
     item->setZValue(CONNECTION_ZVALUE);
     m_connMap[c] = item;

@@ -52,7 +52,7 @@ GGViewPage *GGViewModel::getViewPageForPage(GGPage *page, GG::SceneID scene)
     return m_pageMap.value(scene).value(page->id());
 }
 
-GGViewConnection *GGViewModel::getViewConectionForConnection(GGConnection *conn, GG::SceneID scene)
+GGViewConnection *GGViewModel::getViewConnectionForConnection(GGConnection *conn, GG::SceneID scene)
 {
     if (!m_connectionMap.contains(scene)) {
         qWarning("Requesting ViewConnection from unknown ViewScene");
@@ -61,6 +61,16 @@ GGViewConnection *GGViewModel::getViewConectionForConnection(GGConnection *conn,
     }
 
     return m_connectionMap.value(scene).value(conn->id());
+}
+
+QList<GGViewPage *> GGViewModel::getViewPagesInScene(GGScene *scene)
+{
+    return m_pageMap.value(scene->id()).values();
+}
+
+QList<GGViewConnection *> GGViewModel::getViewConnectionsInScene(GGScene *scene)
+{
+    return m_connectionMap.value(scene->id()).values();
 }
 
 //bool GGViewModel::registerPage(GGViewPage *page)
@@ -146,15 +156,17 @@ void GGViewModel::unregPage(GG::PageID id, GGPage *page)
 void GGViewModel::regConn(GGConnection *conn)
 {
     // Check for source and dest scene!
-    doRegConn(conn, conn->source()->sceneId());
     if (conn->source()->sceneId() != conn->destination()->sceneId()) {
-        doRegConn(conn, conn->destination()->sceneId());
-
         // Register pages in foreign scenes, if not present yet
         if (!m_pageMap.value(conn->destination()->sceneId()).contains(conn->sourceId()))
             doRegPage(conn->source(), conn->destination()->sceneId());
         if (!m_pageMap.value(conn->source()->sceneId()).contains(conn->destinationId()))
             doRegPage(conn->destination(), conn->source()->sceneId());
+
+        doRegConn(conn, conn->source()->sceneId());
+        doRegConn(conn, conn->destination()->sceneId());
+    } else {
+        doRegConn(conn, conn->source()->sceneId());
     }
 }
 

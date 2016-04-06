@@ -24,7 +24,10 @@ public:
 
     GGViewScene *getViewSceneForScene(GGScene *scene);
     GGViewPage *getViewPageForPage(GGPage *page, GG::SceneID scene);
-    GGViewConnection *getViewConectionForConnection(GGConnection *conn, GG::SceneID scene);
+    GGViewConnection *getViewConnectionForConnection(GGConnection *conn, GG::SceneID scene);
+
+    QList<GGViewPage *> getViewPagesInScene(GGScene *scene);
+    QList<GGViewConnection *> getViewConnectionsInScene(GGScene *scene);
 
 //    bool registerPage(GGViewPage *page);
 

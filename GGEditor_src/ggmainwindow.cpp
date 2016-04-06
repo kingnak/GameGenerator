@@ -122,6 +122,10 @@ void GGMainWindow::newModel()
     GGScene *defaultScene = new GGScene;
     defaultScene->setName("Default");
     em->registerNewScene(defaultScene);
+
+    defaultScene = new GGScene;
+    defaultScene->setName("Default2");
+    em->registerNewScene(defaultScene);
 }
 
 void GGMainWindow::closeModel()
@@ -151,6 +155,7 @@ void GGMainWindow::openSceneView(GGScene *scene)
 
         ui->tabScenes->addTab(p, scene->name());
     }
+    ui->tabScenes->setCurrentWidget(p);
 }
 
 void GGMainWindow::closeSceneView(GG::SceneID id)
@@ -175,8 +180,12 @@ void GGMainWindow::highlightPage(GG::PageID id)
 void GGMainWindow::selectPage(GGViewPage *page)
 {
     setPointerMode();
-    ui->wgtPageContent->displayPage(page->page());
-    ui->stkDetailEdits->setCurrentWidget(ui->pagePage);
+    if (page->page()->sceneId() == currentSceneView()->editorScene()->modelScene()->scene()->id()) {
+        ui->wgtPageContent->displayPage(page->page());
+        ui->stkDetailEdits->setCurrentWidget(ui->pagePage);
+    } else {
+        ui->stkDetailEdits->setCurrentWidget(ui->pageEmpty);
+    }
 }
 
 void GGMainWindow::selectConnection(GGViewConnection *conn)
@@ -309,4 +318,11 @@ void GGMainWindow::changeTab(int idx)
         p->editorScene()->clearSelection();
     if (m_ctrl->creationMode() != GGUIController::CreateConnectionDirect)
         setPointerMode();
+}
+
+void GGMainWindow::sceneTreeActivated(const QModelIndex &idx)
+{
+    GG::SceneID id = static_cast<GG::SceneID> (m_sceneTree->data(idx, GGSceneTreeModel::SceneIdRole).toInt());
+    GGScene *sc = m_viewModel->editModel()->getScene(id);
+    openSceneView(sc);
 }

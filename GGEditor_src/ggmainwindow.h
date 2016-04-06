@@ -64,6 +64,7 @@ private slots:
     void showVariables();
     void closeTab(int idx);
     void changeTab(int idx);
+    void sceneTreeActivated(const QModelIndex &idx);
 
 private:
     Ui::GGMainWindow *ui;
