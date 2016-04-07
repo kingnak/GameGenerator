@@ -5,7 +5,9 @@
 #include <QAbstractListModel>
 #include <QStringList>
 
+class GGCommandStack;
 class GGEditModel;
+class GGSearchRequest;
 
 namespace Ui {
 class GGVariableEditDialog;
@@ -30,12 +32,15 @@ public:
 
     GGEditModel *dataModel() { return m_model; }
 
+    GGCommandStack *getCommandStack() { return m_stack; }
+
 private slots:
     void reloadData();
 
 private:
     GGEditModel *m_model;
     QStringList m_sortedList;
+    GGCommandStack *m_stack;
 };
 
 ////////////////////////////
@@ -49,6 +54,10 @@ public:
     ~GGVariableEditDialog();
 
     void setModel(GGEditModel *model);
+    GGCommandStack *getExecutedCommands();
+
+signals:
+    void showUsages(const GGSearchRequest &request);
 
 private slots:
     void on_btnAdd_clicked();

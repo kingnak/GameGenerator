@@ -2,6 +2,7 @@
 #include "ui_ggvariableeditdialog.h"
 #include <QPushButton>
 #include <model/ggeditmodel.h>
+#include <command/ggcommandstack.h>
 #include <command/ggeditcommandfactory.h>
 #include <command/ggmodelgeneralcommands.h>
 
@@ -9,6 +10,7 @@ GGVariableEditModel::GGVariableEditModel(GGEditModel *model, QWidget *parent)
     : QAbstractListModel(parent),
       m_model(model)
 {
+    m_stack = new GGCommandStack;
     connect(m_model, SIGNAL(variablesUpdated()), this, SLOT(reloadData()));
     reloadData();
 }
@@ -78,19 +80,19 @@ bool GGVariableEditModel::setData(const QModelIndex &index, const QVariant &valu
     case 2: if (role == Qt::CheckStateRole) v.setType(value.toInt() == Qt::Checked ? GGVariable::Persistent : GGVariable::Transient); break;
     }
 
-    return GGAbstractCommandFactory::oneShotCommand(GGEditCommandFactory(m_model).updateVariable(m_sortedList[index.row()], v));
+    return m_stack->execute(GGEditCommandFactory(m_model).updateVariable(m_sortedList[index.row()], v));
 }
 
 void GGVariableEditModel::addVariable()
 {
     QString name = tr("var_%1").arg(m_model->variables().size()+1);
-    GGAbstractCommandFactory::oneShotCommand(GGEditCommandFactory(m_model).addVariable(name));
+    m_stack->execute(GGEditCommandFactory(m_model).addVariable(name));
 }
 
 void GGVariableEditModel::removeVariable(int idx)
 {
     if (idx < 0 || idx >= m_sortedList.size()) return;
-    GGAbstractCommandFactory::oneShotCommand(GGEditCommandFactory(m_model).removeVariable(m_sortedList[idx]));
+    m_stack->execute(GGEditCommandFactory(m_model).removeVariable(m_sortedList[idx]));
 }
 
 void GGVariableEditModel::reloadData()
@@ -123,6 +125,11 @@ void GGVariableEditDialog::setModel(GGEditModel *model)
     setButtons();
 }
 
+GGCommandStack *GGVariableEditDialog::getExecutedCommands()
+{
+    return static_cast<GGVariableEditModel*> (ui->lstVariables->model())->getCommandStack();
+}
+
 void GGVariableEditDialog::on_btnAdd_clicked()
 {
     static_cast<GGVariableEditModel *> (ui->lstVariables->model())->addVariable();
@@ -149,6 +156,6 @@ void GGVariableEditDialog::showVarUsage()
     QString varName = ui->lstVariables->model()->data(ui->lstVariables->model()->index(idx, 0)).toString();
 
     GGSearchRequest req(varName, GGSearchRequest::CaseSensitive | GGSearchRequest::Exact, GGSearchRequest::Variable);
-    GGSearchResult res = static_cast<GGVariableEditModel*> (ui->lstVariables->model())->dataModel()->search(req);
+    emit showUsages(req);
 }
 

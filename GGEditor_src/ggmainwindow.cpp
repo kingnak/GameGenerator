@@ -302,7 +302,9 @@ void GGMainWindow::showVariables()
 {
     GGVariableEditDialog dlg;
     dlg.setModel(m_ctrl->model()->editModel());
+    connect(&dlg, SIGNAL(showUsages(GGSearchRequest)), this, SLOT(executeSearch(GGSearchRequest)));
     dlg.exec();
+    m_ctrl->applySubcommandsAsGroup(dlg.getExecutedCommands());
 }
 
 void GGMainWindow::closeTab(int idx)
