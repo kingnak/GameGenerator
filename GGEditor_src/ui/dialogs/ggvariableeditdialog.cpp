@@ -8,7 +8,9 @@
 
 GGVariableEditModel::GGVariableEditModel(GGEditModel *model, QWidget *parent)
     : QAbstractListModel(parent),
-      m_model(model)
+      m_model(model),
+      m_renameOk(false),
+      m_deleteOk(false)
 {
     m_stack = new GGCommandStack;
     connect(m_model, SIGNAL(variablesUpdated()), this, SLOT(reloadData()));
@@ -74,10 +76,21 @@ bool GGVariableEditModel::setData(const QModelIndex &index, const QVariant &valu
     //if (role != Qt::EditRole) return false;
 
     GGVariable v = m_model->variableByName(m_sortedList[index.row()]);
+    QString oldName = v.name();
+    bool isRename = false;
+
     switch (index.column()) {
-    case 0: if (role == Qt::EditRole) v.setName(value.toString()); break;
+    case 0: if (role == Qt::EditRole) { v.setName(value.toString()); isRename = true; } break;
     case 1: if (role == Qt::EditRole) v.setInitValue(value.toString()); break;
     case 2: if (role == Qt::CheckStateRole) v.setType(value.toInt() == Qt::Checked ? GGVariable::Persistent : GGVariable::Transient); break;
+    }
+
+    if (isRename) {
+        m_renameOk = false;
+        emit checkRenameVar(oldName, v.name());
+        if (!m_renameOk) {
+            return false;
+        }
     }
 
     return m_stack->execute(GGEditCommandFactory(m_model).updateVariable(m_sortedList[index.row()], v));
@@ -92,7 +105,22 @@ void GGVariableEditModel::addVariable()
 void GGVariableEditModel::removeVariable(int idx)
 {
     if (idx < 0 || idx >= m_sortedList.size()) return;
-    m_stack->execute(GGEditCommandFactory(m_model).removeVariable(m_sortedList[idx]));
+    GGVariable v = m_sortedList[idx];
+    m_deleteOk = false;
+    emit checkDeleteVar(v.name());
+    if (m_deleteOk) {
+        m_stack->execute(GGEditCommandFactory(m_model).removeVariable(v.name()));
+    }
+}
+
+void GGVariableEditModel::renameIsOk()
+{
+    m_renameOk = true;
+}
+
+void GGVariableEditModel::deleteIsOk()
+{
+    m_deleteOk = true;
 }
 
 void GGVariableEditModel::reloadData()
@@ -119,9 +147,12 @@ GGVariableEditDialog::~GGVariableEditDialog()
 
 void GGVariableEditDialog::setModel(GGEditModel *model)
 {
-    ui->lstVariables->setModel(new GGVariableEditModel(model, this));
-    connect(ui->lstVariables->model(), SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(setButtons()));
-    connect(ui->lstVariables->model(), SIGNAL(modelReset()), this, SLOT(setButtons()));
+    GGVariableEditModel *vm = new GGVariableEditModel(model, this);
+    ui->lstVariables->setModel(vm);
+    connect(vm, SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(setButtons()));
+    connect(vm, SIGNAL(modelReset()), this, SLOT(setButtons()));
+    connect(vm, SIGNAL(checkDeleteVar(QString)), this, SLOT(checkDelete(QString)));
+    connect(vm, SIGNAL(checkRenameVar(QString,QString)), this, SLOT(checkRename(QString,QString)));
     setButtons();
 }
 
@@ -157,5 +188,15 @@ void GGVariableEditDialog::showVarUsage()
 
     GGSearchRequest req(varName, GGSearchRequest::CaseSensitive | GGSearchRequest::Exact, GGSearchRequest::Variable);
     emit showUsages(req);
+}
+
+void GGVariableEditDialog::checkRename(const QString &oldName, const QString &newName)
+{
+    static_cast<GGVariableEditModel *> (ui->lstVariables->model())->renameIsOk();
+}
+
+void GGVariableEditDialog::checkDelete(const QString &name)
+{
+    static_cast<GGVariableEditModel *> (ui->lstVariables->model())->deleteIsOk();
 }
 

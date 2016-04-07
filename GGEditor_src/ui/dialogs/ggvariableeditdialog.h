@@ -34,6 +34,14 @@ public:
 
     GGCommandStack *getCommandStack() { return m_stack; }
 
+public slots:
+    void renameIsOk();
+    void deleteIsOk();
+
+signals:
+    void checkRenameVar(const QString &oldName, const QString &newName);
+    void checkDeleteVar(const QString &name);
+
 private slots:
     void reloadData();
 
@@ -41,6 +49,9 @@ private:
     GGEditModel *m_model;
     QStringList m_sortedList;
     GGCommandStack *m_stack;
+
+    bool m_renameOk;
+    bool m_deleteOk;
 };
 
 ////////////////////////////
@@ -64,6 +75,9 @@ private slots:
     void on_btnRemove_clicked();
     void setButtons();
     void showVarUsage();
+
+    void checkRename(const QString &oldName, const QString &newName);
+    void checkDelete(const QString &name);
 
 private:
     Ui::GGVariableEditDialog *ui;
