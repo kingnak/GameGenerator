@@ -80,6 +80,9 @@ private slots:
     void checkDelete(const QString &name);
 
 private:
+    bool askVarChange(const QString &name, const QString &title, const QString &text);
+
+private:
     Ui::GGVariableEditDialog *ui;
 };
 

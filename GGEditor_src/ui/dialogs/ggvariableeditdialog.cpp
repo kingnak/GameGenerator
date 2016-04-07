@@ -1,7 +1,8 @@
 #include "ggvariableeditdialog.h"
 #include "ui_ggvariableeditdialog.h"
-#include <QPushButton>
+#include <QtWidgets>
 #include <model/ggeditmodel.h>
+#include <model/ggpage.h>
 #include <command/ggcommandstack.h>
 #include <command/ggeditcommandfactory.h>
 #include <command/ggmodelgeneralcommands.h>
@@ -192,11 +193,48 @@ void GGVariableEditDialog::showVarUsage()
 
 void GGVariableEditDialog::checkRename(const QString &oldName, const QString &newName)
 {
-    static_cast<GGVariableEditModel *> (ui->lstVariables->model())->renameIsOk();
+    QString text = QString("\"%1\" is used in the following pages. Do you still want to rename it to \"%2\"?").arg(oldName, newName);
+    if (askVarChange(oldName, "Rename variable", text)) {
+        static_cast<GGVariableEditModel *> (ui->lstVariables->model())->renameIsOk();
+    }
 }
 
 void GGVariableEditDialog::checkDelete(const QString &name)
 {
-    static_cast<GGVariableEditModel *> (ui->lstVariables->model())->deleteIsOk();
+    QString text = QString("\"%1\" is used in the following pages. Do you still want to delete it?").arg(name);
+    if (askVarChange(name, "Delete variable", text)) {
+        static_cast<GGVariableEditModel *> (ui->lstVariables->model())->deleteIsOk();
+    }
+}
+
+bool GGVariableEditDialog::askVarChange(const QString &name, const QString &title, const QString &text)
+{
+    GGSearchRequest req(name, GGSearchRequest::CaseSensitive | GGSearchRequest::Exact, GGSearchRequest::Variable);
+    GGEditModel *em = static_cast<GGVariableEditModel*> (ui->lstVariables->model())->dataModel();
+    GGSearchResult res = em->search(req);
+
+    if (res.count() > 0) {
+        QInputDialog dlg(this);
+        QStringList lst;
+
+        foreach (GGSearchResultItem i, res.resultItems()) {
+            QString v;
+            if (em->getPage(i.pageId())->name().isEmpty()) {
+                v = QString("{Page %1}").arg(i.pageId());
+            }
+            v += QString(": %1").arg(i.matchString());
+            lst << v;
+        }
+
+        if (!title.isEmpty()) dlg.setWindowTitle(title);
+        dlg.setLabelText(text);
+        dlg.setOption(QInputDialog::UseListViewForComboBoxItems);
+        dlg.setComboBoxItems(lst);
+        dlg.setTextValue(lst[0]);
+        if (dlg.exec() != QDialog::Accepted) {
+            return false;
+        }
+    }
+    return true;
 }
 
