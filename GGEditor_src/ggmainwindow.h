@@ -55,6 +55,8 @@ public slots:
     void showSearchDialog(bool reset);
     void showSearchDialog();
 
+    void showStartPage();
+
 private slots:
     void showError(QString err);
     void setClickMode(QAction *act);

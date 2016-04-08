@@ -70,7 +70,10 @@ GGMainWindow::GGMainWindow(QWidget *parent) :
     m_sceneTree = new GGSceneTreeModel(this);
     ui->treScenes->setModel(m_sceneTree);
 
-    newProject();
+    ui->stkDetailEdits->setCurrentWidget(ui->pageEmpty);
+
+    // Store tab text of start page
+    ui->tabStart->setWindowTitle(ui->tabScenes->tabText(ui->tabScenes->indexOf(ui->tabStart)));
 }
 
 GGMainWindow::~GGMainWindow()
@@ -92,13 +95,14 @@ GGUIController *GGMainWindow::controller()
 GGGraphPanel *GGMainWindow::currentSceneView()
 {
     GGGraphPanel *ret = qobject_cast<GGGraphPanel *> (ui->tabScenes->currentWidget());
-    Q_ASSERT(ret || ui->tabScenes->currentWidget() == NULL);
+    Q_ASSERT(ret || ui->tabScenes->currentWidget() == NULL || ui->tabScenes->currentWidget() == ui->tabStart);
     return ret;
 }
 
 GGGraphPanel *GGMainWindow::sceneViewForId(GG::SceneID id)
 {
     for (int i = 0; i < ui->tabScenes->count(); ++i) {
+        if (ui->tabScenes->widget(i) == ui->tabStart) continue;
         GGGraphPanel *p = qobject_cast<GGGraphPanel *> (ui->tabScenes->widget(i));
         Q_ASSERT(p);
         if (p->editorScene()->modelScene()->scene()->id() == id) {
@@ -132,6 +136,9 @@ void GGMainWindow::newProject()
 
 void GGMainWindow::closeProject()
 {
+    while (ui->tabScenes->count() > 0)
+        ui->tabScenes->removeTab(0);
+
     m_ctrl->setModel(NULL);
     delete m_viewModel;
     m_viewModel = NULL;
@@ -140,8 +147,7 @@ void GGMainWindow::closeProject()
 
     ui->stkDetailEdits->setCurrentWidget(ui->pageEmpty);
 
-    while (ui->tabScenes->count() > 0)
-        ui->tabScenes->removeTab(0);
+    showStartPage();
 }
 
 void GGMainWindow::openSceneView(GGScene *scene)
@@ -182,6 +188,7 @@ void GGMainWindow::highlightPage(GG::PageID id)
 void GGMainWindow::selectPage(GGViewPage *page)
 {
     setPointerMode();
+    if (!currentSceneView()) return;
     if (page->page()->sceneId() == currentSceneView()->editorScene()->modelScene()->scene()->id()) {
         ui->wgtPageContent->displayPage(page->page());
         ui->stkDetailEdits->setCurrentWidget(ui->pagePage);
@@ -233,6 +240,7 @@ void GGMainWindow::showSearchDialog(bool reset)
 
 void GGMainWindow::setClickMode(QAction *act)
 {
+    if (!currentSceneView()) return;
     if (act == ui->actionP) {
         currentSceneView()->editorView()->setDragMode(QGraphicsView::RubberBandDrag);
     } else {
@@ -269,7 +277,8 @@ void GGMainWindow::handleAction(QAction *act)
         return;
     }
     if (act == ui->actionDelete) {
-        currentSceneView()->editorScene()->deleteCurrentSelection();
+        if (currentSceneView())
+            currentSceneView()->editorScene()->deleteCurrentSelection();
     }
     if (act == ui->actionFind) {
         showSearchDialog(false);
@@ -309,9 +318,27 @@ void GGMainWindow::showVariables()
     m_ctrl->applySubcommandsAsGroup(dlg.getExecutedCommands());
 }
 
+void GGMainWindow::showStartPage()
+{
+    if (ui->tabScenes->indexOf(ui->tabStart) < 0) {
+        // Re-Open start page if all tab are closed
+        ui->tabScenes->addTab(ui->tabStart, ui->tabStart->windowTitle());
+    }
+    ui->tabScenes->setCurrentWidget(ui->tabStart);
+}
+
 void GGMainWindow::closeTab(int idx)
 {
+    if (idx == ui->tabScenes->indexOf(ui->tabStart)) {
+        if (!m_project) {
+            // Don't close start page if there is no project open
+            return;
+        }
+    }
     ui->tabScenes->removeTab(idx);
+    if (ui->tabScenes->count() == 0) {
+        showStartPage();
+    }
 }
 
 void GGMainWindow::changeTab(int idx)
