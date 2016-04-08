@@ -70,7 +70,8 @@ QPixmap GGImageContent::preview(GGAbstractMediaResolver *resolver, QSize sz) con
     QImage img;
     QIODevice *data = resolver->resolve(m_imageFilePath);
     if (data) {
-        img.load(data, NULL);
+        QString typeHint = resolver->resolveTypeHint(m_imageFilePath);
+        img.load(data, typeHint.toUtf8());
         delete data;
     }
     if (!sz.isEmpty()) {
