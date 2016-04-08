@@ -70,6 +70,10 @@ private slots:
     void sceneTreeActivated(const QModelIndex &idx);
 
 private:
+    void updateWindowTitle();
+
+private:
+    QString m_baseTitle;
     Ui::GGMainWindow *ui;
     GGUIController *m_ctrl;
     GGEditProject *m_project;

@@ -18,6 +18,7 @@
 #include <view/ggpageitem.h>
 #include <model/ggmediaresolver.h>
 #include <view/ggscenetreemodel.h>
+#include <ui/dialogs/ggcreateprojectdialog.h>
 
 GGMainWindow::GGMainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -27,6 +28,9 @@ GGMainWindow::GGMainWindow(QWidget *parent) :
     m_searchDlg(NULL)
 {
     ui->setupUi(this);
+
+    m_baseTitle = windowTitle();
+    updateWindowTitle();
 
     ui->dckSearchResults->setVisible(false);
     connect(ui->wgtSearchResults, SIGNAL(requestNewSearch()), this, SLOT(showSearchDialog()));
@@ -116,7 +120,14 @@ void GGMainWindow::newProject()
 {
     closeProject();
 
+    GGCreateProjectDialog dlg;
+    if (dlg.exec() != QDialog::Accepted) {
+        return;
+    }
+
     m_project = new GGEditProject;
+    m_project->setTitle(dlg.projectTitle());
+    m_project->setBasePath(dlg.projectBasePath());
     m_viewModel = new GGViewModel(m_project->editModel());
     m_ctrl->setModel(m_viewModel);
     m_sceneTree->setModel(m_project->editModel());
@@ -132,6 +143,8 @@ void GGMainWindow::newProject()
     defaultScene = new GGScene;
     defaultScene->setName("Default2");
     m_project->editModel()->registerNewScene(defaultScene);
+
+    updateWindowTitle();
 }
 
 void GGMainWindow::closeProject()
@@ -139,6 +152,7 @@ void GGMainWindow::closeProject()
     while (ui->tabScenes->count() > 0)
         ui->tabScenes->removeTab(0);
 
+    m_sceneTree->setModel(NULL);
     m_ctrl->setModel(NULL);
     delete m_viewModel;
     m_viewModel = NULL;
@@ -148,6 +162,7 @@ void GGMainWindow::closeProject()
     ui->stkDetailEdits->setCurrentWidget(ui->pageEmpty);
 
     showStartPage();
+    updateWindowTitle();
 }
 
 void GGMainWindow::openSceneView(GGScene *scene)
@@ -356,4 +371,13 @@ void GGMainWindow::sceneTreeActivated(const QModelIndex &idx)
     GG::SceneID id = static_cast<GG::SceneID> (m_sceneTree->data(idx, GGSceneTreeModel::SceneIdRole).toInt());
     GGScene *sc = m_viewModel->editModel()->getScene(id);
     openSceneView(sc);
+}
+
+void GGMainWindow::updateWindowTitle()
+{
+    if (m_project) {
+        setWindowTitle(m_baseTitle.arg(m_project->title(), " - "));
+    } else {
+        setWindowTitle(m_baseTitle.arg("", ""));
+    }
 }

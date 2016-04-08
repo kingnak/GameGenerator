@@ -10,6 +10,11 @@ GGEditProject::GGEditProject()
     m_runtimeModel = m_editModel;
 }
 
+void GGEditProject::setBasePath(const QString &basePath)
+{
+    static_cast<GGFileSystemResolver *> (m_resolver)->setBase(basePath);
+}
+
 GGEditModel *GGEditProject::editModel()
 {
     return m_editModel;

@@ -10,6 +10,8 @@ class GGEditProject : public GGRuntimeProject
 public:
     GGEditProject();
 
+    void setBasePath(const QString &basePath);
+
     GGEditModel *editModel();
 
 private:

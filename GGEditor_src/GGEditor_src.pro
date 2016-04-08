@@ -57,7 +57,8 @@ SOURCES += \
     ui/basic/ggstringlistvalidator.cpp \
     ui/gggraphpanel.cpp \
     view/ggscenetreemodel.cpp \
-    model/ggeditproject.cpp
+    model/ggeditproject.cpp \
+    ui/dialogs/ggcreateprojectdialog.cpp
 
 HEADERS += \
     model/ggeditmodel.h \
@@ -110,7 +111,8 @@ HEADERS += \
     viewmodel/ggviewscene.h \
     ui/gggraphpanel.h \
     view/ggscenetreemodel.h \
-    model/ggeditproject.h
+    model/ggeditproject.h \
+    ui/dialogs/ggcreateprojectdialog.h
 unix {
     target.path = /usr/lib
     INSTALLS += target
@@ -143,7 +145,8 @@ FORMS += \
     ui/dialogs/ggvariableeditdialog.ui \
     ui/components/ggsearchresultpane.ui \
     ui/dialogs/ggsearchdialog.ui \
-    ui/components/ggconditioneditorwidget.ui
+    ui/components/ggconditioneditorwidget.ui \
+    ui/dialogs/ggcreateprojectdialog.ui
 
 RESOURCES += \
     ui/resources.qrc

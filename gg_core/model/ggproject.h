@@ -2,6 +2,7 @@
 #define GGPROJECT_H
 
 #include <gg_core_global.h>
+#include <QString>
 
 class GGAbstractModel;
 class GGAbstractMediaResolver;
@@ -12,8 +13,14 @@ public:
     GGProject() {}
     virtual ~GGProject() {}
 
+    void setTitle(const QString &title) { m_title = title; }
+    QString title() const { return m_title; }
+
     virtual GGAbstractModel *model() = 0;
     virtual GGAbstractMediaResolver *resolver() = 0;
+
+protected:
+    QString m_title;
 };
 
 #endif // GGPROJECT_H
