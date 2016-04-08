@@ -140,8 +140,11 @@ void GGPageEditPanel::setContent(GGAbstractModel::PageSections updateSections)
 void GGPageEditPanel::setMappedContent(GGAbstractModel::PageSections updateSections)
 {
     if (GGMappedContentPage *mcp = GG::as<GGMappedContentPage>(m_page)) {
-        if (updateSections.testFlag(GGAbstractModel::MappedLinks))
+        if (updateSections.testFlag(GGAbstractModel::MappedLinks) ||
+                updateSections.testFlag(GGAbstractModel::Content))
+        {
             ui->wgtMapping->setMappedPage(mcp);
+        }
         ui->grpMapping->setVisible(true);
     }
 }
