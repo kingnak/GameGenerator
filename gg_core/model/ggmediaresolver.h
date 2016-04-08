@@ -12,6 +12,8 @@ public:
     virtual ~GGAbstractMediaResolver() {}
 
     virtual QIODevice *resolve(const QString &media) = 0;
+    virtual QString resolveName(const QString &media) = 0;
+    virtual QString resolveTypeHint(const QString &media) = 0;
 };
 
 //////////////////
@@ -24,6 +26,8 @@ public:
     QDir getBase() const;
 
     virtual QIODevice *resolve(const QString &media);
+    virtual QString resolveName(const QString &media);
+    virtual QString resolveTypeHint(const QString &media);
 
 private:
     QDir m_base;

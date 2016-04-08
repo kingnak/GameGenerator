@@ -29,3 +29,15 @@ QIODevice *GGFileSystemResolver::resolve(const QString &media)
     return NULL;
 }
 
+QString GGFileSystemResolver::resolveName(const QString &media)
+{
+    QString path = m_base.absoluteFilePath(media);
+    return path;
+}
+
+QString GGFileSystemResolver::resolveTypeHint(const QString &media)
+{
+    QFileInfo f(m_base.absoluteFilePath(media));
+    return f.completeSuffix();
+}
+
