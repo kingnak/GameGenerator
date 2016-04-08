@@ -24,6 +24,7 @@ class GGContentElement;
 class GGLink;
 class GGViewPage;
 class GGViewConnection;
+class GGAbstractMediaResolver;
 
 class GGUIController : public QObject
 {
@@ -33,6 +34,7 @@ public:
     ~GGUIController();
 
     GGViewModel *model() { return m_model; }
+    GGAbstractMediaResolver *mediaResolver();
 
     void setModel(GGViewModel *model);
 

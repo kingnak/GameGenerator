@@ -30,6 +30,11 @@ GGUIController::~GGUIController()
     delete m_stack;
 }
 
+GGAbstractMediaResolver *GGUIController::mediaResolver()
+{
+    return m_model->editModel()->mediaResolver();
+}
+
 void GGUIController::setModel(GGViewModel *model)
 {
     delete m_cmdFactory;

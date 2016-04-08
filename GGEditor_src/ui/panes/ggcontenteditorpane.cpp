@@ -40,7 +40,7 @@ void GGContentEditorPane::on_txtCaption_editingFinished()
 void GGContentEditorPane::on_btnChange_clicked()
 {
     GGEditContentElementDialog dlg;
-    dlg.setContentElement(m_page->content());
+    dlg.setContentElement(m_page->content(), m_ctrl->mediaResolver());
     if (dlg.exec() == QDialog::Accepted) {
         GGContentElement *e = dlg.getContentElement();
         m_ctrl->changeContentElement(m_page, e);

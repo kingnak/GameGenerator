@@ -4,6 +4,7 @@
 #include <QDialog>
 
 class GGContentElement;
+class GGAbstractMediaResolver;
 
 namespace Ui {
 class GGEditContentElementDialog;
@@ -20,7 +21,7 @@ public:
     GGContentElement *getContentElement();
 
 public slots:
-    void setContentElement(GGContentElement *elem);
+    void setContentElement(GGContentElement *elem, GGAbstractMediaResolver *resolver);
 
 private:
     Ui::GGEditContentElementDialog *ui;

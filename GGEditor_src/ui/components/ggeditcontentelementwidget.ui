@@ -81,7 +81,16 @@
      </property>
      <widget class="QWidget" name="pageText">
       <layout class="QVBoxLayout" name="verticalLayout_4">
-       <property name="margin">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
         <number>0</number>
        </property>
        <item>
@@ -94,7 +103,11 @@
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="1,0">
          <item>
-          <widget class="QLineEdit" name="txtPathImage"/>
+          <widget class="QLineEdit" name="txtPathImage">
+           <property name="readOnly">
+            <bool>true</bool>
+           </property>
+          </widget>
          </item>
          <item>
           <widget class="QPushButton" name="btnBrowseImage">
@@ -121,8 +134,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>236</width>
-            <height>253</height>
+            <width>233</width>
+            <height>231</height>
            </rect>
           </property>
           <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -148,22 +161,6 @@
  </widget>
  <resources/>
  <connections>
-  <connection>
-   <sender>txtPathImage</sender>
-   <signal>editingFinished()</signal>
-   <receiver>GGEditContentElementWidget</receiver>
-   <slot>loadPreviewImage()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>161</x>
-     <y>14</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>199</x>
-     <y>149</y>
-    </hint>
-   </hints>
-  </connection>
   <connection>
    <sender>radText</sender>
    <signal>toggled(bool)</signal>

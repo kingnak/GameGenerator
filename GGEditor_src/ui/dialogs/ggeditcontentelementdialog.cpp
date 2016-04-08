@@ -19,9 +19,9 @@ GGContentElement *GGEditContentElementDialog::getContentElement()
     return ui->wgtContent->getContentElement();
 }
 
-void GGEditContentElementDialog::setContentElement(GGContentElement *elem)
+void GGEditContentElementDialog::setContentElement(GGContentElement *elem, GGAbstractMediaResolver *resolver)
 {
-    ui->wgtContent->setContentElement(elem);
+    ui->wgtContent->setContentElement(elem, resolver);
 }
 
 

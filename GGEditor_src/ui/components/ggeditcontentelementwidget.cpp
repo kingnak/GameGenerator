@@ -1,6 +1,7 @@
 #include "ggeditcontentelementwidget.h"
 #include "ui_ggeditcontentelementwidget.h"
 #include <model/ggcontentelement.h>
+#include <model/ggmediaresolver.h>
 #include <QFileDialog>
 
 GGEditContentElementWidget::GGEditContentElementWidget(QWidget *parent) :
@@ -31,13 +32,14 @@ GGContentElement *GGEditContentElementWidget::getContentElement()
     return NULL;
 }
 
-void GGEditContentElementWidget::setContentElement(GGContentElement *elem)
+void GGEditContentElementWidget::setContentElement(GGContentElement *elem, GGAbstractMediaResolver *resolver)
 {
     if (elem) {
         if (GGImageContent *i = dynamic_cast<GGImageContent*>(elem)) {
             ui->radImg->setChecked(true);
-            ui->txtPathImage->setText(i->imageFilePath());
-            loadPreviewImage();
+            QString path = resolver->resolveName(i->imageFilePath());
+            ui->txtPathImage->setText(path);
+            loadPreviewImage(i->imageFilePath(), resolver);
         } else if (GGTextContent *t = dynamic_cast<GGTextContent*>(elem)) {
             ui->radText->setChecked(true);
             QTextDocument *doc = new QTextDocument;
@@ -55,14 +57,24 @@ void GGEditContentElementWidget::on_btnBrowseImage_clicked()
     QString path = QFileDialog::getOpenFileName(this, tr("Select image"), QString(), tr("Images (*.png *.gif *.jpg *.jpeg)"));
     if (!path.isNull()) {
         ui->txtPathImage->setText(path);
-        loadPreviewImage();
+        // TODO: This should be done in MediaManager in future.
+        // For now, use a local FileSystemResolver
+        GGFileSystemResolver rev;
+        loadPreviewImage(path, &rev);
     }
 }
 
-void GGEditContentElementWidget::loadPreviewImage()
+void GGEditContentElementWidget::loadPreviewImage(const QString &media, GGAbstractMediaResolver *resolver)
 {
+    QIODevice *dev = resolver->resolve(media);
     QPixmap p;
-    p.load(ui->txtPathImage->text());
+    if (dev) {
+        QImage img;
+        img.load(dev, resolver->resolveTypeHint(media).toUtf8());
+        delete dev;
+        p = QPixmap::fromImage(img);
+    }
+
     ui->lblPreviewImage->setPixmap(p);
 }
 

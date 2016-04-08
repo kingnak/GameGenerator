@@ -4,6 +4,7 @@
 #include <QWidget>
 
 class GGContentElement;
+class GGAbstractMediaResolver;
 
 namespace Ui {
 class GGEditContentElementWidget;
@@ -20,13 +21,13 @@ public:
     GGContentElement *getContentElement();
 
 public slots:
-    void setContentElement(GGContentElement *elem);
+    void setContentElement(GGContentElement *elem, GGAbstractMediaResolver *resolver);
 
 private slots:
     void changePage();
     void on_btnBrowseImage_clicked();
 
-    void loadPreviewImage();
+    void loadPreviewImage(const QString &media, GGAbstractMediaResolver *resolver);
 
 private:
     Ui::GGEditContentElementWidget *ui;
