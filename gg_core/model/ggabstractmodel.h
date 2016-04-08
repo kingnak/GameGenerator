@@ -31,7 +31,6 @@ public:
     Q_DECLARE_FLAGS(PageSections, PageSection)
 
     explicit GGAbstractModel(QObject *parent = 0) : QObject(parent) {}
-    virtual GGAbstractFactory *factory() = 0;
 
     virtual GGAbstractMediaResolver *mediaResolver() = 0;
 

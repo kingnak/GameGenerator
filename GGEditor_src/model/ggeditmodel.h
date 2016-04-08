@@ -14,6 +14,9 @@ class GGEditModel : public GGRuntimeModel
 {
 public:
     explicit GGEditModel(GGAbstractFactory *factory, GGAbstractMediaResolver *resolver, QObject *parent = 0);
+    ~GGEditModel();
+
+    GGAbstractFactory *factory();
 
     bool registerNewScene(GGScene *scene);
 
@@ -30,6 +33,8 @@ public:
     QList<GGConnection *> getPageAllConnections(GGPage *page) const;
 
 private:
+    GGAbstractFactory *m_factory;
+
     QMap<GG::PageID, QSet<GG::ConnectionID> > m_incommingConns;
 
     GG::SceneID m_nextSceneId;

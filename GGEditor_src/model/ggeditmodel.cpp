@@ -2,15 +2,27 @@
 #include <model/ggscene.h>
 #include <model/ggpage.h>
 #include <model/ggconnection.h>
+#include <model/ggabstractfactory.h>
 
 GGEditModel::GGEditModel(GGAbstractFactory *factory, GGAbstractMediaResolver *resolver, QObject *parent)
-    : GGRuntimeModel(factory, resolver, parent),
+    : GGRuntimeModel(resolver, parent),
+      m_factory(factory),
       m_nextSceneId(0),
       m_nextPageId(0),
       m_nextConnId(0),
       m_unregisteringPage(NULL)
 {
 
+}
+
+GGEditModel::~GGEditModel()
+{
+    delete m_factory;
+}
+
+GGAbstractFactory *GGEditModel::factory()
+{
+    return m_factory;
 }
 
 bool GGEditModel::registerNewScene(GGScene *scene)

@@ -5,9 +5,8 @@
 #include "ggabstractfactory.h"
 #include <QSet>
 
-GGRuntimeModel::GGRuntimeModel(GGAbstractFactory *factory, GGAbstractMediaResolver *resolver, QObject *parent)
+GGRuntimeModel::GGRuntimeModel(GGAbstractMediaResolver *resolver, QObject *parent)
     : GGAbstractModel(parent),
-      m_factory(factory),
       m_resolver(resolver)
 {
 
@@ -18,12 +17,6 @@ GGRuntimeModel::~GGRuntimeModel()
     qDeleteAll(m_connections);
     qDeleteAll(m_pages);
     qDeleteAll(m_scenes);
-    delete m_factory;
-}
-
-GGAbstractFactory *GGRuntimeModel::factory()
-{
-    return m_factory;
 }
 
 GGAbstractMediaResolver *GGRuntimeModel::mediaResolver()

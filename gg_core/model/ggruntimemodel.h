@@ -8,10 +8,9 @@ class GG_CORESHARED_EXPORT GGRuntimeModel : public GGAbstractModel
 {
     Q_OBJECT
 public:
-    explicit GGRuntimeModel(GGAbstractFactory *factory, GGAbstractMediaResolver *resolver, QObject *parent = 0);
+    explicit GGRuntimeModel(GGAbstractMediaResolver *resolver, QObject *parent = 0);
     ~GGRuntimeModel();
 
-    GGAbstractFactory *factory();
     GGAbstractMediaResolver *mediaResolver();
 
     GGScene *getScene(GG::SceneID id) const;
@@ -36,7 +35,6 @@ signals:
     void variablesUpdated();
 
 protected:
-    GGAbstractFactory *m_factory;
     GGAbstractMediaResolver *m_resolver;
     QMap<GG::SceneID, GGScene *> m_scenes;
     QMap<GG::PageID, GGPage *> m_pages;
