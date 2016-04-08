@@ -7,6 +7,7 @@
 
 class QActionGroup;
 
+class GGEditProject;
 class GGUIController;
 class GGEditorScene;
 class GGViewModel;
@@ -39,8 +40,8 @@ public:
     GGGraphPanel *sceneViewForId(GG::SceneID id);
 
 public slots:
-    void newModel();
-    void closeModel();
+    void newProject();
+    void closeProject();
 
     void openSceneView(GGScene *scene);
     void closeSceneView(GG::SceneID id);
@@ -69,6 +70,7 @@ private slots:
 private:
     Ui::GGMainWindow *ui;
     GGUIController *m_ctrl;
+    GGEditProject *m_project;
     GGViewModel *m_viewModel;
     QActionGroup *m_createActions;
     GGSearchDialog *m_searchDlg;

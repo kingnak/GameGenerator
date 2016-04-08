@@ -20,8 +20,21 @@
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
       </property>
-      <widget class="QTreeView" name="treScenes"/>
+      <widget class="QTreeView" name="treScenes">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+      </widget>
       <widget class="QSplitter" name="splitter">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="orientation">
         <enum>Qt::Vertical</enum>
        </property>
@@ -105,8 +118,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>65</width>
-               <height>16</height>
+               <width>100</width>
+               <height>30</height>
               </rect>
              </property>
             </widget>
@@ -426,7 +439,7 @@
    <sender>action_New</sender>
    <signal>triggered()</signal>
    <receiver>GGMainWindow</receiver>
-   <slot>newModel()</slot>
+   <slot>newProject()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>-1</x>
@@ -520,7 +533,7 @@
   </connection>
  </connections>
  <slots>
-  <slot>newModel()</slot>
+  <slot>newProject()</slot>
   <slot>handleAction(QAction*)</slot>
   <slot>closeTab(int)</slot>
   <slot>changeTab(int)</slot>

@@ -26,7 +26,8 @@ SOURCES += \
     model/ggsearch.cpp \
     model/ggconnectionslotdata.cpp \
     model/ggmediaresolver.cpp \
-    model/ggscene.cpp
+    model/ggscene.cpp \
+    model/ggruntimeproject.cpp
 
 HEADERS +=\
         gg_core_global.h \
@@ -46,7 +47,9 @@ HEADERS +=\
     model/ggconnectionslotdata.h \
     model/ggsearch.h \
     model/ggmediaresolver.h \
-    model/ggscene.h
+    model/ggscene.h \
+    model/ggproject.h \
+    model/ggruntimeproject.h
 
 unix {
     target.path = /usr/lib

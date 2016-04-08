@@ -2,6 +2,7 @@
 #include "ui_ggmainwindow.h"
 #include <QtWidgets>
 #include <ui/dialogs/ggvariableeditdialog.h>
+#include <model/ggeditproject.h>
 #include <view/gguicontroller.h>
 #include <view/ggeditorscene.h>
 #include <viewmodel/ggviewscene.h>
@@ -21,6 +22,7 @@
 GGMainWindow::GGMainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::GGMainWindow),
+    m_project(NULL),
     m_viewModel(NULL),
     m_searchDlg(NULL)
 {
@@ -68,12 +70,12 @@ GGMainWindow::GGMainWindow(QWidget *parent) :
     m_sceneTree = new GGSceneTreeModel(this);
     ui->treScenes->setModel(m_sceneTree);
 
-    newModel();
+    newProject();
 }
 
 GGMainWindow::~GGMainWindow()
 {
-    closeModel();
+    closeProject();
     delete ui;
 }
 
@@ -106,36 +108,36 @@ GGGraphPanel *GGMainWindow::sceneViewForId(GG::SceneID id)
     return NULL;
 }
 
-void GGMainWindow::newModel()
+void GGMainWindow::newProject()
 {
-    closeModel();
-    GGEditModel *em = new GGEditModel(new GGSimpleFactory, new GGFileSystemResolver);
+    closeProject();
 
-    m_viewModel = new GGViewModel(em);
+    m_project = new GGEditProject;
+    m_viewModel = new GGViewModel(m_project->editModel());
     m_ctrl->setModel(m_viewModel);
-    m_sceneTree->setModel(em);
+    m_sceneTree->setModel(m_project->editModel());
 
-    connect(em, SIGNAL(sceneRegistered(GGScene*)), this, SLOT(openSceneView(GGScene*)));
-    connect(em, SIGNAL(sceneUnregistered(GG::SceneID,GGScene*)), this, SLOT(closeSceneView(GG::SceneID)));
+    connect(m_project->editModel(), SIGNAL(sceneRegistered(GGScene*)), this, SLOT(openSceneView(GGScene*)));
+    connect(m_project->editModel(), SIGNAL(sceneUnregistered(GG::SceneID,GGScene*)), this, SLOT(closeSceneView(GG::SceneID)));
 
     // TODO: As Command???? => No, must always be there, cannot be undone
     GGScene *defaultScene = new GGScene;
     defaultScene->setName("Default");
-    em->registerNewScene(defaultScene);
+    m_project->editModel()->registerNewScene(defaultScene);
 
     defaultScene = new GGScene;
     defaultScene->setName("Default2");
-    em->registerNewScene(defaultScene);
+    m_project->editModel()->registerNewScene(defaultScene);
 }
 
-void GGMainWindow::closeModel()
+void GGMainWindow::closeProject()
 {
     m_ctrl->setModel(NULL);
-    if (m_viewModel) {
-        delete m_viewModel->editModel();
-        delete m_viewModel;
-    }
+    delete m_viewModel;
     m_viewModel = NULL;
+    delete m_project;
+    m_project = NULL;
+
     ui->stkDetailEdits->setCurrentWidget(ui->pageEmpty);
 
     while (ui->tabScenes->count() > 0)
