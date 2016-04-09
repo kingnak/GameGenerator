@@ -58,7 +58,9 @@ SOURCES += \
     ui/gggraphpanel.cpp \
     view/ggscenetreemodel.cpp \
     model/ggeditproject.cpp \
-    ui/dialogs/ggcreateprojectdialog.cpp
+    ui/dialogs/ggcreateprojectdialog.cpp \
+    model/ggmediamanager.cpp \
+    model/ggscenemediamanager.cpp
 
 HEADERS += \
     model/ggeditmodel.h \
@@ -112,7 +114,9 @@ HEADERS += \
     ui/gggraphpanel.h \
     view/ggscenetreemodel.h \
     model/ggeditproject.h \
-    ui/dialogs/ggcreateprojectdialog.h
+    ui/dialogs/ggcreateprojectdialog.h \
+    model/ggmediamanager.h \
+    model/ggscenemediamanager.h
 unix {
     target.path = /usr/lib
     INSTALLS += target
