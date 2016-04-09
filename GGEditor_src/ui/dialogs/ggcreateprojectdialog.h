@@ -18,6 +18,9 @@ public:
     QString projectBasePath() const;
     QString projectTitle() const;
 
+public slots:
+    void accept();
+
 private slots:
     void on_btnBrowse_clicked();
 
