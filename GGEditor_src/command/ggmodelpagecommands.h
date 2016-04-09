@@ -20,7 +20,7 @@ class GGContentElement;
 class GGCreateSceneCmd : public GGAbstractModelCommand
 {
 public:
-    GGCreateSceneCmd(GGEditModel *model);
+    GGCreateSceneCmd(GGEditModel *model, const QString &name);
     ~GGCreateSceneCmd();
 
     QString description() const;
@@ -34,6 +34,28 @@ protected:
 
 private:
     GGScene *m_createdScene;
+    QString m_name;
+};
+
+///////////////////////////
+
+class GGRenameSceneCmd : public GGAbstractModelCommand
+{
+public:
+    GGRenameSceneCmd(GGEditModel *model, GGScene *scene, const QString &newName);
+    ~GGRenameSceneCmd();
+
+    QString description() const;
+
+protected:
+    bool doExecute();
+    bool doUndo();
+    bool doRedo();
+
+private:
+    GGScene *m_scene;
+    QString m_newName;
+    QString m_oldName;
 };
 
 ///////////////////////////

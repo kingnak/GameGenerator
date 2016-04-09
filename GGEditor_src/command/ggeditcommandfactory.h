@@ -10,8 +10,9 @@ class GGEditCommandFactory : public GGAbstractModelCommandFactory
 public:
     GGEditCommandFactory(GGEditModel *model);
 
-    GGCreateSceneCmd *createScene();
+    GGCreateSceneCmd *createScene(const QString &name);
     GGDeleteSceneCmd *deleteScene(GGScene *scene);
+    GGRenameSceneCmd *renameScene(GGScene *scene, const QString &newName);
 
     GGCreatePageCmd *createStartPage(GGScene *scene);
     GGCreatePageCmd *createEndPage(GGScene *scene);
@@ -26,7 +27,6 @@ public:
     GGDeleteConnectionCmd *deleteConnection(GGConnection *conn);
 
     GGSetPageStringCmd *setPageName(GGPage *p, const QString &name);
-//    GGSetPageStringCmd *setPageScene(GGPage *p, const QString &sceneName);
     GGSetPageStringCmd *setPageCaption(GGContentPage *p, const QString &caption);
 
     GGExchangeConditionCmd *exchangeCondition(GGConditionPage *p, const GGCondition &cond);

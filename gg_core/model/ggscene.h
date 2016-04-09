@@ -19,7 +19,10 @@ public:
     GGAbstractModel *model() const { return m_model; }
 
     QString name() const { return m_name; }
-    void setName(const QString &name) { m_name = name; }
+    void setName(const QString &name);
+
+    QString mediaDir() const { return m_mediaDir; }
+    void setMediaDir(const QString &dir);
 
     QSet<GGPage *> pages() const;
     void addPage(GGPage *page);
@@ -29,6 +32,7 @@ private:
     GG::SceneID m_id;
     GGAbstractModel *m_model;
     QString m_name;
+    QString m_mediaDir;
     QSet<GGPage *> m_pages;
 
     friend class GGAbstractModel;

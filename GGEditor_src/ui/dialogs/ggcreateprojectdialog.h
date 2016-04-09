@@ -17,6 +17,7 @@ public:
 
     QString projectBasePath() const;
     QString projectTitle() const;
+    QString initialSceneName() const;
 
 public slots:
     void accept();

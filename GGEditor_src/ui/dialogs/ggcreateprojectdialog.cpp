@@ -27,6 +27,11 @@ QString GGCreateProjectDialog::projectTitle() const
     return ui->txtTitle->text();
 }
 
+QString GGCreateProjectDialog::initialSceneName() const
+{
+    return ui->txtDefaultSceneName->text();
+}
+
 void GGCreateProjectDialog::accept()
 {
     QDir d(ui->txtPath->text());
@@ -66,6 +71,6 @@ void GGCreateProjectDialog::checkOk()
 {
     bool ok = !ui->txtTitle->text().isEmpty();
     ok &= !ui->txtPath->text().isEmpty();
+    ok &= !ui->txtDefaultSceneName->text().isEmpty();
     ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(ok);
 }
-

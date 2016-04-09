@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>403</width>
-    <height>188</height>
+    <height>187</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -52,6 +52,20 @@
     </layout>
    </item>
    <item>
+    <widget class="QLabel" name="label_3">
+     <property name="text">
+      <string>Initial Scene name</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLineEdit" name="txtDefaultSceneName">
+     <property name="text">
+      <string>Intro</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -76,6 +90,12 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>txtTitle</tabstop>
+  <tabstop>txtPath</tabstop>
+  <tabstop>btnBrowse</tabstop>
+  <tabstop>txtDefaultSceneName</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>
@@ -85,8 +105,8 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>257</x>
-     <y>178</y>
+     <x>266</x>
+     <y>177</y>
     </hint>
     <hint type="destinationlabel">
      <x>157</x>
@@ -101,8 +121,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>325</x>
-     <y>178</y>
+     <x>334</x>
+     <y>177</y>
     </hint>
     <hint type="destinationlabel">
      <x>286</x>
@@ -139,6 +159,22 @@
     <hint type="destinationlabel">
      <x>352</x>
      <y>52</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>txtDefaultSceneName</sender>
+   <signal>textEdited(QString)</signal>
+   <receiver>GGCreateProjectDialog</receiver>
+   <slot>checkOk()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>74</x>
+     <y>133</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>215</x>
+     <y>146</y>
     </hint>
    </hints>
   </connection>

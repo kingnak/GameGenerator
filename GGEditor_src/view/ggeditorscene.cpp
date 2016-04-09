@@ -21,7 +21,8 @@ GGEditorScene::GGEditorScene(GGUIController *ctrl, QObject *parent)
       m_ctrl(NULL),
       m_connectorLine(NULL),
       m_connectSource(NULL),
-      m_inUpdateSelection(false)
+      m_inUpdateSelection(false),
+      m_modelScene(NULL)
 {
     connect(this, SIGNAL(selectionChanged()), this, SLOT(updateSelectionItem()));
     initSelItem();

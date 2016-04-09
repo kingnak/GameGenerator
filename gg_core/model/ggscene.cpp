@@ -1,5 +1,6 @@
 #include "ggscene.h"
 #include "ggpage.h"
+#include <ggutilities.h>
 
 GGScene::GGScene()
     : m_id(GG::InvalidSceneId),
@@ -11,6 +12,27 @@ GGScene::GGScene()
 GGScene::~GGScene()
 {
 
+}
+
+void GGScene::setName(const QString &name)
+{
+    if (name != m_name) {
+        m_name = name;
+        if (m_model) {
+            m_model->notifySceneUpdate(m_id);
+        }
+    }
+}
+
+void GGScene::setMediaDir(const QString &dir)
+{
+    QString dirName = GGUtilities::sanatizeFileName(dir);
+    if (dirName != m_mediaDir) {
+        m_mediaDir = dirName;
+        if (m_model) {
+            m_model->notifySceneUpdate(m_id);
+        }
+    }
 }
 
 QSet<GGPage *> GGScene::pages() const

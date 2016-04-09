@@ -19,7 +19,7 @@ void GGEditor_ConnectionSlotTest::init()
     m_stack = new GGCommandStack;
     m_sc = new ModelSignalChecker(m_model);
 
-    GGAbstractCommandFactory::oneShotCommand(m_cmdFac->createScene());
+    GGAbstractCommandFactory::oneShotCommand(m_cmdFac->createScene("default"));
     m_scn = m_model->getScenes()[0];
     GGAbstractCommandFactory::oneShotCommand(m_cmdFac->createStartPage(m_scn));
     GGAbstractCommandFactory::oneShotCommand(m_cmdFac->createEndPage(m_scn));

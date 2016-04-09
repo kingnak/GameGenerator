@@ -96,6 +96,26 @@ void GGUIController::redo()
     checkSaveCheckpoint();
 }
 
+void GGUIController::createDefaultScene(const QString &name)
+{
+    GGAbstractModelCommandFactory::oneShotCommand(m_cmdFactory->createScene(name));
+}
+
+void GGUIController::createScene(const QString &name)
+{
+    doExecCmd(m_cmdFactory->createScene(name));
+}
+
+void GGUIController::deleteScene(GGScene *scene)
+{
+    doExecCmd(m_cmdFactory->deleteScene(scene));
+}
+
+void GGUIController::renameScene(GGScene *scene, const QString &newName)
+{
+    doExecCmd(m_cmdFactory->renameScene(scene, newName));
+}
+
 void GGUIController::changePageGeometry(GGViewPage *page, QRect rect)
 {
     doExecCmd(m_cmdFactory->movePage(page, rect));

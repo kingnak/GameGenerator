@@ -47,6 +47,7 @@ public:
     virtual bool registerConnectionWithId(GGConnection *conn) = 0;
 
     virtual void notifyPageUpdate(GG::PageID id, PageSections sections);
+    virtual void notifySceneUpdate(GG::SceneID id);
 
     virtual QSet<GGVariable> variables() const = 0;
     virtual QList<QString> variableNames() const = 0;
@@ -64,6 +65,7 @@ signals:
     void connectionRegistered(GGConnection *conn);
     void connectionUnregistered(GG::ConnectionID id, GGConnection *conn);
     void pageUpdated(GGPage *page, GGAbstractModel::PageSections sections);
+    void sceneUpdated(GGScene *scene);
 
 protected:
     void setSceneId(GGScene *scene, GG::SceneID id);

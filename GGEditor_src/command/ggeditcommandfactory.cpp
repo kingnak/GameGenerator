@@ -11,14 +11,19 @@ GGEditCommandFactory::GGEditCommandFactory(GGEditModel *model)
 
 }
 
-GGCreateSceneCmd *GGEditCommandFactory::createScene()
+GGCreateSceneCmd *GGEditCommandFactory::createScene(const QString &name)
 {
-    return new GGCreateSceneCmd(m_model);
+    return new GGCreateSceneCmd(m_model, name);
 }
 
 GGDeleteSceneCmd *GGEditCommandFactory::deleteScene(GGScene *scene)
 {
-    return  new GGDeleteSceneCmd(m_model, scene);
+    return new GGDeleteSceneCmd(m_model, scene);
+}
+
+GGRenameSceneCmd *GGEditCommandFactory::renameScene(GGScene *scene, const QString &newName)
+{
+    return new GGRenameSceneCmd(m_model, scene, newName);
 }
 
 GGCreatePageCmd *GGEditCommandFactory::createStartPage(GGScene *scene)

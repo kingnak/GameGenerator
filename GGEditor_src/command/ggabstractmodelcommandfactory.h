@@ -23,6 +23,7 @@ class GGVariable;
 
 class GGCreateSceneCmd;
 class GGDeleteSceneCmd;
+class GGRenameSceneCmd;
 class GGCreatePageCmd;
 class GGDeletePageCmd;
 class GGCreateConnectionCmd;
@@ -43,8 +44,9 @@ class GGAbstractModelCommandFactory : public GGAbstractCommandFactory
 public:
     GGAbstractModelCommandFactory() {}
 
-    virtual GGCreateSceneCmd *createScene() = 0;
+    virtual GGCreateSceneCmd *createScene(const QString &name) = 0;
     virtual GGDeleteSceneCmd *deleteScene(GGScene *scene) = 0;
+    virtual GGRenameSceneCmd *renameScene(GGScene *scene, const QString &newName) = 0;
 
     virtual GGCreatePageCmd *createStartPage(GGScene *scene) = 0;
     virtual GGCreatePageCmd *createEndPage(GGScene *scene) = 0;

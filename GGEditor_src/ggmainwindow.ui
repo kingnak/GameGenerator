@@ -27,6 +27,9 @@
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
+       <property name="contextMenuPolicy">
+        <enum>Qt::CustomContextMenu</enum>
+       </property>
       </widget>
       <widget class="QSplitter" name="splitter">
        <property name="sizePolicy">
@@ -595,8 +598,8 @@
    <slot>sceneTreeActivated(QModelIndex)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>350</x>
-     <y>339</y>
+     <x>347</x>
+     <y>403</y>
     </hint>
     <hint type="destinationlabel">
      <x>287</x>
@@ -611,12 +614,28 @@
    <slot>trigger()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>650</x>
-     <y>154</y>
+     <x>616</x>
+     <y>250</y>
     </hint>
     <hint type="destinationlabel">
      <x>-1</x>
      <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>treScenes</sender>
+   <signal>customContextMenuRequested(QPoint)</signal>
+   <receiver>GGMainWindow</receiver>
+   <slot>showSceneTreeContextMenu(QPoint)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>105</x>
+     <y>329</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>94</x>
+     <y>571</y>
     </hint>
    </hints>
   </connection>
@@ -627,5 +646,6 @@
   <slot>closeTab(int)</slot>
   <slot>changeTab(int)</slot>
   <slot>sceneTreeActivated(QModelIndex)</slot>
+  <slot>showSceneTreeContextMenu(QPoint)</slot>
  </slots>
 </ui>

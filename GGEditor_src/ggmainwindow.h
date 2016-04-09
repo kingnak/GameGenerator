@@ -2,6 +2,7 @@
 #define GGMAINWINDOW_H
 
 #include <QMainWindow>
+#include <QMap>
 
 #include <gg_definitions.h>
 
@@ -67,7 +68,13 @@ private slots:
     void showVariables();
     void closeTab(int idx);
     void changeTab(int idx);
+    void updateTabs();
     void sceneTreeActivated(const QModelIndex &idx);
+    void showSceneTreeContextMenu(const QPoint &point);
+
+    void renameSceneAction();
+    void deleteSceneAction();
+    void createSceneAction();
 
 private:
     void updateWindowTitle();
@@ -81,6 +88,7 @@ private:
     QActionGroup *m_createActions;
     GGSearchDialog *m_searchDlg;
     GGSceneTreeModel *m_sceneTree;
+    QMap<GG::SceneID, GGGraphPanel *> m_openScenes;
 };
 
 #endif // GGMAINWINDOW_H

@@ -126,13 +126,13 @@ QModelIndex GGSceneTreeModel::parent(const QModelIndex &child) const
 void GGSceneTreeModel::setModel(GGEditModel *model)
 {
     if (m_model) {
-        disconnect(m_model, SIGNAL(sceneRegistered(GGScene*)), this, SLOT(updModel()));
-        disconnect(m_model, SIGNAL(sceneUnregistered(GG::SceneID,GGScene*)), this, SLOT(updModel()));
+        m_model->disconnect(this);
     }
     m_model = model;
     if (m_model) {
         connect(m_model, SIGNAL(sceneRegistered(GGScene*)), this, SLOT(updModel()));
         connect(m_model, SIGNAL(sceneUnregistered(GG::SceneID,GGScene*)), this, SLOT(updModel()));
+        connect(m_model, SIGNAL(sceneUpdated(GGScene*)), this, SLOT(updModel()));
     }
 }
 

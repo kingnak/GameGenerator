@@ -105,15 +105,7 @@ GGGraphPanel *GGMainWindow::currentSceneView()
 
 GGGraphPanel *GGMainWindow::sceneViewForId(GG::SceneID id)
 {
-    for (int i = 0; i < ui->tabScenes->count(); ++i) {
-        if (ui->tabScenes->widget(i) == ui->tabStart) continue;
-        GGGraphPanel *p = qobject_cast<GGGraphPanel *> (ui->tabScenes->widget(i));
-        Q_ASSERT(p);
-        if (p->editorScene()->modelScene()->scene()->id() == id) {
-            return p;
-        }
-    }
-    return NULL;
+    return m_openScenes.value(id);
 }
 
 void GGMainWindow::newProject()
@@ -134,15 +126,9 @@ void GGMainWindow::newProject()
 
     connect(m_project->editModel(), SIGNAL(sceneRegistered(GGScene*)), this, SLOT(openSceneView(GGScene*)));
     connect(m_project->editModel(), SIGNAL(sceneUnregistered(GG::SceneID,GGScene*)), this, SLOT(closeSceneView(GG::SceneID)));
+    connect(m_project->editModel(), SIGNAL(sceneUpdated(GGScene*)), this, SLOT(updateTabs()));
 
-    // TODO: As Command???? => No, must always be there, cannot be undone
-    GGScene *defaultScene = new GGScene;
-    defaultScene->setName("Default");
-    m_project->editModel()->registerNewScene(defaultScene);
-
-    defaultScene = new GGScene;
-    defaultScene->setName("Default2");
-    m_project->editModel()->registerNewScene(defaultScene);
+    m_ctrl->createDefaultScene(dlg.initialSceneName());
 
     updateWindowTitle();
 }
@@ -152,6 +138,7 @@ void GGMainWindow::closeProject()
     while (ui->tabScenes->count() > 0)
         ui->tabScenes->removeTab(0);
 
+    m_openScenes.clear();
     m_sceneTree->setModel(NULL);
     m_ctrl->setModel(NULL);
     delete m_viewModel;
@@ -177,6 +164,7 @@ void GGMainWindow::openSceneView(GGScene *scene)
         connect(p->editorScene(), SIGNAL(clickedEmptySpace(GGViewScene*,QPointF)), this, SLOT(setPointerMode()));
 
         ui->tabScenes->addTab(p, scene->name());
+        m_openScenes[scene->id()] = p;
     }
     ui->tabScenes->setCurrentWidget(p);
 }
@@ -184,8 +172,10 @@ void GGMainWindow::openSceneView(GGScene *scene)
 void GGMainWindow::closeSceneView(GG::SceneID id)
 {
     GGGraphPanel *p = sceneViewForId(id);
+    m_openScenes.remove(id);
     if (p) {
         ui->tabScenes->removeTab(ui->tabScenes->indexOf(p));
+        delete p;
     }
 }
 
@@ -350,7 +340,14 @@ void GGMainWindow::closeTab(int idx)
             return;
         }
     }
+
+    GGGraphPanel *p = qobject_cast<GGGraphPanel *> (ui->tabScenes->widget(idx));
+    if (p)
+        m_openScenes.remove(p->editorScene()->modelScene()->scene()->id());
+
     ui->tabScenes->removeTab(idx);
+    delete p;
+
     if (ui->tabScenes->count() == 0) {
         showStartPage();
     }
@@ -359,11 +356,23 @@ void GGMainWindow::closeTab(int idx)
 void GGMainWindow::changeTab(int idx)
 {
     if (idx < 0) return;
+
     GGGraphPanel *p = qobject_cast<GGGraphPanel *> (ui->tabScenes->widget(idx));
     if (p)
         p->editorScene()->clearSelection();
+
     if (m_ctrl->creationMode() != GGUIController::CreateConnectionDirect)
         setPointerMode();
+}
+
+void GGMainWindow::updateTabs()
+{
+    for (int i = 0; i < ui->tabScenes->count(); ++i) {
+        GGGraphPanel *p = qobject_cast<GGGraphPanel *> (ui->tabScenes->widget(i));
+        if (p) {
+            ui->tabScenes->setTabText(i, p->editorScene()->modelScene()->scene()->name());
+        }
+    }
 }
 
 void GGMainWindow::sceneTreeActivated(const QModelIndex &idx)
@@ -371,6 +380,65 @@ void GGMainWindow::sceneTreeActivated(const QModelIndex &idx)
     GG::SceneID id = static_cast<GG::SceneID> (m_sceneTree->data(idx, GGSceneTreeModel::SceneIdRole).toInt());
     GGScene *sc = m_viewModel->editModel()->getScene(id);
     openSceneView(sc);
+}
+
+void GGMainWindow::showSceneTreeContextMenu(const QPoint &point)
+{
+    if (!m_project) return;
+    QMenu mnu;
+    QModelIndex idx = ui->treScenes->indexAt(point);
+    if (idx.isValid()) {
+        GG::SceneID id = static_cast<GG::SceneID> (m_sceneTree->data(idx, GGSceneTreeModel::SceneIdRole).toInt());
+        GGScene *s = m_viewModel->editModel()->getScene(id);
+        if (s) {
+            QAction *ren = new QAction("Rename...", &mnu);
+            ren->setData(id);
+            QAction *del = new QAction("Delete", &mnu);
+            del->setData(id);
+
+            connect(ren, SIGNAL(triggered(bool)), this, SLOT(renameSceneAction()));
+            connect(del, SIGNAL(triggered(bool)), this, SLOT(deleteSceneAction()));
+
+            mnu.addAction(ren);
+            mnu.addAction(del);
+            mnu.addSeparator();
+        }
+    }
+
+    QAction *cre = new QAction("New scene...", &mnu);
+    connect(cre, SIGNAL(triggered(bool)), this, SLOT(createSceneAction()));
+    mnu.addAction(cre);
+    mnu.exec(ui->treScenes->mapToGlobal(point));
+}
+
+void GGMainWindow::renameSceneAction()
+{
+    GG::SceneID id = static_cast<GG::SceneID> (static_cast<QAction*> (sender())->data().toInt());
+    GGScene *s = m_viewModel->editModel()->getScene(id);
+    if (s) {
+        QString oldName = s->name();
+        QString newName = QInputDialog::getText(this, "Rename Scene", "Enter new name:", QLineEdit::Normal, oldName);
+        if (!newName.isEmpty()) {
+            m_ctrl->renameScene(s, newName);
+        }
+    }
+}
+
+void GGMainWindow::deleteSceneAction()
+{
+    GG::SceneID id = static_cast<GG::SceneID> (static_cast<QAction*> (sender())->data().toInt());
+    GGScene *s = m_viewModel->editModel()->getScene(id);
+    if (s) {
+        m_ctrl->deleteScene(s);
+    }
+}
+
+void GGMainWindow::createSceneAction()
+{
+    QString name = QInputDialog::getText(this, "Create Scene", "Enter scene name:");
+    if (!name.isEmpty()) {
+        m_ctrl->createScene(name);
+    }
 }
 
 void GGMainWindow::updateWindowTitle()

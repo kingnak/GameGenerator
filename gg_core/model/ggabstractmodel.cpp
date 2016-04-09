@@ -10,6 +10,13 @@ void GGAbstractModel::notifyPageUpdate(GG::PageID id, PageSections sections)
     }
 }
 
+void GGAbstractModel::notifySceneUpdate(GG::SceneID id)
+{
+    if (GGScene *s = getScene(id)) {
+        emit sceneUpdated(s);
+    }
+}
+
 GGSearchResult GGAbstractModel::search(GGSearchRequest req) const
 {
     GGSearchResult res(req, this);

@@ -54,13 +54,17 @@ public slots:
     void undo();
     void redo();
 
+    void createDefaultScene(const QString &name);
+    void createScene(const QString &name);
+    void deleteScene(GGScene *scene);
+    void renameScene(GGScene *scene, const QString &newName);
+
     void changePageGeometry(GGViewPage *page, QRect rect);
     void changeMultiplePagesGeometry(QList<QPair<GGViewPage*,QRect> > changes);
     void deleteConnection(GGConnection *c);
     void deleteMultipleObjects(QSet<GGViewPage*> pages, QSet<GGViewConnection*> connections);
 
     void changePageName(GGPage *page, QString name);
-//    void changePageScene(GGPage *page, QString scene);
     void changeContentPageCaption(GGContentPage *page, QString cap);
     void changeContentElement(GGContentPage *page, GGContentElement *elem);
     void changeCondition(GGConditionPage *page, const GGCondition &cond);

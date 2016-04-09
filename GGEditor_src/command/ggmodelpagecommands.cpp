@@ -6,9 +6,10 @@
 #include <model/ggconnection.h>
 #include <model/ggcontentelement.h>
 
-GGCreateSceneCmd::GGCreateSceneCmd(GGEditModel *model)
+GGCreateSceneCmd::GGCreateSceneCmd(GGEditModel *model, const QString &name)
     : GGAbstractModelCommand(model),
-      m_createdScene(NULL)
+      m_createdScene(NULL),
+      m_name(name)
 {
 
 }
@@ -33,6 +34,8 @@ GGScene *GGCreateSceneCmd::createdScene()
 bool GGCreateSceneCmd::doExecute()
 {
     m_createdScene = m_model->factory()->createScene();
+    m_createdScene->setName(m_name);
+    m_createdScene->setMediaDir(m_name);
     if (!m_model->registerNewScene(m_createdScene)) {
         delete m_createdScene;
         m_createdScene = NULL;
@@ -49,6 +52,45 @@ bool GGCreateSceneCmd::doUndo()
 bool GGCreateSceneCmd::doRedo()
 {
     return m_model->registerSceneWithId(m_createdScene);
+}
+
+///////////////////////////
+
+GGRenameSceneCmd::GGRenameSceneCmd(GGEditModel *model, GGScene *scene, const QString &newName)
+    : GGAbstractModelCommand(model),
+      m_scene(scene),
+      m_newName(newName)
+{
+
+}
+
+GGRenameSceneCmd::~GGRenameSceneCmd()
+{
+
+}
+
+QString GGRenameSceneCmd::description() const
+{
+    return "Rename scene";
+}
+
+bool GGRenameSceneCmd::doExecute()
+{
+    m_oldName = m_scene->name();
+    m_scene->setName(m_newName);
+    return true;
+}
+
+bool GGRenameSceneCmd::doUndo()
+{
+    m_scene->setName(m_oldName);
+    return true;
+}
+
+bool GGRenameSceneCmd::doRedo()
+{
+    m_scene->setName(m_newName);
+    return true;
 }
 
 ///////////////////////////
