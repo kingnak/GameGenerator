@@ -66,6 +66,23 @@ void massTest(GGMainWindow *w)
 }
 #endif
 
+//#define MEDIA_TEST
+#ifdef MEDIA_TEST
+#include <model/ggmediamanager.h>
+void mediaTest()
+{
+    QDir base("D:/tmp/mediatest");
+    GGMediaManager m(base);
+    QString s = m.checkIn("D:\\tmp\\mediatest\\media\\images\\Chrysanthemum.jpg");
+    m.synchronize();
+    //QString s2 = m.checkIn("D:\\tmp\\mediatest\\media\\images\\Chrysanthemum.jpg");
+    QIODevice *dev = m.resolver()->resolve(s);
+    delete dev;
+    QString n = m.resolver()->resolveName(s);
+    QString t = m.resolver()->resolveTypeHint(s);
+}
+#endif
+
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
@@ -75,6 +92,10 @@ int main(int argc, char *argv[])
 
 #ifdef MASS_TEST
     massTest(&w);
+#endif
+
+#ifdef MEDIA_TEST
+    mediaTest();
 #endif
 
     return a.exec();
