@@ -127,7 +127,14 @@ bool GGDeleteSceneCmd::doExecute()
     if (m_deletedScene->model() != m_model) {
         return setError("Scene is not in this model");
     }
-    return m_model->unregisterScene(m_deletedScene->id());
+    if (!m_model->unregisterScene(m_deletedScene->id())) {
+        if (!m_deletedScene->pages().isEmpty()) {
+            return setError("Scene is not empty");
+        } else {
+            return setError("Error deleting scene");
+        }
+    }
+    return true;
 }
 
 bool GGDeleteSceneCmd::doUndo()
