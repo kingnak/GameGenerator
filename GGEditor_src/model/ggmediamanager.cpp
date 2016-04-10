@@ -146,7 +146,7 @@ QString GGMediaManager::toManagedPath(const QString &file)
 {
     QFileInfo f(file);
     if (!f.exists()) {
-        return false;
+        return QString::null;
     }
 
     QString fPath = f.canonicalFilePath();

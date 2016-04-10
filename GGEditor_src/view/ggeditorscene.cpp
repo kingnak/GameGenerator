@@ -17,12 +17,12 @@
 GGEditorScene::GGEditorScene(GGUIController *ctrl, QObject *parent)
     : QGraphicsScene(parent),
       m_model(NULL),
+      m_modelScene(NULL),
       m_selItem(NULL),
       m_ctrl(NULL),
       m_connectorLine(NULL),
       m_connectSource(NULL),
-      m_inUpdateSelection(false),
-      m_modelScene(NULL)
+      m_inUpdateSelection(false)
 {
     connect(this, SIGNAL(selectionChanged()), this, SLOT(updateSelectionItem()));
     initSelItem();

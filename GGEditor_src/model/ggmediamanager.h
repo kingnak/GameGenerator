@@ -8,9 +8,6 @@
 
 #include <model/ggmediaresolver.h>
 
-class GGEditModel;
-class GGScene;
-
 class GGMediaManagerResolver;
 
 class GGMediaManager
