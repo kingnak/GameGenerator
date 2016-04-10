@@ -124,9 +124,9 @@ void GGMainWindow::newProject()
     m_ctrl->setModel(m_viewModel);
     m_sceneTree->setModel(m_project->editModel());
 
-    connect(m_project->editModel(), SIGNAL(sceneRegistered(GGScene*)), this, SLOT(openSceneView(GGScene*)));
-    connect(m_project->editModel(), SIGNAL(sceneUnregistered(GG::SceneID,GGScene*)), this, SLOT(closeSceneView(GG::SceneID)));
-    connect(m_project->editModel(), SIGNAL(sceneUpdated(GGScene*)), this, SLOT(updateTabs()));
+    connect(m_viewModel, SIGNAL(viewSceneRegistered(GGViewScene*)), this, SLOT(openSceneView(GGViewScene*)));
+    connect(m_viewModel, SIGNAL(viewSceneUnregistered(GGViewScene*)), this, SLOT(closeSceneView(GGViewScene*)));
+    connect(m_viewModel, SIGNAL(sceneUpdated(GGViewScene*)), this, SLOT(updateTabs()));
 
     m_ctrl->createDefaultScene(dlg.initialSceneName());
 
@@ -152,27 +152,25 @@ void GGMainWindow::closeProject()
     updateWindowTitle();
 }
 
-void GGMainWindow::openSceneView(GGScene *scene)
+void GGMainWindow::openSceneView(GGViewScene *scene)
 {
-    GGGraphPanel *p = sceneViewForId(scene->id());
+    GGGraphPanel *p = sceneViewForId(scene->scene()->id());
     if (!p) {
-        GGViewScene *vsc = m_viewModel->getViewSceneForScene(scene);
-        Q_ASSERT(vsc);
-        p = new GGGraphPanel(m_ctrl, vsc);
+        p = new GGGraphPanel(m_ctrl, scene);
 
         // Always go back to pointer after a scene click
         connect(p->editorScene(), SIGNAL(clickedEmptySpace(GGViewScene*,QPointF)), this, SLOT(setPointerMode()));
 
-        ui->tabScenes->addTab(p, scene->name());
-        m_openScenes[scene->id()] = p;
+        ui->tabScenes->addTab(p, scene->scene()->name());
+        m_openScenes[scene->scene()->id()] = p;
     }
     ui->tabScenes->setCurrentWidget(p);
 }
 
-void GGMainWindow::closeSceneView(GG::SceneID id)
+void GGMainWindow::closeSceneView(GGViewScene *scene)
 {
-    GGGraphPanel *p = sceneViewForId(id);
-    m_openScenes.remove(id);
+    GGGraphPanel *p = sceneViewForId(scene->scene()->id());
+    m_openScenes.remove(scene->scene()->id());
     if (p) {
         ui->tabScenes->removeTab(ui->tabScenes->indexOf(p));
         delete p;
@@ -184,7 +182,8 @@ void GGMainWindow::highlightPage(GG::PageID id)
     GGPage *p = m_viewModel->editModel()->getPage(id);
     GGViewPage *vp = m_viewModel->getViewPageForPage(p, p->sceneId());
     GGScene *sc = m_viewModel->editModel()->getScene(p->sceneId());
-    openSceneView(sc);
+    GGViewScene *vs = m_viewModel->getViewSceneForScene(sc);
+    openSceneView(vs);
     currentSceneView()->editorScene()->setSelection(QSet<GGViewPage*> () << vp, QSet<GGViewConnection*> ());
     currentSceneView()->editorView()->ensureVisible(vp->bounds());
     selectPage(vp);
@@ -379,7 +378,8 @@ void GGMainWindow::sceneTreeActivated(const QModelIndex &idx)
 {
     GG::SceneID id = static_cast<GG::SceneID> (m_sceneTree->data(idx, GGSceneTreeModel::SceneIdRole).toInt());
     GGScene *sc = m_viewModel->editModel()->getScene(id);
-    openSceneView(sc);
+    GGViewScene *vs = m_viewModel->getViewSceneForScene(sc);
+    openSceneView(vs);
 }
 
 void GGMainWindow::showSceneTreeContextMenu(const QPoint &point)

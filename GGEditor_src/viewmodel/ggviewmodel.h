@@ -45,6 +45,8 @@ signals:
     void viewConnectionUnregistered(GGViewConnection *vc);
     void pageUpdated(GGViewPage *vp);
     void viewPageUpdated(GGViewPage *vp);
+    void sceneUpdated(GGViewScene *vs);
+    void viewSceneUpdated(GGViewScene *vs);
 
 private slots:
     void regScene(GGScene *scene);

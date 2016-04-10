@@ -12,9 +12,9 @@ class GGEditProject;
 class GGUIController;
 class GGEditorScene;
 class GGViewModel;
+class GGViewScene;
 class GGViewPage;
 class GGViewConnection;
-class GGScene;
 class GGPage;
 class GGConnectionSlot;
 class GGSearchDialog;
@@ -44,8 +44,8 @@ public slots:
     void newProject();
     void closeProject();
 
-    void openSceneView(GGScene *scene);
-    void closeSceneView(GG::SceneID id);
+    void openSceneView(GGViewScene *scene);
+    void closeSceneView(GGViewScene *scene);
 
     void highlightPage(GG::PageID id);
     void selectPage(GGViewPage *page);
