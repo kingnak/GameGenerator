@@ -19,6 +19,8 @@
 #include <model/ggmediaresolver.h>
 #include <view/ggscenetreemodel.h>
 #include <ui/dialogs/ggcreateprojectdialog.h>
+#include <ui/dialogs/ggmediamanagerdialog.h>
+#include <model/ggmediamanager.h>
 
 GGMainWindow::GGMainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -49,6 +51,7 @@ GGMainWindow::GGMainWindow(QWidget *parent) :
     connect(m_ctrl, SIGNAL(creationModeChanged(CreationMode)), this, SLOT(setCreationMode()));
     connect(m_ctrl, SIGNAL(connectingDirect(GGPage*,GGConnectionSlot)), this, SLOT(handleConnectDirect(GGPage*,GGConnectionSlot)));
     connect(ui->action_Variables, SIGNAL(triggered(bool)), this, SLOT(showVariables()));
+    connect(ui->actionMedia, SIGNAL(triggered(bool)), this, SLOT(showMediaManager()));
 
     // Group Click Mode actions
     m_createActions = new QActionGroup(this);
@@ -117,9 +120,9 @@ void GGMainWindow::newProject()
         return;
     }
 
-    m_project = new GGEditProject;
+    m_project = new GGEditProject(dlg.projectBasePath());
+    m_project->mediaManager()->synchronize();
     m_project->setTitle(dlg.projectTitle());
-    m_project->setBasePath(dlg.projectBasePath());
     m_viewModel = new GGViewModel(m_project->editModel());
     m_ctrl->setModel(m_viewModel);
     m_sceneTree->setModel(m_project->editModel());
@@ -320,6 +323,12 @@ void GGMainWindow::showVariables()
     connect(&dlg, SIGNAL(showUsages(GGSearchRequest)), this, SLOT(executeSearch(GGSearchRequest)));
     dlg.exec();
     m_ctrl->applySubcommandsAsGroup(dlg.getExecutedCommands());
+}
+
+void GGMainWindow::showMediaManager()
+{
+    GGMediaManagerDialog dlg(m_project->mediaManager());
+    dlg.exec();
 }
 
 void GGMainWindow::showStartPage()

@@ -16,6 +16,8 @@ public:
     explicit GGEditModel(GGAbstractFactory *factory, GGAbstractMediaResolver *resolver, QObject *parent = 0);
     ~GGEditModel();
 
+    void setMediaResolver(GGAbstractMediaResolver *resolver);
+
     GGAbstractFactory *factory();
 
     bool registerNewScene(GGScene *scene);

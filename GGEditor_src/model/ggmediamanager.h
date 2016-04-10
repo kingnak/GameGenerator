@@ -26,6 +26,9 @@ public:
     static QStringList videoSuffixes();
     static QStringList audioSuffixes();
 
+    QDir baseDir() const;
+    QStringList allMedia() const;
+
     bool init();
     QStringList verify();
     void synchronize();

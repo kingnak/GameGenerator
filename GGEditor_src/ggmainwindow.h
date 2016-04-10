@@ -66,6 +66,7 @@ private slots:
     void setCreationMode();
     void handleConnectDirect(GGPage *page, const GGConnectionSlot &slot);
     void showVariables();
+    void showMediaManager();
     void closeTab(int idx);
     void changeTab(int idx);
     void updateTabs();

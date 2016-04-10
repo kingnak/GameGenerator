@@ -37,6 +37,16 @@ QStringList GGMediaManager::audioSuffixes()
     return QStringList() << "mp3";
 }
 
+QDir GGMediaManager::baseDir() const
+{
+    return m_baseDir;
+}
+
+QStringList GGMediaManager::allMedia() const
+{
+    return m_path2id.keys();
+}
+
 bool GGMediaManager::init()
 {
     if (!m_baseDir.mkpath(PATH_BASE)) {

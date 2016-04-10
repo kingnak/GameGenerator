@@ -4,19 +4,19 @@
 #include <model/ggruntimeproject.h>
 
 class GGEditModel;
+class GGMediaManager;
 
 class GGEditProject : public GGRuntimeProject
 {
 public:
-    GGEditProject();
-
-    void setBasePath(const QString &basePath);
+    GGEditProject(const QString &basePath);
 
     GGEditModel *editModel();
+    GGMediaManager *mediaManager();
 
 private:
     GGEditModel *m_editModel;
-    GGAbstractMediaResolver *m_resolver;
+    GGMediaManager *m_manager;
 };
 
 #endif // GGEDITPROJECT_H

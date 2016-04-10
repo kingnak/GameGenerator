@@ -20,6 +20,11 @@ GGEditModel::~GGEditModel()
     delete m_factory;
 }
 
+void GGEditModel::setMediaResolver(GGAbstractMediaResolver *resolver)
+{
+    m_resolver = resolver;
+}
+
 GGAbstractFactory *GGEditModel::factory()
 {
     return m_factory;
