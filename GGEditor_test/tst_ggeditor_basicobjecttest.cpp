@@ -93,7 +93,7 @@ void GGEditor_BasicObjectTest::testPageCast()
 
 void GGEditor_BasicObjectTest::testRegister()
 {
-    GGEditModel m(new GGSimpleFactory, new GGFileSystemResolver);
+    GGEditModel m(new GGSimpleFactory);
 
     GGStartPage *s1 = m.factory()->createStartPage(GG::InvalidSceneId);
     QVERIFY2(!m.registerNewPage(s1), "Can register page with invalid scene");
@@ -136,7 +136,7 @@ void GGEditor_BasicObjectTest::testRegister()
 
 void GGEditor_BasicObjectTest::testConnectionSlot()
 {
-    GGEditModel m(new GGSimpleFactory, new GGFileSystemResolver);
+    GGEditModel m(new GGSimpleFactory);
     GGScene *sc = m.factory()->createScene();
     m.registerNewScene(sc);
     GGStartPage *s = m.factory()->createStartPage(sc->id());
@@ -163,7 +163,7 @@ void GGEditor_BasicObjectTest::testConnectionSlot()
 
 void GGEditor_BasicObjectTest::testConnectionSlotCanConnect()
 {
-    GGEditModel m(new GGSimpleFactory, new GGFileSystemResolver);
+    GGEditModel m(new GGSimpleFactory);
     GGScene *scn = m.factory()->createScene();
     m.registerNewScene(scn);
     GGStartPage *s = m.factory()->createStartPage(scn->id());

@@ -5,9 +5,9 @@
 #include "ggabstractfactory.h"
 #include <QSet>
 
-GGRuntimeModel::GGRuntimeModel(GGAbstractMediaResolver *resolver, QObject *parent)
+GGRuntimeModel::GGRuntimeModel(QObject *parent)
     : GGAbstractModel(parent),
-      m_resolver(resolver)
+      m_resolver(NULL)
 {
 
 }
@@ -22,6 +22,11 @@ GGRuntimeModel::~GGRuntimeModel()
 GGAbstractMediaResolver *GGRuntimeModel::mediaResolver()
 {
     return m_resolver;
+}
+
+void GGRuntimeModel::setMediaResolver(GGAbstractMediaResolver *resolver)
+{
+    m_resolver = resolver;
 }
 
 GGScene *GGRuntimeModel::getScene(GG::SceneID id) const

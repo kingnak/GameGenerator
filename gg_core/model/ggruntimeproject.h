@@ -8,7 +8,7 @@ class GGRuntimeModel;
 class GG_CORESHARED_EXPORT GGRuntimeProject : public GGProject
 {
 public:
-    GGRuntimeProject(GGAbstractMediaResolver *resolver);
+    GGRuntimeProject();
     ~GGRuntimeProject();
 
     virtual GGAbstractModel *model();
@@ -17,7 +17,6 @@ public:
 
 protected:
     GGRuntimeProject(GGRuntimeModel *model);
-    GGRuntimeProject();
 
 protected:
     GGRuntimeModel *m_runtimeModel;

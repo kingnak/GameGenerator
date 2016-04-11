@@ -19,7 +19,7 @@ GGEditor_ModelCommandTest::GGEditor_ModelCommandTest(QObject *parent) : QObject(
 
 void GGEditor_ModelCommandTest::init()
 {
-    m_model = new GGEditModel(new GGSimpleFactory, new GGFileSystemResolver);
+    m_model = new GGEditModel(new GGSimpleFactory);
     m_fac = new GGEditCommandFactory(m_model);
     m_stk = new GGCommandStack;
     m_s = m_model->factory()->createScene();

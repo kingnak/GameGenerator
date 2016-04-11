@@ -1,20 +1,15 @@
 #include "ggruntimeproject.h"
 #include <model/ggruntimemodel.h>
 
-GGRuntimeProject::GGRuntimeProject(GGAbstractMediaResolver *resolver)
+GGRuntimeProject::GGRuntimeProject()
 {
-    m_runtimeModel = new GGRuntimeModel(resolver);
+    m_runtimeModel = new GGRuntimeModel;
 }
 
 GGRuntimeProject::GGRuntimeProject(GGRuntimeModel *model)
     : m_runtimeModel(model)
 {
 
-}
-
-GGRuntimeProject::GGRuntimeProject()
-    : m_runtimeModel(NULL)
-{
 }
 
 GGRuntimeProject::~GGRuntimeProject()

@@ -8,9 +8,10 @@ class GG_CORESHARED_EXPORT GGRuntimeModel : public GGAbstractModel
 {
     Q_OBJECT
 public:
-    explicit GGRuntimeModel(GGAbstractMediaResolver *resolver, QObject *parent = 0);
+    explicit GGRuntimeModel(QObject *parent = 0);
     ~GGRuntimeModel();
 
+    void setMediaResolver(GGAbstractMediaResolver *resolver);
     GGAbstractMediaResolver *mediaResolver();
 
     GGScene *getScene(GG::SceneID id) const;

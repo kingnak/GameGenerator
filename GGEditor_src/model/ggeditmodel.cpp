@@ -4,8 +4,8 @@
 #include <model/ggconnection.h>
 #include <model/ggabstractfactory.h>
 
-GGEditModel::GGEditModel(GGAbstractFactory *factory, GGAbstractMediaResolver *resolver, QObject *parent)
-    : GGRuntimeModel(resolver, parent),
+GGEditModel::GGEditModel(GGAbstractFactory *factory, QObject *parent)
+    : GGRuntimeModel(parent),
       m_factory(factory),
       m_nextSceneId(0),
       m_nextPageId(0),
@@ -18,11 +18,6 @@ GGEditModel::GGEditModel(GGAbstractFactory *factory, GGAbstractMediaResolver *re
 GGEditModel::~GGEditModel()
 {
     delete m_factory;
-}
-
-void GGEditModel::setMediaResolver(GGAbstractMediaResolver *resolver)
-{
-    m_resolver = resolver;
 }
 
 GGAbstractFactory *GGEditModel::factory()

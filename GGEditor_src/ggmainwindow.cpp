@@ -81,6 +81,8 @@ GGMainWindow::GGMainWindow(QWidget *parent) :
 
     // Store tab text of start page
     ui->tabStart->setWindowTitle(ui->tabScenes->tabText(ui->tabScenes->indexOf(ui->tabStart)));
+
+    closeProject();
 }
 
 GGMainWindow::~GGMainWindow()
@@ -134,10 +136,15 @@ void GGMainWindow::newProject()
     m_ctrl->createDefaultScene(dlg.initialSceneName());
 
     updateWindowTitle();
+    emit projectOpened();
+    emit hasProject(true);
 }
 
 void GGMainWindow::closeProject()
 {
+    emit projectClosed();
+    emit hasProject(false);
+
     while (ui->tabScenes->count() > 0)
         ui->tabScenes->removeTab(0);
 

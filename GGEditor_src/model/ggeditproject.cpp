@@ -5,11 +5,11 @@
 #include <model/ggscenemediamanager.h>
 
 GGEditProject::GGEditProject(const QString &basePath)
+    : GGRuntimeProject(new GGEditModel(new GGSimpleFactory))
 {
-    m_editModel = new GGEditModel(new GGSimpleFactory, NULL);
+    m_editModel = static_cast<GGEditModel *> (m_runtimeModel);
     m_manager = new GGSceneMediaManager(m_editModel, basePath);
     m_editModel->setMediaResolver(m_manager->resolver());
-    m_runtimeModel = m_editModel;
 }
 
 GGEditModel *GGEditProject::editModel()

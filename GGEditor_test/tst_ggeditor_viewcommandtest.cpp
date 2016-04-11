@@ -20,7 +20,7 @@ GGEditor_ViewCommandTest::GGEditor_ViewCommandTest(QObject *parent) : QObject(pa
 
 void GGEditor_ViewCommandTest::init()
 {
-    m_em = new GGEditModel(new GGSimpleFactory, new GGFileSystemResolver);
+    m_em = new GGEditModel(new GGSimpleFactory);
     m_vm = new GGViewModel(m_em);
     m_vf = new GGViewCommandFactory(m_vm);
     m_s = m_em->factory()->createScene();

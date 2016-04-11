@@ -58,6 +58,11 @@ public slots:
 
     void showStartPage();
 
+signals:
+    void projectOpened();
+    void projectClosed();
+    void hasProject(bool yes);
+
 private slots:
     void showError(QString err);
     void setClickMode(QAction *act);

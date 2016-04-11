@@ -14,7 +14,7 @@ void GGEditor_BasicModelTest::initTestCase()
 
 void GGEditor_BasicModelTest::init()
 {
-    model = new GGEditModel(new GGSimpleFactory, new GGFileSystemResolver);
+    model = new GGEditModel(new GGSimpleFactory);
     sc = new ModelSignalChecker(model);
     scn = model->factory()->createScene();
     model->registerNewScene(scn);
