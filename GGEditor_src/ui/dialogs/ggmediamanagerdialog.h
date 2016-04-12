@@ -9,34 +9,7 @@ class GGMediaManagerDialog;
 }
 
 class GGMediaManager;
-
-class MediaTreeItem;
-
-class GGMediaTreeModel : public QAbstractItemModel
-{
-    Q_OBJECT
-public:
-    enum {
-        PathRole = Qt::UserRole
-    };
-    GGMediaTreeModel(GGMediaManager *mgm, QObject *parent = 0);
-    ~GGMediaTreeModel();
-
-    QVariant data(const QModelIndex &index, int role) const;
-    QVariant headerData(int section, Qt::Orientation orientation, int role) const;
-    int rowCount(const QModelIndex &parent) const;
-    int columnCount(const QModelIndex &parent) const;
-
-    QModelIndex index(int row, int column, const QModelIndex &parent) const;
-    QModelIndex parent(const QModelIndex &child) const;
-
-public slots:
-    void reload();
-
-private:
-    GGMediaManager *m_manager;
-    MediaTreeItem *m_root;
-};
+class GGMediaTreeModel;
 
 class GGMediaManagerDialog : public QDialog
 {
@@ -48,6 +21,12 @@ public:
 
 public slots:
     void refresh();
+
+private slots:
+    void treeItemSelected(QModelIndex idx);
+
+private:
+    void showDir(QModelIndex idx);
 
 private:
     Ui::GGMediaManagerDialog *ui;

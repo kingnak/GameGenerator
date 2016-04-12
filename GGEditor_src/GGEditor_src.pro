@@ -61,7 +61,8 @@ SOURCES += \
     ui/dialogs/ggcreateprojectdialog.cpp \
     model/ggmediamanager.cpp \
     model/ggscenemediamanager.cpp \
-    ui/dialogs/ggmediamanagerdialog.cpp
+    ui/dialogs/ggmediamanagerdialog.cpp \
+    view/ggmediatreemodel.cpp
 
 HEADERS += \
     model/ggeditmodel.h \
@@ -118,7 +119,8 @@ HEADERS += \
     ui/dialogs/ggcreateprojectdialog.h \
     model/ggmediamanager.h \
     model/ggscenemediamanager.h \
-    ui/dialogs/ggmediamanagerdialog.h
+    ui/dialogs/ggmediamanagerdialog.h \
+    view/ggmediatreemodel.h
 unix {
     target.path = /usr/lib
     INSTALLS += target
