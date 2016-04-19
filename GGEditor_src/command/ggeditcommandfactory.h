@@ -13,6 +13,7 @@ public:
     GGCreateSceneCmd *createScene(const QString &name);
     GGDeleteSceneCmd *deleteScene(GGScene *scene);
     GGRenameSceneCmd *renameScene(GGScene *scene, const QString &newName);
+    GGRenameSceneMediaDirCmd *renameSceneMediaDir(GGScene *scene, const QString &newName);
 
     GGCreatePageCmd *createStartPage(GGScene *scene);
     GGCreatePageCmd *createEndPage(GGScene *scene);

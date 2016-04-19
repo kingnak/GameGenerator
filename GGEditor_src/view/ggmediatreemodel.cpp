@@ -8,8 +8,8 @@ const QString GGMediaTreeModel::ENTRY_FILE("FILE");
 class MediaTreeItem
 {
 public:
-    explicit MediaTreeItem(QString path, QString disp, QString type, MediaTreeItem *parentItem = 0)
-        : m_path(path), m_disp(disp), m_type(type), m_parentItem(parentItem)
+    explicit MediaTreeItem(QString path, QString disp, QString type, QString id = QString::null, MediaTreeItem *parentItem = 0)
+        : m_path(path), m_disp(disp), m_type(type), m_id(id), m_parentItem(parentItem)
     {
     }
 
@@ -28,6 +28,8 @@ public:
                 return m_path;
             } else if (role == GGMediaTreeModel::TypeRole) {
                 return m_type;
+            } else if (role == GGMediaTreeModel::IdRole) {
+                return m_id;
             }
         }
         return QVariant();
@@ -40,6 +42,7 @@ private:
     QString m_path;
     QString m_disp;
     QString m_type;
+    QString m_id;
     MediaTreeItem *m_parentItem;
 };
 
@@ -133,7 +136,8 @@ void GGMediaTreeModel::reload()
     delete m_root;
     m_root = new MediaTreeItem(m_manager->baseDir().absolutePath(), "Media", "DIR", NULL);
 
-    QStringList lst = m_manager->allMedia();
+    m_manager->synchronize();
+    QStringList lst = m_manager->allMediaWithDirs();
     qSort(lst);
 
     QMap<QString, MediaTreeItem*> items;
@@ -143,12 +147,14 @@ void GGMediaTreeModel::reload()
         QStringList parts = path.split('/');
         QString line;
         MediaTreeItem *parent = m_root;
-        foreach (QString p, parts) {
-            line += p;
+        for (int i = 0; i < parts.size(); ++i) {
+            line += parts[i];
             if (!items.contains(line)) {
-                QString path = m_manager->baseDir().absoluteFilePath(line);
-                QString type = QFileInfo(path).isDir() ? ENTRY_DIR : ENTRY_FILE;
-                MediaTreeItem *i = new MediaTreeItem(path, p, type, parent);
+                QString filePath = m_manager->baseDir().absoluteFilePath(line);
+                QString type = QFileInfo(filePath).isDir() ? ENTRY_DIR : ENTRY_FILE;
+                QString disp = m_manager->getDisplayString(parts[i], i);
+                QString id = m_manager->getIdForFilePath(line);
+                MediaTreeItem *i = new MediaTreeItem(filePath, disp, type, id, parent);
                 items[line] = i;
                 parent->appendChild(i);
                 parent = i;

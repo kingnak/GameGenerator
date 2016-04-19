@@ -47,6 +47,11 @@ QStringList GGMediaManager::allMedia() const
     return m_path2id.keys();
 }
 
+QStringList GGMediaManager::allMediaWithDirs() const
+{
+    return m_dirs.toList() + allMedia();
+}
+
 bool GGMediaManager::init()
 {
     if (!m_baseDir.mkpath(PATH_BASE)) {
@@ -72,6 +77,11 @@ QStringList GGMediaManager::verify()
 
 void GGMediaManager::synchronize()
 {
+    QStringList dirs = getDefaultMediaPaths();
+    foreach (QString d, dirs) {
+        m_baseDir.mkpath(d);
+    }
+
     for (QMap<QString, QString>::iterator it = m_path2id.begin(); it != m_path2id.end(); ++it) {
         QFileInfo f(m_baseDir.absoluteFilePath(it.key()));
         if (!f.exists()) {
@@ -81,6 +91,7 @@ void GGMediaManager::synchronize()
         }
     }
 
+    m_dirs.clear();
     synchDir(m_baseDir);
 }
 
@@ -138,12 +149,12 @@ QString GGMediaManager::checkIn(const QString &file, bool moveFile)
     return sId;
 }
 
-bool GGMediaManager::isFileManaged(const QString &file)
+bool GGMediaManager::isFileManaged(const QString &file) const
 {
     return m_path2id.contains(toManagedPath(file));
 }
 
-bool GGMediaManager::isFilePathInManager(const QString &file)
+bool GGMediaManager::isFilePathInManager(const QString &file) const
 {
     QString relPath = toManagedPath(file);
     if (relPath.isNull()) {
@@ -152,7 +163,26 @@ bool GGMediaManager::isFilePathInManager(const QString &file)
     return true;
 }
 
-QString GGMediaManager::toManagedPath(const QString &file)
+QString GGMediaManager::getIdForFilePath(const QString &file) const
+{
+    return m_path2id.value(file);
+}
+
+QString GGMediaManager::getDisplayString(const QString &path, int level)
+{
+    if (level == 0) {
+        if (path == PATH_IMAGE) {
+            return "Images";
+        } else if (path == PATH_AUDIO) {
+            return "Sounds";
+        } else if (path == PATH_VIDEO) {
+            return "Videos";
+        }
+    }
+    return path;
+}
+
+QString GGMediaManager::toManagedPath(const QString &file) const
 {
     QFileInfo f(file);
     if (!f.exists()) {
@@ -201,8 +231,14 @@ void GGMediaManager::synchDir(QDir dir)
 
     lst = dir.entryList(QDir::Dirs | QDir::NoDotAndDotDot);
     foreach (QString s, lst) {
+        m_dirs << m_baseDir.relativeFilePath(dir.absoluteFilePath(s));
         synchDir(dir.absoluteFilePath(s));
     }
+}
+
+QStringList GGMediaManager::getDefaultMediaPaths()
+{
+    return QStringList() << PATH_IMAGE << PATH_AUDIO << PATH_VIDEO;
 }
 
 /////////////////
@@ -230,4 +266,9 @@ QString GGMediaManagerResolver::resolveTypeHint(const QString &media)
 {
     QString path = m_manager->m_id2path[media];
     return GGFileSystemResolver::resolveTypeHint(path);
+}
+
+bool GGMediaManagerResolver::isValid(const QString &media)
+{
+    return m_manager->m_id2path.contains(media);
 }

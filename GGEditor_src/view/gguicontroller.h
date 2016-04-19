@@ -8,6 +8,7 @@
 
 #include <model/ggconnectionslot.h>
 
+class GGEditProject;
 class GGViewModel;
 class GGViewScene;
 class GGViewCommandFactory;
@@ -34,9 +35,10 @@ public:
     ~GGUIController();
 
     GGViewModel *model() { return m_model; }
+    GGEditProject *project() { return m_project; }
     GGAbstractMediaResolver *mediaResolver();
 
-    void setModel(GGViewModel *model);
+    void setProject(GGEditProject *project, GGViewModel *model);
 
     void applySubcommandsAsGroup(GGCommandStack *stack);
     void applySubcommandsAsSingle(GGCommandStack *stack);
@@ -57,7 +59,7 @@ public slots:
     void createDefaultScene(const QString &name);
     void createScene(const QString &name);
     void deleteScene(GGScene *scene);
-    void renameScene(GGScene *scene, const QString &newName);
+    void renameScene(GGScene *scene, const QString &newName, const QString &newMedia = QString::null);
 
     void changePageGeometry(GGViewPage *page, QRect rect);
     void changeMultiplePagesGeometry(QList<QPair<GGViewPage*,QRect> > changes);
@@ -104,6 +106,7 @@ private:
     bool checkSaveCheckpoint();
 
 private:
+    GGEditProject *m_project;
     GGViewModel *m_model;
     GGCommandStack *m_stack;
     GGViewCommandFactory *m_cmdFactory;

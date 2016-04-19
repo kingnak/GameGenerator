@@ -2,6 +2,7 @@
 #define GGMEDIAMANAGER_H
 
 #include <QDir>
+#include <QSet>
 #include <QMap>
 #include <QString>
 #include <QStringList>
@@ -28,27 +29,33 @@ public:
 
     QDir baseDir() const;
     QStringList allMedia() const;
+    QStringList allMediaWithDirs() const;
 
     bool init();
     QStringList verify();
-    void synchronize();
+    virtual void synchronize();
     QString checkIn(const QString &file, bool moveFile = false);
 
-    bool isFileManaged(const QString &file);
-    bool isFilePathInManager(const QString &file);
+    bool isFileManaged(const QString &file) const;
+    bool isFilePathInManager(const QString &file) const;
+    QString getIdForFilePath(const QString &file) const;
 
     GGMediaManagerResolver *resolver() { return m_resolver; }
 
+    virtual QString getDisplayString(const QString &path, int level);
+
 protected:
-    QString toManagedPath(const QString &file);
+    QString toManagedPath(const QString &file) const;
     virtual QString getCheckInPath(const QString &file);
 
     void synchDir(QDir dir);
+    virtual QStringList getDefaultMediaPaths();
 
 protected:
     QDir m_baseDir;
     QMap<QString, QString> m_id2path;
     QMap<QString, QString> m_path2id;
+    QSet<QString> m_dirs;
 
     quint32 m_nextMediaId;
     static const quint32 INVALID_MEDIA_ID = 0;
@@ -68,6 +75,7 @@ public:
     virtual QIODevice *resolve(const QString &media);
     virtual QString resolveName(const QString &media);
     virtual QString resolveTypeHint(const QString &media);
+    virtual bool isValid(const QString &media);
 
 private:
     GGMediaManager *m_manager;

@@ -24,6 +24,7 @@ class GGVariable;
 class GGCreateSceneCmd;
 class GGDeleteSceneCmd;
 class GGRenameSceneCmd;
+class GGRenameSceneMediaDirCmd;
 class GGCreatePageCmd;
 class GGDeletePageCmd;
 class GGCreateConnectionCmd;
@@ -47,6 +48,7 @@ public:
     virtual GGCreateSceneCmd *createScene(const QString &name) = 0;
     virtual GGDeleteSceneCmd *deleteScene(GGScene *scene) = 0;
     virtual GGRenameSceneCmd *renameScene(GGScene *scene, const QString &newName) = 0;
+    virtual GGRenameSceneMediaDirCmd *renameSceneMediaDir(GGScene *scene, const QString &newName) = 0;
 
     virtual GGCreatePageCmd *createStartPage(GGScene *scene) = 0;
     virtual GGCreatePageCmd *createEndPage(GGScene *scene) = 0;

@@ -19,11 +19,17 @@ public:
     explicit GGMediaManagerDialog(GGMediaManager *mgm, QWidget *parent = 0);
     ~GGMediaManagerDialog();
 
+    QString getSelectedMediaId();
+
 public slots:
     void refresh();
+    void setSelectedDirectory(const QString &dir);
+    void expandAll();
+    void accept();
 
 private slots:
     void treeItemSelected(QModelIndex idx);
+    void on_btnSynch_clicked();
 
 private:
     void showDir(QModelIndex idx);
@@ -32,6 +38,8 @@ private:
     Ui::GGMediaManagerDialog *ui;
 
     GGMediaTreeModel *m_tree;
+    QString m_initSelection;
+    QString m_acceptedSelection;
 };
 
 #endif // GGMEDIAMANAGERDIALOG_H

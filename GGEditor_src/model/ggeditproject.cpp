@@ -12,12 +12,17 @@ GGEditProject::GGEditProject(const QString &basePath)
     m_editModel->setMediaResolver(m_manager->resolver());
 }
 
+GGEditProject::~GGEditProject()
+{
+    delete m_manager;
+}
+
 GGEditModel *GGEditProject::editModel()
 {
     return m_editModel;
 }
 
-GGMediaManager *GGEditProject::mediaManager()
+GGSceneMediaManager *GGEditProject::mediaManager()
 {
     return m_manager;
 }

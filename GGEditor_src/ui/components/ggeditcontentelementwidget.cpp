@@ -1,12 +1,18 @@
 #include "ggeditcontentelementwidget.h"
 #include "ui_ggeditcontentelementwidget.h"
 #include <model/ggcontentelement.h>
+#include <model/ggscenemediamanager.h>
 #include <model/ggmediaresolver.h>
-#include <QFileDialog>
+#include <model/ggscene.h>
+#include <ui/dialogs/ggmediamanagerdialog.h>
+
+#define IMAGE_ID_PROPERTY "IMAGE_ID"
 
 GGEditContentElementWidget::GGEditContentElementWidget(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::GGEditContentElementWidget)
+    ui(new Ui::GGEditContentElementWidget),
+    m_manager(NULL),
+    m_curScene(NULL)
 {
     ui->setupUi(this);
     ui->radImg->setChecked(true);
@@ -17,6 +23,11 @@ GGEditContentElementWidget::~GGEditContentElementWidget()
     delete ui;
 }
 
+void GGEditContentElementWidget::setManager(GGSceneMediaManager *manager)
+{
+    m_manager = manager;
+}
+
 GGContentElement *GGEditContentElementWidget::getContentElement()
 {
     if (ui->radText->isChecked()) {
@@ -25,21 +36,22 @@ GGContentElement *GGEditContentElementWidget::getContentElement()
         return t;
     } else if (ui->radImg->isChecked()) {
         GGImageContent *i = new GGImageContent;
-        i->setImageFilePath(ui->txtPathImage->text());
+        i->setImageFilePath(ui->txtPathImage->property(IMAGE_ID_PROPERTY).toString());
         return i;
     }
 
     return NULL;
 }
 
-void GGEditContentElementWidget::setContentElement(GGContentElement *elem, GGAbstractMediaResolver *resolver)
+void GGEditContentElementWidget::setContentElement(GGContentElement *elem, GGScene *scene)
 {
     if (elem) {
         if (GGImageContent *i = dynamic_cast<GGImageContent*>(elem)) {
             ui->radImg->setChecked(true);
-            QString path = resolver->resolveName(i->imageFilePath());
+            QString path = m_manager->resolver()->resolveName(i->imageFilePath());
             ui->txtPathImage->setText(path);
-            loadPreviewImage(i->imageFilePath(), resolver);
+            ui->txtPathImage->setProperty(IMAGE_ID_PROPERTY, i->imageFilePath());
+            loadPreviewImage(i->imageFilePath(), m_manager->resolver());
         } else if (GGTextContent *t = dynamic_cast<GGTextContent*>(elem)) {
             ui->radText->setChecked(true);
             QTextDocument *doc = new QTextDocument;
@@ -49,18 +61,29 @@ void GGEditContentElementWidget::setContentElement(GGContentElement *elem, GGAbs
     } else {
         ui->radImg->setChecked(true);
     }
+    m_curScene = scene;
     changePage();
 }
 
 void GGEditContentElementWidget::on_btnBrowseImage_clicked()
 {
-    QString path = QFileDialog::getOpenFileName(this, tr("Select image"), QString(), tr("Images (*.png *.gif *.jpg *.jpeg)"));
-    if (!path.isNull()) {
+    GGMediaManagerDialog dlg(m_manager);
+    if (m_curScene) {
+        QString baseDir = m_curScene->mediaDir();
+        if (ui->radAnim->isChecked() || ui->radImg->isChecked()) {
+            baseDir += "/" + GGSceneMediaManager::PATH_IMAGE;
+        } else if (ui->radVideo->isChecked()) {
+            baseDir += "/" + GGSceneMediaManager::PATH_VIDEO;
+        }
+        dlg.setSelectedDirectory(baseDir);
+    }
+
+    if (dlg.exec() == QDialog::Accepted) {
+        QString id = dlg.getSelectedMediaId();
+        QString path = m_manager->resolver()->resolveName(id);
         ui->txtPathImage->setText(path);
-        // TODO: This should be done in MediaManager in future.
-        // For now, use a local FileSystemResolver
-        GGFileSystemResolver rev;
-        loadPreviewImage(path, &rev);
+        ui->txtPathImage->setProperty(IMAGE_ID_PROPERTY, id);
+        loadPreviewImage(id, m_manager->resolver());
     }
 }
 

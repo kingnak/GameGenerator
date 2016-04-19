@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>403</width>
-    <height>187</height>
+    <height>232</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -66,6 +66,20 @@
     </widget>
    </item>
    <item>
+    <widget class="QLabel" name="label_4">
+     <property name="text">
+      <string>Initial Scene media directory</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLineEdit" name="txtDefaultSceneDir">
+     <property name="text">
+      <string>intro</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -105,12 +119,12 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>266</x>
-     <y>177</y>
+     <x>275</x>
+     <y>222</y>
     </hint>
     <hint type="destinationlabel">
      <x>157</x>
-     <y>274</y>
+     <y>231</y>
     </hint>
    </hints>
   </connection>
@@ -121,12 +135,12 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>334</x>
-     <y>177</y>
+     <x>343</x>
+     <y>222</y>
     </hint>
     <hint type="destinationlabel">
      <x>286</x>
-     <y>274</y>
+     <y>231</y>
     </hint>
    </hints>
   </connection>
@@ -175,6 +189,22 @@
     <hint type="destinationlabel">
      <x>215</x>
      <y>146</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>txtDefaultSceneDir</sender>
+   <signal>textEdited(QString)</signal>
+   <receiver>GGCreateProjectDialog</receiver>
+   <slot>checkOk()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>126</x>
+     <y>177</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>93</x>
+     <y>191</y>
     </hint>
    </hints>
   </connection>

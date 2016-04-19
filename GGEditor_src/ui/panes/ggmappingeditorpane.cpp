@@ -6,6 +6,7 @@
 #include <viewmodel/ggviewmodel.h>
 #include <model/ggpage.h>
 #include <model/ggcontentelement.h>
+#include <model/ggeditproject.h>
 
 GGMappingEditorPane::GGMappingEditorPane(QWidget *parent) :
     QWidget(parent),
@@ -72,8 +73,8 @@ void GGMappingEditorPane::on_txtCaption_editingFinished()
 
 void GGMappingEditorPane::on_btnChangeContent_clicked()
 {
-    GGEditContentElementDialog dlg;
-    dlg.setContentElement(m_page->content(), m_ctrl->mediaResolver());
+    GGEditContentElementDialog dlg(m_ctrl->project()->mediaManager());
+    dlg.setContentElement(m_page->content(), m_page->scene());
     if (dlg.exec() == QDialog::Accepted) {
         GGContentElement *e = dlg.getContentElement();
         m_ctrl->changeContentElement(m_page, e);

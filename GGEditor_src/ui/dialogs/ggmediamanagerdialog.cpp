@@ -68,9 +68,41 @@ GGMediaManagerDialog::~GGMediaManagerDialog()
     delete ui;
 }
 
+QString GGMediaManagerDialog::getSelectedMediaId()
+{
+    return m_acceptedSelection;
+}
+
 void GGMediaManagerDialog::refresh()
 {
+    m_acceptedSelection = QString::null;
     m_tree->reload();
+    setSelectedDirectory(m_initSelection);
+}
+
+void GGMediaManagerDialog::setSelectedDirectory(const QString &dir)
+{
+    m_initSelection = dir;
+    if (!m_initSelection.isEmpty()) {
+        QSortFilterProxyModel *m = static_cast<QSortFilterProxyModel*> (ui->treeFolders->model());
+        QModelIndexList lst = m->match(m->index(0,0), GGMediaTreeModel::PathRole, dir, 1, Qt::MatchRecursive | Qt::MatchEndsWith);
+        if (lst.size() == 1) {
+            ui->treeFolders->setCurrentIndex(lst[0]);
+            treeItemSelected(lst[0]);
+        }
+    }
+}
+
+void GGMediaManagerDialog::expandAll()
+{
+    ui->treeFolders->expandAll();
+}
+
+void GGMediaManagerDialog::accept()
+{
+    QModelIndex idx = ui->lstMedia->currentIndex();
+    m_acceptedSelection = ui->lstMedia->model()->data(idx, GGMediaTreeModel::IdRole).toString();
+    QDialog::accept();
 }
 
 void GGMediaManagerDialog::treeItemSelected(QModelIndex idx)
@@ -81,4 +113,10 @@ void GGMediaManagerDialog::treeItemSelected(QModelIndex idx)
     l->setRootIndex(idx);
     idx = l->mapFromSource(idx);
     ui->lstMedia->setRootIndex(idx);
+}
+
+void GGMediaManagerDialog::on_btnSynch_clicked()
+{
+    //m_initSelection = QString::null;
+    refresh();
 }

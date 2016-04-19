@@ -20,7 +20,8 @@
 #include <view/ggscenetreemodel.h>
 #include <ui/dialogs/ggcreateprojectdialog.h>
 #include <ui/dialogs/ggmediamanagerdialog.h>
-#include <model/ggmediamanager.h>
+#include <model/ggscenemediamanager.h>
+#include <ui/dialogs/ggrenamescenedlg.h>
 
 GGMainWindow::GGMainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -123,10 +124,9 @@ void GGMainWindow::newProject()
     }
 
     m_project = new GGEditProject(dlg.projectBasePath());
-    m_project->mediaManager()->synchronize();
     m_project->setTitle(dlg.projectTitle());
     m_viewModel = new GGViewModel(m_project->editModel());
-    m_ctrl->setModel(m_viewModel);
+    m_ctrl->setProject(m_project, m_viewModel);
     m_sceneTree->setModel(m_project->editModel());
 
     connect(m_viewModel, SIGNAL(viewSceneRegistered(GGViewScene*)), this, SLOT(openSceneView(GGViewScene*)));
@@ -134,6 +134,8 @@ void GGMainWindow::newProject()
     connect(m_viewModel, SIGNAL(sceneUpdated(GGViewScene*)), this, SLOT(updateTabs()));
 
     m_ctrl->createDefaultScene(dlg.initialSceneName());
+
+    m_project->mediaManager()->synchronize();
 
     updateWindowTitle();
     emit projectOpened();
@@ -150,7 +152,7 @@ void GGMainWindow::closeProject()
 
     m_openScenes.clear();
     m_sceneTree->setModel(NULL);
-    m_ctrl->setModel(NULL);
+    m_ctrl->setProject(NULL, NULL);
     delete m_viewModel;
     m_viewModel = NULL;
     delete m_project;
@@ -335,6 +337,7 @@ void GGMainWindow::showVariables()
 void GGMainWindow::showMediaManager()
 {
     GGMediaManagerDialog dlg(m_project->mediaManager());
+    dlg.expandAll();
     dlg.exec();
 }
 
@@ -432,10 +435,10 @@ void GGMainWindow::renameSceneAction()
     GG::SceneID id = static_cast<GG::SceneID> (static_cast<QAction*> (sender())->data().toInt());
     GGScene *s = m_viewModel->editModel()->getScene(id);
     if (s) {
-        QString oldName = s->name();
-        QString newName = QInputDialog::getText(this, "Rename Scene", "Enter new name:", QLineEdit::Normal, oldName);
-        if (!newName.isEmpty()) {
-            m_ctrl->renameScene(s, newName);
+        GGRenameSceneDlg dlg(s, this);
+        if (dlg.exec() == QDialog::Accepted) {
+            QString newMedia = dlg.renameDir() ? dlg.newMedia() : QString::null;
+            m_ctrl->renameScene(s, dlg.newName(), newMedia);
         }
     }
 }

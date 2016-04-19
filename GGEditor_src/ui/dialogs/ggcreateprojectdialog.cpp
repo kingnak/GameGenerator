@@ -3,10 +3,12 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QDir>
+#include <ggutilities.h>
 
 GGCreateProjectDialog::GGCreateProjectDialog(QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::GGCreateProjectDialog)
+    ui(new Ui::GGCreateProjectDialog),
+    m_mediaEdited(false)
 {
     ui->setupUi(this);
     checkOk();
@@ -67,10 +69,35 @@ void GGCreateProjectDialog::on_btnBrowse_clicked()
     checkOk();
 }
 
+void GGCreateProjectDialog::on_txtDefaultSceneName_textEdited()
+{
+    if (!m_mediaEdited) {
+        ui->txtDefaultSceneDir->setText(GGUtilities::sanatizeFileName(ui->txtDefaultSceneName->text()));
+    }
+}
+
+void GGCreateProjectDialog::on_txtDefaultSceneDir_textEdited()
+{
+    if (ui->txtDefaultSceneDir->text().isEmpty()) {
+        m_mediaEdited = false;
+    } else {
+        m_mediaEdited = true;
+    }
+}
+
+void GGCreateProjectDialog::on_txtDefaultSceneDir_editingFinished()
+{
+    ui->txtDefaultSceneDir->setText(GGUtilities::sanatizeFileName(ui->txtDefaultSceneDir->text()));
+    if (ui->txtDefaultSceneDir->text().isEmpty()) {
+        ui->txtDefaultSceneDir->setText(GGUtilities::sanatizeFileName(ui->txtDefaultSceneName->text()));
+    }
+}
+
 void GGCreateProjectDialog::checkOk()
 {
     bool ok = !ui->txtTitle->text().isEmpty();
     ok &= !ui->txtPath->text().isEmpty();
     ok &= !ui->txtDefaultSceneName->text().isEmpty();
+    ok &= !ui->txtDefaultSceneDir->text().isEmpty();
     ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(ok);
 }

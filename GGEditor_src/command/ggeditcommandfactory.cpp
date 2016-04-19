@@ -26,6 +26,11 @@ GGRenameSceneCmd *GGEditCommandFactory::renameScene(GGScene *scene, const QStrin
     return new GGRenameSceneCmd(m_model, scene, newName);
 }
 
+GGRenameSceneMediaDirCmd *GGEditCommandFactory::renameSceneMediaDir(GGScene *scene, const QString &newName)
+{
+    return new GGRenameSceneMediaDirCmd(m_model, scene, newName);
+}
+
 GGCreatePageCmd *GGEditCommandFactory::createStartPage(GGScene *scene)
 {
     return new GGCreatePageCmd(m_model, scene, GGCreatePageCmd::StartPage);

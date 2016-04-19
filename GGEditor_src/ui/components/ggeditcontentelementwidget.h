@@ -5,6 +5,8 @@
 
 class GGContentElement;
 class GGAbstractMediaResolver;
+class GGSceneMediaManager;
+class GGScene;
 
 namespace Ui {
 class GGEditContentElementWidget;
@@ -18,10 +20,11 @@ public:
     explicit GGEditContentElementWidget(QWidget *parent = 0);
     ~GGEditContentElementWidget();
 
+    void setManager(GGSceneMediaManager *manager);
     GGContentElement *getContentElement();
 
 public slots:
-    void setContentElement(GGContentElement *elem, GGAbstractMediaResolver *resolver);
+    void setContentElement(GGContentElement *elem, GGScene *scene);
 
 private slots:
     void changePage();
@@ -31,6 +34,8 @@ private slots:
 
 private:
     Ui::GGEditContentElementWidget *ui;
+    GGSceneMediaManager *m_manager;
+    GGScene *m_curScene;
 };
 
 #endif // GGEDITCONTENTELEMENTWIDGET_H

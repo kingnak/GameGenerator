@@ -60,6 +60,27 @@ private:
 
 ///////////////////////////
 
+class GGRenameSceneMediaDirCmd : public GGAbstractModelCommand
+{
+public:
+    GGRenameSceneMediaDirCmd(GGEditModel *model, GGScene *scene, const QString &newName);
+    ~GGRenameSceneMediaDirCmd();
+
+    QString description() const;
+
+protected:
+    bool doExecute();
+    bool doUndo();
+    bool doRedo();
+
+private:
+    GGScene *m_scene;
+    QString m_newName;
+    QString m_oldName;
+};
+
+///////////////////////////
+
 class GGDeleteSceneCmd : public GGAbstractModelCommand
 {
 public:

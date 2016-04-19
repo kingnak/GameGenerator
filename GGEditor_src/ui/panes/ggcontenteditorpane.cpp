@@ -4,6 +4,7 @@
 #include <model/ggpage.h>
 #include <model/ggcontentelement.h>
 #include <view/gguicontroller.h>
+#include <model/ggeditproject.h>
 
 GGContentEditorPane::GGContentEditorPane(QWidget *parent) :
     QWidget(parent),
@@ -39,8 +40,8 @@ void GGContentEditorPane::on_txtCaption_editingFinished()
 
 void GGContentEditorPane::on_btnChange_clicked()
 {
-    GGEditContentElementDialog dlg;
-    dlg.setContentElement(m_page->content(), m_ctrl->mediaResolver());
+    GGEditContentElementDialog dlg(this->m_ctrl->project()->mediaManager());
+    dlg.setContentElement(m_page->content(), m_page->scene());
     if (dlg.exec() == QDialog::Accepted) {
         GGContentElement *e = dlg.getContentElement();
         m_ctrl->changeContentElement(m_page, e);

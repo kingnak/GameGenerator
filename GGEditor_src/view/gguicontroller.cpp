@@ -1,4 +1,5 @@
 #include "gguicontroller.h"
+#include <model/ggeditproject.h>
 #include <model/ggeditmodel.h>
 #include <model/ggsimplefactory.h>
 #include <model/ggscene.h>
@@ -35,15 +36,20 @@ GGAbstractMediaResolver *GGUIController::mediaResolver()
     return m_model->editModel()->mediaResolver();
 }
 
-void GGUIController::setModel(GGViewModel *model)
+void GGUIController::setProject(GGEditProject *project, GGViewModel *model)
 {
     delete m_cmdFactory;
     m_stack->clear();
+    m_project = project;
     m_model = model;
-    if (m_model)
+
+    if (m_project) {
+        Q_ASSERT(m_model);
+        Q_ASSERT(m_model->editModel() == m_project->editModel());
         m_cmdFactory = new GGViewCommandFactory(m_model);
-    else
+    } else {
         m_cmdFactory = NULL;
+    }
     emit modelReset(m_model);
     saveCheckpoint();
 }
@@ -111,9 +117,19 @@ void GGUIController::deleteScene(GGScene *scene)
     doExecCmd(m_cmdFactory->deleteScene(scene));
 }
 
-void GGUIController::renameScene(GGScene *scene, const QString &newName)
+void GGUIController::renameScene(GGScene *scene, const QString &newName, const QString &newMedia)
 {
-    doExecCmd(m_cmdFactory->renameScene(scene, newName));
+    GGAbstractCommand *cmd;
+    if (!newMedia.isNull()) {
+        GGCommandGroup *grp = new GGCommandGroup;
+        cmd = grp;
+
+        grp->addCommand(m_cmdFactory->renameScene(scene, newName));
+        grp->addCommand(m_cmdFactory->renameSceneMediaDir(scene, newMedia));
+    } else {
+        cmd = m_cmdFactory->renameScene(scene, newName);
+    }
+    doExecCmd(cmd);
 }
 
 void GGUIController::changePageGeometry(GGViewPage *page, QRect rect)

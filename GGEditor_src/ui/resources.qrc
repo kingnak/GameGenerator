@@ -17,6 +17,7 @@
         <file>icons/pointer.png</file>
         <file alias="pointer">icons/pointer2.png</file>
         <file alias="link">icons/link.png</file>
+        <file alias="reload">icons/reload.png</file>
     </qresource>
     <qresource prefix="/search">
         <file alias="function">icons/func.png</file>

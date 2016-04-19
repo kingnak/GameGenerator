@@ -24,11 +24,16 @@ public slots:
 
 private slots:
     void on_btnBrowse_clicked();
+    void on_txtDefaultSceneName_textEdited();
+    void on_txtDefaultSceneDir_textEdited();
+    void on_txtDefaultSceneDir_editingFinished();
 
     void checkOk();
 
 private:
     Ui::GGCreateProjectDialog *ui;
+
+    bool m_mediaEdited;
 };
 
 #endif // GGCREATEPROJECTDIALOG_H

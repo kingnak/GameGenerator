@@ -95,6 +95,45 @@ bool GGRenameSceneCmd::doRedo()
 
 ///////////////////////////
 
+GGRenameSceneMediaDirCmd::GGRenameSceneMediaDirCmd(GGEditModel *model, GGScene *scene, const QString &newName)
+    : GGAbstractModelCommand(model),
+      m_scene(scene),
+      m_newName(newName)
+{
+
+}
+
+GGRenameSceneMediaDirCmd::~GGRenameSceneMediaDirCmd()
+{
+
+}
+
+QString GGRenameSceneMediaDirCmd::description() const
+{
+    return "Rename scene media directory";
+}
+
+bool GGRenameSceneMediaDirCmd::doExecute()
+{
+    m_oldName = m_scene->mediaDir();
+    m_scene->setMediaDir(m_newName);
+    return true;
+}
+
+bool GGRenameSceneMediaDirCmd::doUndo()
+{
+    m_scene->setMediaDir(m_oldName);
+    return true;
+}
+
+bool GGRenameSceneMediaDirCmd::doRedo()
+{
+    m_scene->setMediaDir(m_newName);
+    return true;
+}
+
+///////////////////////////
+
 GGDeleteSceneCmd::GGDeleteSceneCmd(GGEditModel *model, GGScene *scene)
     : GGAbstractModelCommand(model),
       m_deletedScene(scene)

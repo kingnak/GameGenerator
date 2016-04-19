@@ -14,7 +14,8 @@ class GGMediaTreeModel : public QAbstractItemModel
 public:
     enum {
         PathRole = Qt::UserRole,
-        TypeRole
+        TypeRole,
+        IdRole
     };
 
     static const QString ENTRY_DIR;

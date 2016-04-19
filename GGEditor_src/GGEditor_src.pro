@@ -62,7 +62,8 @@ SOURCES += \
     model/ggmediamanager.cpp \
     model/ggscenemediamanager.cpp \
     ui/dialogs/ggmediamanagerdialog.cpp \
-    view/ggmediatreemodel.cpp
+    view/ggmediatreemodel.cpp \
+    ui/dialogs/ggrenamescenedlg.cpp
 
 HEADERS += \
     model/ggeditmodel.h \
@@ -120,7 +121,8 @@ HEADERS += \
     model/ggmediamanager.h \
     model/ggscenemediamanager.h \
     ui/dialogs/ggmediamanagerdialog.h \
-    view/ggmediatreemodel.h
+    view/ggmediatreemodel.h \
+    ui/dialogs/ggrenamescenedlg.h
 unix {
     target.path = /usr/lib
     INSTALLS += target
@@ -155,7 +157,8 @@ FORMS += \
     ui/dialogs/ggsearchdialog.ui \
     ui/components/ggconditioneditorwidget.ui \
     ui/dialogs/ggcreateprojectdialog.ui \
-    ui/dialogs/ggmediamanagerdialog.ui
+    ui/dialogs/ggmediamanagerdialog.ui \
+    ui/dialogs/ggrenamescenedlg.ui
 
 RESOURCES += \
     ui/resources.qrc
