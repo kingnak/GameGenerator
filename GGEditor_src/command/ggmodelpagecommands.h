@@ -20,7 +20,7 @@ class GGContentElement;
 class GGCreateSceneCmd : public GGAbstractModelCommand
 {
 public:
-    GGCreateSceneCmd(GGEditModel *model, const QString &name);
+    GGCreateSceneCmd(GGEditModel *model, const QString &name, const QString &mediaDir);
     ~GGCreateSceneCmd();
 
     QString description() const;
@@ -35,6 +35,7 @@ protected:
 private:
     GGScene *m_createdScene;
     QString m_name;
+    QString m_dir;
 };
 
 ///////////////////////////

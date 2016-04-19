@@ -22,6 +22,7 @@
 #include <ui/dialogs/ggmediamanagerdialog.h>
 #include <model/ggscenemediamanager.h>
 #include <ui/dialogs/ggrenamescenedlg.h>
+#include <ui/dialogs/ggcreatescenedlg.h>
 
 GGMainWindow::GGMainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -133,7 +134,7 @@ void GGMainWindow::newProject()
     connect(m_viewModel, SIGNAL(viewSceneUnregistered(GGViewScene*)), this, SLOT(closeSceneView(GGViewScene*)));
     connect(m_viewModel, SIGNAL(sceneUpdated(GGViewScene*)), this, SLOT(updateTabs()));
 
-    m_ctrl->createDefaultScene(dlg.initialSceneName());
+    m_ctrl->createDefaultScene(dlg.initialSceneName(), dlg.initialSceneDir());
 
     m_project->mediaManager()->synchronize();
 
@@ -454,9 +455,9 @@ void GGMainWindow::deleteSceneAction()
 
 void GGMainWindow::createSceneAction()
 {
-    QString name = QInputDialog::getText(this, "Create Scene", "Enter scene name:");
-    if (!name.isEmpty()) {
-        m_ctrl->createScene(name);
+    GGCreateSceneDlg dlg(this);
+    if (dlg.exec() == QDialog::Accepted) {
+        m_ctrl->createScene(dlg.sceneName(), dlg.sceneDir());
     }
 }
 

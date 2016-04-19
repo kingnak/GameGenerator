@@ -10,7 +10,7 @@ class GGEditCommandFactory : public GGAbstractModelCommandFactory
 public:
     GGEditCommandFactory(GGEditModel *model);
 
-    GGCreateSceneCmd *createScene(const QString &name);
+    GGCreateSceneCmd *createScene(const QString &name, const QString &mediaDir);
     GGDeleteSceneCmd *deleteScene(GGScene *scene);
     GGRenameSceneCmd *renameScene(GGScene *scene, const QString &newName);
     GGRenameSceneMediaDirCmd *renameSceneMediaDir(GGScene *scene, const QString &newName);

@@ -6,10 +6,11 @@
 #include <model/ggconnection.h>
 #include <model/ggcontentelement.h>
 
-GGCreateSceneCmd::GGCreateSceneCmd(GGEditModel *model, const QString &name)
+GGCreateSceneCmd::GGCreateSceneCmd(GGEditModel *model, const QString &name, const QString &mediaDir)
     : GGAbstractModelCommand(model),
       m_createdScene(NULL),
-      m_name(name)
+      m_name(name),
+      m_dir(mediaDir)
 {
 
 }
@@ -35,7 +36,11 @@ bool GGCreateSceneCmd::doExecute()
 {
     m_createdScene = m_model->factory()->createScene();
     m_createdScene->setName(m_name);
-    m_createdScene->setMediaDir(m_name);
+    if (m_dir.isEmpty())
+        m_createdScene->setMediaDir(m_name);
+    else
+        m_createdScene->setMediaDir(m_dir);
+
     if (!m_model->registerNewScene(m_createdScene)) {
         delete m_createdScene;
         m_createdScene = NULL;

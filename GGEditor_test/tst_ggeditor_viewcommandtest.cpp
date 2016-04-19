@@ -129,7 +129,7 @@ void GGEditor_ViewCommandTest::testDeleteViewPage()
 
 void GGEditor_ViewCommandTest::testViewScenes()
 {
-    QVERIFY2(m_stk->execute(m_vf->createScene("2nd")), "Cannot create 2nd scene");
+    QVERIFY2(m_stk->execute(m_vf->createScene("2nd", "2nd")), "Cannot create 2nd scene");
     VERIFYVSIG(m_vmsc, "Create 2nd scene", 1,0, 0,0, 0,0, 0,0);
     GGScene *sc2 = m_em->getScenes()[1];
 
@@ -185,7 +185,7 @@ void GGEditor_ViewCommandTest::testViewScenes()
 
 void GGEditor_ViewCommandTest::testViewScenePages()
 {
-    QVERIFY(m_stk->execute(m_vf->createScene("default")));
+    QVERIFY(m_stk->execute(m_vf->createScene("default", "default")));
     GGScene *sc2 = m_em->getScenes()[1];
 
     QVERIFY(m_stk->execute(m_vf->createConditionPage(m_s, QRect())));

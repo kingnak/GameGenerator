@@ -56,6 +56,7 @@ private slots:
     void regConn(GGConnection *conn);
     void unregConn(GG::ConnectionID id, GGConnection *conn);
     void updPage(GGPage *page);
+    void updScene(GGScene *scene);
 
 private:
     void unregViewPage(GG::PageID pageId, GG::SceneID sceneId);

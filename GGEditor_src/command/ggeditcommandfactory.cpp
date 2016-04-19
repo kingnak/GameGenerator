@@ -11,9 +11,9 @@ GGEditCommandFactory::GGEditCommandFactory(GGEditModel *model)
 
 }
 
-GGCreateSceneCmd *GGEditCommandFactory::createScene(const QString &name)
+GGCreateSceneCmd *GGEditCommandFactory::createScene(const QString &name, const QString &mediaDir)
 {
-    return new GGCreateSceneCmd(m_model, name);
+    return new GGCreateSceneCmd(m_model, name, mediaDir);
 }
 
 GGDeleteSceneCmd *GGEditCommandFactory::deleteScene(GGScene *scene)

@@ -102,14 +102,14 @@ void GGUIController::redo()
     checkSaveCheckpoint();
 }
 
-void GGUIController::createDefaultScene(const QString &name)
+void GGUIController::createDefaultScene(const QString &name, const QString &mediaDir)
 {
-    GGAbstractModelCommandFactory::oneShotCommand(m_cmdFactory->createScene(name));
+    GGAbstractModelCommandFactory::oneShotCommand(m_cmdFactory->createScene(name, mediaDir));
 }
 
-void GGUIController::createScene(const QString &name)
+void GGUIController::createScene(const QString &name, const QString &mediaDir)
 {
-    doExecCmd(m_cmdFactory->createScene(name));
+    doExecCmd(m_cmdFactory->createScene(name, mediaDir));
 }
 
 void GGUIController::deleteScene(GGScene *scene)

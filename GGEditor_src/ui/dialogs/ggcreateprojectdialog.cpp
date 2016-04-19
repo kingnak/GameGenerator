@@ -34,6 +34,11 @@ QString GGCreateProjectDialog::initialSceneName() const
     return ui->txtDefaultSceneName->text();
 }
 
+QString GGCreateProjectDialog::initialSceneDir() const
+{
+    return ui->txtDefaultSceneDir->text();
+}
+
 void GGCreateProjectDialog::accept()
 {
     QDir d(ui->txtPath->text());

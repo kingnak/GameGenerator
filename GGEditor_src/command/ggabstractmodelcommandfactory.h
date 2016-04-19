@@ -45,7 +45,7 @@ class GGAbstractModelCommandFactory : public GGAbstractCommandFactory
 public:
     GGAbstractModelCommandFactory() {}
 
-    virtual GGCreateSceneCmd *createScene(const QString &name) = 0;
+    virtual GGCreateSceneCmd *createScene(const QString &name, const QString &mediaDir) = 0;
     virtual GGDeleteSceneCmd *deleteScene(GGScene *scene) = 0;
     virtual GGRenameSceneCmd *renameScene(GGScene *scene, const QString &newName) = 0;
     virtual GGRenameSceneMediaDirCmd *renameSceneMediaDir(GGScene *scene, const QString &newName) = 0;

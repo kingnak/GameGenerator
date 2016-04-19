@@ -56,8 +56,8 @@ public slots:
     void undo();
     void redo();
 
-    void createDefaultScene(const QString &name);
-    void createScene(const QString &name);
+    void createDefaultScene(const QString &name, const QString &mediaDir);
+    void createScene(const QString &name, const QString &mediaDir);
     void deleteScene(GGScene *scene);
     void renameScene(GGScene *scene, const QString &newName, const QString &newMedia = QString::null);
 
