@@ -22,6 +22,7 @@ GGViewModel::GGViewModel(GGEditModel *model, QObject *parent)
     connect(m_model, SIGNAL(connectionRegistered(GGConnection*)), this, SLOT(regConn(GGConnection*)));
     connect(m_model, SIGNAL(connectionUnregistered(GG::ConnectionID,GGConnection*)), this, SLOT(unregConn(GG::ConnectionID,GGConnection*)));
     connect(m_model, SIGNAL(pageUpdated(GGPage*,GGAbstractModel::PageSections)), this, SLOT(updPage(GGPage*)));
+    connect(m_model, SIGNAL(sceneUpdated(GGScene*)), this, SLOT(updScene(GGScene*)));
 }
 
 GGViewModel::~GGViewModel()
@@ -244,6 +245,15 @@ void GGViewModel::updPage(GGPage *page)
         if (GGViewPage *vp = it.value().value(page->id())) {
             emit pageUpdated(vp);
         }
+    }
+}
+
+void GGViewModel::updScene(GGScene *scene)
+{
+    GGViewScene *sc = m_sceneMap.value(scene->id());
+    if (sc) {
+        emit sceneUpdated(sc);
+        emit viewSceneUpdated(sc);
     }
 }
 
