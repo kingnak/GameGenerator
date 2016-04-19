@@ -48,8 +48,11 @@ protected:
     QString toManagedPath(const QString &file) const;
     virtual QString getCheckInPath(const QString &file);
 
-    void synchDir(QDir dir);
     virtual QStringList getDefaultMediaPaths();
+    void resynchBaseDir();
+
+private:
+    void synchDir(QDir dir);
 
 protected:
     QDir m_baseDir;

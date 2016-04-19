@@ -82,12 +82,15 @@ void GGMediaManager::synchronize()
         m_baseDir.mkpath(d);
     }
 
-    for (QMap<QString, QString>::iterator it = m_path2id.begin(); it != m_path2id.end(); ++it) {
+    QMap<QString, QString>::iterator it = m_path2id.begin();
+    while (it != m_path2id.end()) {
         QFileInfo f(m_baseDir.absoluteFilePath(it.key()));
         if (!f.exists()) {
             qDebug() << "GGMediaManager Synchronize: removing" << it.key();
             m_id2path.remove(it.value());
             it = m_path2id.erase(it);
+        } else {
+            ++it;
         }
     }
 
@@ -239,6 +242,12 @@ void GGMediaManager::synchDir(QDir dir)
 QStringList GGMediaManager::getDefaultMediaPaths()
 {
     return QStringList() << PATH_IMAGE << PATH_AUDIO << PATH_VIDEO;
+}
+
+void GGMediaManager::resynchBaseDir()
+{
+    m_dirs.clear();
+    synchDir(m_baseDir);
 }
 
 /////////////////

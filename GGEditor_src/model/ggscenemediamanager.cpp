@@ -3,8 +3,8 @@
 #include <model/ggscene.h>
 
 GGSceneMediaManager::GGSceneMediaManager(GGEditModel *model, const QDir &baseDir, QObject *parent)
-    : GGMediaManager(baseDir),
-      QObject(parent),
+    : QObject(parent),
+      GGMediaManager(baseDir),
       m_model(model),
       m_checkInScene(NULL)
 {
@@ -91,15 +91,35 @@ void GGSceneMediaManager::createSceneDirs(GGScene *scene)
         m_baseDir.mkpath(scene->mediaDir() + "/" + d);
     }
     m_sceneDirNames[scene->id()] = scene->mediaDir();
-    synchDir(m_baseDir);
+    resynchBaseDir();
 }
 
 void GGSceneMediaManager::renameSceneDir(GGScene *scene)
 {
     if (m_sceneDirNames.contains(scene->id()) && m_sceneDirNames[scene->id()] != scene->mediaDir()) {
         if (m_baseDir.rename(m_sceneDirNames[scene->id()], scene->mediaDir())) {
+            const QString prefix = m_sceneDirNames[scene->id()] + "/";
+            const QString prefixNew = scene->mediaDir() + "/";
+            QMap<QString, QString> newEntries;
+
+            QMap<QString, QString>::iterator it = m_path2id.begin();
+            while (it != m_path2id.end()) {
+                if (it.key().startsWith(prefix)) {
+                    m_id2path.remove(it.value());
+                    QString pathNew = it.key();
+                    pathNew = prefixNew + pathNew.remove(0, prefix.length());
+                    newEntries[pathNew] = it.value();
+                    m_id2path[it.value()] = pathNew;
+                    it = m_path2id.erase(it);
+                } else {
+                    ++it;
+                }
+            }
+
+            m_path2id.unite(newEntries);
+
             m_sceneDirNames[scene->id()] = scene->mediaDir();
-            synchDir(m_baseDir);
+            resynchBaseDir();
         }
     }
 }
