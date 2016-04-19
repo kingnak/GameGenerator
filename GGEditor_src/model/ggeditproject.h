@@ -2,6 +2,7 @@
 #define GGEDITPROJECT_H
 
 #include <model/ggruntimeproject.h>
+#include <QDir>
 
 class GGEditModel;
 class GGSceneMediaManager;
@@ -14,10 +15,12 @@ public:
 
     GGEditModel *editModel();
     GGSceneMediaManager *mediaManager();
+    QDir basePath() const;
 
 private:
     GGEditModel *m_editModel;
     GGSceneMediaManager *m_manager;
+    QDir m_basePath;
 };
 
 #endif // GGEDITPROJECT_H

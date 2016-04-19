@@ -23,6 +23,9 @@
 #include <model/ggscenemediamanager.h>
 #include <ui/dialogs/ggrenamescenedlg.h>
 #include <ui/dialogs/ggcreatescenedlg.h>
+#include <io/ggbasicprojectserializer.h>
+#include <io/ggbinaryserializationwriter.h>
+#include <ggutilities.h>
 
 GGMainWindow::GGMainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -54,6 +57,7 @@ GGMainWindow::GGMainWindow(QWidget *parent) :
     connect(m_ctrl, SIGNAL(connectingDirect(GGPage*,GGConnectionSlot)), this, SLOT(handleConnectDirect(GGPage*,GGConnectionSlot)));
     connect(ui->action_Variables, SIGNAL(triggered(bool)), this, SLOT(showVariables()));
     connect(ui->actionMedia, SIGNAL(triggered(bool)), this, SLOT(showMediaManager()));
+    connect(ui->actionSave, SIGNAL(triggered(bool)), this, SLOT(saveProject()));
 
     // Group Click Mode actions
     m_createActions = new QActionGroup(this);
@@ -163,6 +167,14 @@ void GGMainWindow::closeProject()
 
     showStartPage();
     updateWindowTitle();
+}
+
+void GGMainWindow::saveProject()
+{
+    QFile f(m_project->basePath().absoluteFilePath(GGUtilities::sanatizeFileName(m_project->title()) + ".ggp"));
+    f.open(QIODevice::WriteOnly);
+    GGBasicProjectSerializer ser(new GGBinarySerializationWriter(&f));
+    ser.saveProject(m_project);
 }
 
 void GGMainWindow::openSceneView(GGViewScene *scene)

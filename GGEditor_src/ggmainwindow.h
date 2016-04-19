@@ -43,6 +43,7 @@ public:
 public slots:
     void newProject();
     void closeProject();
+    void saveProject();
 
     void openSceneView(GGViewScene *scene);
     void closeSceneView(GGViewScene *scene);

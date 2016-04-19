@@ -64,7 +64,9 @@ SOURCES += \
     ui/dialogs/ggmediamanagerdialog.cpp \
     view/ggmediatreemodel.cpp \
     ui/dialogs/ggrenamescenedlg.cpp \
-    ui/dialogs/ggcreatescenedlg.cpp
+    ui/dialogs/ggcreatescenedlg.cpp \
+    io/ggbasicprojectserializer.cpp \
+    io/ggbinaryserializationwriter.cpp
 
 HEADERS += \
     model/ggeditmodel.h \
@@ -124,7 +126,12 @@ HEADERS += \
     ui/dialogs/ggmediamanagerdialog.h \
     view/ggmediatreemodel.h \
     ui/dialogs/ggrenamescenedlg.h \
-    ui/dialogs/ggcreatescenedlg.h
+    ui/dialogs/ggcreatescenedlg.h \
+    io/ggbasicprojectserializer.h \
+    io/ggserializationprocessor.h \
+    io/ggabstractserializationwriter.h \
+    io/ggserialization.hpp \
+    io/ggbinaryserializationwriter.h
 unix {
     target.path = /usr/lib
     INSTALLS += target
