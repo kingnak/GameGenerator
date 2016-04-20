@@ -66,7 +66,10 @@ SOURCES += \
     ui/dialogs/ggrenamescenedlg.cpp \
     ui/dialogs/ggcreatescenedlg.cpp \
     io/ggbasicprojectserializer.cpp \
-    io/ggbinaryserializationwriter.cpp
+    io/ggbinaryserializationwriter.cpp \
+    io/ggviewprojectserializer.cpp \
+    io/ggxmlserializer.cpp \
+    io/ggsimplexmlserializationwriter.cpp
 
 HEADERS += \
     model/ggeditmodel.h \
@@ -131,7 +134,10 @@ HEADERS += \
     io/ggserializationprocessor.h \
     io/ggabstractserializationwriter.h \
     io/ggserialization.hpp \
-    io/ggbinaryserializationwriter.h
+    io/ggbinaryserializationwriter.h \
+    io/ggviewprojectserializer.h \
+    io/ggxmlserializer.h \
+    io/ggsimplexmlserializationwriter.h
 unix {
     target.path = /usr/lib
     INSTALLS += target
