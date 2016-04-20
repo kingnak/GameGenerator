@@ -10,53 +10,45 @@
 #include <model/ggcontentelement.h>
 #include <QVariantMap>
 
-class DummyProcessor : public GGSerializationProcessor
-{
-public:
-    virtual bool processProject(QVariant &) { return true; }
-    virtual bool processScene(QVariant &) { return true; }
-    virtual bool processPage(QVariant &) { return true; }
-    virtual bool processConnection(QVariant &) { return true; }
-    virtual bool processConnectionRef(QVariant &) { return true; }
-    virtual bool processMediaRef(QVariant &) { return true; }
-    virtual bool processContentElement(QVariant &) { return true; }
-    virtual bool processMappedLink(QVariant &) { return true; }
-    virtual bool processLink(QVariant &) { return true; }
-};
-
 GGBasicProjectSerializer::GGBasicProjectSerializer(GGAbstractSerializationWriter *writer, GGSerializationProcessor *processor)
     : m_writer(writer),
       m_processor(processor)
 {
-    if (!processor) {
-        m_processor = new DummyProcessor;
-    }
 }
 
 GGBasicProjectSerializer::~GGBasicProjectSerializer()
 {
     delete m_processor;
+    delete m_writer;
 }
 
 bool GGBasicProjectSerializer::saveProject(GGEditProject *project)
 {
-    bool ok = serializeProject(project);
+    bool ok = m_writer->writeHeader();
     if (!ok) return false;
+
+    ok &= serializeProject(project);
+    if (!ok) return false;
+
     foreach (GGScene *s, project->editModel()->getScenes()) {
         ok = serializeScene(s);
         if (!ok) return false;
+
         QList<GGConnection*> conns;
         foreach (GGPage *p, s->pages()) {
             ok = serializePage(p);
             if (!ok) return false;
             conns += p->getConnections();
         }
+
         foreach (GGConnection *c, conns) {
             ok = serializeConnection(c);
             if (!ok) return false;
         }
     }
-    return true;
+
+    ok &= m_writer->writeFooter();
+    return ok;
 }
 
 bool GGBasicProjectSerializer::serializeProject(GGEditProject *project)
@@ -64,7 +56,16 @@ bool GGBasicProjectSerializer::serializeProject(GGEditProject *project)
     bool ok = true;
     QVariantMap m;
     m["title"] << project->title();
-    // TODO: Variables
+
+    QVariantList varList;
+    foreach (GGVariable var, project->runtimeModel()->variables()) {
+        QVariant v;
+        ok &= this->serializeVariable(v, var);
+        varList << v;
+    }
+    m["variables"] << varList;
+
+    ok &= injectProjectData(project, m);
     QVariant v;
     v << m;
     ok &= m_processor->processProject(v);
@@ -79,6 +80,7 @@ bool GGBasicProjectSerializer::serializeScene(GGScene *scene)
     m["id"] << scene->id();
     m["name"] << scene->name();
     m["mediaDir"] << scene->mediaDir();
+    ok &= injectSceneData(scene, m);
     QVariant v;
     v << m;
     ok &= m_processor->processScene(v);
@@ -95,22 +97,32 @@ bool GGBasicProjectSerializer::serializePage(GGPage *page)
     m["name"] << page->name();
 
     if (GGConditionPage *cp = GG::as<GGConditionPage>(page)) {
-        m["condition"] << this->serializeCondition(cp->getCondition());
-        m["true"] << cp->trueConnection()->id();
-        ok &= m_processor->processConnectionRef(m["true"]);
-        m["false"] << cp->falseConnection()->id();
-        ok &= m_processor->processConnectionRef(m["false"]);
+        QVariant cond;
+        ok &= this->serializeCondition(cond, cp->getCondition());
+        m["condition"] = cond;
+        if (cp->trueConnection()) {
+            m["true"] << cp->trueConnection()->id();
+            ok &= m_processor->processConnectionRef(m["true"]);
+        }
+        if (cp->falseConnection()) {
+            m["false"] << cp->falseConnection()->id();
+            ok &= m_processor->processConnectionRef(m["false"]);
+        }
     }
 
     if (GGContentPage *cp = GG::as<GGContentPage>(page)) {
         m["caption"] << cp->caption();
-        m["content"] = this->serializeContent(cp->content());
+        QVariant v;
+        ok &= this->serializeContent(v, cp->content());
+        m["content"] = v;
         ok &= m_processor->processContentElement(m["content"]);
     }
 
     if (GGStartPage *sp = GG::as<GGStartPage>(page)) {
-        m["start"] << sp->startConnection()->id();
-        ok &= m_processor->processConnectionRef(m["start"]);
+        if (sp->startConnection()) {
+            m["start"] << sp->startConnection()->id();
+            ok &= m_processor->processConnectionRef(m["start"]);
+        }
     }
 
     if (GGEndPage *ep = GG::as<GGEndPage>(page)) {
@@ -122,7 +134,8 @@ bool GGBasicProjectSerializer::serializePage(GGPage *page)
         QVariantMap map;
         for (int i = 0; i < mcp->getLinkMap().size(); ++i) {
             GGMappedLink l = mcp->getLinkMap()[i];
-            QVariant v = this->serializeMappedLink(l);
+            QVariant v;
+            ok &= this->serializeMappedLink(v, l);
             ok &= m_processor->processMappedLink(v);
             map[QString::number(i)] = v;
         }
@@ -133,13 +146,15 @@ bool GGBasicProjectSerializer::serializePage(GGPage *page)
         QVariantMap map;
         for (int i = 0; i < dp->getDecisionLinks().size(); ++i) {
             GGLink l = dp->getDecisionLinks()[i];
-            QVariant v = this->serializeLink(l);
+            QVariant v;
+            ok &= this->serializeLink(v, l);
             ok &= m_processor->processLink(v);
             map[QString::number(i)] = v;
         }
         m["decisions"] << map;
     }
 
+    ok &= injectPageData(page, m);
     QVariant v;
     v << m;
     ok &= m_processor->processPage(v);
@@ -152,7 +167,9 @@ bool GGBasicProjectSerializer::serializeConnection(GGConnection *connection)
     bool ok = true;
     QVariantMap m;
     m["id"] << connection->id();
-    m["destination"] << connection->destination()->id();
+    m["source"] << connection->sourceId();
+    m["destination"] << connection->destinationId();
+    ok &= injectConnectionData(connection, m);
     QVariant v;
     v << m;
     ok &= m_processor->processConnection(v);
@@ -160,8 +177,11 @@ bool GGBasicProjectSerializer::serializeConnection(GGConnection *connection)
     return ok;
 }
 
-QVariant GGBasicProjectSerializer::serializeContent(GGContentElement *elem)
+bool GGBasicProjectSerializer::serializeContent(QVariant &v, GGContentElement *elem)
 {
+    bool ok = true;
+    if (!elem) return true;
+
     QVariantMap m;
     if (GGImageContent *ic = dynamic_cast<GGImageContent*>(elem)) {
         m["type"] << QString("image");
@@ -172,14 +192,14 @@ QVariant GGBasicProjectSerializer::serializeContent(GGContentElement *elem)
         m["text"] << tc->textContent();
     }
 
-    QVariant v;
     v << m;
-    m_processor->processContentElement(v);
-    return v;
+    ok &= m_processor->processContentElement(v);
+    return ok;
 }
 
-QVariant GGBasicProjectSerializer::serializeMappedLink(const GGMappedLink &link)
+bool GGBasicProjectSerializer::serializeMappedLink(QVariant &v, const GGMappedLink &link)
 {
+    bool ok = true;
     QVariantMap m;
     m["type"] << (quint32) link.type();
     switch (link.type()) {
@@ -191,49 +211,95 @@ QVariant GGBasicProjectSerializer::serializeMappedLink(const GGMappedLink &link)
         break;
     }
 
-    m["link"] << this->serializeLink(link.link());
+    QVariant l;
+    ok &= this->serializeLink(l, link.link());
+    m["link"] = l;
 
-    QVariant v;
     v << m;
-    return v;
+    return ok;
 }
 
-QVariant GGBasicProjectSerializer::serializeLink(const GGLink &link)
+bool GGBasicProjectSerializer::serializeLink(QVariant &v, const GGLink &link)
 {
+    bool ok = true;
     QVariantMap m;
 
     m["name"] << link.name();
-    m["connection"] << link.connection()->id();
-    m_processor->processConnectionRef(m["connection"]);
-    m["action"] = this->serializeAction(link.action());
+    if (link.connection()) {
+        m["connection"] << link.connection()->id();
+        ok &= m_processor->processConnectionRef(m["connection"]);
+    }
+    QVariant a;
+    ok &= this->serializeAction(a, link.action());
+    m["action"] = a;
 
-    QVariant v;
     v << m;
-    return v;
+    return ok;
 }
 
-QVariant GGBasicProjectSerializer::serializeCondition(const GGCondition &condition)
+bool GGBasicProjectSerializer::serializeCondition(QVariant &v, const GGCondition &condition)
 {
+    bool ok = true;
     QVariantMap m;
 
     m["operator"] << (quint32) condition.type();
     m["variable"] << condition.variableName();
     m["value"] << condition.value();
 
-    QVariant v;
     v << m;
-    return v;
+    return ok;
 }
 
-QVariant GGBasicProjectSerializer::serializeAction(const GGAction &action)
+bool GGBasicProjectSerializer::serializeAction(QVariant &v, const GGAction &action)
 {
+    bool ok = true;
     QVariantMap m;
 
     m["operator"] << (quint32) action.type();
     m["variable"] << action.variableName();
     m["value"] << action.value();
 
-    QVariant v;
     v << m;
-    return v;
+    return ok;
+}
+
+bool GGBasicProjectSerializer::serializeVariable(QVariant &v, const GGVariable &var)
+{
+    bool ok = true;
+    QVariantMap m;
+
+    m["name"] << var.name();
+    m["initial"] << var.initValue();
+    m["type"] << (quint32) var.type();
+
+    v << m;
+    return ok;
+}
+
+bool GGBasicProjectSerializer::injectProjectData(GGEditProject *project, QVariantMap &v)
+{
+    Q_UNUSED(project);
+    Q_UNUSED(v);
+    return true;
+}
+
+bool GGBasicProjectSerializer::injectSceneData(GGScene *scene, QVariantMap &v)
+{
+    Q_UNUSED(scene);
+    Q_UNUSED(v);
+    return true;
+}
+
+bool GGBasicProjectSerializer::injectPageData(GGPage *page, QVariantMap &v)
+{
+    Q_UNUSED(page);
+    Q_UNUSED(v);
+    return true;
+}
+
+bool GGBasicProjectSerializer::injectConnectionData(GGConnection *connection, QVariantMap &v)
+{
+    Q_UNUSED(connection);
+    Q_UNUSED(v);
+    return true;
 }

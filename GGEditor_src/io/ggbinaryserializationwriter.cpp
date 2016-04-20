@@ -8,6 +8,25 @@ GGBinarySerializationWriter::GGBinarySerializationWriter(QIODevice *device)
     m_stream->setVersion(QDataStream::Qt_5_5);
 }
 
+GGBinarySerializationWriter::~GGBinarySerializationWriter()
+{
+    delete m_stream;
+}
+
+bool GGBinarySerializationWriter::writeHeader()
+{
+    const char HEADER[] = "GGPB";
+    const quint32 VERSION = 0x00010000; // V 0.1.0.0
+    m_stream->writeRawData(HEADER, sizeof(HEADER)-1);
+    (*m_stream) << VERSION;
+    return true;
+}
+
+bool GGBinarySerializationWriter::writeFooter()
+{
+    return true;
+}
+
 bool GGBinarySerializationWriter::writeProject(QVariant project)
 {
     return writeData('P', project);

@@ -10,6 +10,10 @@ class GGBinarySerializationWriter : public GGAbstractSerializationWriter
 {
 public:
     GGBinarySerializationWriter(QIODevice *device);
+    ~GGBinarySerializationWriter();
+
+    virtual bool writeHeader();
+    virtual bool writeFooter();
 
     virtual bool writeProject(QVariant project);
     virtual bool writeScene(QVariant scene);

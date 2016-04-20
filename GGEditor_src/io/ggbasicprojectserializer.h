@@ -14,11 +14,12 @@ class GGMappedLink;
 class GGLink;
 class GGCondition;
 class GGAction;
+class GGVariable;
 
 class GGBasicProjectSerializer
 {
 public:
-    GGBasicProjectSerializer(GGAbstractSerializationWriter *writer, GGSerializationProcessor *processor = NULL);
+    GGBasicProjectSerializer(GGAbstractSerializationWriter *writer, GGSerializationProcessor *processor);
     virtual ~GGBasicProjectSerializer();
 
     virtual bool saveProject(GGEditProject *project);
@@ -29,13 +30,19 @@ protected:
     virtual bool serializePage(GGPage *page);
     virtual bool serializeConnection(GGConnection *connection);
 
-    virtual QVariant serializeContent(GGContentElement *elem);
-    virtual QVariant serializeMappedLink(const GGMappedLink &link);
-    virtual QVariant serializeLink(const GGLink &link);
-    virtual QVariant serializeCondition(const GGCondition &condition);
-    virtual QVariant serializeAction(const GGAction &action);
+    virtual bool serializeContent(QVariant &v, GGContentElement *elem);
+    virtual bool serializeMappedLink(QVariant &v, const GGMappedLink &link);
+    virtual bool serializeLink(QVariant &v, const GGLink &link);
+    virtual bool serializeCondition(QVariant &v, const GGCondition &condition);
+    virtual bool serializeAction(QVariant &v, const GGAction &action);
+    virtual bool serializeVariable(QVariant &v, const GGVariable &var);
 
-private:
+    virtual bool injectProjectData(GGEditProject *project, QVariantMap &v);
+    virtual bool injectSceneData(GGScene *scene, QVariantMap &v);
+    virtual bool injectPageData(GGPage *page, QVariantMap &v);
+    virtual bool injectConnectionData(GGConnection *connection, QVariantMap &v);
+
+protected:
     GGAbstractSerializationWriter *m_writer;
     GGSerializationProcessor *m_processor;
 };
