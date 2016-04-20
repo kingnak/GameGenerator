@@ -64,6 +64,28 @@ GGViewConnection *GGViewModel::getViewConnectionForConnection(GGConnection *conn
     return m_connectionMap.value(scene).value(conn->id());
 }
 
+QList<GGViewPage *> GGViewModel::getAllViewPagesForPage(GGPage *page)
+{
+    QList<GGViewPage *> ret;
+    foreach (PageMap m, m_pageMap) {
+        if (m.contains(page->id())) {
+            ret << m[page->id()];
+        }
+    }
+    return ret;
+}
+
+QList<GGViewConnection *> GGViewModel::getAllViewConnectionsForConnection(GGConnection *conn)
+{
+    QList<GGViewConnection *> ret;
+    foreach (ConnectionMap m, m_connectionMap) {
+        if (m.contains(conn->id())) {
+            ret << m[conn->id()];
+        }
+    }
+    return ret;
+}
+
 QList<GGViewPage *> GGViewModel::getViewPagesInScene(GGScene *scene)
 {
     return m_pageMap.value(scene->id()).values();
