@@ -1,6 +1,7 @@
 #include "ggxmlserializer.h"
 
 #include <QXmlStreamWriter>
+#include <QRect>
 
 GGXmlSerializer::GGXmlSerializer()
 {
@@ -35,6 +36,13 @@ bool GGXmlSerializer::writeData(QXmlStreamWriter *writer, const QString &tag, co
         foreach (QVariant v, lst) {
             writeData(writer, tag, v);
         }
+        writer->writeEndElement();
+    } else if (data.canConvert<QRect>()) {
+        writer->writeStartElement(tag);
+        writer->writeAttribute("x", QString::number(data.value<QRect>().x()));
+        writer->writeAttribute("y", QString::number(data.value<QRect>().y()));
+        writer->writeAttribute("w", QString::number(data.value<QRect>().width()));
+        writer->writeAttribute("h", QString::number(data.value<QRect>().height()));
         writer->writeEndElement();
     } else {
         writer->writeTextElement(tag, data.toString());

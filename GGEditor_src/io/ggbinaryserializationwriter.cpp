@@ -27,9 +27,24 @@ bool GGBinarySerializationWriter::writeFooter()
     return true;
 }
 
+bool GGBinarySerializationWriter::writeProjectStart()
+{
+    return true;
+}
+
 bool GGBinarySerializationWriter::writeProject(QVariant project)
 {
     return writeData('P', project);
+}
+
+bool GGBinarySerializationWriter::writeProjectEnd()
+{
+    return true;
+}
+
+bool GGBinarySerializationWriter::writeSceneStart()
+{
+    return true;
 }
 
 bool GGBinarySerializationWriter::writeScene(QVariant scene)
@@ -37,14 +52,39 @@ bool GGBinarySerializationWriter::writeScene(QVariant scene)
     return writeData('s', scene);
 }
 
+bool GGBinarySerializationWriter::writeSceneEnd()
+{
+    return true;
+}
+
+bool GGBinarySerializationWriter::writePagesStart()
+{
+    return true;
+}
+
 bool GGBinarySerializationWriter::writePage(QVariant page)
 {
     return writeData('p', page);
 }
 
+bool GGBinarySerializationWriter::writePagesEnd()
+{
+    return true;
+}
+
+bool GGBinarySerializationWriter::writeConnectionsStart()
+{
+    return true;
+}
+
 bool GGBinarySerializationWriter::writeConnection(QVariant connection)
 {
     return writeData('c', connection);
+}
+
+bool GGBinarySerializationWriter::writeConnectionsEnd()
+{
+    return true;
 }
 
 bool GGBinarySerializationWriter::writeData(char tag, const QVariant &data)

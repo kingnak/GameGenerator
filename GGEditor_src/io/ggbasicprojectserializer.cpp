@@ -27,26 +27,36 @@ bool GGBasicProjectSerializer::saveProject(GGEditProject *project)
     bool ok = m_writer->writeHeader();
     if (!ok) return false;
 
+    ok &= m_writer->writeProjectStart();
     ok &= serializeProject(project);
     if (!ok) return false;
 
     foreach (GGScene *s, project->editModel()->getScenes()) {
-        ok = serializeScene(s);
+        ok &= m_writer->writeSceneStart();
+        ok &= serializeScene(s);
         if (!ok) return false;
 
+        ok &= m_writer->writePagesStart();
         QList<GGConnection*> conns;
+        // Serialize all pages in this scene
         foreach (GGPage *p, s->pages()) {
-            ok = serializePage(p);
+            ok &= serializePage(p);
             if (!ok) return false;
             conns += p->getConnections();
         }
+        ok &= m_writer->writePagesEnd();
 
+        ok &= m_writer->writeConnectionsStart();
+        // Serialize all connections of the pages in this scene
         foreach (GGConnection *c, conns) {
-            ok = serializeConnection(c);
+            ok &= serializeConnection(c);
             if (!ok) return false;
         }
+        ok &= m_writer->writeConnectionsEnd();
+        ok &= m_writer->writeSceneEnd();
     }
 
+    ok &= m_writer->writeProjectEnd();
     ok &= m_writer->writeFooter();
     return ok;
 }
