@@ -23,8 +23,9 @@
 #include <model/ggscenemediamanager.h>
 #include <ui/dialogs/ggrenamescenedlg.h>
 #include <ui/dialogs/ggcreatescenedlg.h>
-#include <io/ggbasicprojectserializer.h>
-#include <io/ggbinaryserializationwriter.h>
+#include <io/ggviewprojectserializer.h>
+#include <io/ggsimplexmlserializationwriter.h>
+#include <io/ggserializationprocessor.h>
 #include <ggutilities.h>
 
 GGMainWindow::GGMainWindow(QWidget *parent) :
@@ -171,10 +172,10 @@ void GGMainWindow::closeProject()
 
 void GGMainWindow::saveProject()
 {
-    QFile f(m_project->basePath().absoluteFilePath(GGUtilities::sanatizeFileName(m_project->title()) + ".ggp"));
+    QFile f(m_project->basePath().absoluteFilePath(GGUtilities::sanatizeFileName(m_project->title()) + ".gpx"));
     f.open(QIODevice::WriteOnly);
-    GGBasicProjectSerializer ser(new GGBinarySerializationWriter(&f));
-    ser.saveProject(m_project);
+    GGViewProjectSerializer ser(new GGSimpleXmlSerializationWriter(&f), new GGDefaultSerializationProcessor);
+    ser.saveProject(m_project, m_viewModel);
 }
 
 void GGMainWindow::openSceneView(GGViewScene *scene)
