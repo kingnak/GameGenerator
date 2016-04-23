@@ -7,6 +7,7 @@ class QIODevice;
 class GGAbstractSerializationWriter;
 class GGBasicProjectSerializer;
 class GGViewProjectSerializer;
+class GGAbstractProjectUnserializer;
 
 class GGIOFactory
 {
@@ -21,11 +22,18 @@ public:
         SimpleXMLModel
     };
 
+    static const quint32 FILE_VERSION = 0x00010000U;
+    static const char *BINARY_MODEL_HEADER;
+    static const quint32 BINARY_MODEL_HEADER_SIZE = 4;
+
     static QString extensionForSerializationType(SerializationType type);
     static SerializationType serializationTypeForFile(const QString &fileName);
 
     static GGBasicProjectSerializer *basicSerializer(QIODevice *device, SerializationType type);
     static GGViewProjectSerializer *viewSerializer(QIODevice *device, SerializationType type);
+
+    static GGAbstractProjectUnserializer *unserializer(const QString &file);
+    static GGAbstractProjectUnserializer *unserializer(const QString &basePath, const QString &fileName, SerializationType type);
 
 private:
     static GGAbstractSerializationWriter *writerForType(SerializationType type, QIODevice *device);

@@ -7,6 +7,7 @@
 
 class GGPage;
 class GGAbstractModel;
+class GGAbstractProjectUnserializer;
 
 class GG_CORESHARED_EXPORT GGScene
 {
@@ -36,6 +37,7 @@ private:
     QSet<GGPage *> m_pages;
 
     friend class GGAbstractModel;
+    friend class GGAbstractProjectUnserializer;
 };
 
 #endif // GGSCENE_H

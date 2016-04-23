@@ -70,7 +70,10 @@ SOURCES += \
     io/ggviewprojectserializer.cpp \
     io/ggxmlserializer.cpp \
     io/ggsimplexmlserializationwriter.cpp \
-    io/ggiofactory.cpp
+    io/ggiofactory.cpp \
+    io/ggbasicprojectunserializer.cpp \
+    io/ggbinaryunserializationreader.cpp \
+    io/ggabstractprojectunserializer.cpp
 
 HEADERS += \
     model/ggeditmodel.h \
@@ -139,7 +142,12 @@ HEADERS += \
     io/ggviewprojectserializer.h \
     io/ggxmlserializer.h \
     io/ggsimplexmlserializationwriter.h \
-    io/ggiofactory.h
+    io/ggiofactory.h \
+    io/ggbasicprojectunserializer.h \
+    io/ggabstractunserializationreader.h \
+    io/ggabstractprojectunserializer.h \
+    io/ggbinaryunserializationreader.h \
+    io/ggunserializationprocessor.h
 unix {
     target.path = /usr/lib
     INSTALLS += target

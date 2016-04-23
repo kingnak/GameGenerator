@@ -1,12 +1,12 @@
-#ifndef GGSERIALIZATIONPROCESSOR_H
-#define GGSERIALIZATIONPROCESSOR_H
+#ifndef GGUNSERIALIZATIONPROCESSOR_H
+#define GGUNSERIALIZATIONPROCESSOR_H
 
-#include <QVariantMap>
+#include <QVariant>
 
-class GGSerializationProcessor
+class GGUnserializationProcessor
 {
 public:
-    virtual ~GGSerializationProcessor() {}
+    virtual ~GGUnserializationProcessor() {}
 
     virtual bool processProject(QVariant &project) = 0;
     virtual bool processScene(QVariant &scene) = 0;
@@ -22,14 +22,14 @@ public:
     virtual bool processLink(QVariant &link) = 0;
 };
 
-
-class GGDefaultSerializationProcessor : public GGSerializationProcessor
+class GGDefaultUnserializationProcessor : public GGUnserializationProcessor
 {
 public:
     virtual bool processProject(QVariant &) { return true; }
     virtual bool processScene(QVariant &) { return true; }
     virtual bool processPage(QVariant &) { return true; }
     virtual bool processConnection(QVariant &) { return true; }
+
     virtual bool processSceneRef(QVariant &) { return true; }
     virtual bool processPageRef(QVariant &) { return true; }
     virtual bool processConnectionRef(QVariant &) { return true; }
@@ -39,4 +39,5 @@ public:
     virtual bool processLink(QVariant &) { return true; }
 };
 
-#endif // GGSERIALIZATIONPROCESSOR_H
+#endif // GGUNSERIALIZATIONPROCESSOR_H
+

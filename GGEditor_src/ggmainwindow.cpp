@@ -26,6 +26,7 @@
 #include <io/ggviewprojectserializer.h>
 #include <io/ggsimplexmlserializationwriter.h>
 #include <io/ggserializationprocessor.h>
+#include <io/ggabstractprojectunserializer.h>
 #include <ggutilities.h>
 
 GGMainWindow::GGMainWindow(QWidget *parent) :
@@ -60,6 +61,7 @@ GGMainWindow::GGMainWindow(QWidget *parent) :
     connect(ui->action_Variables, SIGNAL(triggered(bool)), this, SLOT(showVariables()));
     connect(ui->actionMedia, SIGNAL(triggered(bool)), this, SLOT(showMediaManager()));
     connect(ui->actionSave, SIGNAL(triggered(bool)), this, SLOT(saveProject()));
+    connect(ui->actionOpen, SIGNAL(triggered(bool)), this, SLOT(openProject()));
 
     // Group Click Mode actions
     m_createActions = new QActionGroup(this);
@@ -178,6 +180,30 @@ void GGMainWindow::saveProject()
     GGViewProjectSerializer *ser = GGIOFactory::viewSerializer(&f, m_project->saveType());
     ser->saveProject(m_project, m_viewModel);
     m_ctrl->saveCheckpoint();
+}
+
+void GGMainWindow::openProject()
+{
+    closeProject();
+    QString file = QFileDialog::getOpenFileName(this, "Open Project", QString(), "GameGenerator Projects (*.ggmb)");
+    if (!file.isNull()) {
+        QFile f(file);
+        if (!f.open(QIODevice::ReadOnly)) {
+            QMessageBox::warning(this, "Error", "Cannot open file\n" + file);
+            return;
+        }
+
+        GGAbstractProjectUnserializer *ser = GGIOFactory::unserializer(file);
+        bool ok = ser->load(&f);
+        GGProject *p = ser->takeProject();
+        delete ser;
+        if (!ok || !p) {
+            QMessageBox::warning(this, "Error", "Error while loading");
+            return;
+        }
+
+        // TODO: Use loaded model
+    }
 }
 
 void GGMainWindow::openSceneView(GGViewScene *scene)

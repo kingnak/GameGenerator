@@ -35,7 +35,7 @@ public:
     virtual bool writeForeignConnectionsEnd();
 
 private:
-    bool writeData(char tag, const QVariant &data);
+    bool writeData(quint8 tag, const QVariant &data);
 
 private:
     QIODevice *m_device;

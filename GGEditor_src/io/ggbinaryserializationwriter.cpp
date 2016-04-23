@@ -1,4 +1,5 @@
 #include "ggbinaryserializationwriter.h"
+#include <io/ggiofactory.h>
 #include <QDataStream>
 
 GGBinarySerializationWriter::GGBinarySerializationWriter(QIODevice *device)
@@ -15,10 +16,8 @@ GGBinarySerializationWriter::~GGBinarySerializationWriter()
 
 bool GGBinarySerializationWriter::writeHeader()
 {
-    const char HEADER[] = "GGPB";
-    const quint32 VERSION = 0x00010000; // V 0.1.0.0
-    m_stream->writeRawData(HEADER, sizeof(HEADER)-1);
-    (*m_stream) << VERSION;
+    m_stream->writeRawData(GGIOFactory::BINARY_MODEL_HEADER, GGIOFactory::BINARY_MODEL_HEADER_SIZE);
+    (*m_stream) << GGIOFactory::FILE_VERSION;
     return true;
 }
 
@@ -117,7 +116,7 @@ bool GGBinarySerializationWriter::writeForeignConnectionsEnd()
     return true;
 }
 
-bool GGBinarySerializationWriter::writeData(char tag, const QVariant &data)
+bool GGBinarySerializationWriter::writeData(quint8 tag, const QVariant &data)
 {
     (*m_stream) << tag;
     (*m_stream) << data;

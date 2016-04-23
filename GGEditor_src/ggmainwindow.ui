@@ -103,6 +103,21 @@
              </widget>
             </item>
             <item>
+             <widget class="QCommandLinkButton" name="cmdOpen">
+              <property name="text">
+               <string>Open Project...</string>
+              </property>
+              <property name="icon">
+               <iconset>
+                <normalon>:/icons/open</normalon>
+               </iconset>
+              </property>
+              <property name="description">
+               <string>Open an existing project</string>
+              </property>
+             </widget>
+            </item>
+            <item>
              <spacer name="verticalSpacer">
               <property name="orientation">
                <enum>Qt::Vertical</enum>
@@ -238,6 +253,7 @@
      <string>&amp;File</string>
     </property>
     <addaction name="action_New"/>
+    <addaction name="actionOpen"/>
     <addaction name="actionSave"/>
     <addaction name="separator"/>
     <addaction name="action_Quit"/>
@@ -266,6 +282,7 @@
     <bool>false</bool>
    </attribute>
    <addaction name="action_New"/>
+   <addaction name="actionOpen"/>
    <addaction name="actionSave"/>
    <addaction name="separator"/>
    <addaction name="actionUndo"/>
@@ -519,6 +536,19 @@
     <string>Ctrl+S</string>
    </property>
   </action>
+  <action name="actionOpen">
+   <property name="icon">
+    <iconset>
+     <normalon>:/icons/open</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Open...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>
@@ -691,6 +721,22 @@
     <hint type="sourcelabel">
      <x>399</x>
      <y>299</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cmdOpen</sender>
+   <signal>clicked()</signal>
+   <receiver>actionOpen</receiver>
+   <slot>trigger()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>530</x>
+     <y>253</y>
     </hint>
     <hint type="destinationlabel">
      <x>-1</x>
