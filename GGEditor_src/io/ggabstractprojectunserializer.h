@@ -5,7 +5,6 @@
 #include <gg_definitions.h>
 
 class GGProject;
-class GGAbstractModel;
 class GGScene;
 class GGPage;
 class GGConnection;
@@ -26,10 +25,13 @@ public:
     virtual bool unserializeScene(QVariant scene) = 0;
     virtual bool unserializePage(QVariant page) = 0;
     virtual bool unserializeConnection(QVariant connection) = 0;
+    virtual bool finalizeUnserialization() = 0;
 
 protected:
     void setSceneId(GGScene *sc, GG::SceneID id);
-
+    void setPageId(GGPage *p, GG::PageID id);
+    void setConnectionId(GGConnection *c, GG::ConnectionID id);
+    void resolveConnectionPages(GGConnection *conn, GGPage *source, GGPage *dest);
 };
 
 #endif // GGABSTRACTPROJECTUNSERIALIZER_H

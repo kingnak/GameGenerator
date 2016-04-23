@@ -21,6 +21,8 @@ public:
     };
     Q_DECLARE_FLAGS(SlotTypes, SlotType)
 
+    GGConnectionSlotData()
+        : m_type(NoConnection), m_idx(-1) {}
     GGConnectionSlotData(SlotType type, int index = -1)
         : m_type(type), m_idx(index) {}
 

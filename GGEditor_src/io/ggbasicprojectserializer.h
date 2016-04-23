@@ -31,8 +31,9 @@ protected:
     virtual bool serializeConnection(GGConnection *connection);
 
     virtual bool serializeContent(QVariant &v, GGContentElement *elem);
-    virtual bool serializeMappedLink(QVariant &v, const GGMappedLink &link);
+    virtual bool serializeMappedLink(QVariant &v, const GGMappedLink &link, int idx);
     virtual bool serializeLink(QVariant &v, const GGLink &link);
+    virtual bool serializeDecisionLink(QVariant &v, const GGLink &link, int idx);
     virtual bool serializeCondition(QVariant &v, const GGCondition &condition);
     virtual bool serializeAction(QVariant &v, const GGAction &action);
     virtual bool serializeVariable(QVariant &v, const GGVariable &var);

@@ -56,5 +56,8 @@ bool GGBinaryUnserializationReader::unserialize(QIODevice *device, GGAbstractPro
     }
 
     ok &= stream.status() == QDataStream::Ok && stream.atEnd();
+    if (ok) {
+        ok &= projectBuilder->finalizeUnserialization();
+    }
     return ok;
 }

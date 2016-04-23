@@ -12,6 +12,7 @@
 
 class GGConnection;
 class GGAbstractModel;
+class GGAbstractProjectUnserializer;
 class GGContentElement;
 
 class GG_CORESHARED_EXPORT GGPage
@@ -55,6 +56,7 @@ protected:
     QString m_name;
 
     friend class GGAbstractModel;
+    friend class GGAbstractProjectUnserializer;
 };
 
 /////////////////////////////////////////

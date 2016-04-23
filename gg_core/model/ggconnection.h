@@ -7,6 +7,7 @@
 
 class GGPage;
 class GGAbstractModel;
+class GGAbstractProjectUnserializer;
 
 class GG_CORESHARED_EXPORT GGConnection
 {
@@ -34,6 +35,7 @@ private:
     GGAbstractModel *m_model;
 
     friend class GGAbstractModel;
+    friend class GGAbstractProjectUnserializer;
 };
 
 #endif // GGCONNECTION_H

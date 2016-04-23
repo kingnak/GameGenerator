@@ -108,6 +108,7 @@ bool GGBasicProjectSerializer::serializePage(GGPage *page)
     m["id"] << page->id();
     m["type"] << page->type();
     m["name"] << page->name();
+    m["sceneId"] << (quint32) page->sceneId();
 
     if (GGConditionPage *cp = GG::as<GGConditionPage>(page)) {
         QVariant cond;
@@ -144,15 +145,15 @@ bool GGBasicProjectSerializer::serializePage(GGPage *page)
     }
 
     if (GGMappedContentPage *mcp = GG::as<GGMappedContentPage>(page)) {
-        QVariantMap map;
+        QVariantList lst;
         for (int i = 0; i < mcp->getLinkMap().size(); ++i) {
             GGMappedLink l = mcp->getLinkMap()[i];
             QVariant v;
-            ok &= this->serializeMappedLink(v, l);
+            ok &= this->serializeMappedLink(v, l, i);
             ok &= m_processor->processMappedLink(v);
-            map[QString::number(i)] = v;
+            lst << v;
         }
-        m["map"] << map;
+        m["map"] << lst;
     }
 
     if (GGActionPage *ap = GG::as<GGActionPage>(page)) {
@@ -162,15 +163,15 @@ bool GGBasicProjectSerializer::serializePage(GGPage *page)
     }
 
     if (GGDecisionPage *dp = GG::as<GGDecisionPage>(page)) {
-        QVariantMap map;
+        QVariantList lst;
         for (int i = 0; i < dp->getDecisionLinks().size(); ++i) {
             GGLink l = dp->getDecisionLinks()[i];
             QVariant v;
-            ok &= this->serializeLink(v, l);
+            ok &= this->serializeDecisionLink(v, l, i);
             ok &= m_processor->processLink(v);
-            map[QString::number(i)] = v;
+            lst << v;
         }
-        m["decisions"] << map;
+        m["decision"] << lst;
     }
 
     ok &= injectPageData(page, m);
@@ -216,11 +217,12 @@ bool GGBasicProjectSerializer::serializeContent(QVariant &v, GGContentElement *e
     return ok;
 }
 
-bool GGBasicProjectSerializer::serializeMappedLink(QVariant &v, const GGMappedLink &link)
+bool GGBasicProjectSerializer::serializeMappedLink(QVariant &v, const GGMappedLink &link, int idx)
 {
     bool ok = true;
     QVariantMap m;
     m["type"] << (quint32) link.type();
+    m["index"] << idx;
     switch (link.type()) {
     case GGMappedLink::Rectangle:
         m["rect"] << link.rectangle();
@@ -238,12 +240,26 @@ bool GGBasicProjectSerializer::serializeMappedLink(QVariant &v, const GGMappedLi
     return ok;
 }
 
+bool GGBasicProjectSerializer::serializeDecisionLink(QVariant &v, const GGLink &link, int idx)
+{
+    bool ok = serializeLink(v, link);
+    if (ok) {
+        QVariantMap map;
+        v >> map;
+        map["index"] = idx;
+        v << map;
+        return true;
+    }
+    return false;
+}
+
 bool GGBasicProjectSerializer::serializeLink(QVariant &v, const GGLink &link)
 {
     bool ok = true;
     QVariantMap m;
 
     m["name"] << link.name();
+
     if (link.connection()) {
         m["connection"] << link.connection()->id();
         ok &= m_processor->processConnectionRef(m["connection"]);
