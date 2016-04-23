@@ -32,9 +32,34 @@ bool GGBinarySerializationWriter::writeProjectStart()
     return true;
 }
 
-bool GGBinarySerializationWriter::writeProject(QVariant project)
+bool GGBinarySerializationWriter::writeProject(const QVariant &project)
 {
-    return writeData('P', project);
+    return writeData('M', project);
+}
+
+bool GGBinarySerializationWriter::writeScene(const QVariant &scene)
+{
+    return writeData('S', scene);
+}
+
+bool GGBinarySerializationWriter::writePage(const QVariant &page)
+{
+    return writeData('P', page);
+}
+
+bool GGBinarySerializationWriter::writeConnection(const QVariant &connection)
+{
+    return writeData('C', connection);
+}
+
+bool GGBinarySerializationWriter::writeForeignPage(const QVariant &page)
+{
+    return writeData('p', page);
+}
+
+bool GGBinarySerializationWriter::writeForeignConnection(const QVariant &connection)
+{
+    return writeData('c', connection);
 }
 
 bool GGBinarySerializationWriter::writeProjectEnd()
@@ -47,11 +72,6 @@ bool GGBinarySerializationWriter::writeSceneStart()
     return true;
 }
 
-bool GGBinarySerializationWriter::writeScene(QVariant scene)
-{
-    return writeData('s', scene);
-}
-
 bool GGBinarySerializationWriter::writeSceneEnd()
 {
     return true;
@@ -60,11 +80,6 @@ bool GGBinarySerializationWriter::writeSceneEnd()
 bool GGBinarySerializationWriter::writePagesStart()
 {
     return true;
-}
-
-bool GGBinarySerializationWriter::writePage(QVariant page)
-{
-    return writeData('p', page);
 }
 
 bool GGBinarySerializationWriter::writePagesEnd()
@@ -77,12 +92,27 @@ bool GGBinarySerializationWriter::writeConnectionsStart()
     return true;
 }
 
-bool GGBinarySerializationWriter::writeConnection(QVariant connection)
+bool GGBinarySerializationWriter::writeConnectionsEnd()
 {
-    return writeData('c', connection);
+    return true;
 }
 
-bool GGBinarySerializationWriter::writeConnectionsEnd()
+bool GGBinarySerializationWriter::writeForeignPagesStart()
+{
+    return true;
+}
+
+bool GGBinarySerializationWriter::writeForeignPagesEnd()
+{
+    return true;
+}
+
+bool GGBinarySerializationWriter::writeForeignConnectionsStart()
+{
+    return true;
+}
+
+bool GGBinarySerializationWriter::writeForeignConnectionsEnd()
 {
     return true;
 }

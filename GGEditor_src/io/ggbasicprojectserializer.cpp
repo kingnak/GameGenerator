@@ -53,6 +53,9 @@ bool GGBasicProjectSerializer::saveProject(GGEditProject *project)
             if (!ok) return false;
         }
         ok &= m_writer->writeConnectionsEnd();
+
+        ok &= finalizeScene(s);
+
         ok &= m_writer->writeSceneEnd();
     }
 
@@ -73,7 +76,7 @@ bool GGBasicProjectSerializer::serializeProject(GGEditProject *project)
         ok &= this->serializeVariable(v, var);
         varList << v;
     }
-    m["variables"] << varList;
+    m["variable"] << varList;
 
     ok &= injectProjectData(project, m);
     QVariant v;
@@ -150,6 +153,12 @@ bool GGBasicProjectSerializer::serializePage(GGPage *page)
             map[QString::number(i)] = v;
         }
         m["map"] << map;
+    }
+
+    if (GGActionPage *ap = GG::as<GGActionPage>(page)) {
+        QVariant v;
+        ok &= this->serializeLink(v, ap->actionLink());
+        m["action"] << v;
     }
 
     if (GGDecisionPage *dp = GG::as<GGDecisionPage>(page)) {
@@ -311,5 +320,11 @@ bool GGBasicProjectSerializer::injectConnectionData(GGConnection *connection, QV
 {
     Q_UNUSED(connection);
     Q_UNUSED(v);
+    return true;
+}
+
+bool GGBasicProjectSerializer::finalizeScene(GGScene *scene)
+{
+    Q_UNUSED(scene)
     return true;
 }

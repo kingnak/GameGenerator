@@ -17,17 +17,23 @@ public:
     virtual bool writeFooter();
 
     virtual bool writeProjectStart();
-    virtual bool writeProject(QVariant project);
+    virtual bool writeProject(const QVariant &project);
     virtual bool writeProjectEnd();
     virtual bool writeSceneStart();
-    virtual bool writeScene(QVariant scene);
+    virtual bool writeScene(const QVariant &scene);
     virtual bool writeSceneEnd();
     virtual bool writePagesStart();
-    virtual bool writePage(QVariant page);
+    virtual bool writePage(const QVariant &page);
     virtual bool writePagesEnd();
     virtual bool writeConnectionsStart();
-    virtual bool writeConnection(QVariant connection);
+    virtual bool writeConnection(const QVariant &connection);
     virtual bool writeConnectionsEnd();
+    virtual bool writeForeignPagesStart();
+    virtual bool writeForeignPage(const QVariant &page);
+    virtual bool writeForeignPagesEnd();
+    virtual bool writeForeignConnectionsStart();
+    virtual bool writeForeignConnection(const QVariant &connection);
+    virtual bool writeForeignConnectionsEnd();
 
 private:
     GGXmlSerializer *m_writer;

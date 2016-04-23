@@ -42,6 +42,8 @@ protected:
     virtual bool injectPageData(GGPage *page, QVariantMap &v);
     virtual bool injectConnectionData(GGConnection *connection, QVariantMap &v);
 
+    virtual bool finalizeScene(GGScene *scene);
+
 protected:
     GGAbstractSerializationWriter *m_writer;
     GGSerializationProcessor *m_processor;

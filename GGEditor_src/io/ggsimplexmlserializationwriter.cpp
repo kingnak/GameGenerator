@@ -34,7 +34,7 @@ bool GGSimpleXmlSerializationWriter::writeProjectStart()
     return true;
 }
 
-bool GGSimpleXmlSerializationWriter::writeProject(QVariant project)
+bool GGSimpleXmlSerializationWriter::writeProject(const QVariant &project)
 {
     return m_writer->writeData(m_stream, "project", project);
 }
@@ -51,7 +51,7 @@ bool GGSimpleXmlSerializationWriter::writeSceneStart()
     return true;
 }
 
-bool GGSimpleXmlSerializationWriter::writeScene(QVariant scene)
+bool GGSimpleXmlSerializationWriter::writeScene(const QVariant &scene)
 {
     return m_writer->writeData(m_stream, "scene", scene, QSet<QString>() << "id");
 }
@@ -67,7 +67,7 @@ bool GGSimpleXmlSerializationWriter::writePagesStart()
     return true;
 }
 
-bool GGSimpleXmlSerializationWriter::writePage(QVariant page)
+bool GGSimpleXmlSerializationWriter::writePage(const QVariant &page)
 {
     return m_writer->writeData(m_stream, "page", page, QSet<QString>() << "id");
 }
@@ -82,12 +82,46 @@ bool GGSimpleXmlSerializationWriter::writeConnectionsStart()
     return true;
 }
 
-bool GGSimpleXmlSerializationWriter::writeConnection(QVariant connection)
+bool GGSimpleXmlSerializationWriter::writeConnection(const QVariant &connection)
 {
     return m_writer->writeData(m_stream, "connection", connection, QSet<QString>() << "id");
 }
 
 bool GGSimpleXmlSerializationWriter::writeConnectionsEnd()
 {
+    return true;
+}
+
+bool GGSimpleXmlSerializationWriter::writeForeignPagesStart()
+{
+    m_stream->writeStartElement("pageReferences");
+    return true;
+}
+
+bool GGSimpleXmlSerializationWriter::writeForeignPage(const QVariant &page)
+{
+    return m_writer->writeData(m_stream, "pageRef", page, QSet<QString>() << "pageId");
+}
+
+bool GGSimpleXmlSerializationWriter::writeForeignPagesEnd()
+{
+    m_stream->writeEndElement();
+    return true;
+}
+
+bool GGSimpleXmlSerializationWriter::writeForeignConnectionsStart()
+{
+    m_stream->writeStartElement("connectionReferences");
+    return true;
+}
+
+bool GGSimpleXmlSerializationWriter::writeForeignConnection(const QVariant &connection)
+{
+    return m_writer->writeData(m_stream, "connectionRef", connection, QSet<QString>() << "connectionId");
+}
+
+bool GGSimpleXmlSerializationWriter::writeForeignConnectionsEnd()
+{
+    m_stream->writeEndElement();
     return true;
 }
