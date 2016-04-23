@@ -69,7 +69,8 @@ SOURCES += \
     io/ggbinaryserializationwriter.cpp \
     io/ggviewprojectserializer.cpp \
     io/ggxmlserializer.cpp \
-    io/ggsimplexmlserializationwriter.cpp
+    io/ggsimplexmlserializationwriter.cpp \
+    io/ggiofactory.cpp
 
 HEADERS += \
     model/ggeditmodel.h \
@@ -137,7 +138,8 @@ HEADERS += \
     io/ggbinaryserializationwriter.h \
     io/ggviewprojectserializer.h \
     io/ggxmlserializer.h \
-    io/ggsimplexmlserializationwriter.h
+    io/ggsimplexmlserializationwriter.h \
+    io/ggiofactory.h
 unix {
     target.path = /usr/lib
     INSTALLS += target
