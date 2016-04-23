@@ -1,5 +1,6 @@
 #include "ggcreateprojectdialog.h"
 #include "ui_ggcreateprojectdialog.h"
+#include <io/ggiofactory.h>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QDir>
@@ -39,6 +40,17 @@ QString GGCreateProjectDialog::initialSceneDir() const
     return ui->txtDefaultSceneDir->text();
 }
 
+GGIOFactory::SerializationType GGCreateProjectDialog::serializationType() const
+{
+    if (ui->cmbFileType->currentIndex() == 0) {
+        return GGIOFactory::SimpleXMLModel;
+    } else if (ui->cmbFileType->currentIndex() == 1) {
+        return GGIOFactory::BinaryModel;
+    } else {
+        return GGIOFactory::Unknown;
+    }
+}
+
 void GGCreateProjectDialog::accept()
 {
     QDir d(ui->txtPath->text());
@@ -71,6 +83,7 @@ void GGCreateProjectDialog::on_btnBrowse_clicked()
     if (!s.isNull()) {
         ui->txtPath->setText(s);
     }
+    updateFileName();
     checkOk();
 }
 
@@ -96,6 +109,18 @@ void GGCreateProjectDialog::on_txtDefaultSceneDir_editingFinished()
     if (ui->txtDefaultSceneDir->text().isEmpty()) {
         ui->txtDefaultSceneDir->setText(GGUtilities::sanatizeFileName(ui->txtDefaultSceneName->text()));
     }
+}
+
+void GGCreateProjectDialog::updateFileName()
+{
+    QString ext = ".";
+    if (ui->cmbFileType->currentIndex() == 0) {
+        ext += GGIOFactory::extensionForSerializationType(GGIOFactory::SimpleXMLModel);
+    } else if (ui->cmbFileType->currentIndex() == 1) {
+        ext += GGIOFactory::extensionForSerializationType(GGIOFactory::BinaryModel);
+    }
+    QString f = QDir(ui->txtPath->text()).absoluteFilePath(GGUtilities::sanatizeFileName(ui->txtTitle->text()) + ext);
+    ui->txtProjectFile->setText(QDir::toNativeSeparators(f));
 }
 
 void GGCreateProjectDialog::checkOk()

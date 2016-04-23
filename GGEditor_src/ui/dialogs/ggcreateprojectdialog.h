@@ -2,6 +2,7 @@
 #define GGCREATEPROJECTDIALOG_H
 
 #include <QDialog>
+#include <io/ggiofactory.h>
 
 namespace Ui {
 class GGCreateProjectDialog;
@@ -19,6 +20,7 @@ public:
     QString projectTitle() const;
     QString initialSceneName() const;
     QString initialSceneDir() const;
+    GGIOFactory::SerializationType serializationType() const;
 
 public slots:
     void accept();
@@ -29,6 +31,7 @@ private slots:
     void on_txtDefaultSceneDir_textEdited();
     void on_txtDefaultSceneDir_editingFinished();
 
+    void updateFileName();
     void checkOk();
 
 private:

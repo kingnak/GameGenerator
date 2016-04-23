@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>403</width>
-    <height>232</height>
+    <height>322</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -50,6 +50,41 @@
       </widget>
      </item>
     </layout>
+   </item>
+   <item>
+    <widget class="QLabel" name="label_5">
+     <property name="text">
+      <string>Project file type</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QComboBox" name="cmbFileType">
+     <item>
+      <property name="text">
+       <string>Single XML</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Binary</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="label_6">
+     <property name="text">
+      <string>Project file</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLineEdit" name="txtProjectFile">
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
    </item>
    <item>
     <widget class="QLabel" name="label_3">
@@ -108,7 +143,10 @@
   <tabstop>txtTitle</tabstop>
   <tabstop>txtPath</tabstop>
   <tabstop>btnBrowse</tabstop>
+  <tabstop>cmbFileType</tabstop>
+  <tabstop>txtProjectFile</tabstop>
   <tabstop>txtDefaultSceneName</tabstop>
+  <tabstop>txtDefaultSceneDir</tabstop>
  </tabstops>
  <resources/>
  <connections>
@@ -119,8 +157,8 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>275</x>
-     <y>222</y>
+     <x>284</x>
+     <y>312</y>
     </hint>
     <hint type="destinationlabel">
      <x>157</x>
@@ -135,8 +173,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>343</x>
-     <y>222</y>
+     <x>352</x>
+     <y>312</y>
     </hint>
     <hint type="destinationlabel">
      <x>286</x>
@@ -183,8 +221,8 @@
    <slot>checkOk()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>74</x>
-     <y>133</y>
+     <x>83</x>
+     <y>232</y>
     </hint>
     <hint type="destinationlabel">
      <x>215</x>
@@ -199,8 +237,8 @@
    <slot>checkOk()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>126</x>
-     <y>177</y>
+     <x>135</x>
+     <y>277</y>
     </hint>
     <hint type="destinationlabel">
      <x>93</x>
@@ -208,8 +246,73 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>txtPath</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>GGCreateProjectDialog</receiver>
+   <slot>updateFileName()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>214</x>
+     <y>82</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>219</x>
+     <y>100</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>txtPath</sender>
+   <signal>editingFinished()</signal>
+   <receiver>GGCreateProjectDialog</receiver>
+   <slot>updateFileName()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>58</x>
+     <y>80</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>100</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cmbFileType</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>GGCreateProjectDialog</receiver>
+   <slot>updateFileName()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>31</x>
+     <y>133</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>7</x>
+     <y>146</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>txtTitle</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>GGCreateProjectDialog</receiver>
+   <slot>updateFileName()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>164</x>
+     <y>38</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>170</x>
+     <y>52</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>checkOk()</slot>
+  <slot>updateFileName()</slot>
  </slots>
 </ui>

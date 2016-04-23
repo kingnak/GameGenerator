@@ -52,6 +52,7 @@ GGMainWindow::GGMainWindow(QWidget *parent) :
     connect(m_ctrl, SIGNAL(singlePageSelected(GGViewPage*)), this, SLOT(selectPage(GGViewPage*)));
     connect(m_ctrl, SIGNAL(singleConnectionSelected(GGViewConnection*)), this, SLOT(selectConnection(GGViewConnection*)));
     connect(m_ctrl, SIGNAL(modelDirty(bool)), this, SLOT(setWindowModified(bool)));
+    connect(m_ctrl, SIGNAL(modelDirty(bool)), ui->actionSave, SLOT(setEnabled(bool)));
     connect(m_ctrl, SIGNAL(undoAvailable(bool)), ui->actionUndo, SLOT(setEnabled(bool)));
     connect(m_ctrl, SIGNAL(redoAvailable(bool)), ui->actionRedo, SLOT(setEnabled(bool)));
     connect(m_ctrl, SIGNAL(creationModeChanged(CreationMode)), this, SLOT(setCreationMode()));
@@ -129,7 +130,7 @@ void GGMainWindow::newProject()
         return;
     }
 
-    m_project = new GGEditProject(dlg.projectBasePath());
+    m_project = new GGEditProject(dlg.projectBasePath(), GGUtilities::sanatizeFileName(dlg.projectTitle()), dlg.serializationType());
     m_project->setTitle(dlg.projectTitle());
     m_viewModel = new GGViewModel(m_project->editModel());
     m_ctrl->setProject(m_project, m_viewModel);
@@ -172,10 +173,11 @@ void GGMainWindow::closeProject()
 
 void GGMainWindow::saveProject()
 {
-    QFile f(m_project->basePath().absoluteFilePath(GGUtilities::sanatizeFileName(m_project->title()) + ".gpx"));
+    QFile f(m_project->basePath().absoluteFilePath(m_project->fileName()) + "." + GGIOFactory::extensionForSerializationType(m_project->saveType()));
     f.open(QIODevice::WriteOnly);
-    GGViewProjectSerializer ser(new GGSimpleXmlSerializationWriter(&f), new GGDefaultSerializationProcessor);
-    ser.saveProject(m_project, m_viewModel);
+    GGViewProjectSerializer *ser = GGIOFactory::viewSerializer(&f, m_project->saveType());
+    ser->saveProject(m_project, m_viewModel);
+    m_ctrl->saveCheckpoint();
 }
 
 void GGMainWindow::openSceneView(GGViewScene *scene)
