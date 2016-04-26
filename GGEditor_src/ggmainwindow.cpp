@@ -26,7 +26,7 @@
 #include <io/ggviewprojectserializer.h>
 #include <io/ggsimplexmlserializationwriter.h>
 #include <io/ggserializationprocessor.h>
-#include <io/ggabstractprojectunserializer.h>
+#include <io/ggviewprojectunserializer.h>
 #include <ggutilities.h>
 
 GGMainWindow::GGMainWindow(QWidget *parent) :
@@ -123,6 +123,21 @@ GGGraphPanel *GGMainWindow::sceneViewForId(GG::SceneID id)
     return m_openScenes.value(id);
 }
 
+void GGMainWindow::connectModel()
+{
+    m_sceneTree->setModel(m_project->editModel());
+
+    connect(m_viewModel, SIGNAL(viewSceneRegistered(GGViewScene*)), this, SLOT(openSceneView(GGViewScene*)));
+    connect(m_viewModel, SIGNAL(viewSceneUnregistered(GGViewScene*)), this, SLOT(closeSceneView(GGViewScene*)));
+    connect(m_viewModel, SIGNAL(sceneUpdated(GGViewScene*)), this, SLOT(updateTabs()));
+
+    m_project->mediaManager()->synchronize();
+
+    updateWindowTitle();
+    emit projectOpened();
+    emit hasProject(true);
+}
+
 void GGMainWindow::newProject()
 {
     closeProject();
@@ -135,20 +150,11 @@ void GGMainWindow::newProject()
     m_project = new GGEditProject(dlg.projectBasePath(), GGUtilities::sanatizeFileName(dlg.projectTitle()), dlg.serializationType());
     m_project->setTitle(dlg.projectTitle());
     m_viewModel = new GGViewModel(m_project->editModel());
+
     m_ctrl->setProject(m_project, m_viewModel);
-    m_sceneTree->setModel(m_project->editModel());
-
-    connect(m_viewModel, SIGNAL(viewSceneRegistered(GGViewScene*)), this, SLOT(openSceneView(GGViewScene*)));
-    connect(m_viewModel, SIGNAL(viewSceneUnregistered(GGViewScene*)), this, SLOT(closeSceneView(GGViewScene*)));
-    connect(m_viewModel, SIGNAL(sceneUpdated(GGViewScene*)), this, SLOT(updateTabs()));
-
     m_ctrl->createDefaultScene(dlg.initialSceneName(), dlg.initialSceneDir());
 
-    m_project->mediaManager()->synchronize();
-
-    updateWindowTitle();
-    emit projectOpened();
-    emit hasProject(true);
+    connectModel();
 }
 
 void GGMainWindow::closeProject()
@@ -193,16 +199,23 @@ void GGMainWindow::openProject()
             return;
         }
 
-        GGAbstractProjectUnserializer *ser = GGIOFactory::unserializer(file);
+        GGViewProjectUnserializer *ser = GGIOFactory::unserializer(file);
         bool ok = ser->load(&f);
-        GGProject *p = ser->takeProject();
+        GGEditProject *p = ser->takeProject();
+        GGViewModel *v = ser->takeViewModel();
         delete ser;
-        if (!ok || !p) {
+        if (!ok || !p || !v) {
             QMessageBox::warning(this, "Error", "Error while loading");
+            delete p;
+            delete v;
             return;
         }
 
-        // TODO: Use loaded model
+        m_project = p;
+        m_viewModel = v;
+
+        m_ctrl->setProject(m_project, m_viewModel);
+        connectModel();
     }
 }
 

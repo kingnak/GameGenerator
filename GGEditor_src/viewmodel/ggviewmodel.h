@@ -12,6 +12,7 @@ class GGConnection;
 class GGViewScene;
 class GGViewPage;
 class GGViewConnection;
+class GGAbstractProjectUnserializer;
 
 class GGViewModel : public QObject
 {
@@ -67,6 +68,12 @@ private:
     void doRegConn(GGConnection *conn, GG::SceneID sceneId);
     void doUnregConn(GGConnection *conn, GG::SceneID sceneId);
     bool hasConnectionsInScene(GGPage *page, GG::SceneID scene);
+
+private:
+    bool injectViewScene(GGViewScene *scene);
+    bool injectViewPage(GGViewPage *page);
+    bool injectViewConnection(GGViewConnection *connection);
+    friend class GGAbstractProjectUnserializer;
 
 private:
     GGEditModel *m_model;

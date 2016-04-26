@@ -6,7 +6,7 @@
 #include <io/ggbinaryserializationwriter.h>
 #include <io/ggsimplexmlserializationwriter.h>
 #include <io/ggbinaryunserializationreader.h>
-#include <io/ggbasicprojectunserializer.h>
+#include <io/ggviewprojectunserializer.h>
 
 const char *GGIOFactory::BINARY_MODEL_HEADER = "GGMB";
 
@@ -49,13 +49,13 @@ GGViewProjectSerializer *GGIOFactory::viewSerializer(QIODevice *device, GGIOFact
     return new GGViewProjectSerializer(writer, new GGDefaultSerializationProcessor);
 }
 
-GGAbstractProjectUnserializer *GGIOFactory::unserializer(const QString &file)
+GGViewProjectUnserializer *GGIOFactory::unserializer(const QString &file)
 {
     QFileInfo fi(file);
     return unserializer(fi.absolutePath(), fi.baseName(), serializationTypeForFile(file));
 }
 
-GGAbstractProjectUnserializer *GGIOFactory::unserializer(const QString &basePath, const QString &fileName, GGIOFactory::SerializationType type)
+GGViewProjectUnserializer *GGIOFactory::unserializer(const QString &basePath, const QString &fileName, GGIOFactory::SerializationType type)
 {
     GGAbstractUnserializationReader *reader;
     switch (type) {
@@ -64,7 +64,7 @@ GGAbstractProjectUnserializer *GGIOFactory::unserializer(const QString &basePath
     case Unknown: return NULL;
     }
 
-    GGBasicProjectUnserializer *ser = new GGBasicProjectUnserializer(basePath, fileName, reader, new GGDefaultUnserializationProcessor);
+    GGViewProjectUnserializer *ser = new GGViewProjectUnserializer(basePath, fileName, reader, new GGDefaultUnserializationProcessor);
     return ser;
 }
 

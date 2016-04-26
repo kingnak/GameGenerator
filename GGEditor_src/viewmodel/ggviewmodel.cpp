@@ -260,6 +260,53 @@ bool GGViewModel::hasConnectionsInScene(GGPage *page, GG::SceneID scene)
     return false;
 }
 
+bool GGViewModel::injectViewScene(GGViewScene *scene)
+{
+    if (m_sceneMap.contains(scene->scene()->id())) {
+        return false;
+    }
+    m_sceneMap[scene->scene()->id()] = scene;
+    return true;
+}
+
+bool GGViewModel::injectViewPage(GGViewPage *page)
+{
+    // Check if already there
+    if (m_pageMap[page->viewSceneId()].contains(page->page()->id())) {
+        return false;
+    }
+
+    // Remove from recycler, if there, and not this view page
+    if (GGViewPage *recPage = m_pageRec[page->viewSceneId()].take(page->page()->id())) {
+        if (recPage != page) {
+            delete recPage;
+        }
+    }
+
+    // Insert
+    m_pageMap[page->viewSceneId()][page->page()->id()] = page;
+    return true;
+}
+
+bool GGViewModel::injectViewConnection(GGViewConnection *connection)
+{
+    // Check if already there
+    if (m_connectionMap[connection->viewSceneId()].contains(connection->connection()->id())) {
+        return false;
+    }
+
+    // Remove from recycler, if there, and not this view page
+    if (GGViewConnection *recConn = m_connectionRec[connection->viewSceneId()].take(connection->connection()->id())) {
+        if (recConn != connection) {
+            delete recConn;
+        }
+    }
+
+    // Insert
+    m_connectionMap[connection->viewSceneId()][connection->connection()->id()] = connection;
+    return true;
+}
+
 void GGViewModel::updPage(GGPage *page)
 {
     // This will report page changes for EVERY view page!

@@ -86,6 +86,7 @@ private slots:
 
 private:
     void updateWindowTitle();
+    void connectModel();
 
 private:
     QString m_baseTitle;

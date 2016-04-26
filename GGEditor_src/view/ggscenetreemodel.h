@@ -33,6 +33,9 @@ private slots:
     void updModel();
 
 private:
+    void doUpdModel();
+
+private:
     GGEditModel *m_model;
     TreeItem *m_root;
 };

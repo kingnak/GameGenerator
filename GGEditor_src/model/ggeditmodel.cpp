@@ -107,9 +107,9 @@ bool GGEditModel::registerConnectionWithId(GGConnection *conn)
 {
     // Don't emit the connectionRegistered signal by base class.
     // We emit it ourself, after inserting it in the incomming conn map.
-    this->blockSignals(true);
+    bool wasBlocked = this->blockSignals(true);
     bool ret = GGRuntimeModel::registerConnectionWithId(conn);
-    this->blockSignals(false);
+    if (!wasBlocked) this->blockSignals(false);
 
     if (ret) {
         // Store incomming connection
@@ -173,9 +173,9 @@ GGConnection *GGEditModel::unregisterConnection(GG::ConnectionID id)
     // Remove from source
     // If source is being unregistered, don't emit change signal
     if (ret->source() == m_unregisteringPage) {
-        this->blockSignals(true);
+        bool wasBlocked = this->blockSignals(true);
         ret->source()->removeConnection(ret);
-        this->blockSignals(false);
+        if (!wasBlocked) this->blockSignals(false);
     } else {
         ret->source()->removeConnection(ret);
     }

@@ -50,6 +50,12 @@ bool GGBinaryUnserializationReader::unserialize(QIODevice *device, GGAbstractPro
         case 'C':
             ok &= projectBuilder->unserializeConnection(v);
             break;
+        case 'p':
+            ok &= projectBuilder->unserializeForeignPage(v);
+            break;
+        case 'c':
+            ok &= projectBuilder->unserializeForeignConnection(v);
+            break;
         default:
             ok = false;
         }

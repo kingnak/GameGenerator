@@ -125,6 +125,7 @@ QModelIndex GGSceneTreeModel::parent(const QModelIndex &child) const
 
 void GGSceneTreeModel::setModel(GGEditModel *model)
 {
+    beginResetModel();
     if (m_model) {
         m_model->disconnect(this);
     }
@@ -134,11 +135,19 @@ void GGSceneTreeModel::setModel(GGEditModel *model)
         connect(m_model, SIGNAL(sceneUnregistered(GG::SceneID,GGScene*)), this, SLOT(updModel()));
         connect(m_model, SIGNAL(sceneUpdated(GGScene*)), this, SLOT(updModel()));
     }
+    doUpdModel();
+    endResetModel();
 }
 
 void GGSceneTreeModel::updModel()
 {
     this->beginResetModel();
+    doUpdModel();
+    this->endResetModel();
+}
+
+void GGSceneTreeModel::doUpdModel()
+{
     delete m_root;
     if (m_model) {
         m_root = new TreeItem(NULL, NULL);
@@ -147,5 +156,4 @@ void GGSceneTreeModel::updModel()
             m_root->appendChild(c);
         }
     }
-    this->endResetModel();
 }

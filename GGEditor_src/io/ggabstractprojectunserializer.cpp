@@ -2,6 +2,7 @@
 #include <model/ggscene.h>
 #include <model/ggpage.h>
 #include <model/ggconnection.h>
+#include <viewmodel/ggviewmodel.h>
 
 void GGAbstractProjectUnserializer::setSceneId(GGScene *sc, GG::SceneID id)
 {
@@ -22,5 +23,19 @@ void GGAbstractProjectUnserializer::resolveConnectionPages(GGConnection *conn, G
 {
     conn->m_src = source;
     conn->m_dest = dest;
+}
 
+bool GGAbstractProjectUnserializer::injectViewScene(GGViewModel *model, GGViewScene *vs)
+{
+    return model->injectViewScene(vs);
+}
+
+bool GGAbstractProjectUnserializer::injectViewPage(GGViewModel *model, GGViewPage *vp)
+{
+    return model->injectViewPage(vp);
+}
+
+bool GGAbstractProjectUnserializer::injectViewConnection(GGViewModel *model, GGViewConnection *vc)
+{
+    return model->injectViewConnection(vc);
 }

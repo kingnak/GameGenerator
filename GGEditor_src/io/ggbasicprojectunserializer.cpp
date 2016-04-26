@@ -34,7 +34,11 @@ bool GGBasicProjectUnserializer::load(QIODevice *device)
 {
     m_conns.clear();
     m_connSlots.clear();
-    return m_reader->unserialize(device, this);
+    // Do not emit signals while loading!
+    m_project->editModel()->blockSignals(true);
+    bool ret = m_reader->unserialize(device, this);
+    m_project->editModel()->blockSignals(false);
+    return ret;
 }
 
 GGEditProject *GGBasicProjectUnserializer::loadedProject()
@@ -98,13 +102,15 @@ bool GGBasicProjectUnserializer::unserializePage(QVariant page)
     QVariantMap map;
     page >> map;
 
-    if (!map.contains("name") || !map.contains("id") || !map.contains("type")) return false;
+    if (!map.contains("name") || !map.contains("id") || !map.contains("type") || !map.contains("scene")) return false;
 
     bool ok;
     int type = map["type"].toInt(&ok);
     if (!ok) return false;
 
-    GG::SceneID sceneId = static_cast<GG::SceneID> (map["sceneId"].toInt(&ok));
+    ok = m_processor->processSceneRef(map["scene"]);
+    if (!ok) return false;
+    GG::SceneID sceneId = static_cast<GG::SceneID> (map["scene"].toInt(&ok));
     if (!ok) return false;
     if (!m_project->model()->getScene(sceneId)) return false;
 
@@ -230,6 +236,18 @@ bool GGBasicProjectUnserializer::unserializeConnection(QVariant connection)
     this->setConnectionId(c, id);
     m_conns << c;
 
+    return true;
+}
+
+bool GGBasicProjectUnserializer::unserializeForeignPage(QVariant page)
+{
+    Q_UNUSED(page);
+    return true;
+}
+
+bool GGBasicProjectUnserializer::unserializeForeignConnection(QVariant connection)
+{
+    Q_UNUSED(connection);
     return true;
 }
 

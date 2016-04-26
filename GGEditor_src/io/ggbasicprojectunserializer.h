@@ -31,20 +31,22 @@ public:
     bool unserializeScene(QVariant scene);
     bool unserializePage(QVariant page);
     bool unserializeConnection(QVariant connection);
+    bool unserializeForeignPage(QVariant page);
+    bool unserializeForeignConnection(QVariant connection);
     bool finalizeUnserialization();
 
 protected:
-    bool unserializeVariable(QVariant data, GGVariable &var);
-    bool unserializeCondition(QVariant data, GGCondition &cond);
-    bool unserializeAction(QVariant data, GGAction &act);
-    bool unserializeContent(QVariant data, GGContentElement *&content);
+    virtual bool unserializeVariable(QVariant data, GGVariable &var);
+    virtual bool unserializeCondition(QVariant data, GGCondition &cond);
+    virtual bool unserializeAction(QVariant data, GGAction &act);
+    virtual bool unserializeContent(QVariant data, GGContentElement *&content);
 
-    bool unserializeMappedLink(QVariant data, GGMappedLink &link, GGPage *page, int &idx);
-    bool unserializeDecisionLink(QVariant data, GGLink &link, GGPage *page, int &idx);
-    bool unserializeLink(QVariant data, GGLink &link, GGPage *page, GGConnectionSlotData slot);
+    virtual bool unserializeMappedLink(QVariant data, GGMappedLink &link, GGPage *page, int &idx);
+    virtual bool unserializeDecisionLink(QVariant data, GGLink &link, GGPage *page, int &idx);
+    virtual bool unserializeLink(QVariant data, GGLink &link, GGPage *page, GGConnectionSlotData slot);
 
-    bool storeConnection(QVariantMap map, const QString &key, GGPage *page, GGConnectionSlotData slot);
-    bool storeConnection(QVariant data, GGPage *page, GGConnectionSlotData slot);
+    virtual bool storeConnection(QVariantMap map, const QString &key, GGPage *page, GGConnectionSlotData slot);
+    virtual bool storeConnection(QVariant data, GGPage *page, GGConnectionSlotData slot);
 
 protected:
     GGAbstractUnserializationReader *m_reader;

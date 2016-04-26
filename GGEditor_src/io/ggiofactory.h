@@ -7,7 +7,7 @@ class QIODevice;
 class GGAbstractSerializationWriter;
 class GGBasicProjectSerializer;
 class GGViewProjectSerializer;
-class GGAbstractProjectUnserializer;
+class GGViewProjectUnserializer;
 
 class GGIOFactory
 {
@@ -32,8 +32,8 @@ public:
     static GGBasicProjectSerializer *basicSerializer(QIODevice *device, SerializationType type);
     static GGViewProjectSerializer *viewSerializer(QIODevice *device, SerializationType type);
 
-    static GGAbstractProjectUnserializer *unserializer(const QString &file);
-    static GGAbstractProjectUnserializer *unserializer(const QString &basePath, const QString &fileName, SerializationType type);
+    static GGViewProjectUnserializer *unserializer(const QString &file);
+    static GGViewProjectUnserializer *unserializer(const QString &basePath, const QString &fileName, SerializationType type);
 
 private:
     static GGAbstractSerializationWriter *writerForType(SerializationType type, QIODevice *device);

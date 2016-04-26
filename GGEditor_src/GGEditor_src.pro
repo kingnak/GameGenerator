@@ -73,7 +73,8 @@ SOURCES += \
     io/ggiofactory.cpp \
     io/ggbasicprojectunserializer.cpp \
     io/ggbinaryunserializationreader.cpp \
-    io/ggabstractprojectunserializer.cpp
+    io/ggabstractprojectunserializer.cpp \
+    io/ggviewprojectunserializer.cpp
 
 HEADERS += \
     model/ggeditmodel.h \
@@ -147,7 +148,8 @@ HEADERS += \
     io/ggabstractunserializationreader.h \
     io/ggabstractprojectunserializer.h \
     io/ggbinaryunserializationreader.h \
-    io/ggunserializationprocessor.h
+    io/ggunserializationprocessor.h \
+    io/ggviewprojectunserializer.h
 unix {
     target.path = /usr/lib
     INSTALLS += target

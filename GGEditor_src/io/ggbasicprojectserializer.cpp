@@ -108,7 +108,8 @@ bool GGBasicProjectSerializer::serializePage(GGPage *page)
     m["id"] << page->id();
     m["type"] << page->type();
     m["name"] << page->name();
-    m["sceneId"] << (quint32) page->sceneId();
+    m["scene"] << (quint32) page->sceneId();
+    ok &= m_processor->processSceneRef(m["scene"]);
 
     if (GGConditionPage *cp = GG::as<GGConditionPage>(page)) {
         QVariant cond;

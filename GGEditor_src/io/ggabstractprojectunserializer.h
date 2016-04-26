@@ -9,6 +9,10 @@ class GGScene;
 class GGPage;
 class GGConnection;
 class QIODevice;
+class GGViewModel;
+class GGViewScene;
+class GGViewPage;
+class GGViewConnection;
 
 class GGAbstractProjectUnserializer
 {
@@ -25,6 +29,8 @@ public:
     virtual bool unserializeScene(QVariant scene) = 0;
     virtual bool unserializePage(QVariant page) = 0;
     virtual bool unserializeConnection(QVariant connection) = 0;
+    virtual bool unserializeForeignPage(QVariant page) = 0;
+    virtual bool unserializeForeignConnection(QVariant connection) = 0;
     virtual bool finalizeUnserialization() = 0;
 
 protected:
@@ -32,6 +38,9 @@ protected:
     void setPageId(GGPage *p, GG::PageID id);
     void setConnectionId(GGConnection *c, GG::ConnectionID id);
     void resolveConnectionPages(GGConnection *conn, GGPage *source, GGPage *dest);
+    bool injectViewScene(GGViewModel *model, GGViewScene *vs);
+    bool injectViewPage(GGViewModel *model, GGViewPage *vp);
+    bool injectViewConnection(GGViewModel *model, GGViewConnection *vc);
 };
 
 #endif // GGABSTRACTPROJECTUNSERIALIZER_H
