@@ -74,7 +74,9 @@ bool GGViewProjectUnserializer::unserializeForeignPage(QVariant page)
     page >> map;
     if (!map.contains("viewPage") || !map.contains("pageId")) return false;
 
-    bool ok = true;
+    bool ok = m_processor->processPageRef(map["pageId"]);
+    if (!ok) return false;
+
     GG::PageID pid = static_cast<GG::PageID> (map["pageId"].toUInt(&ok));
     if (!ok) return false;
 
@@ -95,7 +97,9 @@ bool GGViewProjectUnserializer::unserializeForeignConnection(QVariant connection
     connection >> map;
     if (!map.contains("viewConnection") || !map.contains("connectionId")) return false;
 
-    bool ok = true;
+    bool ok = m_processor->processConnectionRef(map["connectionId"]);
+    if (!ok) return false;
+
     GG::ConnectionID cid = static_cast<GG::ConnectionID> (map["connectionId"].toUInt(&ok));
     if (!ok) return false;
 

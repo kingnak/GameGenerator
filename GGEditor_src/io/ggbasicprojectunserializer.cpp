@@ -283,18 +283,22 @@ bool GGBasicProjectUnserializer::finalizeUnserialization()
 
 bool GGBasicProjectUnserializer::unserializeVariable(QVariant data, GGVariable &var)
 {
+    if (!m_processor->processVariable(data)) return false;
     if (!data.canConvert<QVariantMap>()) return false;
+
     QVariantMap map = data.value<QVariantMap>();
     if (!map.contains("name") || !map.contains("type")) {
         return false;
     }
 
-    var = GGVariable(map["name"].toString(), map["initial"].toString(), static_cast<GGVariable::Type>(map["type"].toUInt()));
-    return true;
+    bool ok;
+    var = GGVariable(map["name"].toString(), map["initial"].toString(), static_cast<GGVariable::Type>(map["type"].toUInt(&ok)));
+    return ok;
 }
 
 bool GGBasicProjectUnserializer::unserializeCondition(QVariant data, GGCondition &cond)
 {
+    if (!m_processor->processCondition(data)) return false;
     if (!data.isValid()) return false;
     QVariantMap map;
     data >> map;
@@ -310,6 +314,7 @@ bool GGBasicProjectUnserializer::unserializeCondition(QVariant data, GGCondition
 
 bool GGBasicProjectUnserializer::unserializeAction(QVariant data, GGAction &act)
 {
+    if (!m_processor->processAction(data)) return false;
     if (!data.isValid()) return false;
     QVariantMap map;
     data >> map;
@@ -328,6 +333,7 @@ bool GGBasicProjectUnserializer::unserializeContent(QVariant data, GGContentElem
     content = NULL;
     if (!data.isValid()) return true;
     if (!m_processor->processContentElement(data)) return false;
+    if (!data.canConvert<QVariantMap>()) return false;
     QVariantMap map;
     data >> map;
 

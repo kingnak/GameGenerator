@@ -160,6 +160,7 @@ bool GGBasicProjectSerializer::serializePage(GGPage *page)
     if (GGActionPage *ap = GG::as<GGActionPage>(page)) {
         QVariant v;
         ok &= this->serializeLink(v, ap->actionLink());
+        ok &= m_processor->processLink(v);
         m["action"] << v;
     }
 
@@ -275,7 +276,6 @@ bool GGBasicProjectSerializer::serializeLink(QVariant &v, const GGLink &link)
 
 bool GGBasicProjectSerializer::serializeCondition(QVariant &v, const GGCondition &condition)
 {
-    bool ok = true;
     QVariantMap m;
 
     m["operator"] << (quint32) condition.type();
@@ -283,12 +283,11 @@ bool GGBasicProjectSerializer::serializeCondition(QVariant &v, const GGCondition
     m["value"] << condition.value();
 
     v << m;
-    return ok;
+    return m_processor->processCondition(v);
 }
 
 bool GGBasicProjectSerializer::serializeAction(QVariant &v, const GGAction &action)
 {
-    bool ok = true;
     QVariantMap m;
 
     m["operator"] << (quint32) action.type();
@@ -296,12 +295,11 @@ bool GGBasicProjectSerializer::serializeAction(QVariant &v, const GGAction &acti
     m["value"] << action.value();
 
     v << m;
-    return ok;
+    return m_processor->processAction(v);
 }
 
 bool GGBasicProjectSerializer::serializeVariable(QVariant &v, const GGVariable &var)
 {
-    bool ok = true;
     QVariantMap m;
 
     m["name"] << var.name();
@@ -309,7 +307,7 @@ bool GGBasicProjectSerializer::serializeVariable(QVariant &v, const GGVariable &
     m["type"] << (quint32) var.type();
 
     v << m;
-    return ok;
+    return m_processor->processVariable(v);
 }
 
 bool GGBasicProjectSerializer::injectProjectData(GGEditProject *project, QVariantMap &v)

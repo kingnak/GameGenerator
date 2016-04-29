@@ -20,6 +20,9 @@ public:
     virtual bool processContentElement(QVariant &elem) = 0;
     virtual bool processMappedLink(QVariant &mappedLink) = 0;
     virtual bool processLink(QVariant &link) = 0;
+    virtual bool processVariable(QVariant &var) = 0;
+    virtual bool processCondition(QVariant &cond) = 0;
+    virtual bool processAction(QVariant &act) = 0;
 };
 
 class GGDefaultUnserializationProcessor : public GGUnserializationProcessor
@@ -29,7 +32,6 @@ public:
     virtual bool processScene(QVariant &) { return true; }
     virtual bool processPage(QVariant &) { return true; }
     virtual bool processConnection(QVariant &) { return true; }
-
     virtual bool processSceneRef(QVariant &) { return true; }
     virtual bool processPageRef(QVariant &) { return true; }
     virtual bool processConnectionRef(QVariant &) { return true; }
@@ -37,6 +39,9 @@ public:
     virtual bool processContentElement(QVariant &) { return true; }
     virtual bool processMappedLink(QVariant &) { return true; }
     virtual bool processLink(QVariant &) { return true; }
+    virtual bool processVariable(QVariant &) { return true; }
+    virtual bool processCondition(QVariant &) { return true; }
+    virtual bool processAction(QVariant &) { return true; }
 };
 
 #endif // GGUNSERIALIZATIONPROCESSOR_H

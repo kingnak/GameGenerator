@@ -20,8 +20,10 @@ public:
     virtual bool processContentElement(QVariant &elem) = 0;
     virtual bool processMappedLink(QVariant &mappedLink) = 0;
     virtual bool processLink(QVariant &link) = 0;
+    virtual bool processVariable(QVariant &var) = 0;
+    virtual bool processCondition(QVariant &cond) = 0;
+    virtual bool processAction(QVariant &act) = 0;
 };
-
 
 class GGDefaultSerializationProcessor : public GGSerializationProcessor
 {
@@ -37,6 +39,9 @@ public:
     virtual bool processContentElement(QVariant &) { return true; }
     virtual bool processMappedLink(QVariant &) { return true; }
     virtual bool processLink(QVariant &) { return true; }
+    virtual bool processVariable(QVariant &) { return true; }
+    virtual bool processCondition(QVariant &) { return true; }
+    virtual bool processAction(QVariant &) { return true; }
 };
 
 #endif // GGSERIALIZATIONPROCESSOR_H
