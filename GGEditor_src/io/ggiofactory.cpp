@@ -6,6 +6,7 @@
 #include <io/ggbinaryserializationwriter.h>
 #include <io/ggsimplexmlserializationwriter.h>
 #include <io/ggbinaryunserializationreader.h>
+#include <io/ggsimplexmlunserializationreader.h>
 #include <io/ggviewprojectunserializer.h>
 
 const char *GGIOFactory::BINARY_MODEL_HEADER = "GGMB";
@@ -59,7 +60,7 @@ GGViewProjectUnserializer *GGIOFactory::unserializer(const QString &basePath, co
 {
     GGAbstractUnserializationReader *reader;
     switch (type) {
-    //case SimpleXMLModel: reader = new GGSimpleXmlSerializationWriter(device);
+    case SimpleXMLModel: reader = new GGSimpleXmlUnserializationReader; break;
     case BinaryModel: reader = new GGBinaryUnserializationReader; break;
     case Unknown: return NULL;
     }

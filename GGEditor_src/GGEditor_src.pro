@@ -5,6 +5,7 @@
 #-------------------------------------------------
 
 QT       += widgets
+QT		 += xml
 
 TARGET = GGEditor_src
 TEMPLATE = lib
@@ -74,7 +75,9 @@ SOURCES += \
     io/ggbasicprojectunserializer.cpp \
     io/ggbinaryunserializationreader.cpp \
     io/ggabstractprojectunserializer.cpp \
-    io/ggviewprojectunserializer.cpp
+    io/ggviewprojectunserializer.cpp \
+    io/ggxmlunserializer.cpp \
+    io/ggsimplexmlunserializationreader.cpp
 
 HEADERS += \
     model/ggeditmodel.h \
@@ -149,7 +152,9 @@ HEADERS += \
     io/ggabstractprojectunserializer.h \
     io/ggbinaryunserializationreader.h \
     io/ggunserializationprocessor.h \
-    io/ggviewprojectunserializer.h
+    io/ggviewprojectunserializer.h \
+    io/ggxmlunserializer.h \
+    io/ggsimplexmlunserializationreader.h
 unix {
     target.path = /usr/lib
     INSTALLS += target
