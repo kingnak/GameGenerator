@@ -185,13 +185,14 @@ void GGMainWindow::saveProject()
     f.open(QIODevice::WriteOnly);
     GGViewProjectSerializer *ser = GGIOFactory::viewSerializer(&f, m_project->saveType());
     ser->saveProject(m_project, m_viewModel);
+    delete ser;
     m_ctrl->saveCheckpoint();
 }
 
 void GGMainWindow::openProject()
 {
     closeProject();
-    QString file = QFileDialog::getOpenFileName(this, "Open Project", QString(), "GameGenerator Projects (*.ggmb)");
+    QString file = QFileDialog::getOpenFileName(this, "Open Project", QString(), "GameGenerator Projects (*.ggmb *.ggmx)");
     if (!file.isNull()) {
         QFile f(file);
         if (!f.open(QIODevice::ReadOnly)) {
