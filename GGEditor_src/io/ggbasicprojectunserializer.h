@@ -23,6 +23,7 @@ public:
     virtual ~GGBasicProjectUnserializer();
 
     virtual bool load(QIODevice *device);
+    virtual QString error() const;
 
     GGEditProject *loadedProject();
     GGEditProject *takeProject();

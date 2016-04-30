@@ -14,7 +14,7 @@ class GGXmlUnserializerHandler
 {
 public:
     enum HandleType {
-        Push, Pop, Error
+        Push, PushList, Pop, Error
     };
 
     virtual ~GGXmlUnserializerHandler() {}

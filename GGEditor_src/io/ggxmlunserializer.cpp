@@ -82,6 +82,27 @@ bool GGXmlUnserializer::endElement(const QString &namespaceURI, const QString &l
         m_elementStack.top().second = parent;
     }
         break;
+    case GGXmlUnserializerHandler::PushList:
+        // Push as list in parent
+    {
+        QVariant parent = m_elementStack.top().second;
+        QVariantMap m;
+        parent >> m;
+        QVariantList lst;
+        if (m.contains(n)) {
+            if (m[n].canConvert<QVariantList>()) {
+                lst = qvariant_cast<QVariantList> (m[n]);
+            } else {
+                return setError(QString("Element %1 must be a list").arg(n));
+            }
+        }
+        lst.append(v);
+        v = lst;
+        m[n] = v;
+        parent = m;
+        m_elementStack.top().second = parent;
+    }
+        break;
     case GGXmlUnserializerHandler::Pop:
         // Handled, nothing to do
         break;
@@ -95,7 +116,12 @@ bool GGXmlUnserializer::endElement(const QString &namespaceURI, const QString &l
 
 bool GGXmlUnserializer::endDocument()
 {
+    Element e = m_elementStack.pop();
+    Q_ASSERT(m_elementStack.empty());
     m_locator = NULL;
+    if (m_handler->handleElement(e.first, e.second) == GGXmlUnserializerHandler::Error) {
+        return setError(e.first);
+    }
     return true;
 }
 
@@ -126,10 +152,14 @@ bool GGXmlUnserializer::fatalError(const QXmlParseException &exception)
 
 bool GGXmlUnserializer::setError(const QString &error)
 {
-    m_error = QString("Error in line %1, column %2: %3")
-            .arg(m_locator->lineNumber())
-            .arg(m_locator->columnNumber())
-            .arg(error);
+    if (m_locator) {
+        m_error = QString("Error in line %1, column %2: %3")
+                .arg(m_locator->lineNumber())
+                .arg(m_locator->columnNumber())
+                .arg(error);
+    } else {
+        m_error = error;
+    }
     return false;
 }
 

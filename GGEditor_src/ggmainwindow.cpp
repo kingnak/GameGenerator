@@ -202,11 +202,12 @@ void GGMainWindow::openProject()
 
         GGViewProjectUnserializer *ser = GGIOFactory::unserializer(file);
         bool ok = ser->load(&f);
+        QString err = ser->error();
         GGEditProject *p = ser->takeProject();
         GGViewModel *v = ser->takeViewModel();
         delete ser;
         if (!ok || !p || !v) {
-            QMessageBox::warning(this, "Error", "Error while loading");
+            QMessageBox::warning(this, "Error", "Error while loading: " + err);
             delete p;
             delete v;
             return;

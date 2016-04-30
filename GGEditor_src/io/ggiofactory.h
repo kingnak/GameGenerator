@@ -26,6 +26,9 @@ public:
     static const char *BINARY_MODEL_HEADER;
     static const quint32 BINARY_MODEL_HEADER_SIZE = 4;
 
+    static QString versionToString(quint32 version);
+    static quint32 stringToVersion(QString str);
+
     static QString extensionForSerializationType(SerializationType type);
     static SerializationType serializationTypeForFile(const QString &fileName);
 

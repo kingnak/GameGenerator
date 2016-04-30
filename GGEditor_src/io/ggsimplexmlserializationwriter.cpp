@@ -1,5 +1,6 @@
 #include "ggsimplexmlserializationwriter.h"
 #include <io/ggxmlserializer.h>
+#include <io/ggiofactory.h>
 #include <QXmlStreamWriter>
 
 GGSimpleXmlSerializationWriter::GGSimpleXmlSerializationWriter(QIODevice *device)
@@ -30,7 +31,7 @@ bool GGSimpleXmlSerializationWriter::writeFooter()
 bool GGSimpleXmlSerializationWriter::writeProjectStart()
 {
     m_stream->writeStartElement("GGProject");
-    m_stream->writeAttribute("version", "0.1.0.0");
+    m_stream->writeTextElement("version", GGIOFactory::versionToString(GGIOFactory::FILE_VERSION));
     return true;
 }
 

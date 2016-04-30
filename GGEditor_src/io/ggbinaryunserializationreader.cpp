@@ -10,6 +10,11 @@ GGBinaryUnserializationReader::GGBinaryUnserializationReader()
 
 }
 
+GGIOFactory::SerializationType GGBinaryUnserializationReader::serializationType() const
+{
+    return GGIOFactory::BinaryModel;
+}
+
 bool GGBinaryUnserializationReader::unserialize(QIODevice *device, GGAbstractProjectUnserializer *projectBuilder)
 {
     QDataStream stream(device);
@@ -20,13 +25,13 @@ bool GGBinaryUnserializationReader::unserialize(QIODevice *device, GGAbstractPro
         stream.readRawData(buf, GGIOFactory::BINARY_MODEL_HEADER_SIZE);
         QString str = QString::fromUtf8(buf, GGIOFactory::BINARY_MODEL_HEADER_SIZE);
         if (str != QString::fromUtf8(GGIOFactory::BINARY_MODEL_HEADER)) {
-            return false;
+            return setError("Invalid file type");
         }
 
         quint32 version;
         stream >> version;
         if (version != GGIOFactory::FILE_VERSION) {
-            return false;
+            return setError("Unsupported version");
         }
     }
 
@@ -65,5 +70,18 @@ bool GGBinaryUnserializationReader::unserialize(QIODevice *device, GGAbstractPro
     if (ok) {
         ok &= projectBuilder->finalizeUnserialization();
     }
+
+    if (!ok) return setError("Unkown error");
     return ok;
+}
+
+QString GGBinaryUnserializationReader::error() const
+{
+    return m_error;
+}
+
+bool GGBinaryUnserializationReader::setError(const QString &err)
+{
+    m_error = err;
+    return false;
 }

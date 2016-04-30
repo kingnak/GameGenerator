@@ -21,6 +21,7 @@ public:
     virtual ~GGAbstractProjectUnserializer() {}
 
     virtual bool load(QIODevice *device) = 0;
+    virtual QString error() const = 0;
 
     virtual GGProject *loadedProject() = 0;
     virtual GGProject *takeProject() = 0;

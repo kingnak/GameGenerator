@@ -22,7 +22,7 @@ GGBasicProjectUnserializer::GGBasicProjectUnserializer(const QString &basePath, 
       m_processor(processor),
       m_project(NULL)
 {
-    m_project = new GGEditProject(basePath, fileName, GGIOFactory::BinaryModel);
+    m_project = new GGEditProject(basePath, fileName, reader->serializationType());
 }
 
 GGBasicProjectUnserializer::~GGBasicProjectUnserializer()
@@ -39,6 +39,12 @@ bool GGBasicProjectUnserializer::load(QIODevice *device)
     bool ret = m_reader->unserialize(device, this);
     m_project->editModel()->blockSignals(false);
     return ret;
+}
+
+QString GGBasicProjectUnserializer::error() const
+{
+    if (m_reader) return m_reader->error();
+    return "Unknown error";
 }
 
 GGEditProject *GGBasicProjectUnserializer::loadedProject()
@@ -256,7 +262,10 @@ bool GGBasicProjectUnserializer::finalizeUnserialization()
     // Resolve all connections
     foreach (GGConnection *conn, m_conns) {
         // Resolve pages
-        resolveConnectionPages(conn, m_project->editModel()->getPage(conn->sourceId()), m_project->editModel()->getPage(conn->destinationId()));
+        GGPage *src = m_project->editModel()->getPage(conn->sourceId());
+        GGPage *dest = m_project->editModel()->getPage(conn->destinationId());
+        if (!src || !dest) return false;
+        resolveConnectionPages(conn, src, dest);
 
         // Register
         if (!m_project->editModel()->registerConnectionWithId(conn)) {
@@ -302,6 +311,8 @@ bool GGBasicProjectUnserializer::unserializeCondition(QVariant data, GGCondition
     if (!data.isValid()) return false;
     QVariantMap map;
     data >> map;
+    if (map.isEmpty()) return true;
+
     if (!map.contains("variable") || !map.contains("value") || !map.contains("operator")) return false;
     cond.setVariableName(map["variable"].toString());
     cond.setValue(map["value"].toString());
@@ -336,6 +347,7 @@ bool GGBasicProjectUnserializer::unserializeContent(QVariant data, GGContentElem
     if (!data.canConvert<QVariantMap>()) return false;
     QVariantMap map;
     data >> map;
+    if (map.isEmpty()) return true;
 
     if (!map.contains("type")) return false;
     QString type;
@@ -365,6 +377,7 @@ bool GGBasicProjectUnserializer::unserializeMappedLink(QVariant data, GGMappedLi
     if (!data.canConvert<QVariantMap>()) return false;
     QVariantMap map;
     data >> map;
+    //if (map.isEmpty()) return true;
 
     if (!map.contains("type") || !map.contains("index")) return false;
 
@@ -403,6 +416,7 @@ bool GGBasicProjectUnserializer::unserializeDecisionLink(QVariant data, GGLink &
     if (!data.canConvert<QVariantMap>()) return false;
     QVariantMap map;
     data >> map;
+    //if (map.isEmpty()) return true;
 
     bool ok;
     idx = map["index"].toInt(&ok);
