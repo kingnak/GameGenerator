@@ -255,6 +255,7 @@
     <addaction name="action_New"/>
     <addaction name="actionOpen"/>
     <addaction name="actionSave"/>
+    <addaction name="actionSave_as_type"/>
     <addaction name="separator"/>
     <addaction name="action_Quit"/>
    </widget>
@@ -547,6 +548,16 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+O</string>
+   </property>
+  </action>
+  <action name="actionSave_as_type">
+   <property name="icon">
+    <iconset>
+     <normalon>:/icons/save</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>Save as type...</string>
    </property>
   </action>
  </widget>

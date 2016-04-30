@@ -54,6 +54,7 @@ GGMainWindow::GGMainWindow(QWidget *parent) :
     connect(m_ctrl, SIGNAL(singleConnectionSelected(GGViewConnection*)), this, SLOT(selectConnection(GGViewConnection*)));
     connect(m_ctrl, SIGNAL(modelDirty(bool)), this, SLOT(setWindowModified(bool)));
     connect(m_ctrl, SIGNAL(modelDirty(bool)), ui->actionSave, SLOT(setEnabled(bool)));
+    connect(this, SIGNAL(hasProject(bool)), ui->actionSave_as_type, SLOT(setEnabled(bool)));
     connect(m_ctrl, SIGNAL(undoAvailable(bool)), ui->actionUndo, SLOT(setEnabled(bool)));
     connect(m_ctrl, SIGNAL(redoAvailable(bool)), ui->actionRedo, SLOT(setEnabled(bool)));
     connect(m_ctrl, SIGNAL(creationModeChanged(CreationMode)), this, SLOT(setCreationMode()));
@@ -62,6 +63,7 @@ GGMainWindow::GGMainWindow(QWidget *parent) :
     connect(ui->actionMedia, SIGNAL(triggered(bool)), this, SLOT(showMediaManager()));
     connect(ui->actionSave, SIGNAL(triggered(bool)), this, SLOT(saveProject()));
     connect(ui->actionOpen, SIGNAL(triggered(bool)), this, SLOT(openProject()));
+    connect(ui->actionSave_as_type, SIGNAL(triggered(bool)), this, SLOT(saveProjectAsType()));
 
     // Group Click Mode actions
     m_createActions = new QActionGroup(this);
@@ -155,6 +157,8 @@ void GGMainWindow::newProject()
     m_ctrl->createDefaultScene(dlg.initialSceneName(), dlg.initialSceneDir());
 
     connectModel();
+
+    saveProject();
 }
 
 void GGMainWindow::closeProject()
@@ -187,6 +191,22 @@ void GGMainWindow::saveProject()
     ser->saveProject(m_project, m_viewModel);
     delete ser;
     m_ctrl->saveCheckpoint();
+}
+
+void GGMainWindow::saveProjectAsType()
+{
+    bool ok;
+    QStringList lst = QStringList() << "Single XML" << "Binary";
+    int idx = m_project->saveType() == GGIOFactory::BinaryModel ? 1 : 0;
+
+    QString itm = QInputDialog::getItem(this, "Save as type", "Select file type", lst, idx, false, &ok);
+    if (!ok) return;
+    idx = lst.indexOf(itm);
+    if (idx <0) return;
+
+    if (idx == 1) m_project->setSaveType(GGIOFactory::BinaryModel);
+    else m_project->setSaveType(GGIOFactory::SimpleXMLModel);
+    saveProject();
 }
 
 void GGMainWindow::openProject()
