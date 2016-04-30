@@ -32,8 +32,8 @@ void GGConditionEditorWidget::setVariables(QStringList vars)
     if (m_varCache != vars) {
         m_varCache = vars;
         qSort(vars);
-        m_varValidator->setStrings(vars);
         ui->cmbVar->clear();
+        m_varValidator->setStrings(vars);
         ui->cmbVar->addItem("");
         ui->cmbVar->addItems(vars);
     } else {
