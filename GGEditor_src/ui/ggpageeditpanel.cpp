@@ -35,12 +35,14 @@ GGPageEditPanel::~GGPageEditPanel()
 
 void GGPageEditPanel::displayPage(GGPage *page, GGAbstractModel::PageSections updateSections)
 {
-    m_page = page;
-    ui->grpAction->setVisible(false);
-    ui->grpCondition->setVisible(false);
-    ui->grpContent->setVisible(false);
-    ui->grpDecision->setVisible(false);
-    ui->grpMapping->setVisible(false);
+    if (page != m_page) {
+        m_page = page;
+        ui->grpAction->setVisible(false);
+        ui->grpCondition->setVisible(false);
+        ui->grpContent->setVisible(false);
+        ui->grpDecision->setVisible(false);
+        ui->grpMapping->setVisible(false);
+    }
 
     setCommon(updateSections);
     setStart(updateSections);
