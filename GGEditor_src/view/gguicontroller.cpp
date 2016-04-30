@@ -57,13 +57,13 @@ void GGUIController::setProject(GGEditProject *project, GGViewModel *model)
 void GGUIController::applySubcommandsAsGroup(GGCommandStack *stack)
 {
     m_stack->mergeAsGroup(*stack);
-    saveCheckpoint();
+    checkSaveCheckpoint();
 }
 
 void GGUIController::applySubcommandsAsSingle(GGCommandStack *stack)
 {
     m_stack->merge(*stack);
-    saveCheckpoint();
+    checkSaveCheckpoint();
 }
 
 void GGUIController::setCreationMode(GGUIController::CreationMode mode)
