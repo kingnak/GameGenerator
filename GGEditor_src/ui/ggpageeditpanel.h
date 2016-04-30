@@ -20,6 +20,8 @@ public:
     void setController(GGUIController *ctrl);
     ~GGPageEditPanel();
 
+    GGPage *displayedPage() const;
+
 public slots:
     void displayPage(GGPage *page, GGAbstractModel::PageSections updateSections = GGAbstractModel::AllSections);
 

@@ -33,6 +33,11 @@ GGPageEditPanel::~GGPageEditPanel()
     delete ui;
 }
 
+GGPage *GGPageEditPanel::displayedPage() const
+{
+    return m_page;
+}
+
 void GGPageEditPanel::displayPage(GGPage *page, GGAbstractModel::PageSections updateSections)
 {
     if (page != m_page) {

@@ -426,6 +426,11 @@ void GGMainWindow::showVariables()
     connect(&dlg, SIGNAL(showUsages(GGSearchRequest)), this, SLOT(executeSearch(GGSearchRequest)));
     dlg.exec();
     m_ctrl->applySubcommandsAsGroup(dlg.getExecutedCommands());
+
+    // Quick hack so that Actions/Conditions will have up to date variables:
+    // Reselect after closing
+    if (ui->wgtPageContent->displayedPage())
+        ui->wgtPageContent->displayPage(ui->wgtPageContent->displayedPage());
 }
 
 void GGMainWindow::showMediaManager()
