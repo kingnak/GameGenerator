@@ -142,7 +142,9 @@ void GGMainWindow::connectModel()
 
 void GGMainWindow::newProject()
 {
-    closeProject();
+    if (!closeProject()) {
+        return;
+    }
 
     GGCreateProjectDialog dlg;
     if (dlg.exec() != QDialog::Accepted) {
@@ -161,8 +163,18 @@ void GGMainWindow::newProject()
     saveProject();
 }
 
-void GGMainWindow::closeProject()
+bool GGMainWindow::closeProject()
 {
+    if (isWindowModified()) {
+        int res = QMessageBox::question(this, "Save changes", "The current project has unsaved changes.\nDo you want to save these changes?", QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel, QMessageBox::Cancel);
+        if (res == QMessageBox::Cancel) {
+            return false;
+        }
+        if (res == QMessageBox::Yes) {
+            saveProject();
+        }
+    }
+
     emit projectClosed();
     emit hasProject(false);
 
@@ -181,6 +193,8 @@ void GGMainWindow::closeProject()
 
     showStartPage();
     updateWindowTitle();
+
+    return true;
 }
 
 void GGMainWindow::saveProject()
@@ -211,7 +225,10 @@ void GGMainWindow::saveProjectAsType()
 
 void GGMainWindow::openProject()
 {
-    closeProject();
+    if (!closeProject()) {
+        return;
+    }
+
     QString file = QFileDialog::getOpenFileName(this, "Open Project", QString(), "GameGenerator Projects (*.ggmb *.ggmx)");
     if (!file.isNull()) {
         QFile f(file);
@@ -425,6 +442,15 @@ void GGMainWindow::showStartPage()
         ui->tabScenes->addTab(ui->tabStart, ui->tabStart->windowTitle());
     }
     ui->tabScenes->setCurrentWidget(ui->tabStart);
+}
+
+void GGMainWindow::closeEvent(QCloseEvent *event)
+{
+    if (closeProject()) {
+        event->accept();
+    } else {
+        event->ignore();
+    }
 }
 
 void GGMainWindow::closeTab(int idx)

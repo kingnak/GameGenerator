@@ -42,7 +42,7 @@ public:
 
 public slots:
     void newProject();
-    void closeProject();
+    bool closeProject();
     void saveProject();
     void saveProjectAsType();
     void openProject();
@@ -65,6 +65,9 @@ signals:
     void projectOpened();
     void projectClosed();
     void hasProject(bool yes);
+
+protected:
+    void closeEvent(QCloseEvent *event);
 
 private slots:
     void showError(QString err);
