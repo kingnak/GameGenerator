@@ -34,6 +34,11 @@ bool GGEditModel::registerNewScene(GGScene *scene)
         return false;
     }
 
+    Q_ASSERT(!m_scenes.contains(m_nextSceneId));
+    if (m_scenes.contains(m_nextSceneId)) {
+        qFatal("New Scene ID already used");
+    }
+
     setSceneId(scene, m_nextSceneId++);
     m_scenes[scene->id()] = scene;
 
@@ -59,6 +64,11 @@ bool GGEditModel::registerNewPage(GGPage *page)
     Q_ASSERT(scene);
     if (!scene) {
         return false;
+    }
+
+    Q_ASSERT(!m_pages.contains(m_nextPageId));
+    if (m_pages.contains(m_nextPageId)) {
+        qFatal("New Page ID already used");
     }
 
     // Associate with model
@@ -89,6 +99,11 @@ bool GGEditModel::registerNewConnection(GGConnection *conn)
         return false;
     }
 
+    Q_ASSERT(!m_connections.contains(m_nextConnId));
+    if (m_connections.contains(m_nextConnId)) {
+        qFatal("New Connection ID already used");
+    }
+
     // Associate with model
     setConnectionId(conn, m_nextConnId++);
     m_connections[conn->id()] = conn;
@@ -117,6 +132,24 @@ bool GGEditModel::registerConnectionWithId(GGConnection *conn)
         emit connectionRegistered(conn);
     }
     return ret;
+}
+
+void GGEditModel::synchronizeNextIds()
+{
+    if (m_nextSceneId == GG::InvalidSceneId) m_nextSceneId = 0;
+    foreach (GG::SceneID id, this->m_scenes.keys()) {
+        if (id >= m_nextSceneId) m_nextSceneId = id+1;
+    }
+
+    if (m_nextPageId == GG::InvalidPageId) m_nextPageId = 0;
+    foreach (GG::PageID id, this->m_pages.keys()) {
+        if (id >= m_nextPageId) m_nextPageId = id+1;
+    }
+
+    if (m_nextConnId == GG::InvalidConnectionId) m_nextConnId = 0;
+    foreach (GG::ConnectionID id, this->m_connections.keys()) {
+        if (id >= m_nextConnId) m_nextConnId = id+1;
+    }
 }
 
 GGScene *GGEditModel::unregisterScene(GG::SceneID id)

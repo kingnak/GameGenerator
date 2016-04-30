@@ -25,6 +25,8 @@ public:
     bool registerNewConnection(GGConnection *conn);
     bool registerConnectionWithId(GGConnection *conn);
 
+    void synchronizeNextIds();
+
     GGScene *unregisterScene(GG::SceneID id);
     GGPage *unregisterPage(GG::PageID id, QList<GGConnection *> *affectedConnections = NULL);
     GGConnection *unregisterConnection(GG::ConnectionID id);

@@ -287,6 +287,8 @@ bool GGBasicProjectUnserializer::finalizeUnserialization()
         }
     }
 
+    m_project->editModel()->synchronizeNextIds();
+
     return true;
 }
 
