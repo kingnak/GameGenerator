@@ -78,21 +78,21 @@ void GGPageItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option
     painter->save();
     switch (m_page->page()->type()) {
     case GGStartPage::Type:
-        paintStart(painter, innerBoundingRect(), editScene()->defaultPageColor(), editScene()->pageFillColor());
+        paintStart(painter, innerBoundingRect(), editScene()->pageColor(m_page), editScene()->pageFillColor());
         withCaption = false;
         break;
     case GGEndPage::Type:
-        paintEnd(painter, innerBoundingRect(), editScene()->defaultPageColor(), editScene()->pageFillColor());
+        paintEnd(painter, innerBoundingRect(), editScene()->pageColor(m_page), editScene()->pageFillColor());
         withCaption = false;
         break;
     case GGConditionPage::Type:
-        paintCondition(painter, innerBoundingRect(), editScene()->defaultPageColor(), editScene()->pageFillColor());
+        paintCondition(painter, innerBoundingRect(), editScene()->pageColor(m_page), editScene()->pageFillColor());
         break;
     case GGActionPage::Type:
-        paintAction(painter, boundingRect(), editScene()->defaultPageColor(), editScene()->pageFillColor());
+        paintAction(painter, boundingRect(), editScene()->pageColor(m_page), editScene()->pageFillColor());
         break;
     case GGDecisionPage::Type:
-        paintDecision(painter, boundingRect(), editScene()->defaultPageColor(), editScene()->pageFillColor());
+        paintDecision(painter, boundingRect(), editScene()->pageColor(m_page), editScene()->pageFillColor());
         break;
     }
     painter->restore();
