@@ -149,6 +149,7 @@ void GGSceneTreeModel::updModel()
 void GGSceneTreeModel::doUpdModel()
 {
     delete m_root;
+    m_root = NULL;
     if (m_model) {
         m_root = new TreeItem(NULL, NULL);
         for (int i = 0; i < m_model->getScenes().count(); ++i) {
