@@ -8,7 +8,7 @@ namespace Ui {
 class GGMediaManagerDialog;
 }
 
-class GGMediaManager;
+class GGSceneMediaManager;
 class GGMediaTreeModel;
 
 class GGMediaManagerDialog : public QDialog
@@ -16,7 +16,7 @@ class GGMediaManagerDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit GGMediaManagerDialog(GGMediaManager *mgm, QWidget *parent = 0);
+    explicit GGMediaManagerDialog(GGSceneMediaManager *mgm, QWidget *parent = 0);
     ~GGMediaManagerDialog();
 
     QString getSelectedMediaId();
@@ -38,6 +38,9 @@ private slots:
 
 private:
     void showDir(QModelIndex idx);
+
+    QModelIndex selectedTreeIndex();
+    QModelIndex selectedListIndex();
 
 private:
     Ui::GGMediaManagerDialog *ui;

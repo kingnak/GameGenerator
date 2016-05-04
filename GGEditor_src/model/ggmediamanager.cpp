@@ -28,7 +28,7 @@ QStringList GGMediaManager::imageSuffixes()
 QStringList GGMediaManager::videoSuffixes()
 {
     // TODO
-    return QStringList();
+    return QStringList() << "mpg" << "mpeg";
 }
 
 QStringList GGMediaManager::audioSuffixes()

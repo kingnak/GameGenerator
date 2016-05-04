@@ -3,8 +3,9 @@
 #include <QSortFilterProxyModel>
 #include <QInputDialog>
 #include <QFileDialog>
-#include <model/ggmediamanager.h>
+#include <model/ggscenemediamanager.h>
 #include <view/ggmediatreemodel.h>
+#include <model/ggeditmodel.h>
 
 class ListProxyModel : public QSortFilterProxyModel
 {
@@ -44,7 +45,7 @@ private:
     bool m_invalidating;
 };
 
-GGMediaManagerDialog::GGMediaManagerDialog(GGMediaManager *mgm, QWidget *parent) :
+GGMediaManagerDialog::GGMediaManagerDialog(GGSceneMediaManager *mgm, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::GGMediaManagerDialog)
 {
@@ -61,6 +62,7 @@ GGMediaManagerDialog::GGMediaManagerDialog(GGMediaManager *mgm, QWidget *parent)
     ListProxyModel *listProxy = new ListProxyModel(this);
     listProxy->setSourceModel(m_tree);
     ui->lstMedia->setModel(listProxy);
+    ui->btnRemove->setEnabled(false);
 
     refresh();
 }
@@ -77,9 +79,15 @@ QString GGMediaManagerDialog::getSelectedMediaId()
 
 void GGMediaManagerDialog::refresh()
 {
+    static_cast<QSortFilterProxyModel*> (ui->treeFolders->model())->setSourceModel(NULL);
+    static_cast<QSortFilterProxyModel*> (ui->lstMedia->model())->setSourceModel(NULL);
+    ui->treeFolders->setCurrentIndex(QModelIndex());
+    ui->lstMedia->setCurrentIndex(QModelIndex());
     m_acceptedSelection = QString::null;
     m_tree->reload();
     setSelectedDirectory(m_initSelection);
+    static_cast<QSortFilterProxyModel*> (ui->treeFolders->model())->setSourceModel(m_tree);
+    static_cast<QSortFilterProxyModel*> (ui->lstMedia->model())->setSourceModel(m_tree);
 }
 
 void GGMediaManagerDialog::setSelectedDirectory(const QString &dir)
@@ -110,6 +118,7 @@ void GGMediaManagerDialog::accept()
 void GGMediaManagerDialog::treeItemSelected(QModelIndex idx)
 {
     QSortFilterProxyModel *m = static_cast<QSortFilterProxyModel*> (ui->treeFolders->model());
+    ui->treeFolders->setCurrentIndex(idx);
     idx = m->mapToSource(idx);
     ListProxyModel *l = static_cast<ListProxyModel*> (ui->lstMedia->model());
     l->setRootIndex(idx);
@@ -165,11 +174,15 @@ void GGMediaManagerDialog::on_btnCleanup_clicked()
 void GGMediaManagerDialog::on_btnAdd_clicked()
 {
     QStringList imgs = GGMediaManager::imageSuffixes();
-    imgs.replaceInStrings(QRegExp("(.*)"), "*.\\1");
+    imgs.replaceInStrings(QRegExp("^(.*)$"), "*.\\1");
     QStringList vids = GGMediaManager::videoSuffixes();
-    vids.replaceInStrings(QRegExp("(.*)"), "*.\\1");
+    vids.replaceInStrings(QRegExp("^(.*)$"), "*.\\1");
     QStringList auds = GGMediaManager::audioSuffixes();
-    auds.replaceInStrings(QRegExp("(.*)"), "*.\\1");
+    auds.replaceInStrings(QRegExp("^(.*)$"), "*.\\1");
+
+    bool ok;
+    GG::SceneID sid = static_cast<GG::SceneID> (m_tree->data(selectedTreeIndex(), GGMediaTreeModel::SceneRole).toInt(&ok));
+    if (!ok) sid = GG::InvalidSceneId;
 
     QStringList filters = QStringList()
             << QString("Images (%1)").arg(imgs.join(" "))
@@ -177,5 +190,36 @@ void GGMediaManagerDialog::on_btnAdd_clicked()
             << QString("Sounds (%1)").arg(auds.join(" "));
 
     QStringList files = QFileDialog::getOpenFileNames(this, "Open File", QString::null, filters.join(";;"));
+    QStringList err;
+    foreach (QString f, files) {
+        QString id = m_tree->manager()->checkIn(m_tree->manager()->model()->getScene(sid), f);
+        if (id.isNull()) err << f;
+    }
 
+    if (err.size() > 0) {
+        QInputDialog dlg(this);
+        dlg.setOption(QInputDialog::UseListViewForComboBoxItems);
+        dlg.setWindowTitle("Error");
+        dlg.setLabelText("Could not add the following files:");
+        dlg.setOption(QInputDialog::UseListViewForComboBoxItems);
+        dlg.setComboBoxItems(err);
+        dlg.setTextValue(err[0]);
+        dlg.exec();
+    }
+
+    QString dir = m_tree->data(selectedTreeIndex(), GGMediaTreeModel::PathRole).toString();
+    refresh();
+    setSelectedDirectory(dir);
+}
+
+void GGMediaManagerDialog::on_btnRemove_clicked()
+{
+
+}
+
+QModelIndex GGMediaManagerDialog::selectedTreeIndex()
+{
+    QModelIndex idx = ui->treeFolders->currentIndex();
+    QSortFilterProxyModel *m = static_cast<QSortFilterProxyModel*> (ui->treeFolders->model());
+    return m->mapToSource(idx);
 }

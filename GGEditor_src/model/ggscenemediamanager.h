@@ -18,6 +18,9 @@ public:
 
     virtual void synchronize();
     virtual QString getDisplayString(const QString &path, int level);
+    GG::SceneID getSceneForPath(const QString &path, int level);
+
+    GGEditModel *model();
 
 protected:
     virtual QString getCheckInPath(const QString &file);

@@ -193,7 +193,7 @@
   </connection>
   <connection>
    <sender>lstMedia</sender>
-   <signal>activated(QModelIndex)</signal>
+   <signal>clicked(QModelIndex)</signal>
    <receiver>GGMediaManagerDialog</receiver>
    <slot>listItemSelected()</slot>
    <hints>

@@ -4,7 +4,7 @@
 #include <QAbstractItemModel>
 #include <QSortFilterProxyModel>
 
-class GGMediaManager;
+class GGSceneMediaManager;
 
 class MediaTreeItem;
 
@@ -15,13 +15,14 @@ public:
     enum {
         PathRole = Qt::UserRole,
         TypeRole,
-        IdRole
+        IdRole,
+        SceneRole
     };
 
     static const QString ENTRY_DIR;
     static const QString ENTRY_FILE;
 
-    GGMediaTreeModel(GGMediaManager *mgm, QObject *parent = 0);
+    GGMediaTreeModel(GGSceneMediaManager *mgm, QObject *parent = 0);
     ~GGMediaTreeModel();
 
     QVariant data(const QModelIndex &index, int role) const;
@@ -32,13 +33,15 @@ public:
     QModelIndex index(int row, int column, const QModelIndex &parent) const;
     QModelIndex parent(const QModelIndex &child) const;
 
+    GGSceneMediaManager *manager();
+
 public slots:
     void reload();
     QStringList verify();
     QStringList cleanUp();
 
 private:
-    GGMediaManager *m_manager;
+    GGSceneMediaManager *m_manager;
     MediaTreeItem *m_root;
 };
 

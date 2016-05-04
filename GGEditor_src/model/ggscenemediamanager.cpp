@@ -46,6 +46,24 @@ QString GGSceneMediaManager::getDisplayString(const QString &path, int level)
     return path;
 }
 
+GG::SceneID GGSceneMediaManager::getSceneForPath(const QString &path, int level)
+{
+    if (level == 0) {
+        // Check if it is a scene's dir
+        foreach (GGScene *s, m_model->getScenes()) {
+            if (path == s->mediaDir()) {
+                return s->id();
+            }
+        }
+    }
+    return GG::InvalidSceneId;
+}
+
+GGEditModel *GGSceneMediaManager::model()
+{
+    return m_model;
+}
+
 QString GGSceneMediaManager::getCheckInPath(const QString &file)
 {
     QString dir = GGMediaManager::getCheckInPath(file);

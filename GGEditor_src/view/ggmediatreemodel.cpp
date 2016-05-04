@@ -8,8 +8,8 @@ const QString GGMediaTreeModel::ENTRY_FILE("FILE");
 class MediaTreeItem
 {
 public:
-    explicit MediaTreeItem(QString path, QString disp, QString type, QString id = QString::null, MediaTreeItem *parentItem = 0)
-        : m_path(path), m_disp(disp), m_type(type), m_id(id), m_parentItem(parentItem)
+    explicit MediaTreeItem(QString path, QString disp, QString type, QString id = QString::null, GG::SceneID sid = GG::InvalidSceneId, MediaTreeItem *parentItem = 0)
+        : m_path(path), m_disp(disp), m_type(type), m_id(id), m_sid(sid), m_parentItem(parentItem)
     {
     }
 
@@ -23,13 +23,15 @@ public:
     QVariant data(int col, int role) const {
         if (col == 0) {
             if (role == Qt::DisplayRole) {
-                return m_disp;
+                return m_disp + QString::number(m_sid);
             } else if (role == GGMediaTreeModel::PathRole) {
                 return m_path;
             } else if (role == GGMediaTreeModel::TypeRole) {
                 return m_type;
             } else if (role == GGMediaTreeModel::IdRole) {
                 return m_id;
+            } else if (role == GGMediaTreeModel::SceneRole) {
+                return m_sid;
             }
         }
         return QVariant();
@@ -43,10 +45,11 @@ private:
     QString m_disp;
     QString m_type;
     QString m_id;
+    GG::SceneID m_sid;
     MediaTreeItem *m_parentItem;
 };
 
-GGMediaTreeModel::GGMediaTreeModel(GGMediaManager *mgm, QObject *parent)
+GGMediaTreeModel::GGMediaTreeModel(GGSceneMediaManager *mgm, QObject *parent)
     : QAbstractItemModel(parent),
       m_manager(mgm),
       m_root(NULL)
@@ -127,7 +130,11 @@ QModelIndex GGMediaTreeModel::parent(const QModelIndex &child) const
         return QModelIndex();
 
     return createIndex(parentItem->row(), 0, parentItem);
+}
 
+GGSceneMediaManager *GGMediaTreeModel::manager()
+{
+    return m_manager;
 }
 
 void GGMediaTreeModel::reload()
@@ -147,14 +154,17 @@ void GGMediaTreeModel::reload()
         QStringList parts = path.split('/');
         QString line;
         MediaTreeItem *parent = m_root;
+        GG::SceneID sid = GG::InvalidSceneId;
         for (int i = 0; i < parts.size(); ++i) {
             line += parts[i];
+            GG::SceneID s = m_manager->getSceneForPath(parts[i], i);
+            if (s != GG::InvalidSceneId) sid = s;
             if (!items.contains(line)) {
                 QString filePath = m_manager->baseDir().absoluteFilePath(line);
                 QString type = QFileInfo(filePath).isDir() ? ENTRY_DIR : ENTRY_FILE;
                 QString disp = m_manager->getDisplayString(parts[i], i);
                 QString id = m_manager->getIdForFilePath(line);
-                MediaTreeItem *i = new MediaTreeItem(filePath, disp, type, id, parent);
+                MediaTreeItem *i = new MediaTreeItem(filePath, disp, type, id, sid, parent);
                 items[line] = i;
                 parent->appendChild(i);
                 parent = i;
