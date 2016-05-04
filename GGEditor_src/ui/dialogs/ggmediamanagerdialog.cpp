@@ -1,6 +1,8 @@
 #include "ggmediamanagerdialog.h"
 #include "ui_ggmediamanagerdialog.h"
 #include <QSortFilterProxyModel>
+#include <QInputDialog>
+#include <QFileDialog>
 #include <model/ggmediamanager.h>
 #include <view/ggmediatreemodel.h>
 
@@ -115,8 +117,65 @@ void GGMediaManagerDialog::treeItemSelected(QModelIndex idx)
     ui->lstMedia->setRootIndex(idx);
 }
 
+void GGMediaManagerDialog::listItemSelected()
+{
+    if (ui->lstMedia->currentIndex().isValid()) {
+        ui->btnRemove->setEnabled(true);
+    } else {
+        ui->btnRemove->setEnabled(false);
+    }
+}
+
 void GGMediaManagerDialog::on_btnSynch_clicked()
 {
     //m_initSelection = QString::null;
     refresh();
+}
+
+void GGMediaManagerDialog::on_btnVerify_clicked()
+{
+    QStringList lst = m_tree->verify();
+    if (lst.isEmpty()) return;
+
+    QInputDialog dlg(this);
+    dlg.setOption(QInputDialog::UseListViewForComboBoxItems);
+    dlg.setWindowTitle("Missing media");
+    dlg.setLabelText("The following files were not found on the file system:");
+    dlg.setOption(QInputDialog::UseListViewForComboBoxItems);
+    dlg.setComboBoxItems(lst);
+    dlg.setTextValue(lst[0]);
+    dlg.exec();
+}
+
+void GGMediaManagerDialog::on_btnCleanup_clicked()
+{
+    QStringList lst = m_tree->cleanUp();
+    if (lst.isEmpty()) return;
+
+    QInputDialog dlg(this);
+    dlg.setOption(QInputDialog::UseListViewForComboBoxItems);
+    dlg.setWindowTitle("Removed media");
+    dlg.setLabelText("The following files were removed from the manager:");
+    dlg.setOption(QInputDialog::UseListViewForComboBoxItems);
+    dlg.setComboBoxItems(lst);
+    dlg.setTextValue(lst[0]);
+    dlg.exec();
+}
+
+void GGMediaManagerDialog::on_btnAdd_clicked()
+{
+    QStringList imgs = GGMediaManager::imageSuffixes();
+    imgs.replaceInStrings(QRegExp("(.*)"), "*.\\1");
+    QStringList vids = GGMediaManager::videoSuffixes();
+    vids.replaceInStrings(QRegExp("(.*)"), "*.\\1");
+    QStringList auds = GGMediaManager::audioSuffixes();
+    auds.replaceInStrings(QRegExp("(.*)"), "*.\\1");
+
+    QStringList filters = QStringList()
+            << QString("Images (%1)").arg(imgs.join(" "))
+            << QString("Videos (%1)").arg(vids.join(" "))
+            << QString("Sounds (%1)").arg(auds.join(" "));
+
+    QStringList files = QFileDialog::getOpenFileNames(this, "Open File", QString::null, filters.join(";;"));
+
 }

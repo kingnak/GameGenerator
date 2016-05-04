@@ -19,7 +19,7 @@
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
-     <widget class="QWidget" name="">
+     <widget class="QWidget" name="layoutWidget">
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
         <widget class="QTreeView" name="treeFolders"/>
@@ -29,11 +29,35 @@
          <item>
           <widget class="QToolButton" name="btnSynch">
            <property name="text">
-            <string notr="true"/>
+            <string>Recheck folders</string>
            </property>
            <property name="icon">
             <iconset>
              <normalon>:/icons/reload</normalon>
+            </iconset>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QToolButton" name="btnVerify">
+           <property name="text">
+            <string>Verify</string>
+           </property>
+           <property name="icon">
+            <iconset>
+             <normalon>:/icons/verify</normalon>
+            </iconset>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QToolButton" name="btnCleanup">
+           <property name="text">
+            <string>Clean up</string>
+           </property>
+           <property name="icon">
+            <iconset>
+             <normalon>:/icons/cleanup</normalon>
             </iconset>
            </property>
           </widget>
@@ -76,9 +100,21 @@
           </spacer>
          </item>
          <item>
+          <widget class="QToolButton" name="btnRemove">
+           <property name="text">
+            <string notr="true"/>
+           </property>
+           <property name="icon">
+            <iconset>
+             <normalon>:/icons/delete</normalon>
+            </iconset>
+           </property>
+          </widget>
+         </item>
+         <item>
           <widget class="QToolButton" name="btnAdd">
            <property name="text">
-            <string/>
+            <string notr="true"/>
            </property>
            <property name="icon">
             <iconset>
@@ -114,8 +150,8 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>257</x>
-     <y>282</y>
+     <x>266</x>
+     <y>411</y>
     </hint>
     <hint type="destinationlabel">
      <x>157</x>
@@ -130,8 +166,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>316</x>
-     <y>260</y>
+     <x>325</x>
+     <y>411</y>
     </hint>
     <hint type="destinationlabel">
      <x>286</x>
@@ -155,8 +191,25 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>lstMedia</sender>
+   <signal>activated(QModelIndex)</signal>
+   <receiver>GGMediaManagerDialog</receiver>
+   <slot>listItemSelected()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>424</x>
+     <y>150</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>522</x>
+     <y>199</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>treeItemSelected(QModelIndex)</slot>
+  <slot>listItemSelected()</slot>
  </slots>
 </ui>

@@ -20,6 +20,8 @@
         <file alias="reload">icons/reload.png</file>
         <file alias="save">icons/save.png</file>
         <file alias="open">icons/open.png</file>
+        <file alias="cleanup">icons/tidy.png</file>
+        <file alias="verify">icons/verify.png</file>
     </qresource>
     <qresource prefix="/search">
         <file alias="function">icons/func.png</file>

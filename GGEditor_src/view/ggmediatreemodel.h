@@ -34,6 +34,8 @@ public:
 
 public slots:
     void reload();
+    QStringList verify();
+    QStringList cleanUp();
 
 private:
     GGMediaManager *m_manager;

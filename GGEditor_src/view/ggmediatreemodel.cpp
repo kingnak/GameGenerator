@@ -166,3 +166,17 @@ void GGMediaTreeModel::reload()
     }
     this->endResetModel();
 }
+
+QStringList GGMediaTreeModel::verify()
+{
+    return m_manager->verify();
+}
+
+QStringList GGMediaTreeModel::cleanUp()
+{
+    QStringList ret = m_manager->cleanUp();
+    if (!ret.isEmpty()) {
+        reload();
+    }
+    return ret;
+}

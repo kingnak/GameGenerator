@@ -65,11 +65,30 @@ bool GGMediaManager::init()
 
 QStringList GGMediaManager::verify()
 {
+    return verify(false);
+}
+
+QStringList GGMediaManager::cleanUp()
+{
+    return verify(true);
+}
+
+QStringList GGMediaManager::verify(bool cleanUp)
+{
     QStringList ret;
-    foreach (QString s, m_path2id.keys()) {
-        QFileInfo f(m_baseDir.absoluteFilePath(s));
+    QMap<QString, QString>::iterator it = m_path2id.begin();
+    while (it != m_path2id.end()) {
+        QFileInfo f(m_baseDir.absoluteFilePath(it.key()));
         if (!f.exists()) {
-            ret << s;
+            ret << it.key();
+            if (cleanUp) {
+                m_id2path.remove(it.value());
+                it = m_path2id.erase(it);
+            } else {
+                ++it;
+            }
+        } else {
+            ++it;
         }
     }
     return ret;
@@ -80,18 +99,6 @@ void GGMediaManager::synchronize()
     QStringList dirs = getDefaultMediaPaths();
     foreach (QString d, dirs) {
         m_baseDir.mkpath(d);
-    }
-
-    QMap<QString, QString>::iterator it = m_path2id.begin();
-    while (it != m_path2id.end()) {
-        QFileInfo f(m_baseDir.absoluteFilePath(it.key()));
-        if (!f.exists()) {
-            qDebug() << "GGMediaManager Synchronize: removing" << it.key();
-            m_id2path.remove(it.value());
-            it = m_path2id.erase(it);
-        } else {
-            ++it;
-        }
     }
 
     m_dirs.clear();

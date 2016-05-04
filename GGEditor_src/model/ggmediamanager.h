@@ -33,6 +33,7 @@ public:
 
     bool init();
     QStringList verify();
+    QStringList cleanUp();
     virtual void synchronize();
     QString checkIn(const QString &file, bool moveFile = false);
 
@@ -47,6 +48,7 @@ public:
 protected:
     QString toManagedPath(const QString &file) const;
     virtual QString getCheckInPath(const QString &file);
+    QStringList verify(bool cleanUp);
 
     virtual QStringList getDefaultMediaPaths();
     void resynchBaseDir();

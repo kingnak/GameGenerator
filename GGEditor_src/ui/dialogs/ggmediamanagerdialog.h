@@ -29,7 +29,12 @@ public slots:
 
 private slots:
     void treeItemSelected(QModelIndex idx);
+    void listItemSelected();
     void on_btnSynch_clicked();
+    void on_btnVerify_clicked();
+    void on_btnCleanup_clicked();
+    void on_btnAdd_clicked();
+    void on_btnRemove_clicked();
 
 private:
     void showDir(QModelIndex idx);
