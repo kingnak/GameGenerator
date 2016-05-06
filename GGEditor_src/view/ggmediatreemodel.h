@@ -16,7 +16,8 @@ public:
         PathRole = Qt::UserRole,
         TypeRole,
         IdRole,
-        SceneRole
+        SceneRole,
+        MediaTypeRole
     };
 
     static const QString ENTRY_DIR;

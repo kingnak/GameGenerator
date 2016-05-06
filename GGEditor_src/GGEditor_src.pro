@@ -77,7 +77,9 @@ SOURCES += \
     io/ggabstractprojectunserializer.cpp \
     io/ggviewprojectunserializer.cpp \
     io/ggxmlunserializer.cpp \
-    io/ggsimplexmlunserializationreader.cpp
+    io/ggsimplexmlunserializationreader.cpp \
+    utils/ggtrasher.cpp \
+    utils/ggwintrasher.cpp
 
 HEADERS += \
     model/ggeditmodel.h \
@@ -154,7 +156,9 @@ HEADERS += \
     io/ggunserializationprocessor.h \
     io/ggviewprojectunserializer.h \
     io/ggxmlunserializer.h \
-    io/ggsimplexmlunserializationreader.h
+    io/ggsimplexmlunserializationreader.h \
+    utils/ggtrasher.h \
+    utils/ggwintrasher.h
 unix {
     target.path = /usr/lib
     INSTALLS += target

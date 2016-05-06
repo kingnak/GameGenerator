@@ -59,6 +59,14 @@ GG::SceneID GGSceneMediaManager::getSceneForPath(const QString &path, int level)
     return GG::InvalidSceneId;
 }
 
+GGMediaManager::MediaType GGSceneMediaManager::getMediaTypeForPath(const QString &path, int level)
+{
+    if (level == 1) {
+        return GGMediaManager::getMediaTypeForPath(path, 0);
+    }
+    return Other;
+}
+
 GGEditModel *GGSceneMediaManager::model()
 {
     return m_model;

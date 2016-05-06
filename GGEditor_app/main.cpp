@@ -1,5 +1,10 @@
 #include "ggmainwindow.h"
 #include <QApplication>
+#include <utils/ggtrasher.h>
+
+#ifdef Q_OS_WIN
+#include <utils/ggwintrasher.h>
+#endif
 
 #ifdef USE_VLD
 #include <vld.h>
@@ -87,6 +92,15 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     Q_INIT_RESOURCE(resources);
+
+    GGDefaultTrasher defTrash;
+    GGTrasher::setTrasher(&defTrash);
+
+#ifdef Q_OS_WIN
+    GGWinTrasher winTrash;
+    GGTrasher::setTrasher(&winTrash);
+#endif
+
     GGMainWindow w;
     w.show();
 

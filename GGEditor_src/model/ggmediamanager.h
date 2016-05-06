@@ -14,18 +14,16 @@ class GGMediaManagerResolver;
 class GGMediaManager
 {
 public:
-    static const QString PATH_BASE;
-    static const QString PATH_IMAGE;
-    static const QString PATH_AUDIO;
-    static const QString PATH_VIDEO;
-    static const QString PATH_OTHER;
+    enum MediaType {
+        Other, Image, Audio, Video
+    };
 
     GGMediaManager(const QDir &baseDir);
     virtual ~GGMediaManager();
 
-    static QStringList imageSuffixes();
-    static QStringList videoSuffixes();
-    static QStringList audioSuffixes();
+    static QStringList getMediaSuffixes(MediaType type);
+    static QString getBasePathName();
+    static QString getMediaPathName(MediaType type);
 
     QDir baseDir() const;
     QStringList allMedia() const;
@@ -36,6 +34,7 @@ public:
     QStringList cleanUp();
     virtual void synchronize();
     QString checkIn(const QString &file, bool moveFile = false);
+    bool removeManagedFile(const QString &file);
 
     bool isFileManaged(const QString &file) const;
     bool isFilePathInManager(const QString &file) const;
@@ -44,6 +43,8 @@ public:
     GGMediaManagerResolver *resolver() { return m_resolver; }
 
     virtual QString getDisplayString(const QString &path, int level);
+
+    virtual MediaType getMediaTypeForPath(const QString &path, int level);
 
 protected:
     QString toManagedPath(const QString &file) const;
@@ -55,6 +56,13 @@ protected:
 
 private:
     void synchDir(QDir dir);
+
+protected:
+    static const QString PATH_BASE;
+    static const QString PATH_IMAGE;
+    static const QString PATH_AUDIO;
+    static const QString PATH_VIDEO;
+    static const QString PATH_OTHER;
 
 protected:
     QDir m_baseDir;

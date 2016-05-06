@@ -19,22 +19,42 @@ GGMediaManager::~GGMediaManager()
     delete m_resolver;
 }
 
-QStringList GGMediaManager::imageSuffixes()
+QStringList GGMediaManager::getMediaSuffixes(GGMediaManager::MediaType type)
 {
-    // TODO: Extend? Resolve by Qt Image Plugins? Sensible web formats?
-    return QStringList() << "jpg" << "jpeg" << "gif" << "png";
+    switch (type) {
+    case Image:
+        // TODO: Extend? Resolve by Qt Image Plugins? Sensible web formats?
+        return QStringList() << "jpg" << "jpeg" << "gif" << "png";
+    case Audio:
+        // TODO
+        return QStringList() << "mp3";
+    case Video:
+        // TODO
+        return QStringList() << "mpg" << "mpeg";
+    case Other:
+        return QStringList() << "";
+    }
+    return QStringList();
 }
 
-QStringList GGMediaManager::videoSuffixes()
+QString GGMediaManager::getBasePathName()
 {
-    // TODO
-    return QStringList() << "mpg" << "mpeg";
+    return PATH_BASE;
 }
 
-QStringList GGMediaManager::audioSuffixes()
+QString GGMediaManager::getMediaPathName(GGMediaManager::MediaType type)
 {
-    // TODO
-    return QStringList() << "mp3";
+    switch (type) {
+    case Image:
+        return PATH_IMAGE;
+    case Audio:
+        return PATH_AUDIO;
+    case Video:
+        return PATH_VIDEO;
+    case Other:
+        return PATH_OTHER;
+    }
+    return PATH_OTHER;
 }
 
 QDir GGMediaManager::baseDir() const
@@ -159,6 +179,16 @@ QString GGMediaManager::checkIn(const QString &file, bool moveFile)
     return sId;
 }
 
+bool GGMediaManager::removeManagedFile(const QString &file)
+{
+    if (!isFileManaged(file)) return false;
+    QString managed = toManagedPath(file);
+    QString id = m_path2id[managed];
+    m_id2path.remove(id);
+    m_path2id.remove(managed);
+    return true;
+}
+
 bool GGMediaManager::isFileManaged(const QString &file) const
 {
     return m_path2id.contains(toManagedPath(file));
@@ -192,6 +222,16 @@ QString GGMediaManager::getDisplayString(const QString &path, int level)
     return path;
 }
 
+GGMediaManager::MediaType GGMediaManager::getMediaTypeForPath(const QString &path, int level)
+{
+    if (level == 0) {
+        if (path == PATH_IMAGE) return Image;
+        if (path == PATH_VIDEO) return Video;
+        if (path == PATH_AUDIO) return Audio;
+    }
+    return Other;
+}
+
 QString GGMediaManager::toManagedPath(const QString &file) const
 {
     QFileInfo f(file);
@@ -219,11 +259,11 @@ QString GGMediaManager::getCheckInPath(const QString &file)
     QFileInfo fi(file);
     QString ext = fi.suffix().toLower();
     QString dir;
-    if (imageSuffixes().contains(ext)) {
+    if (getMediaSuffixes(Image).contains(ext)) {
         dir = PATH_IMAGE;
-    } else if (audioSuffixes().contains(ext)) {
+    } else if (getMediaSuffixes(Audio).contains(ext)) {
         dir = PATH_AUDIO;
-    } else if (videoSuffixes().contains(ext)) {
+    } else if (getMediaSuffixes(Video).contains(ext)) {
         dir = PATH_VIDEO;
     } else {
         dir = PATH_OTHER;

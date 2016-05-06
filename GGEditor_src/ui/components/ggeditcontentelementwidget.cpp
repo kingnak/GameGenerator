@@ -71,9 +71,9 @@ void GGEditContentElementWidget::on_btnBrowseImage_clicked()
     if (m_curScene) {
         QString baseDir = m_curScene->mediaDir();
         if (ui->radAnim->isChecked() || ui->radImg->isChecked()) {
-            baseDir += "/" + GGSceneMediaManager::PATH_IMAGE;
+            baseDir += "/" + GGSceneMediaManager::getMediaPathName(GGMediaManager::Image);
         } else if (ui->radVideo->isChecked()) {
-            baseDir += "/" + GGSceneMediaManager::PATH_VIDEO;
+            baseDir += "/" + GGSceneMediaManager::getMediaPathName(GGMediaManager::Video);
         }
         dlg.setSelectedDirectory(baseDir);
     }

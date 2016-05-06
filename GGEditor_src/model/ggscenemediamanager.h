@@ -19,6 +19,7 @@ public:
     virtual void synchronize();
     virtual QString getDisplayString(const QString &path, int level);
     GG::SceneID getSceneForPath(const QString &path, int level);
+    virtual MediaType getMediaTypeForPath(const QString &path, int level);
 
     GGEditModel *model();
 

@@ -28,6 +28,7 @@
 #include <io/ggserializationprocessor.h>
 #include <io/ggviewprojectunserializer.h>
 #include <ggutilities.h>
+#include <utils/ggtrasher.h>
 
 GGMainWindow::GGMainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -135,6 +136,10 @@ void GGMainWindow::connectModel()
 
     m_project->mediaManager()->synchronize();
 
+    if (GGDefaultTrasher *t = dynamic_cast<GGDefaultTrasher*> (GGTrasher::trasher())) {
+        t->setBaseDir(m_project->basePath().absoluteFilePath(GGDefaultTrasher::TRASH_DIR_NAME));
+    }
+
     updateWindowTitle();
     emit projectOpened();
     emit hasProject(true);
@@ -177,6 +182,11 @@ bool GGMainWindow::closeProject()
 
     emit projectClosed();
     emit hasProject(false);
+
+    // Reset Trasher
+    if (GGDefaultTrasher *t = dynamic_cast<GGDefaultTrasher*> (GGTrasher::trasher())) {
+        t->setBaseDir(QDir::temp().absoluteFilePath(GGDefaultTrasher::TRASH_DIR_NAME));
+    }
 
     while (ui->tabScenes->count() > 0)
         ui->tabScenes->removeTab(0);

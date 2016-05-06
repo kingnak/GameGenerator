@@ -3,6 +3,9 @@
 #include <QSortFilterProxyModel>
 #include <QInputDialog>
 #include <QFileDialog>
+#include <QMessageBox>
+#include <QPushButton>
+#include <utils/ggtrasher.h>
 #include <model/ggscenemediamanager.h>
 #include <view/ggmediatreemodel.h>
 #include <model/ggeditmodel.h>
@@ -79,15 +82,10 @@ QString GGMediaManagerDialog::getSelectedMediaId()
 
 void GGMediaManagerDialog::refresh()
 {
-    static_cast<QSortFilterProxyModel*> (ui->treeFolders->model())->setSourceModel(NULL);
-    static_cast<QSortFilterProxyModel*> (ui->lstMedia->model())->setSourceModel(NULL);
-    ui->treeFolders->setCurrentIndex(QModelIndex());
-    ui->lstMedia->setCurrentIndex(QModelIndex());
+    static_cast<ListProxyModel*> (ui->lstMedia->model())->setRootIndex(QModelIndex());
     m_acceptedSelection = QString::null;
     m_tree->reload();
     setSelectedDirectory(m_initSelection);
-    static_cast<QSortFilterProxyModel*> (ui->treeFolders->model())->setSourceModel(m_tree);
-    static_cast<QSortFilterProxyModel*> (ui->lstMedia->model())->setSourceModel(m_tree);
 }
 
 void GGMediaManagerDialog::setSelectedDirectory(const QString &dir)
@@ -124,6 +122,7 @@ void GGMediaManagerDialog::treeItemSelected(QModelIndex idx)
     l->setRootIndex(idx);
     idx = l->mapFromSource(idx);
     ui->lstMedia->setRootIndex(idx);
+    ui->btnRemove->setEnabled(false);
 }
 
 void GGMediaManagerDialog::listItemSelected()
@@ -158,6 +157,7 @@ void GGMediaManagerDialog::on_btnVerify_clicked()
 
 void GGMediaManagerDialog::on_btnCleanup_clicked()
 {
+    static_cast<ListProxyModel*> (ui->lstMedia->model())->setRootIndex(QModelIndex());
     QStringList lst = m_tree->cleanUp();
     if (lst.isEmpty()) return;
 
@@ -173,23 +173,36 @@ void GGMediaManagerDialog::on_btnCleanup_clicked()
 
 void GGMediaManagerDialog::on_btnAdd_clicked()
 {
-    QStringList imgs = GGMediaManager::imageSuffixes();
+    QStringList imgs = GGMediaManager::getMediaSuffixes(GGMediaManager::Image);
     imgs.replaceInStrings(QRegExp("^(.*)$"), "*.\\1");
-    QStringList vids = GGMediaManager::videoSuffixes();
+    QStringList vids = GGMediaManager::getMediaSuffixes(GGMediaManager::Video);
     vids.replaceInStrings(QRegExp("^(.*)$"), "*.\\1");
-    QStringList auds = GGMediaManager::audioSuffixes();
+    QStringList auds = GGMediaManager::getMediaSuffixes(GGMediaManager::Audio);
     auds.replaceInStrings(QRegExp("^(.*)$"), "*.\\1");
+
+    QStringList all = imgs + vids + auds;
 
     bool ok;
     GG::SceneID sid = static_cast<GG::SceneID> (m_tree->data(selectedTreeIndex(), GGMediaTreeModel::SceneRole).toInt(&ok));
     if (!ok) sid = GG::InvalidSceneId;
 
+    GGMediaManager::MediaType mt = static_cast<GGMediaManager::MediaType> (m_tree->data(selectedTreeIndex(), GGMediaTreeModel::MediaTypeRole).toInt(&ok));
+    if (!ok) mt = GGMediaManager::Other;
+
     QStringList filters = QStringList()
             << QString("Images (%1)").arg(imgs.join(" "))
             << QString("Videos (%1)").arg(vids.join(" "))
-            << QString("Sounds (%1)").arg(auds.join(" "));
+            << QString("Sounds (%1)").arg(auds.join(" "))
+            << QString("All supported media files (%1)").arg(all.join(" "))
+            << QString("All files (*)")
+               ;
 
-    QStringList files = QFileDialog::getOpenFileNames(this, "Open File", QString::null, filters.join(";;"));
+    QString selected = filters[3];
+    if (mt == GGMediaManager::Image) selected = filters[0];
+    if (mt == GGMediaManager::Video) selected = filters[1];
+    if (mt == GGMediaManager::Audio) selected = filters[2];
+
+    QStringList files = QFileDialog::getOpenFileNames(this, "Open File", QString::null, filters.join(";;"), &selected);
     QStringList err;
     foreach (QString f, files) {
         QString id = m_tree->manager()->checkIn(m_tree->manager()->model()->getScene(sid), f);
@@ -214,12 +227,52 @@ void GGMediaManagerDialog::on_btnAdd_clicked()
 
 void GGMediaManagerDialog::on_btnRemove_clicked()
 {
+    QModelIndex idx = selectedListIndex();
+    if (!idx.isValid()) return;
 
+    QString path = m_tree->data(idx, GGMediaTreeModel::PathRole).toString();
+
+    QFileInfo fi(path);
+    QString fn = fi.fileName();
+
+    QMessageBox msg(this);
+    msg.setWindowTitle("Remove file");
+    msg.setText(QString("Do you want to delete the file\n%1\npermanently or move to trash?").arg(fn));
+    QPushButton *del = msg.addButton("Delete permanently", QMessageBox::DestructiveRole);
+    QPushButton *trash = msg.addButton("Move to trash", QMessageBox::AcceptRole);
+    QPushButton *cancel = msg.addButton("Cancel", QMessageBox::RejectRole);
+    msg.setDefaultButton(trash);
+    msg.setEscapeButton(cancel);
+    msg.exec();
+
+    // Cancel
+    if (msg.clickedButton() == cancel) return;
+
+    m_tree->manager()->removeManagedFile(path);
+
+    if (msg.clickedButton() == del) {
+        // DELETE
+        QFile::remove(path);
+    } else {
+        // Move to trash
+        GGTrasher::trasher()->moveToTrash(path);
+    }
+
+    QString dir = m_tree->data(selectedTreeIndex(), GGMediaTreeModel::PathRole).toString();
+    refresh();
+    setSelectedDirectory(dir);
 }
 
 QModelIndex GGMediaManagerDialog::selectedTreeIndex()
 {
     QModelIndex idx = ui->treeFolders->currentIndex();
     QSortFilterProxyModel *m = static_cast<QSortFilterProxyModel*> (ui->treeFolders->model());
+    return m->mapToSource(idx);
+}
+
+QModelIndex GGMediaManagerDialog::selectedListIndex()
+{
+    QModelIndex idx = ui->lstMedia->currentIndex();
+    QSortFilterProxyModel *m = static_cast<QSortFilterProxyModel*> (ui->lstMedia->model());
     return m->mapToSource(idx);
 }
