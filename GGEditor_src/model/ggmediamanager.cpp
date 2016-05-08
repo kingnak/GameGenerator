@@ -236,7 +236,7 @@ void GGMediaManager::synchronizeNextMediaId()
 {
     quint32 nextMedia = INVALID_MEDIA_ID;
     foreach (QString id, m_id2path.keys()) {
-        int nId = id.toUInt();
+        quint32 nId = id.toUInt();
         if (nId > nextMedia) nextMedia = nId;
     }
     if (m_nextMediaId < nextMedia) {
