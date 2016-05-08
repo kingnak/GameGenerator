@@ -23,7 +23,7 @@ public:
     QVariant data(int col, int role) const {
         if (col == 0) {
             if (role == Qt::DisplayRole) {
-                return m_disp + QString::number(m_sid);
+                return m_disp;
             } else if (role == GGMediaTreeModel::PathRole) {
                 return m_path;
             } else if (role == GGMediaTreeModel::TypeRole) {
