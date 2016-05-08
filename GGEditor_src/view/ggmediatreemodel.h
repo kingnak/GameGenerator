@@ -35,6 +35,7 @@ public:
     QModelIndex parent(const QModelIndex &child) const;
 
     GGSceneMediaManager *manager();
+    QPixmap loadFile(const QString &id);
 
 public slots:
     void reload();

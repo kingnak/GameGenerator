@@ -1,4 +1,6 @@
 #include "ggmediatreemodel.h"
+#include <QImage>
+#include <QPixmap>
 #include <model/ggmediamanager.h>
 #include <model/ggscenemediamanager.h>
 
@@ -8,8 +10,8 @@ const QString GGMediaTreeModel::ENTRY_FILE("FILE");
 class MediaTreeItem
 {
 public:
-    explicit MediaTreeItem(QString path, QString disp, QString type, QString id = QString::null, GG::SceneID sid = GG::InvalidSceneId, GGMediaManager::MediaType mediaType = GGMediaManager::Other, MediaTreeItem *parentItem = 0)
-        : m_path(path), m_disp(disp), m_type(type), m_id(id), m_sid(sid), m_mediaType(mediaType), m_parentItem(parentItem)
+    explicit MediaTreeItem(GGMediaTreeModel *model, QString path, QString disp, QString type, QString id = QString::null, GG::SceneID sid = GG::InvalidSceneId, GGMediaManager::MediaType mediaType = GGMediaManager::Other, MediaTreeItem *parentItem = 0)
+        : m_model(model), m_path(path), m_disp(disp), m_type(type), m_id(id), m_sid(sid), m_mediaType(mediaType), m_parentItem(parentItem)
     {
     }
 
@@ -34,6 +36,10 @@ public:
                 return m_sid;
             } else if (role == GGMediaTreeModel::MediaTypeRole) {
                 return (int) m_mediaType;
+            } else if (role == Qt::DecorationRole) {
+                if (m_type == GGMediaTreeModel::ENTRY_FILE) {
+                    return m_model->loadFile(m_id);
+                }
             }
         }
         return QVariant();
@@ -42,6 +48,7 @@ public:
     MediaTreeItem *parentItem() { return m_parentItem; }
 
 private:
+    GGMediaTreeModel *m_model;
     QList<MediaTreeItem*> m_childItems;
     QString m_path;
     QString m_disp;
@@ -140,11 +147,26 @@ GGSceneMediaManager *GGMediaTreeModel::manager()
     return m_manager;
 }
 
+QPixmap GGMediaTreeModel::loadFile(const QString &id)
+{
+    // TODO: Threaded?
+    QIODevice *dev = m_manager->resolver()->resolve(id);
+    QPixmap ret;
+    if (dev) {
+        QString type = m_manager->resolver()->resolveTypeHint(id);
+        QImage img;
+        img.load(dev, type.toLocal8Bit());
+        delete dev;
+        ret = QPixmap::fromImage(img).scaled(150, 150, Qt::KeepAspectRatio);
+    }
+    return ret;
+}
+
 void GGMediaTreeModel::reload()
 {
     this->beginResetModel();
     delete m_root;
-    m_root = new MediaTreeItem(m_manager->baseDir().absolutePath(), "Media", "DIR", NULL);
+    m_root = new MediaTreeItem(this, m_manager->baseDir().absolutePath(), "Media", ENTRY_DIR, NULL);
 
     m_manager->synchronize();
     QStringList lst = m_manager->allMediaWithDirs();
@@ -168,7 +190,7 @@ void GGMediaTreeModel::reload()
                 QString disp = m_manager->getDisplayString(parts[i], i);
                 QString id = m_manager->getIdForFilePath(line);
                 GGMediaManager::MediaType mt = m_manager->getMediaTypeForPath(parts[i], i);
-                MediaTreeItem *i = new MediaTreeItem(filePath, disp, type, id, sid, mt, parent);
+                MediaTreeItem *i = new MediaTreeItem(this, filePath, disp, type, id, sid, mt, parent);
                 items[line] = i;
                 parent->appendChild(i);
                 parent = i;
