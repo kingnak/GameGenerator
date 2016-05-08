@@ -2,6 +2,9 @@
 #include <model/ggeditmodel.h>
 #include <model/ggscene.h>
 
+const QString GGSceneMediaManager::OTHER_FOLDER = "other media";
+const QString GGSceneMediaManager::OTHER_NAME = "Other Media";
+
 GGSceneMediaManager::GGSceneMediaManager(GGEditModel *model, const QDir &baseDir, QObject *parent)
     : QObject(parent),
       GGMediaManager(baseDir),
@@ -36,6 +39,8 @@ QString GGSceneMediaManager::getDisplayString(const QString &path, int level)
         return GGMediaManager::getDisplayString(path, 0);
     }
     if (level == 0) {
+        if (path == OTHER_FOLDER) return OTHER_NAME;
+
         // Check if it is a scene's dir
         foreach (GGScene *s, m_model->getScenes()) {
             if (path == s->mediaDir()) {
@@ -75,8 +80,12 @@ GGEditModel *GGSceneMediaManager::model()
 QString GGSceneMediaManager::getCheckInPath(const QString &file)
 {
     QString dir = GGMediaManager::getCheckInPath(file);
-    if (m_checkInScene && !m_checkInScene->mediaDir().isEmpty()) {
-        dir = m_checkInScene->mediaDir() + "/" + dir;
+    if (m_checkInScene) {
+        if (!m_checkInScene->mediaDir().isEmpty()) {
+            dir = m_checkInScene->mediaDir() + "/" + dir;
+        }
+    } else {
+        dir = OTHER_FOLDER + "/" + dir;
     }
     return dir;
 }

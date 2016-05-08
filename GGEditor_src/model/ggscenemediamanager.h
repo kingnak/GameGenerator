@@ -28,6 +28,9 @@ protected:
 
     virtual QStringList getDefaultMediaPaths();
 
+    static const QString OTHER_FOLDER;
+    static const QString OTHER_NAME;
+
 private slots:
     void sceneRegistered(GGScene *scene);
     void sceneUnregistered(GG::SceneID id);
