@@ -75,42 +75,9 @@ GGXmlUnserializerHandler::HandleType GGSimpleXmlUnserializationReader::handleEle
         return Push;
     }
 
-    // Handle Variable Lists
-    if (name == "variable") {
-        return PushList;
-    }
-    if (name == "variables") {
-        name = "variable";
-        data = m["variable"];
-        return Push;
-    }
-    // Handle viewPage Lists
-    if (name == "viewPage") {
-        return PushList;
-    }
-    if (name == "viewPages") {
-        name = "viewPage";
-        data = m["viewPage"];
-        return Push;
-    }
-    // Handle viewConnection Lists
-    if (name == "viewConnection") {
-        return PushList;
-    }
-    if (name == "viewConnections") {
-        name = "viewConnection";
-        data = m["viewConnection"];
-        return Push;
-    }
-    // Handle media Lists
-    if (name == "media") {
-        return PushList;
-    }
-    if (name == "medias") {
-        name = "media";
-        data = m["media"];
-        return Push;
-    }
+    // Handle Lists
+    HandleType t = handleLists(name, data, m);
+    if (t != Pop) return t;
 
     if (name == "project") {
         bool ok = m_builder->unserializeProject(data);
@@ -172,4 +139,35 @@ GGXmlUnserializerHandler::HandleType GGSimpleXmlUnserializationReader::handleEle
     }
 
     return Push;
+}
+
+GGXmlUnserializerHandler::HandleType GGSimpleXmlUnserializationReader::handleLists(QString &name, QVariant &data, const QVariantMap &map)
+{
+    HandleType t = doHandleList("variable", name, data, map);
+    if (t != Pop) return t;
+    t = doHandleList("viewPage", name, data, map);
+    if (t != Pop) return t;
+    t = doHandleList("viewConnection", name, data, map);
+    if (t != Pop) return t;
+    t = doHandleList("media", name, data, map);
+    if (t != Pop) return t;
+    t = doHandleList("map", name, data, map);
+    if (t != Pop) return t;
+    t = doHandleList("decision", name, data, map);
+    if (t != Pop) return t;
+
+    return Pop;
+}
+
+GGXmlUnserializerHandler::HandleType GGSimpleXmlUnserializationReader::doHandleList(const QString &itemName, QString &name, QVariant &data, const QVariantMap &map)
+{
+    if (name == itemName) {
+        return PushList;
+    }
+    if (name == itemName + "s") {
+        name = itemName;
+        data = map[itemName];
+        return Push;
+    }
+    return Pop;
 }
