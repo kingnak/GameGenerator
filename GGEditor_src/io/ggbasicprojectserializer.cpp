@@ -8,6 +8,7 @@
 #include <model/ggpage.h>
 #include <model/ggconnection.h>
 #include <model/ggcontentelement.h>
+#include <model/ggscenemediamanager.h>
 #include <QVariantMap>
 
 GGBasicProjectSerializer::GGBasicProjectSerializer(GGAbstractSerializationWriter *writer, GGSerializationProcessor *processor)
@@ -77,6 +78,14 @@ bool GGBasicProjectSerializer::serializeProject(GGEditProject *project)
         varList << v;
     }
     m["variable"] << varList;
+
+    QVariantList mediaList;
+    foreach (QString path, project->mediaManager()->allMedia()) {
+        QVariant v;
+        ok &= this->serializeMedia(v, path, project);
+        mediaList << v;
+    }
+    m["media"] << mediaList;
 
     ok &= injectProjectData(project, m);
     QVariant v;
@@ -197,6 +206,17 @@ bool GGBasicProjectSerializer::serializeConnection(GGConnection *connection)
     ok &= m_processor->processConnection(v);
     ok &= m_writer->writeConnection(v);
     return ok;
+}
+
+bool GGBasicProjectSerializer::serializeMedia(QVariant &v, const QString &path, GGEditProject *project)
+{
+    QString id = project->mediaManager()->getIdForFilePath(path);
+    Q_ASSERT(!id.isEmpty());
+    QVariantMap media;
+    media["id"] << id;
+    media["path"] << path;
+    v << media;
+    return m_processor->processMedia(v);
 }
 
 bool GGBasicProjectSerializer::serializeContent(QVariant &v, GGContentElement *elem)

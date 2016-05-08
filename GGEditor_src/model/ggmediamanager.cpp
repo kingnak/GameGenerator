@@ -182,7 +182,7 @@ QString GGMediaManager::checkIn(const QString &file, bool moveFile)
 bool GGMediaManager::removeManagedFile(const QString &file)
 {
     if (!isFileManaged(file)) return false;
-    QString managed = toManagedPath(file);
+    QString managed = toManagedPath(file, false);
     QString id = m_path2id[managed];
     m_id2path.remove(id);
     m_path2id.remove(managed);
@@ -196,7 +196,7 @@ bool GGMediaManager::isFileManaged(const QString &file) const
 
 bool GGMediaManager::isFilePathInManager(const QString &file) const
 {
-    QString relPath = toManagedPath(file);
+    QString relPath = toManagedPath(file, false);
     if (relPath.isNull()) {
         return false;
     }
@@ -232,11 +232,25 @@ GGMediaManager::MediaType GGMediaManager::getMediaTypeForPath(const QString &pat
     return Other;
 }
 
-QString GGMediaManager::toManagedPath(const QString &file) const
+void GGMediaManager::synchronizeNextMediaId()
+{
+    quint32 nextMedia = INVALID_MEDIA_ID;
+    foreach (QString id, m_id2path.keys()) {
+        int nId = id.toUInt();
+        if (nId > nextMedia) nextMedia = nId;
+    }
+    if (m_nextMediaId < nextMedia) {
+        m_nextMediaId = nextMedia;
+    }
+}
+
+QString GGMediaManager::toManagedPath(const QString &file, bool verifyExists) const
 {
     QFileInfo f(file);
-    if (!f.exists()) {
-        return QString::null;
+    if (verifyExists) {
+        if (!f.exists()) {
+            return QString::null;
+        }
     }
 
     QString fPath = f.canonicalFilePath();
@@ -295,6 +309,21 @@ void GGMediaManager::resynchBaseDir()
 {
     m_dirs.clear();
     synchDir(m_baseDir);
+}
+
+bool GGMediaManager::injectMedia(const QString &id, const QString &path)
+{
+    if (m_id2path.contains(id)) return false;
+    if (m_path2id.contains(path)) return false;
+    if (!isFilePathInManager(m_baseDir.absoluteFilePath(path))) return false;
+
+    bool ok;
+    if (id.toUInt(&ok) == INVALID_MEDIA_ID) return false;
+    if (!ok) return false;
+
+    m_id2path[id] = path;
+    m_path2id[path] = id;
+    return true;
 }
 
 /////////////////

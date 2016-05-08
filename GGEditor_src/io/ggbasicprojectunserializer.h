@@ -38,6 +38,7 @@ public:
 
 protected:
     virtual bool unserializeVariable(QVariant data, GGVariable &var);
+    virtual bool unserializeMedia(QVariant data);
     virtual bool unserializeCondition(QVariant data, GGCondition &cond);
     virtual bool unserializeAction(QVariant data, GGAction &act);
     virtual bool unserializeContent(QVariant data, GGContentElement *&content);

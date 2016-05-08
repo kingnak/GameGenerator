@@ -12,6 +12,7 @@ public:
     virtual bool processScene(QVariant &scene) = 0;
     virtual bool processPage(QVariant &page) = 0;
     virtual bool processConnection(QVariant &connection) = 0;
+    virtual bool processMedia(QVariant &media) = 0;
 
     virtual bool processSceneRef(QVariant &sceneRef) = 0;
     virtual bool processPageRef(QVariant &pageRef) = 0;
@@ -32,6 +33,7 @@ public:
     virtual bool processScene(QVariant &) { return true; }
     virtual bool processPage(QVariant &) { return true; }
     virtual bool processConnection(QVariant &) { return true; }
+    virtual bool processMedia(QVariant &) { return true; }
     virtual bool processSceneRef(QVariant &) { return true; }
     virtual bool processPageRef(QVariant &) { return true; }
     virtual bool processConnectionRef(QVariant &) { return true; }

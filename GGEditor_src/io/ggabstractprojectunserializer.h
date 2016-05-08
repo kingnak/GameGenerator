@@ -8,6 +8,7 @@ class GGProject;
 class GGScene;
 class GGPage;
 class GGConnection;
+class GGMediaManager;
 class QIODevice;
 class GGViewModel;
 class GGViewScene;
@@ -42,6 +43,7 @@ protected:
     bool injectViewScene(GGViewModel *model, GGViewScene *vs);
     bool injectViewPage(GGViewModel *model, GGViewPage *vp);
     bool injectViewConnection(GGViewModel *model, GGViewConnection *vc);
+    bool injectMedia(GGMediaManager *manager, const QString &id, const QString &path);
 };
 
 #endif // GGABSTRACTPROJECTUNSERIALIZER_H

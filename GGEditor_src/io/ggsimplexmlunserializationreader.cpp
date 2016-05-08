@@ -102,6 +102,16 @@ GGXmlUnserializerHandler::HandleType GGSimpleXmlUnserializationReader::handleEle
         data = m["viewConnection"];
         return Push;
     }
+    // Handle media Lists
+    if (name == "media") {
+        return PushList;
+    }
+    if (name == "medias") {
+        name = "media";
+        data = m["media"];
+        return Push;
+    }
+
     if (name == "project") {
         bool ok = m_builder->unserializeProject(data);
         if (!ok) return Error;

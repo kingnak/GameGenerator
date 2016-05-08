@@ -30,6 +30,7 @@ protected:
     virtual bool serializePage(GGPage *page);
     virtual bool serializeConnection(GGConnection *connection);
 
+    virtual bool serializeMedia(QVariant &v, const QString &path, GGEditProject *project);
     virtual bool serializeContent(QVariant &v, GGContentElement *elem);
     virtual bool serializeMappedLink(QVariant &v, const GGMappedLink &link, int idx);
     virtual bool serializeLink(QVariant &v, const GGLink &link);

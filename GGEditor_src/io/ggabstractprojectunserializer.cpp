@@ -2,6 +2,7 @@
 #include <model/ggscene.h>
 #include <model/ggpage.h>
 #include <model/ggconnection.h>
+#include <model/ggmediamanager.h>
 #include <viewmodel/ggviewmodel.h>
 
 void GGAbstractProjectUnserializer::setSceneId(GGScene *sc, GG::SceneID id)
@@ -38,4 +39,9 @@ bool GGAbstractProjectUnserializer::injectViewPage(GGViewModel *model, GGViewPag
 bool GGAbstractProjectUnserializer::injectViewConnection(GGViewModel *model, GGViewConnection *vc)
 {
     return model->injectViewConnection(vc);
+}
+
+bool GGAbstractProjectUnserializer::injectMedia(GGMediaManager *manager, const QString &id, const QString &path)
+{
+    return manager->injectMedia(id, path);
 }

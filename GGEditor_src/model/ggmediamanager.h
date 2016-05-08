@@ -9,6 +9,7 @@
 
 #include <model/ggmediaresolver.h>
 
+class GGAbstractProjectUnserializer;
 class GGMediaManagerResolver;
 
 class GGMediaManager
@@ -46,16 +47,22 @@ public:
 
     virtual MediaType getMediaTypeForPath(const QString &path, int level);
 
+    virtual void synchronizeNextMediaId();
+
 protected:
-    QString toManagedPath(const QString &file) const;
+    QString toManagedPath(const QString &file, bool verifyExists = true) const;
     virtual QString getCheckInPath(const QString &file);
     QStringList verify(bool cleanUp);
 
     virtual QStringList getDefaultMediaPaths();
     void resynchBaseDir();
 
+    virtual bool injectMedia(const QString &id, const QString &path);
+
 private:
     void synchDir(QDir dir);
+
+    friend class GGAbstractProjectUnserializer;
 
 protected:
     static const QString PATH_BASE;

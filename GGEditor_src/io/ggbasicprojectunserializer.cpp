@@ -11,6 +11,7 @@
 #include <model/ggconnectionslot.h>
 #include <model/ggvariable.h>
 #include <model/ggcontentelement.h>
+#include <model/ggscenemediamanager.h>
 
 template<typename F, typename S>
 bool pairFirstSorter(const QPair<F,S> &p1, const QPair<F,S> &p2) {
@@ -76,6 +77,12 @@ bool GGBasicProjectUnserializer::unserializeProject(QVariant project)
         GGVariable var;
         ok &= unserializeVariable(v, var);
         m_project->editModel()->addVariable(var);
+    }
+
+    QVariantList lstMedia;
+    map["media"] >> lstMedia;
+    foreach (QVariant v, lstMedia) {
+        ok &= unserializeMedia(v);
     }
 
     return ok;
@@ -194,23 +201,25 @@ bool GGBasicProjectUnserializer::unserializePage(QVariant page)
     }
 
     if (GGDecisionPage *dp = GG::as<GGDecisionPage>(p)) {
-        if (!map["decision"].canConvert<QVariantList>()) return false;
-        QVariantList lst;
-        map["decision"] >> lst;
-        QList<QPair<int,GGLink> > decLinks;
-        foreach (QVariant l, lst) {
-            GGLink link;
-            int idx;
-            ok &= unserializeDecisionLink(l, link, p, idx);
-            decLinks << qMakePair(idx, link);
-        }
-        if (!ok) return false;
+        if (map.contains("decision")) {
+            if (!map["decision"].canConvert<QVariantList>()) return false;
+            QVariantList lst;
+            map["decision"] >> lst;
+            QList<QPair<int,GGLink> > decLinks;
+            foreach (QVariant l, lst) {
+                GGLink link;
+                int idx;
+                ok &= unserializeDecisionLink(l, link, p, idx);
+                decLinks << qMakePair(idx, link);
+            }
+            if (!ok) return false;
 
-        // Guarantee sorting
-        qSort(decLinks.begin(), decLinks.end(), pairFirstSorter<int, GGLink>);
-        typedef QPair<int, GGLink> T_PAIR;
-        foreach (T_PAIR l, decLinks) {
-            dp->addDecisionLink(l.second);
+            // Guarantee sorting
+            qSort(decLinks.begin(), decLinks.end(), pairFirstSorter<int, GGLink>);
+            typedef QPair<int, GGLink> T_PAIR;
+            foreach (T_PAIR l, decLinks) {
+                dp->addDecisionLink(l.second);
+            }
         }
     }
 
@@ -288,6 +297,7 @@ bool GGBasicProjectUnserializer::finalizeUnserialization()
     }
 
     m_project->editModel()->synchronizeNextIds();
+    m_project->mediaManager()->synchronizeNextMediaId();
 
     return true;
 }
@@ -305,6 +315,19 @@ bool GGBasicProjectUnserializer::unserializeVariable(QVariant data, GGVariable &
     bool ok;
     var = GGVariable(map["name"].toString(), map["initial"].toString(), static_cast<GGVariable::Type>(map["type"].toUInt(&ok)));
     return ok;
+}
+
+bool GGBasicProjectUnserializer::unserializeMedia(QVariant data)
+{
+    if (!m_processor->processMedia(data)) return false;
+    if (!data.canConvert<QVariantMap>()) return false;
+
+    QVariantMap map = data.value<QVariantMap>();
+    if (!map.contains("id") || !map.contains("path")) {
+        return false;
+    }
+
+    return injectMedia(m_project->mediaManager(), map["id"].toString(), map["path"].toString());
 }
 
 bool GGBasicProjectUnserializer::unserializeCondition(QVariant data, GGCondition &cond)
