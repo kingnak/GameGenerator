@@ -89,6 +89,11 @@ void GGSearchResultModel::setSearchResults(const GGSearchResult &results)
     endResetModel();
 }
 
+void GGSearchResultModel::reset()
+{
+    setSearchResults(GGSearchResult());
+}
+
 QVariant GGSearchResultModel::getWhatData(GGSearchRequest::What what, int role)
 {
     switch (what) {
@@ -97,12 +102,6 @@ QVariant GGSearchResultModel::getWhatData(GGSearchRequest::What what, int role)
             return QIcon(":/search/page");
         if (role == Qt::ToolTipRole)
             return "Page Name";
-        break;
-    case GGSearchRequest::PageScene:
-        if (role == Qt::DecorationRole)
-            return QIcon(":/search/pages");
-        if (role == Qt::ToolTipRole)
-            return "Scene Name";
         break;
     case GGSearchRequest::PageCaption:
         if (role == Qt::DecorationRole)

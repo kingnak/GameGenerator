@@ -66,6 +66,8 @@ GGMainWindow::GGMainWindow(QWidget *parent) :
     connect(ui->actionOpen, SIGNAL(triggered(bool)), this, SLOT(openProject()));
     connect(ui->actionSave_as_type, SIGNAL(triggered(bool)), this, SLOT(saveProjectAsType()));
 
+    connect(this, SIGNAL(hasProject(bool)), ui->wgtSearchResults, SLOT(clearResults()));
+
     // Group Click Mode actions
     m_createActions = new QActionGroup(this);
     m_createActions->addAction(ui->actionS);
@@ -354,6 +356,10 @@ void GGMainWindow::showSearchDialog(bool reset)
     if (reset) {
         m_searchDlg->resetSearch();
     }
+    if (currentSceneView())
+        m_searchDlg->setCurrentSceneId(currentSceneView()->editorScene()->modelScene()->scene()->id());
+    else
+        m_searchDlg->setCurrentSceneId(GG::InvalidSceneId);
     m_searchDlg->show();
     m_searchDlg->activateWindow();
 }

@@ -33,6 +33,7 @@ signals:
 
 public slots:
     void setSearchResults(const GGSearchResult &results);
+    void reset();
 
 private:
     static QVariant getWhatData(GGSearchRequest::What what, int role);

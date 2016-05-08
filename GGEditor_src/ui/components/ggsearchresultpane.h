@@ -27,10 +27,12 @@ signals:
 
 private slots:
     void newSearch();
+    void clearResults();
     void on_lstResults_activated(const QModelIndex &idx);
 
 private:
     Ui::GGSearchResultPane *ui;
+    GGSearchResultModel *m_model;
 };
 
 #endif // GGSEARCHRESULTPANE_H

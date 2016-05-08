@@ -1,7 +1,7 @@
 #include "ggsearch.h"
 
 GGSearchRequest::GGSearchRequest(const QString &term, int type, int what)
-    : m_type(type), m_what(what), m_max(-1)
+    : m_type(type), m_what(what), m_max(-1), m_scene(GG::InvalidSceneId)
 {
     setTerm(term);
 }

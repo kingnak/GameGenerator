@@ -3,7 +3,8 @@
 
 GGSearchDialog::GGSearchDialog(QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::GGSearchDialog)
+    ui(new Ui::GGSearchDialog),
+    m_currentSceneId(GG::InvalidSceneId)
 {
     ui->setupUi(this);
     resetSearch();
@@ -14,10 +15,15 @@ GGSearchDialog::~GGSearchDialog()
     delete ui;
 }
 
+void GGSearchDialog::setCurrentSceneId(GG::SceneID id)
+{
+    m_currentSceneId = id;
+    // TODO: Set "Current Scene" disabled? => How?
+}
+
 void GGSearchDialog::accept()
 {
     if (updateSearch()) {
-
         emit executeSearch(m_lastSearch);
     }
 }
@@ -29,6 +35,7 @@ void GGSearchDialog::resetSearch()
     ui->cmbSearch->setEditText("");
     ui->radContains->setChecked(true);
     ui->chkCaseSensitive->setChecked(false);
+    ui->cmbWhere->setCurrentIndex(0);
     ui->cmbSearch->setFocus();
 }
 
@@ -39,12 +46,17 @@ bool GGSearchDialog::updateSearch()
     }
     GGSearchRequest req;
     req.setTerm(ui->cmbSearch->currentText());
+
+    if (ui->cmbWhere->currentIndex() == 1)
+        req.setScene(m_currentSceneId);
+    else
+        req.setScene(GG::InvalidSceneId);
+
     if (ui->chkEverything->isChecked()) {
         req.setWhat(GGSearchRequest::All);
     } else {
         GGSearchRequest::Whats what(GGSearchRequest::Nothing);
         if (ui->chkPageCaption->isChecked()) what |= GGSearchRequest::PageCaption;
-        if (ui->chkPageScene->isChecked()) what |= GGSearchRequest::PageScene;
         if (ui->chkPageName->isChecked()) what |= GGSearchRequest::PageName;
         if (ui->chkLinkName->isChecked()) what |= GGSearchRequest::LinkName;
         if (ui->chkContent->isChecked()) what |= GGSearchRequest::PageContent;

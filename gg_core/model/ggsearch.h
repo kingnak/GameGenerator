@@ -25,18 +25,20 @@ public:
     enum What {
         Nothing         = 0x0000,
         PageName        = 0x0001,
-        PageScene       = 0x0002,
         PageCaption     = 0x0004,
         PageContent     = 0x0008,
         Variable        = 0x0010,
         Function        = 0x0020,
         LinkName        = 0x0040,
         //Other         = 0x0080,
-        All = PageName | PageScene | PageCaption | PageContent | Variable | Function | LinkName // | Other
+        All = PageName | PageCaption | PageContent | Variable | Function | LinkName // | Other
     };
     Q_DECLARE_FLAGS(Whats, What)
 
     GGSearchRequest(const QString &term = QString::null, int type = CaseInsensitive, int what = All);
+
+    void setScene(GG::SceneID id) { m_scene = id; }
+    GG::SceneID scene() const { return m_scene; }
 
     void setMaxResults(int maxResults) { m_max = maxResults; }
     int maxResults() const { return m_max; }
@@ -59,6 +61,7 @@ private:
     Types m_type;
     Whats m_what;
     int m_max;
+    GG::SceneID m_scene;
     QString m_term;
     QRegExp m_matcher;
 };

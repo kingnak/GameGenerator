@@ -209,8 +209,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>100</width>
-               <height>30</height>
+               <width>65</width>
+               <height>16</height>
               </rect>
              </property>
             </widget>
@@ -268,8 +268,15 @@
     <addaction name="action_Variables"/>
     <addaction name="actionMedia"/>
    </widget>
+   <widget class="QMenu" name="menu_View">
+    <property name="title">
+     <string>&amp;View</string>
+    </property>
+    <addaction name="action_Show_search_results"/>
+   </widget>
    <addaction name="menu_File"/>
    <addaction name="menu_Edit"/>
+   <addaction name="menu_View"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <widget class="QToolBar" name="toolBar">
@@ -560,6 +567,11 @@
     <string>Save as type...</string>
    </property>
   </action>
+  <action name="action_Show_search_results">
+   <property name="text">
+    <string>&amp;Show search results</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>
@@ -752,6 +764,22 @@
     <hint type="destinationlabel">
      <x>-1</x>
      <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>action_Show_search_results</sender>
+   <signal>triggered()</signal>
+   <receiver>dckSearchResults</receiver>
+   <slot>show()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>759</x>
+     <y>317</y>
     </hint>
    </hints>
   </connection>

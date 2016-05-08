@@ -16,6 +16,8 @@ public:
     explicit GGSearchDialog(QWidget *parent = 0);
     ~GGSearchDialog();
 
+    void setCurrentSceneId(GG::SceneID id);
+
 public slots:
     void accept();
     void resetSearch();
@@ -29,6 +31,7 @@ private:
 private:
     Ui::GGSearchDialog *ui;
     GGSearchRequest m_lastSearch;
+    GG::SceneID m_currentSceneId;
 };
 
 #endif // GGSEARCHDIALOG_H

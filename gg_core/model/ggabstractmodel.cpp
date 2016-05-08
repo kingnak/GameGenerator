@@ -20,7 +20,14 @@ void GGAbstractModel::notifySceneUpdate(GG::SceneID id)
 GGSearchResult GGAbstractModel::search(GGSearchRequest req) const
 {
     GGSearchResult res(req, this);
-    foreach (const GGPage *p, getPages()) {
+    QList<GGPage*> pages;
+    if (req.scene() == GG::InvalidSceneId) {
+        pages = getPages();
+    } else if (getScene(req.scene())) {
+        pages = getScene(req.scene())->pages().toList();
+    }
+
+    foreach (const GGPage *p, pages) {
         if (p->match(req, res)) {
             // -1 mean find all
             if (req.maxResults() >= 0 && res.count() >= req.maxResults()) {
