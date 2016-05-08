@@ -172,7 +172,7 @@ bool GGBasicProjectUnserializer::unserializePage(QVariant page)
     }
 
     if (GGMappedContentPage *mcp = GG::as<GGMappedContentPage>(p)) {
-        if (map.contains("map")) {
+        if (map.contains("map") && map["map"].isValid()) {
             if (!map["map"].canConvert<QVariantList>()) return false;
             QVariantList lst;
             map["map"] >> lst;
@@ -201,7 +201,7 @@ bool GGBasicProjectUnserializer::unserializePage(QVariant page)
     }
 
     if (GGDecisionPage *dp = GG::as<GGDecisionPage>(p)) {
-        if (map.contains("decision")) {
+        if (map.contains("decision") && map["decision"].isValid()) {
             if (!map["decision"].canConvert<QVariantList>()) return false;
             QVariantList lst;
             map["decision"] >> lst;
@@ -428,11 +428,11 @@ bool GGBasicProjectUnserializer::unserializeMappedLink(QVariant data, GGMappedLi
     if (!ok) return false;
 
     GGLink l;
-    ok = this->unserializeLink(map, l, page, GGConnectionSlotData(GGConnectionSlotData::MappedConnection, idx));
+    ok = this->unserializeLink(map["link"], l, page, GGConnectionSlotData(GGConnectionSlotData::MappedConnection, idx));
     if (!ok) return false;
 
     link.setLink(l);
-    return false;
+    return true;
 }
 
 bool GGBasicProjectUnserializer::unserializeDecisionLink(QVariant data, GGLink &link, GGPage *page, int &idx)
