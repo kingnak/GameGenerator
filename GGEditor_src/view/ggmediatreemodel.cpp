@@ -11,7 +11,7 @@ class MediaTreeItem
 {
 public:
     explicit MediaTreeItem(GGMediaTreeModel *model, QString path, QString disp, QString type, QString id = QString::null, GG::SceneID sid = GG::InvalidSceneId, GGMediaManager::MediaType mediaType = GGMediaManager::Other, MediaTreeItem *parentItem = 0)
-        : m_model(model), m_path(path), m_disp(disp), m_type(type), m_id(id), m_sid(sid), m_mediaType(mediaType), m_parentItem(parentItem)
+        : m_model(model), m_path(path), m_disp(disp), m_type(type), m_id(id), m_sid(sid), m_mediaType(mediaType), m_parentItem(parentItem), m_imgLoaded(false)
     {
     }
 
@@ -38,7 +38,9 @@ public:
                 return (int) m_mediaType;
             } else if (role == Qt::DecorationRole) {
                 if (m_type == GGMediaTreeModel::ENTRY_FILE) {
-                    return m_model->loadFile(m_id);
+                    if (!m_imgLoaded) m_img = m_model->loadFile(m_id);
+                    m_imgLoaded = true;
+                    return m_img;
                 }
             }
         }
@@ -57,6 +59,8 @@ private:
     GG::SceneID m_sid;
     GGMediaManager::MediaType m_mediaType;
     MediaTreeItem *m_parentItem;
+    mutable QPixmap m_img;
+    mutable bool m_imgLoaded;
 };
 
 GGMediaTreeModel::GGMediaTreeModel(GGSceneMediaManager *mgm, QObject *parent)
