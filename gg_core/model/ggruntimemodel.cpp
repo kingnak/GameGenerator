@@ -169,3 +169,13 @@ bool GGRuntimeModel::removeVariable(GGVariable v)
     }
     return false;
 }
+
+GGAbstractStyler *GGRuntimeModel::getStyler() const
+{
+    return m_styler;
+}
+
+void GGRuntimeModel::setStyler(GGAbstractStyler *styler)
+{
+    m_styler = styler;
+}

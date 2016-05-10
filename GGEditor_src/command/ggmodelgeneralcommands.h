@@ -3,6 +3,7 @@
 
 #include "ggabstractmodelcommand.h"
 #include <model/ggvariable.h>
+#include <style/ggstyle.h>
 
 class GGAddVariableCmd : public GGAbstractModelCommand
 {
@@ -59,6 +60,62 @@ private:
 private:
     GGVariable m_old;
     GGVariable m_new;
+};
+
+////////////////////
+
+class GGSetBasicStyleCmd : public GGAbstractModelCommand
+{
+public:
+    GGSetBasicStyleCmd(GGEditModel *model, const GGBasicStyle &style);
+
+    QString description() const;
+
+protected:
+    bool doExecute();
+    bool doUndo();
+    bool doRedo();
+
+private:
+    GGBasicStyle m_new;
+    GGBasicStyle m_old;
+};
+
+////////////////////
+
+class GGAddStyleCmd : public GGAbstractModelCommand
+{
+public:
+    GGAddStyleCmd(GGEditModel *model, const GGStyle &style);
+
+    QString description() const;
+
+protected:
+    bool doExecute();
+    bool doUndo();
+    bool doRedo();
+
+private:
+    GGStyle m_style;
+};
+
+////////////////////
+
+class GGRemoveStyleCmd : public GGAbstractModelCommand
+{
+public:
+    GGRemoveStyleCmd(GGEditModel *model, const QString &style);
+
+    QString description() const;
+
+protected:
+    bool doExecute();
+    bool doUndo();
+    bool doRedo();
+
+private:
+    QString m_name;
+    GGStyle m_style;
 };
 
 #endif // GGADDVARIABLECMD_H

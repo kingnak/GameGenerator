@@ -20,6 +20,8 @@ class GGContentElement;
 class GGLink;
 class GGMappedLink;
 class GGVariable;
+class GGStyle;
+class GGBasicStyle;
 
 class GGCreateSceneCmd;
 class GGDeleteSceneCmd;
@@ -39,6 +41,9 @@ class GGDecisionLinkCmd;
 class GGAddVariableCmd;
 class GGRemoveVariableCmd;
 class GGChangeVariableCmd;
+class GGAddStyleCmd;
+class GGRemoveStyleCmd;
+class GGSetBasicStyleCmd;
 
 class GGAbstractModelCommandFactory : public GGAbstractCommandFactory
 {
@@ -84,6 +89,10 @@ public:
     virtual GGAddVariableCmd *addVariable(const QString &name) = 0;
     virtual GGRemoveVariableCmd *removeVariable(const QString &name) = 0;
     virtual GGChangeVariableCmd *updateVariable(const QString &name, const GGVariable &newData) = 0;
+
+    virtual GGAddStyleCmd *addStyle(const GGStyle &style) = 0;
+    virtual GGRemoveStyleCmd *removeStyle(const QString &name) = 0;
+    virtual GGSetBasicStyleCmd *setBasicStyle(const GGBasicStyle &basicStyle) = 0;
 };
 
 #endif // GGABSTRACTMODELCOMMANDFACTORY_H

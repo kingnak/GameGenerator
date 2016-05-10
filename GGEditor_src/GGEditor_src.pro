@@ -79,7 +79,9 @@ SOURCES += \
     io/ggxmlunserializer.cpp \
     io/ggsimplexmlunserializationreader.cpp \
     utils/ggtrasher.cpp \
-    utils/ggwintrasher.cpp
+    utils/ggwintrasher.cpp \
+    ui/dialogs/ggstyledialog.cpp \
+    style/ggspanstyler.cpp
 
 HEADERS += \
     model/ggeditmodel.h \
@@ -158,7 +160,9 @@ HEADERS += \
     io/ggxmlunserializer.h \
     io/ggsimplexmlunserializationreader.h \
     utils/ggtrasher.h \
-    utils/ggwintrasher.h
+    utils/ggwintrasher.h \
+    ui/dialogs/ggstyledialog.h \
+    style/ggspanstyler.h
 unix {
     target.path = /usr/lib
     INSTALLS += target
@@ -195,7 +199,8 @@ FORMS += \
     ui/dialogs/ggcreateprojectdialog.ui \
     ui/dialogs/ggmediamanagerdialog.ui \
     ui/dialogs/ggrenamescenedlg.ui \
-    ui/dialogs/ggcreatescenedlg.ui
+    ui/dialogs/ggcreatescenedlg.ui \
+    ui/dialogs/ggstyledialog.ui
 
 RESOURCES += \
     ui/resources.qrc

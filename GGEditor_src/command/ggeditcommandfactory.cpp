@@ -156,3 +156,18 @@ GGChangeVariableCmd *GGEditCommandFactory::updateVariable(const QString &name, c
     return new GGChangeVariableCmd(m_model, name, newData);
 }
 
+GGAddStyleCmd *GGEditCommandFactory::addStyle(const GGStyle &style)
+{
+    return new GGAddStyleCmd(m_model, style);
+}
+
+GGRemoveStyleCmd *GGEditCommandFactory::removeStyle(const QString &name)
+{
+    return new GGRemoveStyleCmd(m_model, name);
+}
+
+GGSetBasicStyleCmd *GGEditCommandFactory::setBasicStyle(const GGBasicStyle &basicStyle)
+{
+    return new GGSetBasicStyleCmd(m_model, basicStyle);
+}
+

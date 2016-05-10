@@ -28,7 +28,9 @@ SOURCES += \
     model/ggmediaresolver.cpp \
     model/ggscene.cpp \
     model/ggruntimeproject.cpp \
-    ggutilities.cpp
+    ggutilities.cpp \
+    style/ggstyle.cpp \
+    style/ggabstractstyler.cpp
 
 HEADERS +=\
         gg_core_global.h \
@@ -51,7 +53,9 @@ HEADERS +=\
     model/ggscene.h \
     model/ggproject.h \
     model/ggruntimeproject.h \
-    ggutilities.h
+    ggutilities.h \
+    style/ggstyle.h \
+    style/ggabstractstyler.h
 
 unix {
     target.path = /usr/lib

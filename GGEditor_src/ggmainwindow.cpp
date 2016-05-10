@@ -29,6 +29,8 @@
 #include <io/ggviewprojectunserializer.h>
 #include <ggutilities.h>
 #include <utils/ggtrasher.h>
+#include <ui/dialogs/ggstyledialog.h>
+#include <style/ggabstractstyler.h>
 
 GGMainWindow::GGMainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -62,6 +64,7 @@ GGMainWindow::GGMainWindow(QWidget *parent) :
     connect(m_ctrl, SIGNAL(connectingDirect(GGPage*,GGConnectionSlot)), this, SLOT(handleConnectDirect(GGPage*,GGConnectionSlot)));
     connect(ui->action_Variables, SIGNAL(triggered(bool)), this, SLOT(showVariables()));
     connect(ui->actionMedia, SIGNAL(triggered(bool)), this, SLOT(showMediaManager()));
+    connect(ui->actionStyles, SIGNAL(triggered(bool)), this, SLOT(showStyleManager()));
     connect(ui->actionSave, SIGNAL(triggered(bool)), this, SLOT(saveProject()));
     connect(ui->actionOpen, SIGNAL(triggered(bool)), this, SLOT(openProject()));
     connect(ui->actionSave_as_type, SIGNAL(triggered(bool)), this, SLOT(saveProjectAsType()));
@@ -454,6 +457,17 @@ void GGMainWindow::showMediaManager()
     GGMediaManagerDialog dlg(m_project->mediaManager());
     dlg.expandAll();
     dlg.exec();
+}
+
+void GGMainWindow::showStyleManager()
+{
+    GGStyleDialog dlg(this);
+    dlg.setModel(m_viewModel->editModel());
+    if (dlg.exec() == QDialog::Accepted) {
+        m_ctrl->applySubcommandsAsGroup(dlg.getExecutedCommands());
+    } else {
+        dlg.getExecutedCommands()->undo();
+    }
 }
 
 void GGMainWindow::showStartPage()

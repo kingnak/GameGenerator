@@ -4,6 +4,8 @@
 #include "ggabstractmodel.h"
 #include <QMap>
 
+class GGAbstractStyler;
+
 class GG_CORESHARED_EXPORT GGRuntimeModel : public GGAbstractModel
 {
     Q_OBJECT
@@ -32,6 +34,9 @@ public:
     bool addVariable(GGVariable v);
     bool removeVariable(GGVariable v);
 
+    GGAbstractStyler *getStyler() const;
+    void setStyler(GGAbstractStyler *styler);
+
 signals:
     void variablesUpdated();
 
@@ -41,6 +46,7 @@ protected:
     QMap<GG::PageID, GGPage *> m_pages;
     QMap<GG::ConnectionID, GGConnection *> m_connections;
     QMap<QString, GGVariable> m_variables;
+    GGAbstractStyler *m_styler;
 };
 
 #endif // GGRUNTIMEMODEL_H

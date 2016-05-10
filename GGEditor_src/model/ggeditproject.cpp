@@ -3,6 +3,7 @@
 #include <model/ggmediaresolver.h>
 #include <model/ggsimplefactory.h>
 #include <model/ggscenemediamanager.h>
+#include <style/ggspanstyler.h>
 
 GGEditProject::GGEditProject(const QString &basePath, const QString &fileName, GGIOFactory::SerializationType saveType)
     : GGRuntimeProject(new GGEditModel(new GGSimpleFactory))
@@ -13,6 +14,7 @@ GGEditProject::GGEditProject(const QString &basePath, const QString &fileName, G
     m_editModel = static_cast<GGEditModel *> (m_runtimeModel);
     m_manager = new GGSceneMediaManager(m_editModel, basePath);
     m_editModel->setMediaResolver(m_manager->resolver());
+    m_editModel->setStyler(new GGSpanStyler);
 }
 
 GGEditProject::~GGEditProject()

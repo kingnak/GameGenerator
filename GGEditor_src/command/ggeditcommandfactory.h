@@ -48,6 +48,10 @@ public:
     GGRemoveVariableCmd *removeVariable(const QString &name);
     GGChangeVariableCmd *updateVariable(const QString &name, const GGVariable &newData);
 
+    GGAddStyleCmd *addStyle(const GGStyle &style);
+    GGRemoveStyleCmd *removeStyle(const QString &name);
+    GGSetBasicStyleCmd *setBasicStyle(const GGBasicStyle &basicStyle);
+
 private:
     GGEditModel *m_model;
 };
