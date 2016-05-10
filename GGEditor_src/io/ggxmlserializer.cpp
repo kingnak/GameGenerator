@@ -2,6 +2,7 @@
 
 #include <QXmlStreamWriter>
 #include <QRect>
+#include <QColor>
 
 GGXmlSerializer::GGXmlSerializer()
 {
@@ -43,6 +44,12 @@ bool GGXmlSerializer::writeData(QXmlStreamWriter *writer, const QString &tag, co
         writer->writeAttribute("y", QString::number(data.value<QRect>().y()));
         writer->writeAttribute("w", QString::number(data.value<QRect>().width()));
         writer->writeAttribute("h", QString::number(data.value<QRect>().height()));
+        writer->writeEndElement();
+    } else if (data.type() == QVariant::Color) {
+        writer->writeStartElement(tag);
+        QString hex = QString::number((quint32) data.value<QColor>().rgb() & 0xFFFFFF, 16);
+        while (hex.length() < 6) hex = "0" + hex;
+        writer->writeAttribute("rgb", hex);
         writer->writeEndElement();
     } else {
         writer->writeTextElement(tag, data.toString());

@@ -12,6 +12,8 @@
 #include <model/ggvariable.h>
 #include <model/ggcontentelement.h>
 #include <model/ggscenemediamanager.h>
+#include <style/ggstyle.h>
+#include <style/ggabstractstyler.h>
 
 template<typename F, typename S>
 bool pairFirstSorter(const QPair<F,S> &p1, const QPair<F,S> &p2) {
@@ -83,6 +85,20 @@ bool GGBasicProjectUnserializer::unserializeProject(QVariant project)
     map["media"] >> lstMedia;
     foreach (QVariant v, lstMedia) {
         ok &= unserializeMedia(v);
+    }
+
+    QVariant bs;
+    map["basicStyle"] >> bs;
+    GGBasicStyle style;
+    ok &= unserializeBasicStyle(bs, style);
+    m_project->editModel()->getStyler()->setBasicStyle(style);
+
+    QVariantList lstStyles;
+    map["style"] >> lstStyles;
+    foreach (QVariant v, lstStyles) {
+        GGStyle style;
+        ok &= unserializeStyle(v, style);
+        m_project->editModel()->getStyler()->addStyle(style);
     }
 
     return ok;
@@ -392,6 +408,49 @@ bool GGBasicProjectUnserializer::unserializeContent(QVariant data, GGContentElem
     } else {
         return false;
     }
+    return true;
+}
+
+bool GGBasicProjectUnserializer::unserializeBasicStyle(QVariant data, GGBasicStyle &bs)
+{
+    if (!data.isValid()) return true;
+    if (!data.canConvert<QVariantMap>()) return false;
+    QVariantMap map;
+    data >> map;
+
+    QString font;
+    quint32 size;
+    QColor fore;
+    QColor back;
+    map["font"] >> font;
+    map["size"] >> size;
+    map["foreground"] >> fore;
+    map["background"] >> back;
+
+    bs.setFont(font);
+    bs.setPointSize((quint8) size);
+    bs.setForeground(fore);
+    bs.setBackground(back);
+
+    return true;
+}
+
+bool GGBasicProjectUnserializer::unserializeStyle(QVariant data, GGStyle &style)
+{
+    if (!data.isValid()) return true;
+    if (!data.canConvert<QVariantMap>()) return false;
+    QVariantMap map;
+    data >> map;
+
+    if (!map.contains("name")) return false;
+
+    QString name;
+    QColor fore;
+    map["name"] >> name;
+    map["foreground"] >> fore;
+    style.setName(name);
+    style.setForeground(fore);
+
     return true;
 }
 

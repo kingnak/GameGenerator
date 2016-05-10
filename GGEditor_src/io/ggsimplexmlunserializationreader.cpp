@@ -3,6 +3,7 @@
 #include <io/ggserialization.hpp>
 #include <io/ggabstractprojectunserializer.h>
 #include <QRect>
+#include <QColor>
 
 GGSimpleXmlUnserializationReader::GGSimpleXmlUnserializationReader()
     : m_builder(NULL)
@@ -62,6 +63,17 @@ GGXmlUnserializerHandler::HandleType GGSimpleXmlUnserializationReader::handleEle
 
         QRect r(x,y,w,h);
         data = r;
+        return Push;
+    }
+
+    // Fix Colors
+    if (m.size() == 1 && m.contains("rgb")) {
+        bool ok;
+        quint32 v = m["rgb"].toString().toUInt(&ok, 16);
+        if (!ok) return Error;
+        v &= 0xFFFFFF;
+        QColor c = QColor::fromRgb((QRgb) v);
+        data = QVariant::fromValue(c);
         return Push;
     }
 
@@ -154,6 +166,8 @@ GGXmlUnserializerHandler::HandleType GGSimpleXmlUnserializationReader::handleLis
     t = doHandleList("map", name, data, map);
     if (t != Pop) return t;
     t = doHandleList("decision", name, data, map);
+    if (t != Pop) return t;
+    t = doHandleList("style", name, data, map);
     if (t != Pop) return t;
 
     return Pop;

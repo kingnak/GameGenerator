@@ -15,6 +15,8 @@ class GGAction;
 class GGContentElement;
 class GGLink;
 class GGMappedLink;
+class GGBasicStyle;
+class GGStyle;
 
 class GGBasicProjectUnserializer : public GGAbstractProjectUnserializer
 {
@@ -42,6 +44,9 @@ protected:
     virtual bool unserializeCondition(QVariant data, GGCondition &cond);
     virtual bool unserializeAction(QVariant data, GGAction &act);
     virtual bool unserializeContent(QVariant data, GGContentElement *&content);
+
+    virtual bool unserializeBasicStyle(QVariant data, GGBasicStyle &bs);
+    virtual bool unserializeStyle(QVariant data, GGStyle &style);
 
     virtual bool unserializeMappedLink(QVariant data, GGMappedLink &link, GGPage *page, int &idx);
     virtual bool unserializeDecisionLink(QVariant data, GGLink &link, GGPage *page, int &idx);

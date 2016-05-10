@@ -15,6 +15,8 @@ class GGLink;
 class GGCondition;
 class GGAction;
 class GGVariable;
+class GGBasicStyle;
+class GGStyle;
 
 class GGBasicProjectSerializer
 {
@@ -38,6 +40,8 @@ protected:
     virtual bool serializeCondition(QVariant &v, const GGCondition &condition);
     virtual bool serializeAction(QVariant &v, const GGAction &action);
     virtual bool serializeVariable(QVariant &v, const GGVariable &var);
+    virtual bool serializeBasicStyle(QVariant &v, const GGBasicStyle &style);
+    virtual bool serializeStyle(QVariant &v, const GGStyle &style);
 
     virtual bool injectProjectData(GGEditProject *project, QVariantMap &v);
     virtual bool injectSceneData(GGScene *scene, QVariantMap &v);

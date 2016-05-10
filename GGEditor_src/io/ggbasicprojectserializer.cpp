@@ -9,6 +9,8 @@
 #include <model/ggconnection.h>
 #include <model/ggcontentelement.h>
 #include <model/ggscenemediamanager.h>
+#include <style/ggabstractstyler.h>
+#include <style/ggstyle.h>
 #include <QVariantMap>
 
 GGBasicProjectSerializer::GGBasicProjectSerializer(GGAbstractSerializationWriter *writer, GGSerializationProcessor *processor)
@@ -86,6 +88,18 @@ bool GGBasicProjectSerializer::serializeProject(GGEditProject *project)
         mediaList << v;
     }
     m["media"] << mediaList;
+
+    QVariant bs;
+    ok &= this->serializeBasicStyle(bs, project->editModel()->getStyler()->basicStyle());
+    m["basicStyle"] << bs;
+
+    QVariantList styles;
+    foreach (GGStyle s, project->editModel()->getStyler()->styles()) {
+        QVariant v;
+        ok &= this->serializeStyle(v, s);
+        styles << v;
+    }
+    m["style"] << styles;
 
     ok &= injectProjectData(project, m);
     QVariant v;
@@ -328,6 +342,30 @@ bool GGBasicProjectSerializer::serializeVariable(QVariant &v, const GGVariable &
 
     v << m;
     return m_processor->processVariable(v);
+}
+
+bool GGBasicProjectSerializer::serializeBasicStyle(QVariant &v, const GGBasicStyle &style)
+{
+    QVariantMap m;
+
+    m["font"] << style.font();
+    m["size"] << (quint32) style.pointSize();
+    m["foreground"] << style.foreground();
+    m["background"] << style.background();
+
+    v << m;
+    return true;
+}
+
+bool GGBasicProjectSerializer::serializeStyle(QVariant &v, const GGStyle &style)
+{
+    QVariantMap m;
+
+    m["name"] << style.name();
+    m["foreground"] << style.foreground();
+
+    v << m;
+    return true;
 }
 
 bool GGBasicProjectSerializer::injectProjectData(GGEditProject *project, QVariantMap &v)
