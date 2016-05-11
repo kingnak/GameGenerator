@@ -33,7 +33,7 @@ private slots:
     void connectLink(GGPage *, const GGConnectionSlot &slt);
     void on_btnChangeContent_clicked();
     void on_btnChangeMapping_clicked();
-    void on_btnChangeCaption_clicked();
+    void onUpdateCaption(const QString &caption);
 
 private:
     Ui::GGMappingEditorPane *ui;

@@ -4,6 +4,7 @@
 #include "ggabstractmodel.h"
 #include "ggscene.h"
 #include <QList>
+#include <style/ggabstractstyler.h>
 
 GGPage::GGPage(GG::SceneID scene)
 :   m_id(GG::InvalidPageId),
@@ -190,9 +191,12 @@ GGContentElement *GGContentPage::exchangeContent(GGContentElement *cont)
 bool GGContentPage::match(const GGSearchRequest &req, GGSearchResult &results) const
 {
     bool res = GGPage::match(req, results);
-    if (req.what().testFlag(GGSearchRequest::PageCaption) && req.matches(m_caption)) {
-        results << GGSearchResultItem(GGSearchResultItem::PageCaption, GGSearchRequest::PageCaption, m_caption, id());
-        res = true;
+    if (req.what().testFlag(GGSearchRequest::PageCaption)) {
+        QString capPlain = model()->getStyler()->plainText(m_caption);
+        if (req.matches(capPlain)) {
+            results << GGSearchResultItem(GGSearchResultItem::PageCaption, GGSearchRequest::PageCaption, capPlain, id());
+            res = true;
+        }
     }
     // TODO: Content
     return res;

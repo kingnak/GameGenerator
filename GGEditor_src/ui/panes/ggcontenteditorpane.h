@@ -25,7 +25,7 @@ public slots:
 
 private slots:
     void on_btnChange_clicked();
-    void on_btnEditCaption_clicked();
+    void onCaptionUpdate(const QString &caption);
 
 private:
     Ui::GGContentEditorPane *ui;

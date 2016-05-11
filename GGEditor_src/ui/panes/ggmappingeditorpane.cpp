@@ -35,7 +35,8 @@ void GGMappingEditorPane::setController(GGUIController *ctrl)
 void GGMappingEditorPane::setMappedPage(GGMappedContentPage *p)
 {
     m_page = p;
-    ui->txtCaption->setText(p->caption());
+    ui->wgtCaption->setStyler(m_ctrl->model()->editModel()->getStyler());
+    ui->wgtCaption->setFormattedText(p->caption());
     QPixmap pix;
     if (p->content())
         pix = p->content()->preview(p->model()->mediaResolver(), ui->lblPreview->minimumSize());
@@ -88,12 +89,7 @@ void GGMappingEditorPane::on_btnChangeMapping_clicked()
     }
 }
 
-void GGMappingEditorPane::on_btnChangeCaption_clicked()
+void GGMappingEditorPane::onUpdateCaption(const QString &caption)
 {
-    GGEditTextDialog dlg(this);
-    dlg.setStyler(m_ctrl->model()->editModel()->getStyler());
-    dlg.setFormattedDocument(m_page->caption());
-    if (dlg.exec() == QDialog::Accepted) {
-        m_ctrl->changeContentPageCaption(m_page, dlg.getFormattedDocument());
-    }
+    m_ctrl->changeContentPageCaption(m_page, caption);
 }

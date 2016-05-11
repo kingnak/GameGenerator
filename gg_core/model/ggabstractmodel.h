@@ -12,6 +12,7 @@ class GGPage;
 class GGConnection;
 class GGAbstractFactory;
 class GGAbstractMediaResolver;
+class GGAbstractStyler;
 
 class GG_CORESHARED_EXPORT GGAbstractModel : public QObject
 {
@@ -54,6 +55,8 @@ public:
     virtual GGVariable variableByName(QString name) const = 0;
     virtual bool addVariable(GGVariable v) = 0;
     virtual bool removeVariable(GGVariable v) = 0;
+
+    virtual GGAbstractStyler *getStyler() const = 0;
 
     GGSearchResult search(GGSearchRequest req) const;
 

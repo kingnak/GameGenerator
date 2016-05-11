@@ -11,6 +11,7 @@ public:
     virtual QTextDocument *styleString(const QString &doc) const;
     virtual QString parseDocument(const QTextDocument *doc) const;
     virtual QString plainText(const QString &doc) const;
+    virtual QString previewText(const QString &doc) const;
 
     virtual SupplementalStyleOptions supplementalOptions() const;
 

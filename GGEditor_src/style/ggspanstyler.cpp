@@ -102,7 +102,20 @@ QString GGSpanStyler::parseDocument(const QTextDocument *doc) const
 
 QString GGSpanStyler::plainText(const QString &doc) const
 {
-    return QString::null;
+    QString plain = doc;
+    plain.replace(QRegExp("<br\\s*/>"), " ");
+    plain.replace(QRegExp("<[^>]*>"), "");
+    plain.replace("&lt;", "<");
+    plain.replace("&gt;", ">");
+    plain.replace("&amp;", "&");
+    return plain;
+}
+
+QString GGSpanStyler::previewText(const QString &doc) const
+{
+    QString prev = doc;
+    prev.replace(QRegExp("</?span\\b[^>]*>"), "");
+    return prev;
 }
 
 GGAbstractStyler::SupplementalStyleOptions GGSpanStyler::supplementalOptions() const

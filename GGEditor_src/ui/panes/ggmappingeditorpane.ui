@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>500</width>
-    <height>228</height>
+    <height>299</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,33 +20,6 @@
       <string>Caption</string>
      </property>
     </widget>
-   </item>
-   <item row="0" column="1">
-    <layout class="QFormLayout" name="formLayout">
-     <item row="0" column="0">
-      <widget class="QTextEdit" name="txtCaption">
-       <property name="html">
-        <string notr="true">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QToolButton" name="btnChangeCaption">
-       <property name="text">
-        <string notr="true"/>
-       </property>
-       <property name="icon">
-        <iconset>
-         <normalon>:/icons/edit</normalon>
-        </iconset>
-       </property>
-      </widget>
-     </item>
-    </layout>
    </item>
    <item row="1" column="0">
     <widget class="QLabel" name="label_2">
@@ -128,9 +101,21 @@ p, li { white-space: pre-wrap; }
      </item>
     </layout>
    </item>
+   <item row="0" column="1">
+    <widget class="GGStyledTextEditorWidget" name="wgtCaption" native="true"/>
+   </item>
   </layout>
  </widget>
  <customwidgets>
+  <customwidget>
+   <class>GGStyledTextEditorWidget</class>
+   <extends>QWidget</extends>
+   <header>ui/components/ggstyledtexteditorwidget.h</header>
+   <container>1</container>
+   <slots>
+    <signal>textChanged(QString)</signal>
+   </slots>
+  </customwidget>
   <customwidget>
    <class>GGConnectionListEditorWidget</class>
    <extends>QWidget</extends>
@@ -139,5 +124,25 @@ p, li { white-space: pre-wrap; }
   </customwidget>
  </customwidgets>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>wgtCaption</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>GGMappingEditorPane</receiver>
+   <slot>onUpdateCaption(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>237</x>
+     <y>17</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>213</x>
+     <y>6</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>onUpdateCaption(QString)</slot>
+ </slots>
 </ui>

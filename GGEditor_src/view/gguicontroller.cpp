@@ -15,6 +15,7 @@
 
 GGUIController::GGUIController(QObject *parent)
     : QObject(parent),
+      m_project(NULL),
       m_model(NULL),
       m_cmdFactory(NULL),
       m_createMode(CreateNone),

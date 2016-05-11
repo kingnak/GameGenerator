@@ -5,7 +5,6 @@
 #include <model/ggcontentelement.h>
 #include <view/gguicontroller.h>
 #include <model/ggeditproject.h>
-#include <ui/dialogs/ggedittextdialog.h>
 #include <viewmodel/ggviewmodel.h>
 #include <model/ggeditmodel.h>
 
@@ -29,7 +28,8 @@ void GGContentEditorPane::setController(GGUIController *ctrl)
 void GGContentEditorPane::setContentPage(GGContentPage *p)
 {
     m_page = p;
-    ui->txtCaption->setText(p->caption());
+    ui->wgtCaptionEdit->setStyler(m_ctrl->model()->editModel()->getStyler());
+    ui->wgtCaptionEdit->setFormattedText(p->caption());
     QPixmap pix;
     if (p->content())
         pix = p->content()->preview(p->model()->mediaResolver(), ui->lblPreview->minimumSize());
@@ -46,12 +46,7 @@ void GGContentEditorPane::on_btnChange_clicked()
     }
 }
 
-void GGContentEditorPane::on_btnEditCaption_clicked()
+void GGContentEditorPane::onCaptionUpdate(const QString &caption)
 {
-    GGEditTextDialog dlg(this);
-    dlg.setStyler(m_ctrl->model()->editModel()->getStyler());
-    dlg.setFormattedDocument(m_page->caption());
-    if (dlg.exec() == QDialog::Accepted) {
-        m_ctrl->changeContentPageCaption(m_page, dlg.getFormattedDocument());
-    }
+    m_ctrl->changeContentPageCaption(m_page, caption);
 }
