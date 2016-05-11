@@ -7,6 +7,8 @@
 #include <model/ggpage.h>
 #include <model/ggcontentelement.h>
 #include <model/ggeditproject.h>
+#include <model/ggeditmodel.h>
+#include <ui/dialogs/ggedittextdialog.h>
 
 GGMappingEditorPane::GGMappingEditorPane(QWidget *parent) :
     QWidget(parent),
@@ -66,11 +68,6 @@ void GGMappingEditorPane::connectLink(GGPage *, const GGConnectionSlot &slt)
     m_ctrl->connectPageDirect(m_page, slt);
 }
 
-void GGMappingEditorPane::on_txtCaption_editingFinished()
-{
-    m_ctrl->changeContentPageCaption(m_page, ui->txtCaption->text());
-}
-
 void GGMappingEditorPane::on_btnChangeContent_clicked()
 {
     GGEditContentElementDialog dlg(m_ctrl->project()->mediaManager());
@@ -88,5 +85,15 @@ void GGMappingEditorPane::on_btnChangeMapping_clicked()
     int res = dlg.exec();
     if (res == QDialog::Accepted) {
         m_ctrl->applySubcommandsAsSingle(dlg.getExecutedCommands());
+    }
+}
+
+void GGMappingEditorPane::on_btnChangeCaption_clicked()
+{
+    GGEditTextDialog dlg(this);
+    dlg.setStyler(m_ctrl->model()->editModel()->getStyler());
+    dlg.setFormattedDocument(m_page->caption());
+    if (dlg.exec() == QDialog::Accepted) {
+        m_ctrl->changeContentPageCaption(m_page, dlg.getFormattedDocument());
     }
 }

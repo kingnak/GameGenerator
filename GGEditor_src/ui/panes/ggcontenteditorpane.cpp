@@ -5,6 +5,9 @@
 #include <model/ggcontentelement.h>
 #include <view/gguicontroller.h>
 #include <model/ggeditproject.h>
+#include <ui/dialogs/ggedittextdialog.h>
+#include <viewmodel/ggviewmodel.h>
+#include <model/ggeditmodel.h>
 
 GGContentEditorPane::GGContentEditorPane(QWidget *parent) :
     QWidget(parent),
@@ -33,11 +36,6 @@ void GGContentEditorPane::setContentPage(GGContentPage *p)
     ui->lblPreview->setPixmap(pix);
 }
 
-void GGContentEditorPane::on_txtCaption_editingFinished()
-{
-    m_ctrl->changeContentPageCaption(m_page, ui->txtCaption->text());
-}
-
 void GGContentEditorPane::on_btnChange_clicked()
 {
     GGEditContentElementDialog dlg(this->m_ctrl->project()->mediaManager());
@@ -45,5 +43,15 @@ void GGContentEditorPane::on_btnChange_clicked()
     if (dlg.exec() == QDialog::Accepted) {
         GGContentElement *e = dlg.getContentElement();
         m_ctrl->changeContentElement(m_page, e);
+    }
+}
+
+void GGContentEditorPane::on_btnEditCaption_clicked()
+{
+    GGEditTextDialog dlg(this);
+    dlg.setStyler(m_ctrl->model()->editModel()->getStyler());
+    dlg.setFormattedDocument(m_page->caption());
+    if (dlg.exec() == QDialog::Accepted) {
+        m_ctrl->changeContentPageCaption(m_page, dlg.getFormattedDocument());
     }
 }

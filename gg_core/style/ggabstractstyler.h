@@ -6,6 +6,7 @@
 #include <QList>
 
 class QTextDocument;
+class QTextFormat;
 
 class GG_CORESHARED_EXPORT GGAbstractStyler
 {
@@ -13,6 +14,11 @@ public:
     GGAbstractStyler();
     virtual ~GGAbstractStyler() {}
 
+    enum SupplementalStyleOption {
+        None    = 0x0000,
+        Italic  = 0x0001
+    };
+    Q_DECLARE_FLAGS(SupplementalStyleOptions, SupplementalStyleOption)
 
     GGBasicStyle basicStyle() const;
     void setBasicStyle(const GGBasicStyle &basicStyle);
@@ -24,6 +30,13 @@ public:
     virtual QTextDocument *styleString(const QString &doc) const = 0;
     virtual QString parseDocument(const QTextDocument *doc) const = 0;
     virtual QString plainText(const QString &doc) const = 0;
+
+    virtual SupplementalStyleOptions supplementalOptions() const = 0;
+
+    virtual QTextFormat formatForBasicStyle() const = 0;
+    virtual QTextFormat formatForDefaultStyle() const = 0;
+    virtual QTextFormat formatForStyle(const GGStyle &style) const = 0;
+    virtual QString styleNameForFormat(const QTextFormat &format) const = 0;
 
 protected:
     GGBasicStyle m_basic;

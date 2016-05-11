@@ -31,9 +31,9 @@ private slots:
     void updateLinkAction(GGPage *, const GGConnectionSlot &slt, const GGAction &act);
     void deleteLink(GGPage *, const GGConnectionSlot &slt);
     void connectLink(GGPage *, const GGConnectionSlot &slt);
-    void on_txtCaption_editingFinished();
     void on_btnChangeContent_clicked();
     void on_btnChangeMapping_clicked();
+    void on_btnChangeCaption_clicked();
 
 private:
     Ui::GGMappingEditorPane *ui;

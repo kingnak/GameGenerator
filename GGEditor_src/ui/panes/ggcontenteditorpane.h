@@ -24,8 +24,8 @@ public slots:
     void setContentPage(GGContentPage *p);
 
 private slots:
-    void on_txtCaption_editingFinished();
     void on_btnChange_clicked();
+    void on_btnEditCaption_clicked();
 
 private:
     Ui::GGContentEditorPane *ui;

@@ -158,7 +158,7 @@ void GGContentPage::setCaption(QString cap)
 {
     if (m_caption != cap) {
         m_caption = cap;
-        notifyChanged(GGAbstractModel::PageData);
+        notifyChanged(GGAbstractModel::Content);
     }
 }
 

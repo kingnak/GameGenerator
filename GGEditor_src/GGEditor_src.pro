@@ -81,7 +81,8 @@ SOURCES += \
     utils/ggtrasher.cpp \
     utils/ggwintrasher.cpp \
     ui/dialogs/ggstyledialog.cpp \
-    style/ggspanstyler.cpp
+    style/ggspanstyler.cpp \
+    ui/dialogs/ggedittextdialog.cpp
 
 HEADERS += \
     model/ggeditmodel.h \
@@ -162,7 +163,8 @@ HEADERS += \
     utils/ggtrasher.h \
     utils/ggwintrasher.h \
     ui/dialogs/ggstyledialog.h \
-    style/ggspanstyler.h
+    style/ggspanstyler.h \
+    ui/dialogs/ggedittextdialog.h
 unix {
     target.path = /usr/lib
     INSTALLS += target
@@ -200,7 +202,8 @@ FORMS += \
     ui/dialogs/ggmediamanagerdialog.ui \
     ui/dialogs/ggrenamescenedlg.ui \
     ui/dialogs/ggcreatescenedlg.ui \
-    ui/dialogs/ggstyledialog.ui
+    ui/dialogs/ggstyledialog.ui \
+    ui/dialogs/ggedittextdialog.ui
 
 RESOURCES += \
     ui/resources.qrc
