@@ -8,6 +8,9 @@ GGSearchDialog::GGSearchDialog(QWidget *parent) :
 {
     ui->setupUi(this);
     resetSearch();
+    ui->buttonBox->button(QDialogButtonBox::Ok)->setDefault(true);
+    ui->buttonBox->button(QDialogButtonBox::Ok)->setAutoDefault(true);
+    ui->buttonBox->button(QDialogButtonBox::Cancel)->setAutoDefault(false);
 }
 
 GGSearchDialog::~GGSearchDialog()
