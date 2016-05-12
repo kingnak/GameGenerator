@@ -47,6 +47,7 @@ void GGActionEditorWidget::setVariables(QStringList vars)
 
 void GGActionEditorWidget::setAction(const GGAction &action)
 {
+    ui->stackedWidget->setCurrentWidget(ui->pageView);
     m_action = action;
     ui->cmbVar->setEditText(action.variableName());
     ui->txtVal->setText(action.value());
@@ -70,14 +71,12 @@ void GGActionEditorWidget::on_btnEdit_clicked()
 void GGActionEditorWidget::on_btnAbort_clicked()
 {
     setAction(m_action);
-    ui->stackedWidget->setCurrentWidget(ui->pageView);
 }
 
 void GGActionEditorWidget::on_btnOk_clicked()
 {
     GGAction a = buildAction();
     setAction(a);
-    ui->stackedWidget->setCurrentWidget(ui->pageView);
     emit actionUpdated(a);
 }
 

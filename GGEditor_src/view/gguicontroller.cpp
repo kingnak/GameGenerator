@@ -192,6 +192,11 @@ void GGUIController::changeCondition(GGConditionPage *page, const GGCondition &c
     doExecCmd(m_cmdFactory->exchangeCondition(page, cond));
 }
 
+void GGUIController::changeEntryAction(GGEntryActionPage *page, const GGAction &act)
+{
+    doExecCmd(m_cmdFactory->exchangeEntryAction(page, act));
+}
+
 void GGUIController::changeLink(GGPage *page, GGConnectionSlot slot, const GGLink &link)
 {
     GGAbstractCommand *cmd = NULL;

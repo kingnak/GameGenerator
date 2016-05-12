@@ -7,8 +7,7 @@
 #include <model/ggpage.h>
 #include <model/ggcontentelement.h>
 #include <model/ggeditproject.h>
-#include <model/ggeditmodel.h>
-#include <ui/dialogs/ggedittextdialog.h>
+
 
 GGMappingEditorPane::GGMappingEditorPane(QWidget *parent) :
     QWidget(parent),
@@ -35,8 +34,6 @@ void GGMappingEditorPane::setController(GGUIController *ctrl)
 void GGMappingEditorPane::setMappedPage(GGMappedContentPage *p)
 {
     m_page = p;
-    ui->wgtCaption->setStyler(m_ctrl->model()->editModel()->getStyler());
-    ui->wgtCaption->setFormattedText(p->caption());
     QPixmap pix;
     if (p->content())
         pix = p->content()->preview(p->model()->mediaResolver(), ui->lblPreview->minimumSize());

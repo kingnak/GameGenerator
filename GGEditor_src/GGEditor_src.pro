@@ -83,7 +83,9 @@ SOURCES += \
     ui/dialogs/ggstyledialog.cpp \
     style/ggspanstyler.cpp \
     ui/dialogs/ggedittextdialog.cpp \
-    ui/components/ggstyledtexteditorwidget.cpp
+    ui/components/ggstyledtexteditorwidget.cpp \
+    ui/panes/ggentryactioneditorpane.cpp \
+    ui/panes/ggeditcaptionpane.cpp
 
 HEADERS += \
     model/ggeditmodel.h \
@@ -166,7 +168,9 @@ HEADERS += \
     ui/dialogs/ggstyledialog.h \
     style/ggspanstyler.h \
     ui/dialogs/ggedittextdialog.h \
-    ui/components/ggstyledtexteditorwidget.h
+    ui/components/ggstyledtexteditorwidget.h \
+    ui/panes/ggentryactioneditorpane.h \
+    ui/panes/ggeditcaptionpane.h
 unix {
     target.path = /usr/lib
     INSTALLS += target
@@ -206,7 +210,9 @@ FORMS += \
     ui/dialogs/ggcreatescenedlg.ui \
     ui/dialogs/ggstyledialog.ui \
     ui/dialogs/ggedittextdialog.ui \
-    ui/components/ggstyledtexteditorwidget.ui
+    ui/components/ggstyledtexteditorwidget.ui \
+    ui/panes/ggentryactioneditorpane.ui \
+    ui/panes/ggeditcaptionpane.ui
 
 RESOURCES += \
     ui/resources.qrc

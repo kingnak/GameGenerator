@@ -5,8 +5,6 @@
 #include <model/ggcontentelement.h>
 #include <view/gguicontroller.h>
 #include <model/ggeditproject.h>
-#include <viewmodel/ggviewmodel.h>
-#include <model/ggeditmodel.h>
 
 GGContentEditorPane::GGContentEditorPane(QWidget *parent) :
     QWidget(parent),
@@ -28,8 +26,6 @@ void GGContentEditorPane::setController(GGUIController *ctrl)
 void GGContentEditorPane::setContentPage(GGContentPage *p)
 {
     m_page = p;
-    ui->wgtCaptionEdit->setStyler(m_ctrl->model()->editModel()->getStyler());
-    ui->wgtCaptionEdit->setFormattedText(p->caption());
     QPixmap pix;
     if (p->content())
         pix = p->content()->preview(p->model()->mediaResolver(), ui->lblPreview->minimumSize());
@@ -44,9 +40,4 @@ void GGContentEditorPane::on_btnChange_clicked()
         GGContentElement *e = dlg.getContentElement();
         m_ctrl->changeContentElement(m_page, e);
     }
-}
-
-void GGContentEditorPane::onCaptionUpdate(const QString &caption)
-{
-    m_ctrl->changeContentPageCaption(m_page, caption);
 }

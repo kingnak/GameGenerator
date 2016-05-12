@@ -34,6 +34,18 @@
     </widget>
    </item>
    <item>
+    <widget class="QGroupBox" name="grpEntryAction">
+     <property name="title">
+      <string>Entry Action</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_7">
+      <item>
+       <widget class="GGEntryActionEditorPane" name="wgtEntryAction" native="true"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
     <widget class="QGroupBox" name="grpAction">
      <property name="title">
       <string>Action</string>
@@ -53,6 +65,18 @@
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
        <widget class="GGConditionEditorPane" name="wgtCondition" native="true"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="grpCaption">
+     <property name="title">
+      <string>Caption</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_8">
+      <item>
+       <widget class="GGEditCaptionPane" name="wgtCaption" native="true"/>
       </item>
      </layout>
     </widget>
@@ -137,6 +161,18 @@
    <class>GGMappingEditorPane</class>
    <extends>QWidget</extends>
    <header>ui/panes/ggmappingeditorpane.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>GGEntryActionEditorPane</class>
+   <extends>QWidget</extends>
+   <header>ui/panes/ggentryactioneditorpane.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>GGEditCaptionPane</class>
+   <extends>QWidget</extends>
+   <header>ui/panes/ggeditcaptionpane.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

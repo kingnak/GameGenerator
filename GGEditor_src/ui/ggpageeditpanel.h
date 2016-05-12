@@ -33,6 +33,8 @@ private slots:
 
 private:
     void setCommon(GGAbstractModel::PageSections updateSections);
+    void setEntryAction(GGAbstractModel::PageSections updateSections);
+    void setCaption(GGAbstractModel::PageSections updateSections);
     void setStart(GGAbstractModel::PageSections updateSections);
     void setEnd(GGAbstractModel::PageSections updateSections);
     void setCondition(GGAbstractModel::PageSections updateSections);

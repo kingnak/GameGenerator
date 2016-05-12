@@ -28,7 +28,8 @@ public:
         DecisionLinks   = 0x0020,
         Condition       = 0x0040,
         EntryAction     = 0x0080,
-        AllSections = PageData | Connections | Content | MappedLinks | DecisionLinks | Condition | EntryAction
+        Caption         = 0x0100,
+        AllSections = PageData | Connections | Content | MappedLinks | DecisionLinks | Condition | EntryAction | Caption
     };
     Q_DECLARE_FLAGS(PageSections, PageSection)
 

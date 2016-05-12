@@ -21,6 +21,8 @@ void GGPageEditPanel::setController(GGUIController *ctrl)
     connect(m_ctrl, SIGNAL(modelReset(GGViewModel*)), this, SLOT(modelReset()));
     modelReset();
 
+    ui->wgtEntryAction->setController(m_ctrl);
+    ui->wgtCaption->setController(m_ctrl);
     ui->wgtContent->setController(m_ctrl);
     ui->wgtCondition->setController(m_ctrl);
     ui->wgtAction->setController(m_ctrl);
@@ -42,6 +44,8 @@ void GGPageEditPanel::displayPage(GGPage *page, GGAbstractModel::PageSections up
 {
     if (page != m_page) {
         m_page = page;
+        ui->grpEntryAction->setVisible(false);
+        ui->grpCaption->setVisible(false);
         ui->grpAction->setVisible(false);
         ui->grpCondition->setVisible(false);
         ui->grpContent->setVisible(false);
@@ -50,6 +54,8 @@ void GGPageEditPanel::displayPage(GGPage *page, GGAbstractModel::PageSections up
     }
 
     setCommon(updateSections);
+    setEntryAction(updateSections);
+    setCaption(updateSections);
     setStart(updateSections);
     setEnd(updateSections);
     setCondition(updateSections);
@@ -87,7 +93,27 @@ void GGPageEditPanel::setCommon(GGAbstractModel::PageSections updateSections)
     Q_UNUSED(updateSections)
 
     ui->txtName->setText(m_page->name());
-//    ui->txtScene->setText(m_page->sceneName());
+    //    ui->txtScene->setText(m_page->sceneName());
+}
+
+void GGPageEditPanel::setEntryAction(GGAbstractModel::PageSections updateSections)
+{
+    if (GGEntryActionPage *eap = GG::as<GGEntryActionPage>(m_page)) {
+        if (updateSections.testFlag(GGAbstractModel::EntryAction))
+            ui->wgtEntryAction->setPage(eap);
+
+        ui->grpEntryAction->setVisible(true);
+    }
+}
+
+void GGPageEditPanel::setCaption(GGAbstractModel::PageSections updateSections)
+{
+    if (GGContentPage *cp = GG::as<GGContentPage>(m_page)) {
+        if (updateSections.testFlag(GGAbstractModel::Caption))
+            ui->wgtCaption->setPage(cp);
+
+        ui->grpCaption->setVisible(true);
+    }
 }
 
 void GGPageEditPanel::setStart(GGAbstractModel::PageSections updateSections)
