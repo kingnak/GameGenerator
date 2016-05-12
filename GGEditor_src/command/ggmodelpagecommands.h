@@ -11,6 +11,7 @@ class GGScene;
 class GGPage;
 class GGConditionPage;
 class GGContentPage;
+class GGEntryActionPage;
 class GGActionPage;
 class GGMappedContentPage;
 class GGDecisionPage;
@@ -210,6 +211,27 @@ private:
     GGConditionPage *m_page;
     GGCondition m_new;
     GGCondition m_old;
+};
+
+///////////////////////////
+
+class GGExchangeEntryActionCmd : public GGAbstractModelCommand
+{
+public:
+    GGExchangeEntryActionCmd(GGEditModel *model, GGEntryActionPage *page, const GGAction &newAction);
+    ~GGExchangeEntryActionCmd();
+
+    QString description() const;
+
+protected:
+    bool doExecute();
+    bool doUndo();
+    bool doRedo();
+
+private:
+    GGEntryActionPage *m_page;
+    GGAction m_new;
+    GGAction m_old;
 };
 
 ///////////////////////////

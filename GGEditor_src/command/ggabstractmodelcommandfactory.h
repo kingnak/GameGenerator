@@ -11,11 +11,13 @@ class GGScene;
 class GGPage;
 class GGConditionPage;
 class GGContentPage;
+class GGEntryActionPage;
 class GGActionPage;
 class GGMappedContentPage;
 class GGDecisionPage;
 
 class GGCondition;
+class GGAction;
 class GGContentElement;
 class GGLink;
 class GGMappedLink;
@@ -32,6 +34,7 @@ class GGDeletePageCmd;
 class GGCreateConnectionCmd;
 class GGDeleteConnectionCmd;
 class GGExchangeConnectionCmd;
+class GGExchangeEntryActionCmd;
 class GGSetPageStringCmd;
 class GGExchangeConditionCmd;
 class GGExchangeContentCmd;
@@ -72,6 +75,7 @@ public:
     virtual GGSetPageStringCmd *setPageCaption(GGContentPage *p, const QString &caption) = 0;
 
     virtual GGExchangeConditionCmd *exchangeCondition(GGConditionPage *p, const GGCondition &cond) = 0;
+    virtual GGExchangeEntryActionCmd *exchangeEntryAction(GGEntryActionPage *p, const GGAction &act) = 0;
 
     virtual GGExchangeContentCmd *exchangeContent(GGContentPage *p, GGContentElement *elem) = 0;
 

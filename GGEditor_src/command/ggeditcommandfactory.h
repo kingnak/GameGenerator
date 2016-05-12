@@ -31,6 +31,7 @@ public:
     GGSetPageStringCmd *setPageCaption(GGContentPage *p, const QString &caption);
 
     GGExchangeConditionCmd *exchangeCondition(GGConditionPage *p, const GGCondition &cond);
+    GGExchangeEntryActionCmd *exchangeEntryAction(GGEntryActionPage *p, const GGAction &act);
     GGExchangeContentCmd *exchangeContent(GGContentPage *p, GGContentElement *elem);
 
     GGSetActionLinkCmd *setActionLink(GGActionPage *p, const GGLink &lnk);

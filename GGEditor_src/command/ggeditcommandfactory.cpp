@@ -96,6 +96,11 @@ GGExchangeConditionCmd *GGEditCommandFactory::exchangeCondition(GGConditionPage 
     return new GGExchangeConditionCmd(m_model, p, cond);
 }
 
+GGExchangeEntryActionCmd *GGEditCommandFactory::exchangeEntryAction(GGEntryActionPage *p, const GGAction &act)
+{
+    return new GGExchangeEntryActionCmd(m_model, p, act);
+}
+
 GGExchangeContentCmd *GGEditCommandFactory::exchangeContent(GGContentPage *p, GGContentElement *elem)
 {
     return new GGExchangeContentCmd(m_model, p, elem);

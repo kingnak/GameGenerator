@@ -76,7 +76,7 @@ public:
         PageName, PageScene, PageCaption,
         // TODO: Contents
         LinkName, Action, Condition,
-        LinkAction,
+        LinkAction, EntryAction,
         Definition
     };
 

@@ -480,6 +480,44 @@ bool GGExchangeConditionCmd::doRedo()
     return true;
 }
 
+///////////////////////////
+
+GGExchangeEntryActionCmd::GGExchangeEntryActionCmd(GGEditModel *model, GGEntryActionPage *page, const GGAction &newAction)
+    : GGAbstractModelCommand(model),
+      m_page(page),
+      m_new(newAction)
+{
+
+}
+
+GGExchangeEntryActionCmd::~GGExchangeEntryActionCmd()
+{
+
+}
+
+QString GGExchangeEntryActionCmd::description() const
+{
+    return "Update entry action";
+}
+
+bool GGExchangeEntryActionCmd::doExecute()
+{
+    m_old = m_page->entryAction();
+    m_page->setEntryAction(m_new);
+    return true;
+}
+
+bool GGExchangeEntryActionCmd::doUndo()
+{
+    m_page->setEntryAction(m_old);
+    return true;
+}
+
+bool GGExchangeEntryActionCmd::doRedo()
+{
+    m_page->setEntryAction(m_new);
+    return true;
+}
 
 ///////////////////////////
 

@@ -38,8 +38,6 @@ public:
 
     virtual bool match(const GGSearchRequest &req, GGSearchResult &results) const;
 
-    // TODO: Entry Action (as own class between contentPage and mappedContenPage?)
-
     virtual QList<GGConnection *> getConnections() const = 0;
     virtual bool removeConnection(GGConnection *connection) = 0;
 
@@ -138,7 +136,24 @@ private:
 
 /////////////////////////////////////////
 
-class GG_CORESHARED_EXPORT GGEndPage : public GGContentPage
+class GG_CORESHARED_EXPORT GGEntryActionPage : public GGContentPage
+{
+public:
+    GGEntryActionPage(GG::SceneID scene);
+    ~GGEntryActionPage();
+
+    GGAction entryAction() const { return m_entryAction; }
+    void setEntryAction(GGAction action);
+
+    virtual bool match(const GGSearchRequest &req, GGSearchResult &results) const;
+
+protected:
+    GGAction m_entryAction;
+};
+
+/////////////////////////////////////////
+
+class GG_CORESHARED_EXPORT GGEndPage : public GGEntryActionPage
 {
 public:
     GGEndPage(GG::SceneID scene);
@@ -154,7 +169,7 @@ public:
 
 //////////////////////////////////////////
 
-class GG_CORESHARED_EXPORT GGMappedContentPage : public GGContentPage
+class GG_CORESHARED_EXPORT GGMappedContentPage : public GGEntryActionPage
 {
 public:
     GGMappedContentPage(GG::SceneID scene);
@@ -252,6 +267,18 @@ template <> inline const GGContentPage *as(const GGPage *p)
 
 template <> inline GGContentPage *as(GGPage *p) {
     return const_cast<GGContentPage*> (as<const GGContentPage>(const_cast<const GGPage*>(p)));
+}
+
+template <> inline const GGEntryActionPage *as(const GGPage *p)
+{
+    const GGEntryActionPage *eap = ggpage_cast<const GGEndPage*>(p);
+    if (!eap) eap = ggpage_cast<const GGActionPage*>(p);
+    if (!eap) eap = ggpage_cast<const GGDecisionPage*>(p);
+    return eap;
+}
+
+template <> inline GGEntryActionPage *as(GGPage *p) {
+    return const_cast<GGEntryActionPage*> (as<const GGEntryActionPage>(const_cast<const GGPage*>(p)));
 }
 
 template <> inline const GGMappedContentPage *as(const GGPage *p)

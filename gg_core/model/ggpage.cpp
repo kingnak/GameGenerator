@@ -249,8 +249,37 @@ bool GGStartPage::removeConnection(GGConnection *connection)
 
 /////////////////////////////////////////
 
-GGEndPage::GGEndPage(GG::SceneID scene)
+GGEntryActionPage::GGEntryActionPage(GG::SceneID scene)
     : GGContentPage(scene)
+{
+
+}
+
+GGEntryActionPage::~GGEntryActionPage()
+{
+
+}
+
+void GGEntryActionPage::setEntryAction(GGAction action)
+{
+    m_entryAction = action;
+    notifyChanged(GGAbstractModel::EntryAction);
+}
+
+bool GGEntryActionPage::match(const GGSearchRequest &req, GGSearchResult &results) const
+{
+    bool res = GGContentPage::match(req, results);
+    if (req.what().testFlag(GGSearchRequest::Variable) && req.matches(m_entryAction.variableName())) {
+        results << GGSearchResultItem(GGSearchResultItem::EntryAction, GGSearchRequest::Variable, m_entryAction.toString(), id());
+        res = true;
+    }
+    return res;
+}
+
+/////////////////////////////////////////
+
+GGEndPage::GGEndPage(GG::SceneID scene)
+    : GGEntryActionPage(scene)
 {
 
 }
@@ -274,7 +303,7 @@ bool GGEndPage::removeConnection(GGConnection *connection)
 //////////////////////////////////////////
 
 GGMappedContentPage::GGMappedContentPage(GG::SceneID scene)
-    : GGContentPage(scene)
+    : GGEntryActionPage(scene)
 {
 
 }
@@ -302,7 +331,7 @@ QList<GGMappedLink> GGMappedContentPage::getLinkMap() const
 
 bool GGMappedContentPage::match(const GGSearchRequest &req, GGSearchResult &results) const
 {
-    bool res = GGContentPage::match(req, results);
+    bool res = GGEntryActionPage::match(req, results);
     if (req.searchLinks()) {
         QList<GGConnectionSlotData> mapSlots = GGConnectionSlotData::enumerateConnections(this, GGConnectionSlotData::MappedConnection);
         foreach (GGConnectionSlotData d, mapSlots) {
