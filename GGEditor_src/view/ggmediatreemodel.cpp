@@ -109,6 +109,7 @@ int GGMediaTreeModel::rowCount(const QModelIndex &parent) const
 
 int GGMediaTreeModel::columnCount(const QModelIndex &parent) const
 {
+    Q_UNUSED(parent);
     return 1;
 }
 
