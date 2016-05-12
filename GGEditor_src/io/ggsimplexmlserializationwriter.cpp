@@ -1,4 +1,5 @@
 #include "ggsimplexmlserializationwriter.h"
+#include <ggutilities.h>
 #include <io/ggxmlserializer.h>
 #include <io/ggiofactory.h>
 #include <QXmlStreamWriter>
@@ -31,7 +32,7 @@ bool GGSimpleXmlSerializationWriter::writeFooter()
 bool GGSimpleXmlSerializationWriter::writeProjectStart()
 {
     m_stream->writeStartElement("GGProject");
-    m_stream->writeTextElement("version", GGIOFactory::versionToString(GGIOFactory::FILE_VERSION));
+    m_stream->writeTextElement("version", GGUtilities::versionToString(GGIOFactory::FILE_VERSION));
     return true;
 }
 

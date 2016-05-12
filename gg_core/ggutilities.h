@@ -11,7 +11,8 @@ private:
 
 public:
     static QString sanatizeFileName(QString name);
-
+    static QString versionToString(quint32 version);
+    static quint32 stringToVersion(QString str);
 };
 
 #endif // GGUTILITIES_H

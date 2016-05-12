@@ -12,6 +12,8 @@ typedef quint32 ConnectionID;
 static const SceneID InvalidSceneId = 0xFFFFFFFF;
 static const PageID InvalidPageId = 0xFFFFFFFF;
 static const ConnectionID InvalidConnectionId = 0xFFFFFFFF;
+
+static const quint32 VERSION = 0x00010000U;
 }
 
 //Q_DECLARE_METATYPE(GG::PageID)

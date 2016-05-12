@@ -1,4 +1,5 @@
 #include "ggsimplexmlunserializationreader.h"
+#include <ggutilities.h>
 #include <io/ggxmlunserializer.h>
 #include <io/ggserialization.hpp>
 #include <io/ggabstractprojectunserializer.h>
@@ -40,7 +41,7 @@ GGXmlUnserializerHandler::HandleType GGSimpleXmlUnserializationReader::handleEle
     data >> m;
 
     if (name == "version") {
-        quint32 v = GGIOFactory::stringToVersion(m[" text "].toString());
+        quint32 v = GGUtilities::stringToVersion(m[" text "].toString());
         if (v != GGIOFactory::FILE_VERSION) {
             name = "Unsupported version";
             return Error;
