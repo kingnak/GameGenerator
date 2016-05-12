@@ -44,6 +44,9 @@ private:
     GGEditorScene *editScene();
     const GGEditorScene *editScene() const;
 
+    void paintDecoration(QPainter *painter) const;
+    QRectF getActionIndicatorPosition() const;
+
     static void paintStart(QPainter *painter, const QRectF &rect, QColor border, QColor fill);
     static void paintEnd(QPainter *painter, const QRectF &rect, QColor border, QColor fill);
     static void paintCondition(QPainter *painter, const QRectF &rect, QColor border, QColor fill);

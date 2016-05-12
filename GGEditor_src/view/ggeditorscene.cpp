@@ -67,6 +67,15 @@ QColor GGEditorScene::pageColor(GGViewPage *page) const
     }
 }
 
+QColor GGEditorScene::decorationColor(GGViewPage *page) const
+{
+    if (page->page()->sceneId() == m_modelScene->scene()->id()) {
+        return defaultPageColor();
+    } else {
+        return Qt::transparent;
+    }
+}
+
 QColor GGEditorScene::connectionColor(GGViewConnection *conn) const
 {
     if (conn->connection()->source()->sceneId() == m_modelScene->scene()->id()) {

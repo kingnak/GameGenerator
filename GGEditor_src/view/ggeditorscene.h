@@ -33,6 +33,7 @@ public:
     QColor defaultPageColor() const { return Qt::black; }
     QColor foreignPageColor() const { return Qt::gray; }
     QColor pageColor(GGViewPage *page) const;
+    QColor decorationColor(GGViewPage *page) const;
     QColor pageFillColor() const { return Qt::white; }
     QColor pageHighlightColor() const { return Qt::blue; }
     qreal connectionWidth() const { return 5; }

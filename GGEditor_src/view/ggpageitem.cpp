@@ -99,7 +99,7 @@ void GGPageItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option
 
     if (withCaption) {
         QString name = m_page->page()->name();
-        painter->drawText(innerBoundingRect(), Qt::AlignHCenter | Qt::AlignCenter, name);
+        painter->drawText(innerBoundingRect(), Qt::AlignCenter, name);
     }
 
     /*
@@ -213,6 +213,29 @@ GGEditorScene *GGPageItem::editScene()
 const GGEditorScene *GGPageItem::editScene() const
 {
     return static_cast<const GGEditorScene*> (scene());
+}
+
+void GGPageItem::paintDecoration(QPainter *painter) const
+{
+    if (GGEntryActionPage *eap = GG::as<GGEntryActionPage> (m_page->page())) {
+        if (eap->entryAction().isValid()) {
+            QRectF r = getActionIndicatorPosition();
+            painter->save();
+            QFont font("Arial", 10);
+            font.setItalic(true);
+            font.setBold(true);
+            painter->setFont(font);
+            painter->setPen(QPen(editScene()->decorationColor(m_page)));
+            painter->drawText(r, Qt::AlignVCenter, "A");
+            painter->restore();
+        }
+    }
+}
+
+QRectF GGPageItem::getActionIndicatorPosition() const
+{
+    QRectF r(boundingRect().left() + 5, boundingRect().top(), boundingRect().width() - 5, boundingRect().height());
+    return r;
 }
 
 QRectF GGPageItem::innerBoundingRect() const
