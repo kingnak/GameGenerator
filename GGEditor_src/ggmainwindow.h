@@ -89,6 +89,8 @@ private slots:
     void deleteSceneAction();
     void createSceneAction();
 
+    void on_action_About_triggered();
+
 private:
     void updateWindowTitle();
     void connectModel();

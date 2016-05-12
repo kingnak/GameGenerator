@@ -598,6 +598,14 @@ void GGMainWindow::createSceneAction()
     }
 }
 
+void GGMainWindow::on_action_About_triggered()
+{
+    QMessageBox::information(this, "GameGenerator", QString("GameGenerator V%1\n"
+                                                            "Copyright © by King Nak\n"
+                                                            "This is a incomplete preview version!")
+                             .arg(GGUtilities::versionToString(GG::VERSION)));
+}
+
 void GGMainWindow::updateWindowTitle()
 {
     if (m_project) {
