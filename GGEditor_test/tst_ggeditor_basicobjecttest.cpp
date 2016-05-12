@@ -91,6 +91,114 @@ void GGEditor_BasicObjectTest::testPageCast()
     delete p;
 }
 
+void GGEditor_BasicObjectTest::testPageAs()
+{
+    GGPage *p = new GGStartPage(GG::InvalidSceneId);
+    const GGPage *cp = p;
+    QVERIFY2(GG::as<GGConditionPage>(p) == 0, "StartPage can act as ConditionPage");
+    QVERIFY2(GG::as<GGContentPage>(p) == p, "StartPage cannot act as ContentPage");
+    QVERIFY2(GG::as<GGEntryActionPage>(p) == 0, "StartPage can act as EntryActionPage");
+    QVERIFY2(GG::as<GGEndPage>(p) == 0, "StartPage can act as EndPage");
+    QVERIFY2(GG::as<GGMappedContentPage>(p) == 0, "StartPage can act as MappedContentPage");
+    QVERIFY2(GG::as<GGActionPage>(p) == 0, "StartPage can act as ActionPage");
+    QVERIFY2(GG::as<GGDecisionPage>(p) == 0, "StartPage can act as DecisionPage");
+    QVERIFY2(GG::as<GGStartPage>(p) == p, "StartPage cannot act as StartPage");
+
+    QVERIFY2(GG::as<const GGConditionPage>(cp) == 0, "StartPage can act as Const ConditionPage");
+    QVERIFY2(GG::as<const GGContentPage>(cp) == p, "StartPage cannot act as Const ContentPage");
+    QVERIFY2(GG::as<const GGEntryActionPage>(cp) == 0, "StartPage can act as Const EntryActionPage");
+    QVERIFY2(GG::as<const GGEndPage>(cp) == 0, "StartPage can act as Const EndPage");
+    QVERIFY2(GG::as<const GGMappedContentPage>(cp) == 0, "StartPage can act as Const MappedContentPage");
+    QVERIFY2(GG::as<const GGActionPage>(cp) == 0, "StartPage can act as Const ActionPage");
+    QVERIFY2(GG::as<const GGDecisionPage>(cp) == 0, "StartPage can act as Const DecisionPage");
+    QVERIFY2(GG::as<const GGStartPage>(cp) == cp, "StartPage cannot act as Const StartPage");
+    delete p;
+
+    p = new GGEndPage(GG::InvalidSceneId);
+    cp = p;
+    QVERIFY2(GG::as<GGConditionPage>(p) == 0, "EndPage can act as ConditionPage");
+    QVERIFY2(GG::as<GGContentPage>(p) == p, "EndPage cannot act as ContentPage");
+    QVERIFY2(GG::as<GGEntryActionPage>(p) == p, "EndPage cannot act as EntryActionPage");
+    QVERIFY2(GG::as<GGEndPage>(p) == p, "EndPage cannot act as EndPage");
+    QVERIFY2(GG::as<GGMappedContentPage>(p) == 0, "EndPage can act as MappedContentPage");
+    QVERIFY2(GG::as<GGActionPage>(p) == 0, "EndPage can act as ActionPage");
+    QVERIFY2(GG::as<GGDecisionPage>(p) == 0, "EndPage can act as DecisionPage");
+    QVERIFY2(GG::as<GGStartPage>(p) == 0, "EndPage can act as StartPage");
+
+    QVERIFY2(GG::as<const GGConditionPage>(cp) == 0, "EndPage can act as Const ConditionPage");
+    QVERIFY2(GG::as<const GGContentPage>(cp) == cp, "EndPage cannot act as Const ContentPage");
+    QVERIFY2(GG::as<const GGEntryActionPage>(cp) == cp, "EndPage cannot act as Const EntryActionPage");
+    QVERIFY2(GG::as<const GGEndPage>(cp) == cp, "EndPage cannot act as Const EndPage");
+    QVERIFY2(GG::as<const GGMappedContentPage>(cp) == 0, "EndPage can act as Const MappedContentPage");
+    QVERIFY2(GG::as<const GGActionPage>(cp) == 0, "EndPage can act as Const ActionPage");
+    QVERIFY2(GG::as<const GGDecisionPage>(cp) == 0, "EndPage can act as Const DecisionPage");
+    QVERIFY2(GG::as<const GGStartPage>(cp) == 0, "EndPage can act as Const StartPage");
+    delete p;
+
+    p = new GGConditionPage(GG::InvalidSceneId);
+    cp = p;
+    QVERIFY2(GG::as<GGConditionPage>(p) == p, "ConditionPage cannot act as ConditionPage");
+    QVERIFY2(GG::as<GGContentPage>(p) == 0, "ConditionPage can act as ContentPage");
+    QVERIFY2(GG::as<GGEntryActionPage>(p) == 0, "ConditionPage can act as EntryActionPage");
+    QVERIFY2(GG::as<GGEndPage>(p) == 0, "ConditionPage can act as EndPage");
+    QVERIFY2(GG::as<GGMappedContentPage>(p) == 0, "ConditionPage can act as MappedContentPage");
+    QVERIFY2(GG::as<GGActionPage>(p) == 0, "ConditionPage can act as ActionPage");
+    QVERIFY2(GG::as<GGDecisionPage>(p) == 0, "ConditionPage can act as DecisionPage");
+    QVERIFY2(GG::as<GGStartPage>(p) == 0, "ConditionPage can act as StartPage");
+
+    QVERIFY2(GG::as<const GGConditionPage>(cp) == cp, "ConditionPage cannot act as Const ConditionPage");
+    QVERIFY2(GG::as<const GGContentPage>(cp) == 0, "ConditionPage can act as Const ContentPage");
+    QVERIFY2(GG::as<const GGEntryActionPage>(cp) == 0, "ConditionPage can act as Const EntryActionPage");
+    QVERIFY2(GG::as<const GGEndPage>(cp) == 0, "ConditionPage can act as Const EndPage");
+    QVERIFY2(GG::as<const GGMappedContentPage>(cp) == 0, "ConditionPage can act as Const MappedContentPage");
+    QVERIFY2(GG::as<const GGActionPage>(cp) == 0, "ConditionPage can act as Const ActionPage");
+    QVERIFY2(GG::as<const GGDecisionPage>(cp) == 0, "ConditionPage can act as Const DecisionPage");
+    QVERIFY2(GG::as<const GGStartPage>(cp) == 0, "ConditionPage can act as Const StartPage");
+    delete p;
+
+    p = new GGActionPage(GG::InvalidSceneId);
+    cp = p;
+    QVERIFY2(GG::as<GGConditionPage>(p) == 0, "ActionPage can act as ConditionPage");
+    QVERIFY2(GG::as<GGContentPage>(p) == p, "ActionPage cannot act as ContentPage");
+    QVERIFY2(GG::as<GGEntryActionPage>(p) == p, "ActionPage cannot act as EntryActionPage");
+    QVERIFY2(GG::as<GGEndPage>(p) == 0, "ActionPage can act as EndPage");
+    QVERIFY2(GG::as<GGMappedContentPage>(p) == p, "ActionPage cannot act as MappedContentPage");
+    QVERIFY2(GG::as<GGActionPage>(p) == p, "ActionPage cannot act as ActionPage");
+    QVERIFY2(GG::as<GGDecisionPage>(p) == 0, "ActionPage can act as DecisionPage");
+    QVERIFY2(GG::as<GGStartPage>(p) == 0, "ActionPage can act as StartPage");
+
+    QVERIFY2(GG::as<const GGConditionPage>(cp) == 0, "ActionPage can act as Const ConditionPage");
+    QVERIFY2(GG::as<const GGContentPage>(cp) == cp, "ActionPage cannot act as Const ContentPage");
+    QVERIFY2(GG::as<const GGEntryActionPage>(cp) == cp, "ActionPage cannot act as Const EntryActionPage");
+    QVERIFY2(GG::as<const GGEndPage>(cp) == 0, "ActionPage can act as Const EndPage");
+    QVERIFY2(GG::as<const GGMappedContentPage>(cp) == cp, "ActionPage cannot act as Const MappedContentPage");
+    QVERIFY2(GG::as<const GGActionPage>(cp) == cp, "ActionPage cannot act as Const ActionPage");
+    QVERIFY2(GG::as<const GGDecisionPage>(cp) == 0, "ActionPage can act as Const DecisionPage");
+    QVERIFY2(GG::as<const GGStartPage>(cp) == 0, "ActionPage can act as Const StartPage");
+    delete p;
+
+    p = new GGDecisionPage(GG::InvalidSceneId);
+    cp = p;
+    QVERIFY2(GG::as<GGConditionPage>(p) == 0, "DecisionPage can act as ConditionPage");
+    QVERIFY2(GG::as<GGContentPage>(p) == p, "DecisionPage cannot act as ContentPage");
+    QVERIFY2(GG::as<GGEntryActionPage>(p) == p, "DecisionPage cannot act as EntryActionPage");
+    QVERIFY2(GG::as<GGEndPage>(p) == 0, "DecisionPage can act as EndPage");
+    QVERIFY2(GG::as<GGMappedContentPage>(p) == p, "DecisionPage cannot act as MappedContentPage");
+    QVERIFY2(GG::as<GGActionPage>(p) == 0, "DecisionPage can act as ActionPage");
+    QVERIFY2(GG::as<GGDecisionPage>(p) == p, "DecisionPage cannot act as DecisionPage");
+    QVERIFY2(GG::as<GGStartPage>(p) == 0, "DecisionPage can act as StartPage");
+
+    QVERIFY2(GG::as<const GGConditionPage>(cp) == 0, "DecisionPage can act as Const ConditionPage");
+    QVERIFY2(GG::as<const GGContentPage>(cp) == cp, "DecisionPage cannot act as Const ContentPage");
+    QVERIFY2(GG::as<const GGEntryActionPage>(cp) == cp, "DecisionPage cannot act as Const EntryActionPage");
+    QVERIFY2(GG::as<const GGEndPage>(cp) == 0, "DecisionPage can act as Const EndPage");
+    QVERIFY2(GG::as<const GGMappedContentPage>(cp) == cp, "DecisionPage cannot act as Const MappedContentPage");
+    QVERIFY2(GG::as<const GGActionPage>(cp) == 0, "DecisionPage can act as Const ActionPage");
+    QVERIFY2(GG::as<const GGDecisionPage>(cp) == cp, "DecisionPage cannot act as Const DecisionPage");
+    QVERIFY2(GG::as<const GGStartPage>(cp) == 0, "DecisionPage can act as Const StartPage");
+    delete p;
+}
+
 void GGEditor_BasicObjectTest::testRegister()
 {
     GGEditModel m(new GGSimpleFactory);
