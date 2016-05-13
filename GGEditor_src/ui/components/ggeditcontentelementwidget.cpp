@@ -78,7 +78,7 @@ void GGEditContentElementWidget::on_btnBrowseImage_clicked()
         dlg.setSelectedDirectory(baseDir);
     }
 
-    if (dlg.exec() == QDialog::Accepted) {
+    if (dlg.requestMedia() == QDialog::Accepted) {
         QString id = dlg.getSelectedMediaId();
         QString path = m_manager->resolver()->resolveName(id);
         ui->txtPathImage->setText(path);

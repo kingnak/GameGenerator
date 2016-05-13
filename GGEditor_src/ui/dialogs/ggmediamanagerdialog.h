@@ -26,6 +26,7 @@ public slots:
     void setSelectedDirectory(const QString &dir);
     void expandAll();
     void accept();
+    int requestMedia();
 
 private slots:
     void treeItemSelected(QModelIndex idx);
@@ -35,6 +36,7 @@ private slots:
     void on_btnCleanup_clicked();
     void on_btnAdd_clicked();
     void on_btnRemove_clicked();
+    void acceptMedia(QModelIndex idx);
 
 private:
     void showDir(QModelIndex idx);
@@ -48,6 +50,7 @@ private:
     GGMediaTreeModel *m_tree;
     QString m_initSelection;
     QString m_acceptedSelection;
+    bool m_requestingMedia;
 };
 
 #endif // GGMEDIAMANAGERDIALOG_H

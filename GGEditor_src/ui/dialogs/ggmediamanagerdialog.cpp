@@ -49,10 +49,13 @@ private:
 };
 
 GGMediaManagerDialog::GGMediaManagerDialog(GGSceneMediaManager *mgm, QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::GGMediaManagerDialog)
+    QDialog(parent, Qt::WindowTitleHint | Qt::WindowSystemMenuHint | Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint),
+    ui(new Ui::GGMediaManagerDialog),
+    m_requestingMedia(false)
 {
     ui->setupUi(this);
+    ui->splitter->setStretchFactor(1, 1);
+    ui->splitter->setSizes(QList<int>() << ui->treeFolders->minimumSize().width());
     m_tree = new GGMediaTreeModel(mgm, this);
 
     QSortFilterProxyModel *treeProxy = new QSortFilterProxyModel(this);
@@ -111,6 +114,12 @@ void GGMediaManagerDialog::accept()
     QModelIndex idx = ui->lstMedia->currentIndex();
     m_acceptedSelection = ui->lstMedia->model()->data(idx, GGMediaTreeModel::IdRole).toString();
     QDialog::accept();
+}
+
+int GGMediaManagerDialog::requestMedia()
+{
+    m_requestingMedia = true;
+    return exec();
 }
 
 void GGMediaManagerDialog::treeItemSelected(QModelIndex idx)
@@ -261,6 +270,13 @@ void GGMediaManagerDialog::on_btnRemove_clicked()
     QString dir = m_tree->data(selectedTreeIndex(), GGMediaTreeModel::PathRole).toString();
     refresh();
     setSelectedDirectory(dir);
+}
+
+void GGMediaManagerDialog::acceptMedia(QModelIndex idx)
+{
+    if (!m_requestingMedia) return;
+    ui->lstMedia->setCurrentIndex(idx);
+    accept();
 }
 
 QModelIndex GGMediaManagerDialog::selectedTreeIndex()
