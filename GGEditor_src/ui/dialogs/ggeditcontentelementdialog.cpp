@@ -3,7 +3,7 @@
 
 
 GGEditContentElementDialog::GGEditContentElementDialog(GGSceneMediaManager *manager, QWidget *parent) :
-    QDialog(parent),
+    QDialog(parent, Qt::WindowTitleHint | Qt::WindowSystemMenuHint | Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint),
     ui(new Ui::GGEditContentElementDialog)
 {
     ui->setupUi(this);

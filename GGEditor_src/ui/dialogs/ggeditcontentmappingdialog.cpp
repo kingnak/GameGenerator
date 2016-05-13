@@ -9,7 +9,7 @@
 #include <view/ggmappinguicontroller.h>
 
 GGEditContentMappingDialog::GGEditContentMappingDialog(GGEditModel *model, QWidget *parent) :
-    QDialog(parent),
+    QDialog(parent, Qt::WindowTitleHint | Qt::WindowSystemMenuHint | Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint),
     ui(new Ui::GGEditContentMappingDialog),
     m_page(NULL)
 {

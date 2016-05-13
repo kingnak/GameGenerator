@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>523</width>
-    <height>421</height>
+    <width>841</width>
+    <height>596</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -31,6 +31,12 @@
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>150</width>
+           <height>0</height>
+          </size>
          </property>
         </widget>
        </item>
@@ -173,8 +179,8 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>266</x>
-     <y>411</y>
+     <x>275</x>
+     <y>586</y>
     </hint>
     <hint type="destinationlabel">
      <x>157</x>
@@ -189,8 +195,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>325</x>
-     <y>411</y>
+     <x>334</x>
+     <y>586</y>
     </hint>
     <hint type="destinationlabel">
      <x>286</x>
@@ -230,9 +236,26 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>lstMedia</sender>
+   <signal>doubleClicked(QModelIndex)</signal>
+   <receiver>GGMediaManagerDialog</receiver>
+   <slot>acceptMedia(QModelIndex)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>654</x>
+     <y>337</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>837</x>
+     <y>351</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>treeItemSelected(QModelIndex)</slot>
   <slot>listItemSelected()</slot>
+  <slot>acceptMedia(QModelIndex)</slot>
  </slots>
 </ui>

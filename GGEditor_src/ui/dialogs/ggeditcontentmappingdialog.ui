@@ -6,14 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>648</width>
-    <height>436</height>
+    <width>1009</width>
+    <height>735</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Edit mapping</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout" stretch="1,0">
+  <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0">
    <item>
     <widget class="QSplitter" name="splitter">
      <property name="orientation">
