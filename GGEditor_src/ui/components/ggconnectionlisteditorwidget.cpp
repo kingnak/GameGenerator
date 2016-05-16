@@ -7,7 +7,8 @@ GGConnectionListEditorWidget::GGConnectionListEditorWidget(QWidget *parent) :
     ui(new Ui::GGConnectionListEditorWidget),
     m_page(NULL),
     m_fields(GGConnectionEditorWidget::AllFields),
-    m_actions(GGConnectionEditorWidget::DefaultActions)
+    m_actions(GGConnectionEditorWidget::DefaultActions),
+    m_curSelected(-1)
 {
     ui->setupUi(this);
     ui->editorContainer->setLayout(new QVBoxLayout);
