@@ -2,6 +2,7 @@
 #define GGEDITCONTENTELEMENTDIALOG_H
 
 #include <QDialog>
+#include <utils/ggglobaluserinfo.h>
 
 class GGContentElement;
 class GGAbstractMediaResolver;
@@ -24,9 +25,15 @@ public:
 
 public slots:
     void setContentElement(GGContentElement *elem, GGScene *scene);
+    void accept();
+    void reject();
+
+protected:
+    void closeEvent(QCloseEvent *event);
 
 private:
     Ui::GGEditContentElementDialog *ui;
+    GGWindowHelper m_windowInfo;
 };
 
 #endif // GGEDITCONTENTELEMENTDIALOG_H

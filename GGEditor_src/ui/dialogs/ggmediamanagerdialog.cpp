@@ -1,10 +1,7 @@
 #include "ggmediamanagerdialog.h"
 #include "ui_ggmediamanagerdialog.h"
 #include <QSortFilterProxyModel>
-#include <QInputDialog>
-#include <QFileDialog>
-#include <QMessageBox>
-#include <QPushButton>
+#include <QtWidgets>
 #include <utils/ggtrasher.h>
 #include <model/ggscenemediamanager.h>
 #include <view/ggmediatreemodel.h>
@@ -51,9 +48,12 @@ private:
 GGMediaManagerDialog::GGMediaManagerDialog(GGSceneMediaManager *mgm, QWidget *parent) :
     QDialog(parent, Qt::WindowTitleHint | Qt::WindowSystemMenuHint | Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint),
     ui(new Ui::GGMediaManagerDialog),
-    m_requestingMedia(false)
+    m_requestingMedia(false),
+    m_windowInfo(this, "MediaManager")
 {
     ui->setupUi(this);
+    // Don't save splitter, always make as small as possible
+    m_windowInfo.restore();
     ui->splitter->setStretchFactor(1, 1);
     ui->splitter->setSizes(QList<int>() << ui->treeFolders->minimumSize().width());
     m_tree = new GGMediaTreeModel(mgm, this);
@@ -113,13 +113,26 @@ void GGMediaManagerDialog::accept()
 {
     QModelIndex idx = ui->lstMedia->currentIndex();
     m_acceptedSelection = ui->lstMedia->model()->data(idx, GGMediaTreeModel::IdRole).toString();
+    m_windowInfo.backup();
     QDialog::accept();
+}
+
+void GGMediaManagerDialog::reject()
+{
+    m_windowInfo.backup();
+    QDialog::reject();
 }
 
 int GGMediaManagerDialog::requestMedia()
 {
     m_requestingMedia = true;
     return exec();
+}
+
+void GGMediaManagerDialog::closeEvent(QCloseEvent *event)
+{
+    m_windowInfo.backup();
+    event->accept();
 }
 
 void GGMediaManagerDialog::treeItemSelected(QModelIndex idx)

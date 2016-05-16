@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QMap>
+#include <utils/ggglobaluserinfo.h>
 
 #include <gg_definitions.h>
 
@@ -105,6 +106,7 @@ private:
     GGSearchDialog *m_searchDlg;
     GGSceneTreeModel *m_sceneTree;
     QMap<GG::SceneID, GGGraphPanel *> m_openScenes;
+    GGWindowHelper m_windowInfo;
 };
 
 #endif // GGMAINWINDOW_H

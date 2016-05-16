@@ -3,6 +3,7 @@
 
 #include <QDialog>
 #include <QAbstractItemModel>
+#include <utils/ggglobaluserinfo.h>
 
 namespace Ui {
 class GGMediaManagerDialog;
@@ -26,7 +27,11 @@ public slots:
     void setSelectedDirectory(const QString &dir);
     void expandAll();
     void accept();
+    void reject();
     int requestMedia();
+
+protected:
+    void closeEvent(QCloseEvent *event);
 
 private slots:
     void treeItemSelected(QModelIndex idx);
@@ -51,6 +56,8 @@ private:
     QString m_initSelection;
     QString m_acceptedSelection;
     bool m_requestingMedia;
+
+    GGWindowHelper m_windowInfo;
 };
 
 #endif // GGMEDIAMANAGERDIALOG_H

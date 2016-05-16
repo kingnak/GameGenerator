@@ -31,13 +31,15 @@
 #include <utils/ggtrasher.h>
 #include <ui/dialogs/ggstyledialog.h>
 #include <style/ggabstractstyler.h>
+#include <utils/ggglobaluserinfo.h>
 
 GGMainWindow::GGMainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::GGMainWindow),
     m_project(NULL),
     m_viewModel(NULL),
-    m_searchDlg(NULL)
+    m_searchDlg(NULL),
+    m_windowInfo(this, "MainWindow")
 {
     ui->setupUi(this);
 
@@ -47,6 +49,10 @@ GGMainWindow::GGMainWindow(QWidget *parent) :
     ui->dckSearchResults->setVisible(false);
     connect(ui->wgtSearchResults, SIGNAL(requestNewSearch()), this, SLOT(showSearchDialog()));
     connect(ui->wgtSearchResults, SIGNAL(highlightPage(GG::PageID)), this, SLOT(highlightPage(GG::PageID)));
+
+    m_windowInfo.addSplitter(ui->splitter);
+    m_windowInfo.addSplitter(ui->splitter_2);
+    m_windowInfo.restore();
 
     m_ctrl = new GGUIController(this);
     ui->wgtPageContent->setController(m_ctrl);
@@ -482,6 +488,7 @@ void GGMainWindow::showStartPage()
 void GGMainWindow::closeEvent(QCloseEvent *event)
 {
     if (closeProject()) {
+        m_windowInfo.backup();
         event->accept();
     } else {
         event->ignore();

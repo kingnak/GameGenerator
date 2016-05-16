@@ -3,6 +3,7 @@
 
 #include <QDialog>
 #include <model/ggconnectionslot.h>
+#include <utils/ggglobaluserinfo.h>
 
 class GGEditModel;
 class GGPage;
@@ -29,7 +30,11 @@ public:
     GGCommandStack *getExecutedCommands();
 
 public slots:
+    void accept();
     void reject();
+
+protected:
+    void closeEvent(QCloseEvent *event);
 
 private slots:
     void addLink(QRect rect);
@@ -47,6 +52,8 @@ private:
     GGMappedContentPage *m_page;
     GGMappingScene *m_scene;
     GGMappingUIController *m_ctrl;
+
+    GGWindowHelper m_windowInfo;
 };
 
 #endif // GGEDITCONTENTMAPPINGDIALOG_H

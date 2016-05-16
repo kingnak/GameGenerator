@@ -85,7 +85,8 @@ SOURCES += \
     ui/dialogs/ggedittextdialog.cpp \
     ui/components/ggstyledtexteditorwidget.cpp \
     ui/panes/ggentryactioneditorpane.cpp \
-    ui/panes/ggeditcaptionpane.cpp
+    ui/panes/ggeditcaptionpane.cpp \
+    utils/ggglobaluserinfo.cpp
 
 HEADERS += \
     model/ggeditmodel.h \
@@ -170,7 +171,8 @@ HEADERS += \
     ui/dialogs/ggedittextdialog.h \
     ui/components/ggstyledtexteditorwidget.h \
     ui/panes/ggentryactioneditorpane.h \
-    ui/panes/ggeditcaptionpane.h
+    ui/panes/ggeditcaptionpane.h \
+    utils/ggglobaluserinfo.h
 unix {
     target.path = /usr/lib
     INSTALLS += target

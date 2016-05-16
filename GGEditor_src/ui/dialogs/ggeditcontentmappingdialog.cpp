@@ -1,6 +1,7 @@
 #include "ggeditcontentmappingdialog.h"
 #include "ui_ggeditcontentmappingdialog.h"
 #include <QAction>
+#include <QCloseEvent>
 #include <model/ggeditmodel.h>
 #include <model/ggpage.h>
 #include <model/gglink.h>
@@ -11,9 +12,14 @@
 GGEditContentMappingDialog::GGEditContentMappingDialog(GGEditModel *model, QWidget *parent) :
     QDialog(parent, Qt::WindowTitleHint | Qt::WindowSystemMenuHint | Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint),
     ui(new Ui::GGEditContentMappingDialog),
-    m_page(NULL)
+    m_page(NULL),
+    m_windowInfo(this, "MappingEditor")
 {
     ui->setupUi(this);
+
+    m_windowInfo.addSplitter(ui->splitter);
+    m_windowInfo.restore();
+
     m_scene = new GGMappingScene(this);
     ui->graphicsView->setScene(m_scene);
     m_ctrl = new GGMappingUIController(model, this);
@@ -61,12 +67,25 @@ GGCommandStack *GGEditContentMappingDialog::getExecutedCommands()
     return m_ctrl->getCommandStack();
 }
 
+void GGEditContentMappingDialog::accept()
+{
+    m_windowInfo.backup();
+    QDialog::accept();
+}
+
 void GGEditContentMappingDialog::reject()
 {
     disconnect(this, SLOT(updatePage(GGPage*)));
     m_ctrl->undoAll();
+    m_windowInfo.backup();
 
     QDialog::reject();
+}
+
+void GGEditContentMappingDialog::closeEvent(QCloseEvent *event)
+{
+    m_windowInfo.backup();
+    event->accept();
 }
 
 void GGEditContentMappingDialog::addLink(QRect rect)

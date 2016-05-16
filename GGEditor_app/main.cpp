@@ -1,6 +1,10 @@
 #include "ggmainwindow.h"
 #include <QApplication>
+#include <QStandardPaths>
+#include <utils/ggglobaluserinfo.h>
 #include <utils/ggtrasher.h>
+#include <io/ggxmlunserializer.h>
+#include <io/ggxmlserializer.h>
 
 #ifdef Q_OS_WIN
 #include <utils/ggwintrasher.h>
@@ -101,6 +105,22 @@ int main(int argc, char *argv[])
     GGTrasher::setTrasher(&winTrash);
 #endif
 
+    QDir dataDir(QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation));
+    dataDir.mkpath(".");
+    QString globUserData = dataDir.absoluteFilePath("userData.dat");
+
+    {
+        QFile f(globUserData);
+        if (f.open(QIODevice::ReadOnly)) {
+            //GGXmlUnserializer x()
+            QDataStream s(&f);
+            QVariant v;
+            s >> v;
+            v >> GGGlobalUserInfo::instance();
+        }
+        f.close();
+    }
+
     GGMainWindow w;
     w.show();
 
@@ -112,5 +132,17 @@ int main(int argc, char *argv[])
     mediaTest();
 #endif
 
-    return a.exec();
+    int ret = a.exec();
+
+    {
+        QFile f(globUserData);
+        if (f.open(QIODevice::WriteOnly)) {
+            QDataStream s(&f);
+            QVariant v;
+            v << GGGlobalUserInfo::instance();
+            s << v;
+        }
+    }
+
+    return ret;
 }
