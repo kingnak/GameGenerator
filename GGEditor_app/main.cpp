@@ -3,8 +3,7 @@
 #include <QStandardPaths>
 #include <utils/ggglobaluserinfo.h>
 #include <utils/ggtrasher.h>
-#include <io/ggxmlunserializer.h>
-#include <io/ggxmlserializer.h>
+#include <io/ggglobalsettingsserializer.h>
 
 #ifdef Q_OS_WIN
 #include <utils/ggwintrasher.h>
@@ -107,16 +106,19 @@ int main(int argc, char *argv[])
 
     QDir dataDir(QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation));
     dataDir.mkpath(".");
-    QString globUserData = dataDir.absoluteFilePath("userData.dat");
+    QString globUserData = dataDir.absoluteFilePath("userData.xml");
 
     {
         QFile f(globUserData);
         if (f.open(QIODevice::ReadOnly)) {
-            //GGXmlUnserializer x()
+            GGGlobalSettingsSerializer ser;
+            ser.load(&f, &GGGlobalUserInfo::instance());
+            /*
             QDataStream s(&f);
             QVariant v;
             s >> v;
             v >> GGGlobalUserInfo::instance();
+            */
         }
         f.close();
     }
@@ -137,10 +139,14 @@ int main(int argc, char *argv[])
     {
         QFile f(globUserData);
         if (f.open(QIODevice::WriteOnly)) {
+            GGGlobalSettingsSerializer ser;
+            ser.save(&f, &GGGlobalUserInfo::instance());
+            /*
             QDataStream s(&f);
             QVariant v;
             v << GGGlobalUserInfo::instance();
             s << v;
+            */
         }
     }
 

@@ -86,7 +86,8 @@ SOURCES += \
     ui/components/ggstyledtexteditorwidget.cpp \
     ui/panes/ggentryactioneditorpane.cpp \
     ui/panes/ggeditcaptionpane.cpp \
-    utils/ggglobaluserinfo.cpp
+    utils/ggglobaluserinfo.cpp \
+    io/ggglobalsettingsserializer.cpp
 
 HEADERS += \
     model/ggeditmodel.h \
@@ -172,7 +173,8 @@ HEADERS += \
     ui/components/ggstyledtexteditorwidget.h \
     ui/panes/ggentryactioneditorpane.h \
     ui/panes/ggeditcaptionpane.h \
-    utils/ggglobaluserinfo.h
+    utils/ggglobaluserinfo.h \
+    io/ggglobalsettingsserializer.h
 unix {
     target.path = /usr/lib
     INSTALLS += target
