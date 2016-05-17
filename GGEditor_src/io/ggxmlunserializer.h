@@ -26,7 +26,6 @@ class GGDefaultXmlUnserializationHandler : public GGXmlUnserializerHandler
 public:
     virtual HandleType handleElement(QString &name, QVariant &data);
     void addListType(const QString &name);
-    void setRootElement(const QString &name);
     QVariantMap getDocument() const;
 
 protected:
@@ -39,7 +38,6 @@ protected:
 
 private:
     QStringList m_listTypes;
-    QString m_root;
     QVariantMap m_doc;
 };
 

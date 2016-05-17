@@ -31,11 +31,17 @@ bool GGGlobalSettingsSerializer::load(QIODevice *dev, GGGlobalUserInfo *info)
     GGDefaultXmlUnserializationHandler handler;
     handler.addListType("window");
     handler.addListType("splitter");
-    handler.setRootElement("GGSettings");
     GGXmlUnserializer ser(&handler);
     bool ret = ser.load(dev);
     if (!ret) return false;
+
     QVariantMap m = handler.getDocument();
+    if (!m.contains("GGSettings")) {
+        qDebug("Global settings has no GGSettings element");
+        return false;
+    }
+
+    m = m["GGSettings"].value<QVariantMap>();
     if (m.contains("version")) {
         quint32 v = GGUtilities::stringToVersion(m["version"].toString());
         if (v != GGIOFactory::FILE_VERSION) {

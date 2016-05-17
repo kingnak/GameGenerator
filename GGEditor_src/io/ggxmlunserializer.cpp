@@ -8,7 +8,7 @@ GGXmlUnserializerHandler::HandleType GGDefaultXmlUnserializationHandler::handleE
     QVariantMap map;
     data >> map;
 
-    if (name == m_root) {
+    if (name == " ROOT ") {
         m_doc = map;
         return Pop;
     }
@@ -21,11 +21,6 @@ GGXmlUnserializerHandler::HandleType GGDefaultXmlUnserializationHandler::handleE
 void GGDefaultXmlUnserializationHandler::addListType(const QString &name)
 {
     m_listTypes << name;
-}
-
-void GGDefaultXmlUnserializationHandler::setRootElement(const QString &name)
-{
-    m_root = name;
 }
 
 QVariantMap GGDefaultXmlUnserializationHandler::getDocument() const
