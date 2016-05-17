@@ -49,6 +49,9 @@ public:
 
     virtual void synchronizeNextMediaId();
 
+    QString getMediaSourceDir() const;
+    void setMediaSourceDir(const QString &mediaSourceDir);
+
 protected:
     QString toManagedPath(const QString &file, bool verifyExists = true) const;
     virtual QString getCheckInPath(const QString &file);
@@ -76,6 +79,7 @@ protected:
     QMap<QString, QString> m_id2path;
     QMap<QString, QString> m_path2id;
     QSet<QString> m_dirs;
+    QString m_mediaSourceDir;
 
     quint32 m_nextMediaId;
     static const quint32 INVALID_MEDIA_ID = 0;

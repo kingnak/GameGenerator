@@ -300,6 +300,16 @@ void GGMediaManager::synchDir(QDir dir)
     }
 }
 
+QString GGMediaManager::getMediaSourceDir() const
+{
+    return m_mediaSourceDir;
+}
+
+void GGMediaManager::setMediaSourceDir(const QString &mediaSourceDir)
+{
+    m_mediaSourceDir = mediaSourceDir;
+}
+
 QStringList GGMediaManager::getDefaultMediaPaths()
 {
     return QStringList() << PATH_IMAGE << PATH_AUDIO << PATH_VIDEO;

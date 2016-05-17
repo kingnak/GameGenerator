@@ -224,11 +224,19 @@ void GGMediaManagerDialog::on_btnAdd_clicked()
     if (mt == GGMediaManager::Video) selected = filters[1];
     if (mt == GGMediaManager::Audio) selected = filters[2];
 
-    QStringList files = QFileDialog::getOpenFileNames(this, "Open File", QString::null, filters.join(";;"), &selected);
+    QString openDir = m_tree->manager()->getMediaSourceDir();
+    if (openDir.isEmpty()) {
+        openDir = QDir::homePath();
+    }
+    QStringList files = QFileDialog::getOpenFileNames(this, "Open File", openDir, filters.join(";;"), &selected);
     QStringList err;
     foreach (QString f, files) {
         QString id = m_tree->manager()->checkIn(m_tree->manager()->model()->getScene(sid), f);
         if (id.isNull()) err << f;
+
+        // Update open dir path
+        QFileInfo fi(f);
+        m_tree->manager()->setMediaSourceDir(fi.absolutePath());
     }
 
     if (err.size() > 0) {

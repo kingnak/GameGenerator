@@ -87,6 +87,10 @@ bool GGBasicProjectUnserializer::unserializeProject(QVariant project)
         ok &= unserializeMedia(v);
     }
 
+    QString mediaSource;
+    map["mediaSourceDir"] >> mediaSource;
+    m_project->mediaManager()->setMediaSourceDir(mediaSource);
+
     QVariant bs;
     map["basicStyle"] >> bs;
     GGBasicStyle style;
