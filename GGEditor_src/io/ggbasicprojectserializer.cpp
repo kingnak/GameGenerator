@@ -241,7 +241,7 @@ bool GGBasicProjectSerializer::serializeContent(QVariant &v, GGContentElement *e
     QVariantMap m;
     if (GGImageContent *ic = dynamic_cast<GGImageContent*>(elem)) {
         m["type"] << QString("image");
-        m["media"] << ic->imageFilePath();
+        m["file"] << ic->imageFilePath();
         m_processor->processMediaRef(m["media"]);
     } else if (GGTextContent *tc = dynamic_cast<GGTextContent*>(elem)) {
         m["type"] << QString("text");

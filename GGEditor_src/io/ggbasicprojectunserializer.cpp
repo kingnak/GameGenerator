@@ -397,7 +397,7 @@ bool GGBasicProjectUnserializer::unserializeContent(QVariant data, GGContentElem
     if (type == "image") {
         QString media;
         if (!m_processor->processMediaRef(map["media"])) return false;
-        map["media"] >> media;
+        map["file"] >> media;
         content = new GGImageContent;
         static_cast<GGImageContent*> (content)->setImageFilePath(media);
     } else if (type == "text") {
