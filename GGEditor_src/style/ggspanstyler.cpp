@@ -43,8 +43,6 @@ QTextDocument *GGSpanStyler::styleString(const QString &doc) const
         QXmlInputSource input;
         input.setData("<root>"+doc+"</root>");
         reader.parse(&input);
-    } else {
-        cur.insertText(" ");
     }
     return d;
 }

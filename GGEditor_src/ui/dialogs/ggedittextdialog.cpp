@@ -47,6 +47,9 @@ void GGEditTextDialog::setFormattedDocument(const QString &doc)
 {
     if (!m_styler) return;
     ui->txtText->setDocument(m_styler->styleString(doc));
+    QTextCursor c = ui->txtText->textCursor();
+    c.movePosition(QTextCursor::Start);
+    ui->txtText->setTextCursor(c);
     ui->txtText->document()->setModified(false);
 }
 
