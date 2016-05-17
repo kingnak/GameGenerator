@@ -1,6 +1,7 @@
 #include "ggedittextdialog.h"
 #include "ui_ggedittextdialog.h"
 #include <style/ggabstractstyler.h>
+#include <QMimeData>
 
 Q_DECLARE_METATYPE(QTextCharFormat)
 
@@ -118,4 +119,11 @@ void GGEditTextDialog::doApplyStyle(QTextCharFormat f)
         c.movePosition(QTextCursor::EndOfWord, QTextCursor::KeepAnchor);
     }
     c.mergeCharFormat(f);
+}
+
+void PlainPasteTextEdit::insertFromMimeData(const QMimeData *source)
+{
+    if (source->hasText() && canInsertFromMimeData(source)) {
+        insertPlainText(source->text());
+    }
 }

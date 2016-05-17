@@ -4,6 +4,7 @@
 #include <QDialog>
 #include <QMap>
 #include <QTextCharFormat>
+#include <QTextEdit>
 
 class GGAbstractStyler;
 class QTextDocument;
@@ -11,6 +12,13 @@ class QTextDocument;
 namespace Ui {
 class GGEditTextDialog;
 }
+
+class PlainPasteTextEdit : public QTextEdit {
+public:
+    PlainPasteTextEdit(QWidget *parent = 0) : QTextEdit(parent) {}
+protected:
+    void insertFromMimeData(const QMimeData *source);
+};
 
 class GGEditTextDialog : public QDialog
 {
