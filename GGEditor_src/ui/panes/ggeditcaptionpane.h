@@ -21,6 +21,7 @@ public:
 public slots:
     void setController(GGUIController *ctrl);
     void setPage(GGContentPage *page);
+    void startEditing();
 
 private slots:
     void captionUpdated(const QString &caption);

@@ -27,7 +27,7 @@ void GGStyledTextEditorWidget::setFormattedText(const QString &text)
     ui->txtText->setText(m_styler->previewText(text));
 }
 
-void GGStyledTextEditorWidget::on_btnEdit_clicked()
+void GGStyledTextEditorWidget::editText()
 {
     GGEditTextDialog dlg(this);
     dlg.setStyler(m_styler);
@@ -35,4 +35,9 @@ void GGStyledTextEditorWidget::on_btnEdit_clicked()
     if (dlg.exec() == QDialog::Accepted) {
         emit textChanged(dlg.getFormattedDocument());
     }
+}
+
+void GGStyledTextEditorWidget::on_btnEdit_clicked()
+{
+    editText();
 }

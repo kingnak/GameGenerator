@@ -21,6 +21,7 @@ public:
 
 public slots:
     void setFormattedText(const QString &text);
+    void editText();
 
 signals:
     void textChanged(const QString &text);

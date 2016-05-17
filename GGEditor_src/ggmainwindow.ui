@@ -209,8 +209,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>100</width>
-               <height>30</height>
+               <width>65</width>
+               <height>16</height>
               </rect>
              </property>
             </widget>
@@ -588,6 +588,38 @@
   <action name="action_About">
    <property name="text">
     <string>&amp;About</string>
+   </property>
+  </action>
+  <action name="actionRenamePage">
+   <property name="text">
+    <string>RenamePage</string>
+   </property>
+   <property name="shortcut">
+    <string>F2</string>
+   </property>
+  </action>
+  <action name="actionEditCaption">
+   <property name="text">
+    <string>EditCaption</string>
+   </property>
+   <property name="shortcut">
+    <string>F3</string>
+   </property>
+  </action>
+  <action name="actionEditContent">
+   <property name="text">
+    <string>EditContent</string>
+   </property>
+   <property name="shortcut">
+    <string>F4</string>
+   </property>
+  </action>
+  <action name="actionEditMapping">
+   <property name="text">
+    <string>EditMapping</string>
+   </property>
+   <property name="shortcut">
+    <string>F5</string>
    </property>
   </action>
  </widget>

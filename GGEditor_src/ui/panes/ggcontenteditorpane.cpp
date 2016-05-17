@@ -8,7 +8,8 @@
 
 GGContentEditorPane::GGContentEditorPane(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::GGContentEditorPane)
+    ui(new Ui::GGContentEditorPane),
+    m_page(NULL)
 {
     ui->setupUi(this);
 }
@@ -27,17 +28,23 @@ void GGContentEditorPane::setContentPage(GGContentPage *p)
 {
     m_page = p;
     QPixmap pix;
-    if (p->content())
+    if (p && p->content())
         pix = p->content()->preview(p->model()->mediaResolver(), ui->lblPreview->minimumSize());
     ui->lblPreview->setPixmap(pix);
 }
 
-void GGContentEditorPane::on_btnChange_clicked()
+void GGContentEditorPane::openContentEditor()
 {
+    if (!m_page) return;
     GGEditContentElementDialog dlg(this->m_ctrl->project()->mediaManager());
     dlg.setContentElement(m_page->content(), m_page->scene());
     if (dlg.exec() == QDialog::Accepted) {
         GGContentElement *e = dlg.getContentElement();
         m_ctrl->changeContentElement(m_page, e);
     }
+}
+
+void GGContentEditorPane::on_btnChange_clicked()
+{
+    openContentEditor();
 }

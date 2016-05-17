@@ -75,7 +75,17 @@ GGMainWindow::GGMainWindow(QWidget *parent) :
     connect(ui->actionOpen, SIGNAL(triggered(bool)), this, SLOT(openProject()));
     connect(ui->actionSave_as_type, SIGNAL(triggered(bool)), this, SLOT(saveProjectAsType()));
 
+    connect(ui->actionRenamePage, SIGNAL(triggered(bool)), ui->wgtPageContent, SLOT(editPageTitle()));
+    connect(ui->actionEditCaption, SIGNAL(triggered(bool)), ui->wgtPageContent, SLOT(editPageCaption()));
+    connect(ui->actionEditContent, SIGNAL(triggered(bool)), ui->wgtPageContent, SLOT(editPageContent()));
+    connect(ui->actionEditMapping, SIGNAL(triggered(bool)), ui->wgtPageContent, SLOT(editPageContentMap()));
+
     connect(this, SIGNAL(hasProject(bool)), ui->wgtSearchResults, SLOT(clearResults()));
+
+    this->addAction(ui->actionRenamePage);
+    this->addAction(ui->actionEditCaption);
+    this->addAction(ui->actionEditContent);
+    this->addAction(ui->actionEditMapping);
 
     // Group Click Mode actions
     m_createActions = new QActionGroup(this);
@@ -203,6 +213,7 @@ bool GGMainWindow::closeProject()
         ui->tabScenes->removeTab(0);
 
     m_openScenes.clear();
+    ui->wgtPageContent->clearPage();
     m_sceneTree->setModel(NULL);
     m_ctrl->setProject(NULL, NULL);
     delete m_viewModel;
@@ -338,6 +349,7 @@ void GGMainWindow::selectPage(GGViewPage *page)
         ui->wgtPageContent->displayPage(page->page());
         ui->stkDetailEdits->setCurrentWidget(ui->pagePage);
     } else {
+        ui->wgtPageContent->clearPage();
         ui->stkDetailEdits->setCurrentWidget(ui->pageEmpty);
     }
 }
@@ -346,11 +358,13 @@ void GGMainWindow::selectConnection(GGViewConnection *conn)
 {
     setPointerMode();
     ui->stkDetailEdits->setCurrentWidget(ui->pageLink);
+    ui->wgtPageContent->clearPage();
 }
 
 void GGMainWindow::clearSelection()
 {
     ui->stkDetailEdits->setCurrentWidget(ui->pageEmpty);
+    ui->wgtPageContent->clearPage();
 }
 
 void GGMainWindow::showError(QString err)
@@ -456,6 +470,7 @@ void GGMainWindow::setCreationMode()
 void GGMainWindow::handleConnectDirect(GGPage *page, const GGConnectionSlot &slot)
 {
     ui->stkDetailEdits->setCurrentWidget(ui->pageLinkDirect);
+    ui->wgtPageContent->clearPage();
 }
 
 void GGMainWindow::showVariables()

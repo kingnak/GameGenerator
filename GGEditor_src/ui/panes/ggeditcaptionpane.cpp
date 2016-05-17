@@ -9,7 +9,8 @@
 GGEditCaptionPane::GGEditCaptionPane(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::GGEditCaptionPane),
-    m_ctrl(NULL)
+    m_ctrl(NULL),
+    m_page(NULL)
 {
     ui->setupUi(this);
     connect(ui->txtCaption, SIGNAL(textChanged(QString)), this, SLOT(captionUpdated(QString)));
@@ -32,6 +33,12 @@ void GGEditCaptionPane::setPage(GGContentPage *page)
         ui->txtCaption->setStyler(m_ctrl->model()->editModel()->getStyler());
         ui->txtCaption->setFormattedText(page->caption());
     }
+}
+
+void GGEditCaptionPane::startEditing()
+{
+    if (!m_page) return;
+    ui->txtCaption->editText();
 }
 
 void GGEditCaptionPane::captionUpdated(const QString &caption)

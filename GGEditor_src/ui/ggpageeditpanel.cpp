@@ -40,6 +40,11 @@ GGPage *GGPageEditPanel::displayedPage() const
     return m_page;
 }
 
+void GGPageEditPanel::clearPage()
+{
+    displayPage(NULL);
+}
+
 void GGPageEditPanel::displayPage(GGPage *page, GGAbstractModel::PageSections updateSections)
 {
     if (page != m_page) {
@@ -58,9 +63,34 @@ void GGPageEditPanel::displayPage(GGPage *page, GGAbstractModel::PageSections up
     setCaption(updateSections);
     setStart(updateSections);
     setEnd(updateSections);
+    setContent(updateSections);
     setCondition(updateSections);
     setAction(updateSections);
     setDecision(updateSections);
+    setMappedContent(updateSections);
+}
+
+void GGPageEditPanel::editPageTitle()
+{
+    if (!m_page) return;
+    ui->txtName->setFocus();
+    ui->txtName->selectAll();
+}
+
+void GGPageEditPanel::editPageCaption()
+{
+    ui->wgtCaption->startEditing();
+}
+
+void GGPageEditPanel::editPageContent()
+{
+    ui->wgtContent->openContentEditor();
+    ui->wgtMapping->openContentEditor();
+}
+
+void GGPageEditPanel::editPageContentMap()
+{
+    ui->wgtMapping->openMappingEditor();
 }
 
 void GGPageEditPanel::pageUpdated(GGPage *page, GGAbstractModel::PageSections sections)
@@ -91,9 +121,11 @@ void GGPageEditPanel::setCommon(GGAbstractModel::PageSections updateSections)
 {
     // No performance issue yet
     Q_UNUSED(updateSections)
-
-    ui->txtName->setText(m_page->name());
-    //    ui->txtScene->setText(m_page->sceneName());
+    if (m_page) {
+        ui->txtName->setText(m_page->name());
+    } else {
+        ui->txtName->clear();
+    }
 }
 
 void GGPageEditPanel::setEntryAction(GGAbstractModel::PageSections updateSections)
@@ -103,6 +135,8 @@ void GGPageEditPanel::setEntryAction(GGAbstractModel::PageSections updateSection
             ui->wgtEntryAction->setPage(eap);
 
         ui->grpEntryAction->setVisible(true);
+    } else {
+        ui->wgtEntryAction->setPage(NULL);
     }
 }
 
@@ -113,19 +147,21 @@ void GGPageEditPanel::setCaption(GGAbstractModel::PageSections updateSections)
             ui->wgtCaption->setPage(cp);
 
         ui->grpCaption->setVisible(true);
+    } else {
+        ui->wgtCaption->setPage(NULL);
     }
 }
 
 void GGPageEditPanel::setStart(GGAbstractModel::PageSections updateSections)
 {
-    if (GG::as<GGStartPage>(m_page))
-        setContent(updateSections);
+    Q_UNUSED(updateSections);
+    //if (GG::as<GGStartPage>(m_page))
 }
 
 void GGPageEditPanel::setEnd(GGAbstractModel::PageSections updateSections)
 {
-    if (GG::as<GGEndPage>(m_page))
-        setContent(updateSections);
+    Q_UNUSED(updateSections);
+    //if (GG::as<GGEndPage>(m_page))
 }
 
 void GGPageEditPanel::setCondition(GGAbstractModel::PageSections updateSections)
@@ -135,6 +171,8 @@ void GGPageEditPanel::setCondition(GGAbstractModel::PageSections updateSections)
             ui->wgtCondition->setPage(cp);
 
         ui->grpCondition->setVisible(true);
+    } else {
+        ui->wgtCondition->setPage(NULL);
     }
 }
 
@@ -146,6 +184,8 @@ void GGPageEditPanel::setAction(GGAbstractModel::PageSections updateSections)
             ui->wgtAction->setPage(ap);
 
         ui->grpAction->setVisible(true);
+    } else {
+        ui->wgtAction->setPage(NULL);
     }
 }
 
@@ -153,20 +193,25 @@ void GGPageEditPanel::setDecision(GGAbstractModel::PageSections updateSections)
 {
 
     if (GGDecisionPage *dp = GG::as<GGDecisionPage>(m_page)) {
-        setMappedContent(updateSections);
         if (updateSections.testFlag(GGAbstractModel::DecisionLinks))
             ui->wgtDecision->setPage(dp);
 
         ui->grpDecision->setVisible(true);
+    } else {
+        ui->wgtDecision->setPage(NULL);
     }
 }
 
 void GGPageEditPanel::setContent(GGAbstractModel::PageSections updateSections)
 {
-    if (GGContentPage *c = GG::as<GGContentPage>(m_page)) {
+    // Mapped content is also a content, but that we don't need here
+    GGContentPage *c = GG::as<GGContentPage>(m_page);
+    if (c && !GG::as<GGMappedContentPage>(m_page)) {
         if (updateSections.testFlag(GGAbstractModel::Content))
             ui->wgtContent->setContentPage(c);
         ui->grpContent->setVisible(true);
+    } else {
+        ui->wgtContent->setContentPage(NULL);
     }
 }
 
@@ -179,5 +224,7 @@ void GGPageEditPanel::setMappedContent(GGAbstractModel::PageSections updateSecti
             ui->wgtMapping->setMappedPage(mcp);
         }
         ui->grpMapping->setVisible(true);
+    } else {
+        ui->wgtMapping->setMappedPage(NULL);
     }
 }

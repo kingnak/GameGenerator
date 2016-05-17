@@ -12,7 +12,8 @@
 GGMappingEditorPane::GGMappingEditorPane(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::GGMappingEditorPane),
-    m_ctrl(NULL)
+    m_ctrl(NULL),
+    m_page(NULL)
 {
     ui->setupUi(this);
     connect(ui->wgtMappedConnections, SIGNAL(connectConnection(GGPage*,GGConnectionSlot)), this, SLOT(connectLink(GGPage*,GGConnectionSlot)));
@@ -35,11 +36,37 @@ void GGMappingEditorPane::setMappedPage(GGMappedContentPage *p)
 {
     m_page = p;
     QPixmap pix;
-    if (p->content())
-        pix = p->content()->preview(p->model()->mediaResolver(), ui->lblPreview->minimumSize());
+    QList<GGConnectionSlot> slts;
+    if (p) {
+        if (p->content())
+            pix = p->content()->preview(p->model()->mediaResolver(), ui->lblPreview->minimumSize());
+        ui->wgtMappedConnections->setConnections(p, slts);
+        slts = GGConnectionSlot::enumerateConnections(p, GGConnectionSlot::MappedConnection);
+    }
+    ui->wgtMappedConnections->setConnections(NULL, slts);
     ui->lblPreview->setPixmap(pix);
-    QList<GGConnectionSlot> slts = GGConnectionSlot::enumerateConnections(p, GGConnectionSlot::MappedConnection);
-    ui->wgtMappedConnections->setConnections(p, slts);
+}
+
+void GGMappingEditorPane::openContentEditor()
+{
+    if (!m_page) return;
+    GGEditContentElementDialog dlg(m_ctrl->project()->mediaManager());
+    dlg.setContentElement(m_page->content(), m_page->scene());
+    if (dlg.exec() == QDialog::Accepted) {
+        GGContentElement *e = dlg.getContentElement();
+        m_ctrl->changeContentElement(m_page, e);
+    }
+}
+
+void GGMappingEditorPane::openMappingEditor()
+{
+    if (!m_page) return;
+    GGEditContentMappingDialog dlg(m_ctrl->model()->editModel());
+    dlg.setMappedPage(m_page);
+    int res = dlg.exec();
+    if (res == QDialog::Accepted) {
+        m_ctrl->applySubcommandsAsSingle(dlg.getExecutedCommands());
+    }
 }
 
 void GGMappingEditorPane::updateLinkCaption(GGPage *, const GGConnectionSlot &slt, const QString &cap)
@@ -68,22 +95,12 @@ void GGMappingEditorPane::connectLink(GGPage *, const GGConnectionSlot &slt)
 
 void GGMappingEditorPane::on_btnChangeContent_clicked()
 {
-    GGEditContentElementDialog dlg(m_ctrl->project()->mediaManager());
-    dlg.setContentElement(m_page->content(), m_page->scene());
-    if (dlg.exec() == QDialog::Accepted) {
-        GGContentElement *e = dlg.getContentElement();
-        m_ctrl->changeContentElement(m_page, e);
-    }
+    openContentEditor();
 }
 
 void GGMappingEditorPane::on_btnChangeMapping_clicked()
 {
-    GGEditContentMappingDialog dlg(m_ctrl->model()->editModel());
-    dlg.setMappedPage(m_page);
-    int res = dlg.exec();
-    if (res == QDialog::Accepted) {
-        m_ctrl->applySubcommandsAsSingle(dlg.getExecutedCommands());
-    }
+    openMappingEditor();
 }
 
 void GGMappingEditorPane::onUpdateCaption(const QString &caption)

@@ -22,6 +22,7 @@ public:
 
 public slots:
     void setContentPage(GGContentPage *p);
+    void openContentEditor();
 
 private slots:
     void on_btnChange_clicked();

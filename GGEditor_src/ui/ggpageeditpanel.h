@@ -23,7 +23,12 @@ public:
     GGPage *displayedPage() const;
 
 public slots:
+    void clearPage();
     void displayPage(GGPage *page, GGAbstractModel::PageSections updateSections = GGAbstractModel::AllSections);
+    void editPageTitle();
+    void editPageCaption();
+    void editPageContent();
+    void editPageContentMap();
 
 private slots:
     void pageUpdated(GGPage *page, GGAbstractModel::PageSections sections);

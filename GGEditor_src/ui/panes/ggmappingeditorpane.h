@@ -25,6 +25,8 @@ public:
 
 public slots:
     void setMappedPage(GGMappedContentPage *p);
+    void openContentEditor();
+    void openMappingEditor();
 
 private slots:
     void updateLinkCaption(GGPage *, const GGConnectionSlot &slt, const QString &cap);

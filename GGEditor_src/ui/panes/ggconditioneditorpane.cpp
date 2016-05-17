@@ -29,8 +29,13 @@ void GGConditionEditorPane::setPage(GGConditionPage *page)
     m_page = page;
     ui->wgtTrue->setConnection(page, GGConnectionSlot::TrueConnection);
     ui->wgtFalse->setConnection(page, GGConnectionSlot::FalseConnection);
-    ui->wgtCondition->setVariables(page->model()->variableNames());
-    ui->wgtCondition->setCondition(page->getCondition());
+    if (page) {
+        ui->wgtCondition->setVariables(page->model()->variableNames());
+        ui->wgtCondition->setCondition(page->getCondition());
+    } else {
+        ui->wgtCondition->setVariables(QStringList());
+        ui->wgtCondition->setCondition(GGCondition());
+    }
 }
 
 void GGConditionEditorPane::connectPage()
