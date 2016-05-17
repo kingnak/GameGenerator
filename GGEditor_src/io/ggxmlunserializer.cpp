@@ -63,10 +63,29 @@ GGXmlUnserializerHandler::HandleType GGDefaultXmlUnserializationHandler::handleC
     return Pop;
 }
 
+GGXmlUnserializerHandler::HandleType GGDefaultXmlUnserializationHandler::handlePoint(QVariantMap &map, QString &name, QVariant &data)
+{
+    Q_UNUSED(name);
+    if (map.size() == 2 && map.contains("x") && map.contains("y")) {
+        // Assume point
+        bool ok;
+        int x = map["x"].toInt(&ok);
+        if (!ok) return Error;
+        int y = map["y"].toInt(&ok);
+        if (!ok) return Error;
+
+        QPoint p(x,y);
+        data = p;
+        return Push;
+    }
+    return Pop;
+}
+
 GGXmlUnserializerHandler::HandleType GGDefaultXmlUnserializationHandler::handleRect(QVariantMap &map, QString &name, QVariant &data)
 {
     // Fix Rects
     //if (name == "rect" && map.size() == 4) {
+    Q_UNUSED(name);
     if (map.size() == 4 && map.contains("x") && map.contains("y") && map.contains("w") && map.contains("h")) {
         // Assume rect
         bool ok;

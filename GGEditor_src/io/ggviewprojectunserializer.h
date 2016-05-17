@@ -17,6 +17,7 @@ public:
     GGViewModel *loadedViewModel();
     GGViewModel *takeViewModel();
 
+    bool unserializeScene(QVariant scene);
     bool unserializePage(QVariant page);
     bool unserializeConnection(QVariant connection);
     bool unserializeForeignPage(QVariant page);
@@ -33,6 +34,7 @@ protected:
     typedef QList<SceneRectPair> SceneRectPairList;
     QMap<GG::PageID, SceneRectPairList> m_vpMap;
     QMap<GG::ConnectionID, QList<GG::SceneID> > m_vcMap;
+    QMap<GG::SceneID, QPoint> m_scenePos;
 };
 
 #endif // GGVIEWPROJECTUNSERIALIZER_H

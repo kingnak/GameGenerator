@@ -16,6 +16,7 @@ GGSimpleXmlUnserializationReader::GGSimpleXmlUnserializationReader()
     addListType("map");
     addListType("decision");
     addListType("style");
+    addListType("openScene");
 }
 
 GGSimpleXmlUnserializationReader::~GGSimpleXmlUnserializationReader()

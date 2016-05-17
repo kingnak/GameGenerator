@@ -4,6 +4,7 @@
 #include <model/ggruntimeproject.h>
 #include <QDir>
 #include <io/ggiofactory.h>
+#include <gg_definitions.h>
 
 
 class GGEditModel;
@@ -22,12 +23,16 @@ public:
     GGIOFactory::SerializationType saveType() const;
     void setSaveType(GGIOFactory::SerializationType type);
 
+    QList<GG::SceneID> openScenes() const;
+    void setOpenScenes(const QList<GG::SceneID> &openScenes);
+
 private:
     GGEditModel *m_editModel;
     GGSceneMediaManager *m_manager;
     QDir m_basePath;
     QString m_fileName;
     GGIOFactory::SerializationType m_saveType;
+    QList<GG::SceneID> m_openScenes;
 };
 
 #endif // GGEDITPROJECT_H

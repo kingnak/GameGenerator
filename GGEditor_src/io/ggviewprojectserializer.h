@@ -17,6 +17,7 @@ public:
     virtual bool saveProject(GGEditProject *project, GGViewModel *viewModel);
 
 protected:
+    virtual bool injectSceneData(GGScene *scene, QVariantMap &v);
     virtual bool injectPageData(GGPage *page, QVariantMap &v);
     virtual bool injectConnectionData(GGConnection *connection, QVariantMap &v);
     virtual bool finalizeScene(GGScene *scene);

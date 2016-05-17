@@ -8,7 +8,6 @@
 #include <QPair>
 
 class GGUIController;
-class GGScene;
 class GGViewModel;
 class GGViewScene;
 class GGViewPage;

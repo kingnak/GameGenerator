@@ -90,6 +90,7 @@ bool GGBasicProjectSerializer::serializeProject(GGEditProject *project)
     m["media"] << mediaList;
 
     m["mediaSourceDir"] << project->mediaManager()->getMediaSourceDir();
+    m["openScene"] << project->openScenes();
 
     QVariant bs;
     ok &= this->serializeBasicStyle(bs, project->editModel()->getStyler()->basicStyle());

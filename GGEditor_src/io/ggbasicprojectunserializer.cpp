@@ -90,6 +90,9 @@ bool GGBasicProjectUnserializer::unserializeProject(QVariant project)
     QString mediaSource;
     map["mediaSourceDir"] >> mediaSource;
     m_project->mediaManager()->setMediaSourceDir(mediaSource);
+    QList<GG::SceneID> openScenes;
+    map["openScene"] >> openScenes;
+    m_project->setOpenScenes(openScenes);
 
     QVariant bs;
     map["basicStyle"] >> bs;

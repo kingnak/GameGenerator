@@ -7,6 +7,7 @@ class GGEditorView : public QGraphicsView
 {
 public:
     GGEditorView(QWidget *parent = 0);
+    QPoint getScenePosition() const;
 
 protected:
     //void mouseReleaseEvent(QMouseEvent *event);

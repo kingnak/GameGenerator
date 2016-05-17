@@ -2,6 +2,7 @@
 #include <io/ggserialization.hpp>
 #include <io/ggunserializationprocessor.h>
 #include <model/ggeditmodel.h>
+#include <model/ggscene.h>
 #include <viewmodel/ggviewmodel.h>
 #include <viewmodel/ggviewscene.h>
 #include <viewmodel/ggviewpage.h>
@@ -35,6 +36,20 @@ GGViewModel *GGViewProjectUnserializer::takeViewModel()
     GGViewModel *ret = m_viewModel;
     m_viewModel = NULL;
     return ret;
+}
+
+bool GGViewProjectUnserializer::unserializeScene(QVariant scene)
+{
+    bool ok = GGBasicProjectUnserializer::unserializeScene(scene);
+    if (!ok) return false;
+    QVariantMap map;
+    scene >> map;
+
+    QPoint p;
+    map["scenePosition"] >> p;
+    GG::SceneID sid = static_cast<GG::SceneID> (map["id"].toUInt(&ok));
+    m_scenePos[sid] = p;
+    return ok;
 }
 
 bool GGViewProjectUnserializer::unserializePage(QVariant page)
@@ -127,6 +142,7 @@ bool GGViewProjectUnserializer::finalizeUnserialization()
             delete vs;
             return false;
         }
+        vs->setLoadPosition(m_scenePos[sc->id()]);
     }
 
     // Now add viewpages

@@ -38,6 +38,11 @@ bool GGXmlSerializer::writeData(QXmlStreamWriter *writer, const QString &tag, co
             writeData(writer, tag, v);
         }
         writer->writeEndElement();
+    } else if (data.canConvert<QPoint>()) {
+        writer->writeStartElement(tag);
+        writer->writeAttribute("x", QString::number(data.value<QPoint>().x()));
+        writer->writeAttribute("y", QString::number(data.value<QPoint>().y()));
+        writer->writeEndElement();
     } else if (data.canConvert<QRect>()) {
         writer->writeStartElement(tag);
         writer->writeAttribute("x", QString::number(data.value<QRect>().x()));

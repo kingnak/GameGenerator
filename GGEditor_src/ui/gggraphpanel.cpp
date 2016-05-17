@@ -3,6 +3,7 @@
 #include <view/ggeditorscene.h>
 #include <view/ggeditorview.h>
 #include <view/gguicontroller.h>
+#include <viewmodel/ggviewscene.h>
 
 GGGraphPanel::GGGraphPanel(GGUIController *ctrl, GGViewScene *scene, QWidget *parent)
     : QWidget(parent)
@@ -13,4 +14,5 @@ GGGraphPanel::GGGraphPanel(GGUIController *ctrl, GGViewScene *scene, QWidget *pa
     m_editView->setScene(m_editScene);
     QHBoxLayout *l = new QHBoxLayout(this);
     l->addWidget(m_editView);
+    m_editView->centerOn(scene->loadPosition());
 }

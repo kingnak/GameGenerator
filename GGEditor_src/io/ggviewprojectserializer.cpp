@@ -7,6 +7,7 @@
 #include <model/ggpage.h>
 #include <model/ggconnection.h>
 #include <viewmodel/ggviewmodel.h>
+#include <viewmodel/ggviewscene.h>
 #include <viewmodel/ggviewpage.h>
 #include <viewmodel/ggviewconnection.h>
 
@@ -25,6 +26,13 @@ bool GGViewProjectSerializer::saveProject(GGEditProject *project, GGViewModel *v
     }
     m_viewModel = viewModel;
     return GGBasicProjectSerializer::saveProject(project);
+}
+
+bool GGViewProjectSerializer::injectSceneData(GGScene *scene, QVariantMap &v)
+{
+    GGViewScene *sc = m_viewModel->getViewSceneForScene(scene);
+    v["scenePosition"] << sc->loadPosition();
+    return true;
 }
 
 bool GGViewProjectSerializer::injectPageData(GGPage *page, QVariantMap &v)

@@ -52,3 +52,13 @@ void GGEditProject::setSaveType(GGIOFactory::SerializationType type)
     m_saveType = type;
 }
 
+QList<GG::SceneID> GGEditProject::openScenes() const
+{
+    return m_openScenes;
+}
+
+void GGEditProject::setOpenScenes(const QList<GG::SceneID> &openScenes)
+{
+    m_openScenes = openScenes;
+}
+

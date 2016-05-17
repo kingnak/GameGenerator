@@ -32,6 +32,7 @@ public:
 protected:
     HandleType handleText(QVariantMap &map, QString &name, QVariant &data);
     HandleType handleColor(QVariantMap &map, QString &name, QVariant &data);
+    HandleType handlePoint(QVariantMap &map, QString &name, QVariant &data);
     HandleType handleRect(QVariantMap &map, QString &name, QVariant &data);
     HandleType handleLists(QVariantMap &map, QString &name, QVariant &data);
     HandleType handleDefaults(QVariantMap &map, QString &name, QVariant &data);

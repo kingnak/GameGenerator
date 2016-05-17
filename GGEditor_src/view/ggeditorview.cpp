@@ -6,3 +6,8 @@ GGEditorView::GGEditorView(QWidget *parent)
 
 }
 
+QPoint GGEditorView::getScenePosition() const
+{
+    return this->sceneRect().center().toPoint();
+}
+

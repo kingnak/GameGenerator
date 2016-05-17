@@ -220,6 +220,12 @@ bool GGMainWindow::closeProject()
 
 void GGMainWindow::saveProject()
 {
+    // Update scene positions
+    foreach (GG::SceneID id, m_openScenes.keys()) {
+        m_viewModel->getViewSceneForScene(m_project->model()->getScene(id))->setLoadPosition(m_openScenes[id]->editorView()->getScenePosition());
+    }
+    m_project->setOpenScenes(m_openScenes.keys());
+
     QFile f(m_project->basePath().absoluteFilePath(m_project->fileName()) + "." + GGIOFactory::extensionForSerializationType(m_project->saveType()));
     f.open(QIODevice::WriteOnly);
     GGViewProjectSerializer *ser = GGIOFactory::viewSerializer(&f, m_project->saveType());
@@ -276,6 +282,13 @@ void GGMainWindow::openProject()
 
         m_ctrl->setProject(m_project, m_viewModel);
         connectModel();
+
+        foreach (GG::SceneID id, m_project->openScenes()) {
+            GGViewScene *sc = m_viewModel->getViewSceneForScene(m_project->model()->getScene(id));
+            if (sc) {
+                openSceneView(sc);
+            }
+        }
     }
 }
 
@@ -300,6 +313,7 @@ void GGMainWindow::closeSceneView(GGViewScene *scene)
     m_openScenes.remove(scene->scene()->id());
     if (p) {
         ui->tabScenes->removeTab(ui->tabScenes->indexOf(p));
+        scene->setLoadPosition(p->editorView()->getScenePosition());
         delete p;
     }
 }
@@ -505,11 +519,12 @@ void GGMainWindow::closeTab(int idx)
     }
 
     GGGraphPanel *p = qobject_cast<GGGraphPanel *> (ui->tabScenes->widget(idx));
-    if (p)
-        m_openScenes.remove(p->editorScene()->modelScene()->scene()->id());
-
-    ui->tabScenes->removeTab(idx);
-    delete p;
+    if (p) {
+        closeSceneView(p->editorScene()->modelScene());
+    } else {
+        ui->tabScenes->removeTab(idx);
+        delete p;
+    }
 
     if (ui->tabScenes->count() == 0) {
         showStartPage();
