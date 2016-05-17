@@ -9,6 +9,13 @@
 GGSimpleXmlUnserializationReader::GGSimpleXmlUnserializationReader()
     : m_builder(NULL)
 {
+    addListType("variable");
+    addListType("viewPage");
+    addListType("viewConnection");
+    addListType("media");
+    addListType("map");
+    addListType("decision");
+    addListType("style");
 }
 
 GGSimpleXmlUnserializationReader::~GGSimpleXmlUnserializationReader()
@@ -49,47 +56,8 @@ GGXmlUnserializerHandler::HandleType GGSimpleXmlUnserializationReader::handleEle
         return Pop;
     }
 
-    // Fix Rects
-    if (name == "rect" && m.size() == 4) {
-        // Assume x,y,w,h
-        bool ok;
-        int x = m["x"].toInt(&ok);
-        if (!ok) return Error;
-        int y = m["y"].toInt(&ok);
-        if (!ok) return Error;
-        int w = m["w"].toInt(&ok);
-        if (!ok) return Error;
-        int h = m["h"].toInt(&ok);
-        if (!ok) return Error;
-
-        QRect r(x,y,w,h);
-        data = r;
-        return Push;
-    }
-
-    // Fix Colors
-    if (m.size() == 1 && m.contains("rgb")) {
-        bool ok;
-        quint32 v = m["rgb"].toString().toUInt(&ok, 16);
-        if (!ok) return Error;
-        v &= 0xFFFFFF;
-        QColor c = QColor::fromRgb((QRgb) v);
-        data = QVariant::fromValue(c);
-        return Push;
-    }
-
-    // Set Text as only content
-    if (m.contains(" text ")) {
-        if (m.size() != 1) {
-            name = "Only text allowed as content";
-            return Error;
-        }
-        data = m[" text "];
-        return Push;
-    }
-
-    // Handle Lists
-    HandleType t = handleLists(name, data, m);
+    // Handle defaults
+    HandleType t = handleDefaults(m, name, data);
     if (t != Pop) return t;
 
     if (name == "project") {
@@ -152,37 +120,4 @@ GGXmlUnserializerHandler::HandleType GGSimpleXmlUnserializationReader::handleEle
     }
 
     return Push;
-}
-
-GGXmlUnserializerHandler::HandleType GGSimpleXmlUnserializationReader::handleLists(QString &name, QVariant &data, const QVariantMap &map)
-{
-    HandleType t = doHandleList("variable", name, data, map);
-    if (t != Pop) return t;
-    t = doHandleList("viewPage", name, data, map);
-    if (t != Pop) return t;
-    t = doHandleList("viewConnection", name, data, map);
-    if (t != Pop) return t;
-    t = doHandleList("media", name, data, map);
-    if (t != Pop) return t;
-    t = doHandleList("map", name, data, map);
-    if (t != Pop) return t;
-    t = doHandleList("decision", name, data, map);
-    if (t != Pop) return t;
-    t = doHandleList("style", name, data, map);
-    if (t != Pop) return t;
-
-    return Pop;
-}
-
-GGXmlUnserializerHandler::HandleType GGSimpleXmlUnserializationReader::doHandleList(const QString &itemName, QString &name, QVariant &data, const QVariantMap &map)
-{
-    if (name == itemName) {
-        return PushList;
-    }
-    if (name == itemName + "s") {
-        name = itemName;
-        data = map[itemName];
-        return Push;
-    }
-    return Pop;
 }

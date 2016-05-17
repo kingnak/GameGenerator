@@ -1,5 +1,123 @@
 #include "ggxmlunserializer.h"
 #include <io/ggserialization.hpp>
+#include <QColor>
+#include <QRect>
+
+GGXmlUnserializerHandler::HandleType GGDefaultXmlUnserializationHandler::handleElement(QString &name, QVariant &data)
+{
+    QVariantMap map;
+    data >> map;
+
+    if (name == m_root) {
+        m_doc = map;
+        return Pop;
+    }
+
+    HandleType t = handleDefaults(map, name, data);
+    if (t == Pop) return Push;
+    return t;
+}
+
+void GGDefaultXmlUnserializationHandler::addListType(const QString &name)
+{
+    m_listTypes << name;
+}
+
+void GGDefaultXmlUnserializationHandler::setRootElement(const QString &name)
+{
+    m_root = name;
+}
+
+QVariantMap GGDefaultXmlUnserializationHandler::getDocument() const
+{
+    return m_doc;
+}
+
+GGXmlUnserializerHandler::HandleType GGDefaultXmlUnserializationHandler::handleText(QVariantMap &map, QString &name, QVariant &data)
+{
+    // Set Text as only content
+    if (map.contains(" text ")) {
+        if (map.size() != 1) {
+            name = "Only text allowed as content";
+            return Error;
+        }
+        data = map[" text "];
+        return Push;
+    }
+    return Pop;
+}
+
+GGXmlUnserializerHandler::HandleType GGDefaultXmlUnserializationHandler::handleColor(QVariantMap &map, QString &name, QVariant &data)
+{
+    Q_UNUSED(name);
+    // Fix Colors
+    if (map.size() == 1 && map.contains("rgb")) {
+        bool ok;
+        quint32 v = map["rgb"].toString().toUInt(&ok, 16);
+        if (!ok) return Error;
+        v &= 0xFFFFFF;
+        QColor c = QColor::fromRgb((QRgb) v);
+        data = QVariant::fromValue(c);
+        return Push;
+    }
+    return Pop;
+}
+
+GGXmlUnserializerHandler::HandleType GGDefaultXmlUnserializationHandler::handleRect(QVariantMap &map, QString &name, QVariant &data)
+{
+    // Fix Rects
+    //if (name == "rect" && map.size() == 4) {
+    if (map.size() == 4 && map.contains("x") && map.contains("y") && map.contains("w") && map.contains("h")) {
+        // Assume rect
+        bool ok;
+        int x = map["x"].toInt(&ok);
+        if (!ok) return Error;
+        int y = map["y"].toInt(&ok);
+        if (!ok) return Error;
+        int w = map["w"].toInt(&ok);
+        if (!ok) return Error;
+        int h = map["h"].toInt(&ok);
+        if (!ok) return Error;
+
+        QRect r(x,y,w,h);
+        data = r;
+        return Push;
+    }
+    return Pop;
+}
+
+GGXmlUnserializerHandler::HandleType GGDefaultXmlUnserializationHandler::handleLists(QVariantMap &map, QString &name, QVariant &data)
+{
+    if (m_listTypes.contains(name)) {
+        // Special case: text lists
+        handleText(map, name, data);
+        return PushList;
+    }
+    foreach (QString i, m_listTypes) {
+        if (i+"s" == name) {
+            name = i;
+            data = map[i];
+            return Push;
+        }
+    }
+    return Pop;
+}
+
+GGXmlUnserializerHandler::HandleType GGDefaultXmlUnserializationHandler::handleDefaults(QVariantMap &map, QString &name, QVariant &data)
+{
+    HandleType t = handleLists(map, name, data);
+    if (t != Pop) return t;
+    t = handleRect(map, name, data);
+    if (t != Pop) return t;
+    t = handleColor(map, name, data);
+    if (t != Pop) return t;
+    t = handleText(map, name, data);
+    if (t != Pop) return t;
+
+    return t;
+}
+
+////////////////////
 
 GGXmlUnserializer::GGXmlUnserializer(GGXmlUnserializerHandler *handler)
     : m_handler(handler),
@@ -162,4 +280,3 @@ bool GGXmlUnserializer::setError(const QString &error)
     }
     return false;
 }
-

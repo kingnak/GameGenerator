@@ -21,6 +21,27 @@ public:
     virtual HandleType handleElement(QString &name, QVariant &data) = 0;
 };
 
+class GGDefaultXmlUnserializationHandler : public GGXmlUnserializerHandler
+{
+public:
+    virtual HandleType handleElement(QString &name, QVariant &data);
+    void addListType(const QString &name);
+    void setRootElement(const QString &name);
+    QVariantMap getDocument() const;
+
+protected:
+    HandleType handleText(QVariantMap &map, QString &name, QVariant &data);
+    HandleType handleColor(QVariantMap &map, QString &name, QVariant &data);
+    HandleType handleRect(QVariantMap &map, QString &name, QVariant &data);
+    HandleType handleLists(QVariantMap &map, QString &name, QVariant &data);
+    HandleType handleDefaults(QVariantMap &map, QString &name, QVariant &data);
+
+private:
+    QStringList m_listTypes;
+    QString m_root;
+    QVariantMap m_doc;
+};
+
 class GGXmlUnserializer : public QXmlDefaultHandler
 {
 public:
