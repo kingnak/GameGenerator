@@ -11,7 +11,9 @@ GGConnectionListEditorWidget::GGConnectionListEditorWidget(QWidget *parent) :
     m_curSelected(-1)
 {
     ui->setupUi(this);
-    ui->editorContainer->setLayout(new QVBoxLayout);
+    QVBoxLayout *l = new QVBoxLayout;
+    ui->editorContainer->setLayout(l);
+    l->addStretch(1);
 
     ensureEditors(MIN_EDITORS);
 }
@@ -90,6 +92,8 @@ void GGConnectionListEditorWidget::handleToggle()
 
 void GGConnectionListEditorWidget::ensureEditors(int ct)
 {
+    if (ct == m_editors.size()) return;
+
     QVBoxLayout *l = static_cast<QVBoxLayout*> (ui->editorContainer->layout());
 
     if (ct > m_editors.size()) {
@@ -97,7 +101,7 @@ void GGConnectionListEditorWidget::ensureEditors(int ct)
         for (int i = m_editors.size(); i < ct; ++i) {
             GGConnectionEditorWidget *w = new GGConnectionEditorWidget(ui->editorContainer);
             w->setVisible(false);
-            l->addWidget(w);
+            l->insertWidget(l->count()-1, w);
             connect(w, SIGNAL(updateCaption(GGPage*,GGConnectionSlot,QString)), this, SIGNAL(updateLinkCaption(GGPage*,GGConnectionSlot,QString)));
             connect(w, SIGNAL(updateAction(GGPage*,GGConnectionSlot,GGAction)), this, SIGNAL(updateLinkAction(GGPage*,GGConnectionSlot,GGAction)));
             connect(w, SIGNAL(deleteConnection(GGPage*,GGConnectionSlot)), this, SIGNAL(deleteConnection(GGPage*,GGConnectionSlot)));
@@ -107,7 +111,7 @@ void GGConnectionListEditorWidget::ensureEditors(int ct)
             connect(w, SIGNAL(hoverLeave(GGPage*,GGConnectionSlot)), this, SIGNAL(hoverLeftConnection(GGPage*,GGConnectionSlot)));
             m_editors << w;
         }
-    } else if (ct < m_editors.size()) {
+    } else {
 
         // Too many editors. Hide unneeded...
         for (int i = qMax(0, ct-1); i < MIN_EDITORS; ++i) {

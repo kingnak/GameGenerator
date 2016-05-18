@@ -179,7 +179,7 @@ void GGWindowHelper::restore()
         // Store initial values
         backup();
     } else {
-        int scrn = QApplication::desktop()->primaryScreen();
+        int scrn = QApplication::desktop()->screenNumber(m_wnd);
         QRect avail = QApplication::desktop()->availableGeometry(scrn);
 
         QRect pos = info.position();
