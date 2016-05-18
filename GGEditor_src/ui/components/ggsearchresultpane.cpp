@@ -8,10 +8,10 @@ GGSearchResultPane::GGSearchResultPane(QWidget *parent) :
     ui(new Ui::GGSearchResultPane)
 {
     ui->setupUi(this);
-    m_model = new GGSearchResultModel;
+    m_model = new GGSearchResultModel(this);
     m_model->setMatchHighlightDecoration("<span style=\"background-color: rgb(255,255,0);}\">", "</span>");
     ui->lstResults->setModel(m_model);
-    ui->lstResults->setItemDelegateForColumn(GGSearchResultModel::MATCH_COLUMN, new GGHtmlItemDelegate);
+    ui->lstResults->setItemDelegateForColumn(GGSearchResultModel::MATCH_COLUMN, new GGHtmlItemDelegate(this));
     ui->lstResults->setColumnWidth(GGSearchResultModel::WHAT_COLUMN, 20);
     ui->lstResults->setColumnWidth(GGSearchResultModel::WHERE_COLUMN, 20);
 }

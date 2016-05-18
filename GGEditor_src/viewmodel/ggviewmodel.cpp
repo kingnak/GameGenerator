@@ -35,6 +35,7 @@ GGViewModel::~GGViewModel()
         qDeleteAll(m.values());
     foreach (ConnectionMap m, m_connectionRec.values())
         qDeleteAll(m.values());
+    qDeleteAll(m_sceneMap.values());
 }
 
 GGViewScene *GGViewModel::getViewSceneForScene(GGScene *scene)

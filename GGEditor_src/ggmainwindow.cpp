@@ -177,6 +177,10 @@ void GGMainWindow::newProject()
         return;
     }
 
+#if defined(USE_VLD) && defined(VLD_PER_PROJECT)
+    VLDGlobalEnable();
+#endif
+
     m_project = new GGEditProject(dlg.projectBasePath(), GGUtilities::sanatizeFileName(dlg.projectTitle()), dlg.serializationType());
     m_project->setTitle(dlg.projectTitle());
     m_viewModel = new GGViewModel(m_project->editModel());
@@ -209,8 +213,11 @@ bool GGMainWindow::closeProject()
         t->setBaseDir(QDir::temp().absoluteFilePath(GGDefaultTrasher::TRASH_DIR_NAME));
     }
 
-    while (ui->tabScenes->count() > 0)
-        ui->tabScenes->removeTab(0);
+    QList<GG::SceneID> openScenes = m_openScenes.keys();
+    foreach (GG::SceneID id, openScenes) {
+        GGViewScene *sc = m_openScenes[id]->editorScene()->modelScene();
+        closeSceneView(sc);
+    }
 
     m_openScenes.clear();
     ui->wgtPageContent->clearPage();
@@ -222,6 +229,12 @@ bool GGMainWindow::closeProject()
     m_project = NULL;
 
     ui->stkDetailEdits->setCurrentWidget(ui->pageEmpty);
+
+#if defined(USE_VLD) && defined(VLD_PER_PROJECT)
+    VLDReportLeaks();
+    VLDMarkAllLeaksAsReported();
+    VLDGlobalDisable();
+#endif
 
     showStartPage();
     updateWindowTitle();
@@ -274,6 +287,10 @@ void GGMainWindow::openProject()
             QMessageBox::warning(this, "Error", "Cannot open file\n" + file);
             return;
         }
+
+#if defined(USE_VLD) && defined(VLD_PER_PROJECT)
+    VLDGlobalEnable();
+#endif
 
         GGViewProjectUnserializer *ser = GGIOFactory::unserializer(file);
         bool ok = ser->load(&f);

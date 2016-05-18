@@ -3,11 +3,13 @@
 #include "ggpage.h"
 #include "ggconnection.h"
 #include "ggabstractfactory.h"
+#include <style/ggabstractstyler.h>
 #include <QSet>
 
 GGRuntimeModel::GGRuntimeModel(QObject *parent)
     : GGAbstractModel(parent),
-      m_resolver(NULL)
+      m_resolver(NULL),
+      m_styler(NULL)
 {
 
 }
@@ -17,6 +19,7 @@ GGRuntimeModel::~GGRuntimeModel()
     qDeleteAll(m_connections);
     qDeleteAll(m_pages);
     qDeleteAll(m_scenes);
+    delete m_styler;
 }
 
 GGAbstractMediaResolver *GGRuntimeModel::mediaResolver()

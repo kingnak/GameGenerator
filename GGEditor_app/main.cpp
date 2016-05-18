@@ -93,6 +93,11 @@ void mediaTest()
 
 int main(int argc, char *argv[])
 {
+#if defined(USE_VLD) && defined(VLD_PER_PROJECT)
+    VLDGlobalDisable();
+    VLDMarkAllLeaksAsReported();
+#endif
+
     QApplication a(argc, argv);
     Q_INIT_RESOURCE(resources);
 

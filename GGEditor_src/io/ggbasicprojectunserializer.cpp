@@ -31,6 +31,8 @@ GGBasicProjectUnserializer::GGBasicProjectUnserializer(const QString &basePath, 
 GGBasicProjectUnserializer::~GGBasicProjectUnserializer()
 {
     delete m_project;
+    delete m_processor;
+    delete m_reader;
 }
 
 bool GGBasicProjectUnserializer::load(QIODevice *device)
