@@ -37,7 +37,7 @@ private slots:
     void addStyle();
     void removeStyle();
     void showStyle();
-    void currentSyleRenamed();
+    void currentStyleRenamed();
     void currentStyleChanged();
     void clearCurrentStyle();
 

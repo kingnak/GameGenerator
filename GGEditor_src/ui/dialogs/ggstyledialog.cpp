@@ -121,7 +121,7 @@ void GGStyleDialog::showStyle()
     ui->txtStyleName->setEnabled(true);
 }
 
-void GGStyleDialog::currentSyleRenamed()
+void GGStyleDialog::currentStyleRenamed()
 {
     QListWidgetItem *itm = ui->lstStyles->currentItem();
     if (!itm) return;
@@ -142,6 +142,7 @@ void GGStyleDialog::currentSyleRenamed()
     if (!m_stack->execute(grp)) {
         ui->txtStyleName->setText(oldName);
         itm->setText(oldName);
+        itm->setData(Qt::UserRole, QVariant::fromValue(s));
     } else {
         itm->setText(s.name());
     }

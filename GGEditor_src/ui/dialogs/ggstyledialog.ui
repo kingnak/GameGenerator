@@ -406,22 +406,6 @@
    </hints>
   </connection>
   <connection>
-   <sender>txtStyleName</sender>
-   <signal>editingFinished()</signal>
-   <receiver>GGStyleDialog</receiver>
-   <slot>currentSyleRenamed()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>430</x>
-     <y>188</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>477</x>
-     <y>187</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>btnRemoveStyle</sender>
    <signal>clicked()</signal>
    <receiver>GGStyleDialog</receiver>
@@ -437,12 +421,28 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>txtStyleName</sender>
+   <signal>editingFinished()</signal>
+   <receiver>GGStyleDialog</receiver>
+   <slot>currentStyleRenamed()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>368</x>
+     <y>188</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>482</x>
+     <y>135</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>showStyle()</slot>
   <slot>removeStyle()</slot>
   <slot>addStyle()</slot>
   <slot>basicStyleChanged()</slot>
-  <slot>currentSyleRenamed()</slot>
+  <slot>currentStyleRenamed()</slot>
  </slots>
 </ui>
