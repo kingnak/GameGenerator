@@ -40,10 +40,9 @@ void GGMappingEditorPane::setMappedPage(GGMappedContentPage *p)
     if (p) {
         if (p->content())
             pix = p->content()->preview(p->model()->mediaResolver(), ui->lblPreview->minimumSize());
-        ui->wgtMappedConnections->setConnections(p, slts);
         slts = GGConnectionSlot::enumerateConnections(p, GGConnectionSlot::MappedConnection);
     }
-    ui->wgtMappedConnections->setConnections(NULL, slts);
+    ui->wgtMappedConnections->setConnections(p, slts);
     ui->lblPreview->setPixmap(pix);
 }
 
