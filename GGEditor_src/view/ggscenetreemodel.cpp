@@ -64,7 +64,7 @@ QVariant GGSceneTreeModel::data(const QModelIndex &index, int role) const
 QVariant GGSceneTreeModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
     if (section == 0 && orientation == Qt::Horizontal && role == Qt::DisplayRole) {
-        return "Name";
+        return "Scene";
     }
     return QVariant();
 }

@@ -101,6 +101,8 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
     Q_INIT_RESOURCE(resources);
 
+    QApplication::setApplicationName("GameGenerator");
+
     GGDefaultTrasher defTrash;
     GGTrasher::setTrasher(&defTrash);
 

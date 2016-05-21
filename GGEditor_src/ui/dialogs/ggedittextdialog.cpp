@@ -52,6 +52,7 @@ void GGEditTextDialog::setFormattedDocument(const QString &doc)
     c.movePosition(QTextCursor::Start);
     ui->txtText->setTextCursor(c);
     ui->txtText->document()->setModified(false);
+    ui->txtText->setFocus();
 }
 
 QString GGEditTextDialog::getFormattedDocument() const
