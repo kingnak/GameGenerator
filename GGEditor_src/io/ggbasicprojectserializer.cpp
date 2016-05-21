@@ -79,7 +79,7 @@ bool GGBasicProjectSerializer::serializeProject(GGEditProject *project)
         ok &= this->serializeVariable(v, var);
         varList << v;
     }
-    m["variable"] << varList;
+    m["varDefinition"] << varList;
 
     QVariantList mediaList;
     foreach (QString path, project->mediaManager()->allMedia()) {

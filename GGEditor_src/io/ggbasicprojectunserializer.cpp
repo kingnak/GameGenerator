@@ -75,7 +75,7 @@ bool GGBasicProjectUnserializer::unserializeProject(QVariant project)
     m_project->setTitle(map["title"].toString());
 
     QVariantList lst;
-    map["variable"] >> lst;
+    map["varDefinition"] >> lst;
     bool ok = true;
     foreach (QVariant v, lst) {
         GGVariable var;

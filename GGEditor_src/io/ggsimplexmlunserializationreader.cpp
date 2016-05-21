@@ -9,7 +9,7 @@
 GGSimpleXmlUnserializationReader::GGSimpleXmlUnserializationReader()
     : m_builder(NULL)
 {
-    addListType("variable");
+    addListType("varDefinition");
     addListType("viewPage");
     addListType("viewConnection");
     addListType("media");
