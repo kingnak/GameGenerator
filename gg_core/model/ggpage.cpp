@@ -168,6 +168,11 @@ GGContentElement *GGContentPage::content()
     return m_content;
 }
 
+const GGContentElement *GGContentPage::content() const
+{
+    return m_content;
+}
+
 void GGContentPage::setContent(GGContentElement *cont)
 {
     if (m_content != cont) {

@@ -102,6 +102,7 @@ public:
     void setCaption(QString cap);
 
     GGContentElement *content();
+    const GGContentElement *content() const;
     void setContent(GGContentElement *cont);
     GGContentElement *exchangeContent(GGContentElement *cont);
 

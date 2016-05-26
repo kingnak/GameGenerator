@@ -363,7 +363,7 @@ QString GGMediaManagerResolver::resolveTypeHint(const QString &media)
     return GGFileSystemResolver::resolveTypeHint(path);
 }
 
-bool GGMediaManagerResolver::isValid(const QString &media)
+bool GGMediaManagerResolver::isValid(const QString &media) const
 {
     return m_manager->m_id2path.contains(media);
 }

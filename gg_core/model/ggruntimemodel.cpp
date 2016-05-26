@@ -27,6 +27,11 @@ GGAbstractMediaResolver *GGRuntimeModel::mediaResolver()
     return m_resolver;
 }
 
+const GGAbstractMediaResolver *GGRuntimeModel::mediaResolver() const
+{
+    return m_resolver;
+}
+
 void GGRuntimeModel::setMediaResolver(GGAbstractMediaResolver *resolver)
 {
     m_resolver = resolver;

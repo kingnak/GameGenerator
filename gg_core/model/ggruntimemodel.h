@@ -15,6 +15,7 @@ public:
 
     void setMediaResolver(GGAbstractMediaResolver *resolver);
     GGAbstractMediaResolver *mediaResolver();
+    const GGAbstractMediaResolver *mediaResolver() const;
 
     GGScene *getScene(GG::SceneID id) const;
     GGPage *getPage(GG::PageID id) const;

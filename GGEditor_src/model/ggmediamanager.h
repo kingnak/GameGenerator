@@ -99,7 +99,7 @@ public:
     virtual QIODevice *resolve(const QString &media);
     virtual QString resolveName(const QString &media);
     virtual QString resolveTypeHint(const QString &media);
-    virtual bool isValid(const QString &media);
+    virtual bool isValid(const QString &media) const;
 
 private:
     GGMediaManager *m_manager;

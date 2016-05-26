@@ -41,7 +41,7 @@ QString GGFileSystemResolver::resolveTypeHint(const QString &media)
     return f.completeSuffix();
 }
 
-bool GGFileSystemResolver::isValid(const QString &media)
+bool GGFileSystemResolver::isValid(const QString &media) const
 {
     return QFile::exists(m_base.absoluteFilePath(media));
 }

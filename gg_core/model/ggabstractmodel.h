@@ -36,6 +36,7 @@ public:
     explicit GGAbstractModel(QObject *parent = 0) : QObject(parent) {}
 
     virtual GGAbstractMediaResolver *mediaResolver() = 0;
+    virtual const GGAbstractMediaResolver *mediaResolver() const = 0;
 
     virtual GGScene *getScene(GG::SceneID id) const = 0;
     virtual GGPage *getPage(GG::PageID id) const = 0;
