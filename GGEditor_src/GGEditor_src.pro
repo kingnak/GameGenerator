@@ -89,7 +89,8 @@ SOURCES += \
     utils/ggglobaluserinfo.cpp \
     io/ggglobalsettingsserializer.cpp \
     model/ggmodelverifier.cpp \
-    ui/components/ggerrorpane.cpp
+    ui/components/ggerrorpane.cpp \
+    generator/gggeneratormanager.cpp
 
 HEADERS += \
     model/ggeditmodel.h \
@@ -178,7 +179,9 @@ HEADERS += \
     utils/ggglobaluserinfo.h \
     io/ggglobalsettingsserializer.h \
     model/ggmodelverifier.h \
-    ui/components/ggerrorpane.h
+    ui/components/ggerrorpane.h \
+    generator/gggeneratorinterface.h \
+    generator/gggeneratormanager.h
 unix {
     target.path = /usr/lib
     INSTALLS += target
