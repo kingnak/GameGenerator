@@ -87,7 +87,8 @@ SOURCES += \
     ui/panes/ggentryactioneditorpane.cpp \
     ui/panes/ggeditcaptionpane.cpp \
     utils/ggglobaluserinfo.cpp \
-    io/ggglobalsettingsserializer.cpp
+    io/ggglobalsettingsserializer.cpp \
+    model/ggmodelverifier.cpp
 
 HEADERS += \
     model/ggeditmodel.h \
@@ -174,7 +175,9 @@ HEADERS += \
     ui/panes/ggentryactioneditorpane.h \
     ui/panes/ggeditcaptionpane.h \
     utils/ggglobaluserinfo.h \
-    io/ggglobalsettingsserializer.h
+    io/ggglobalsettingsserializer.h \
+    model/ggmodelverifier.h \
+    ui/components/ggerrorpane.h
 unix {
     target.path = /usr/lib
     INSTALLS += target
@@ -216,7 +219,8 @@ FORMS += \
     ui/dialogs/ggedittextdialog.ui \
     ui/components/ggstyledtexteditorwidget.ui \
     ui/panes/ggentryactioneditorpane.ui \
-    ui/panes/ggeditcaptionpane.ui
+    ui/panes/ggeditcaptionpane.ui \
+    ui/components/ggerrorpane.ui
 
 RESOURCES += \
     ui/resources.qrc
