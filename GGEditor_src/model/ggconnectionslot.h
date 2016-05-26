@@ -7,6 +7,7 @@
 class GGPage;
 class GGConnection;
 class GGEditModel;
+class GGLink;
 
 class GGConnectionSlot : public GGConnectionSlotData
 {
@@ -16,7 +17,8 @@ public:
     GGConnectionSlot(GGConnectionSlotData data)
         : GGConnectionSlotData(data) {}
 
-    GGConnection *getExistingConnection(GGPage *page);
+    GGConnection *getExistingConnection(const GGPage *page);
+    GGLink getLink(const GGPage *page);
 
     bool connect(GGPage *page, GGConnection *conn, GGConnection **oldConnection = 0);
     bool canConnect(GGPage *page);
@@ -24,7 +26,7 @@ public:
     static QList<GGConnectionSlot> enumerateConnections(const GGPage *page, SlotTypes types = AllConnections);
 
 private:
-    bool doConnectTest(bool doSet, GGPage *page, GGConnection *conn, GGConnection **oldConnection = 0);
+    bool doConnectTest(bool doSet, GGPage *page, GGConnection *conn, GGConnection **oldConnection = 0, GGLink *outLink = 0);
 
 };
 

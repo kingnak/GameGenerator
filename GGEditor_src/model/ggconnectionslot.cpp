@@ -3,11 +3,14 @@
 #include <model/ggconnection.h>
 #include <QList>
 
-bool GGConnectionSlot::doConnectTest(bool doSet, GGPage *page, GGConnection *conn, GGConnection **oldConnection)
+bool GGConnectionSlot::doConnectTest(bool doSet, GGPage *page, GGConnection *conn, GGConnection **oldConnection, GGLink *outLink)
 {
     GGConnection *dummy_old = NULL;
     if (!oldConnection) oldConnection = &dummy_old;
     *oldConnection = NULL;
+
+    GGLink dummy_link;
+    if (!outLink) outLink = &dummy_link;
 
     switch (m_type) {
     case StartConnection:
@@ -46,6 +49,7 @@ bool GGConnectionSlot::doConnectTest(bool doSet, GGPage *page, GGConnection *con
                 // Must work on copies of Mapped Link and Link
                 GGMappedLink mc = mcp->getLinkMap()[m_idx];
                 GGLink l = mc.link();
+                *outLink = l;
                 *oldConnection = l.connection();
                 if (doSet) {
                     l.setConnection(conn);
@@ -63,6 +67,7 @@ bool GGConnectionSlot::doConnectTest(bool doSet, GGPage *page, GGConnection *con
         Q_ASSERT(ggpage_cast<GGActionPage*> (page));
         if (GGActionPage *ap = ggpage_cast<GGActionPage*> (page)) {
             GGLink l = ap->actionLink();
+            *outLink = l;
             *oldConnection = l.connection();
             if (doSet) {
                 l.setConnection(conn);
@@ -78,6 +83,7 @@ bool GGConnectionSlot::doConnectTest(bool doSet, GGPage *page, GGConnection *con
             if (0 <= m_idx && m_idx < dp->getDecisionLinks().size()) {
                 // Must work on copy of Link
                 GGLink l = dp->getDecisionLinks()[m_idx];
+                *outLink = l;
                 *oldConnection = l.connection();
                 if (doSet) {
                     l.setConnection(conn);
@@ -103,10 +109,17 @@ bool GGConnectionSlot::connect(GGPage *page, GGConnection *conn, GGConnection **
     return doConnectTest(true, page, conn, oldConnection);
 }
 
-GGConnection *GGConnectionSlot::getExistingConnection(GGPage *page)
+GGConnection *GGConnectionSlot::getExistingConnection(const GGPage *page)
 {
     GGConnection *ret = NULL;
-    this->doConnectTest(false, page, NULL, &ret);
+    this->doConnectTest(false, const_cast<GGPage*>(page), NULL, &ret);
+    return ret;
+}
+
+GGLink GGConnectionSlot::getLink(const GGPage *page)
+{
+    GGLink ret;
+    this->doConnectTest(false, const_cast<GGPage*>(page), NULL, NULL, &ret);
     return ret;
 }
 
