@@ -48,10 +48,13 @@ public slots:
     void saveProjectAsType();
     void openProject();
 
+    void verifyModel();
+
     void openSceneView(GGViewScene *scene);
     void closeSceneView(GGViewScene *scene);
 
     void highlightPage(GG::PageID id);
+    void highlightPage(const GGPage *page);
     void selectPage(GGViewPage *page);
     void selectConnection(GGViewConnection *conn);
     void clearSelection();

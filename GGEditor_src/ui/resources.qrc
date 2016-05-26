@@ -22,6 +22,9 @@
         <file alias="open">icons/open.png</file>
         <file alias="cleanup">icons/tidy.png</file>
         <file alias="verify">icons/verify.png</file>
+        <file alias="info">icons/Info-64.png</file>
+        <file alias="error">icons/messagebox_critical-256.png</file>
+        <file alias="warning">icons/messagebox_warning-256.png</file>
     </qresource>
     <qresource prefix="/search">
         <file alias="function">icons/func.png</file>

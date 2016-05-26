@@ -88,7 +88,8 @@ SOURCES += \
     ui/panes/ggeditcaptionpane.cpp \
     utils/ggglobaluserinfo.cpp \
     io/ggglobalsettingsserializer.cpp \
-    model/ggmodelverifier.cpp
+    model/ggmodelverifier.cpp \
+    ui/components/ggerrorpane.cpp
 
 HEADERS += \
     model/ggeditmodel.h \

@@ -32,6 +32,7 @@
 #include <ui/dialogs/ggstyledialog.h>
 #include <style/ggabstractstyler.h>
 #include <utils/ggglobaluserinfo.h>
+#include <model/ggmodelverifier.h>
 
 GGMainWindow::GGMainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -47,8 +48,12 @@ GGMainWindow::GGMainWindow(QWidget *parent) :
     updateWindowTitle();
 
     ui->dckSearchResults->setVisible(false);
+    ui->dckError->setVisible(false);
     connect(ui->wgtSearchResults, SIGNAL(requestNewSearch()), this, SLOT(showSearchDialog()));
     connect(ui->wgtSearchResults, SIGNAL(highlightPage(GG::PageID)), this, SLOT(highlightPage(GG::PageID)));
+    connect(ui->wgtErrorList, SIGNAL(reverify()), this, SLOT(verifyModel()));
+    connect(this, SIGNAL(hasProject(bool)), ui->wgtErrorList, SLOT(enableVerify(bool)));
+    connect(ui->wgtErrorList, SIGNAL(showPage(const GGPage*,GGConnectionSlotData)), this, SLOT(highlightPage(const GGPage*)));
 
     m_windowInfo.addSplitter(ui->splitter);
     m_windowInfo.addSplitter(ui->splitter_2);
@@ -79,6 +84,7 @@ GGMainWindow::GGMainWindow(QWidget *parent) :
     connect(ui->actionEditCaption, SIGNAL(triggered(bool)), ui->wgtPageContent, SLOT(editPageCaption()));
     connect(ui->actionEditContent, SIGNAL(triggered(bool)), ui->wgtPageContent, SLOT(editPageContent()));
     connect(ui->actionEditMapping, SIGNAL(triggered(bool)), ui->wgtPageContent, SLOT(editPageContentMap()));
+    connect(ui->actionVerify_model, SIGNAL(triggered(bool)), this, SLOT(verifyModel()));
 
     connect(this, SIGNAL(hasProject(bool)), ui->wgtSearchResults, SLOT(clearResults()));
 
@@ -320,6 +326,14 @@ void GGMainWindow::openProject()
     }
 }
 
+void GGMainWindow::verifyModel()
+{
+    GGModelVerifier v;
+    GGModelErrorList errs = v.verify(m_viewModel->editModel());
+    ui->wgtErrorList->setErrors(errs);
+    ui->dckError->show();
+}
+
 void GGMainWindow::openSceneView(GGViewScene *scene)
 {
     GGGraphPanel *p = sceneViewForId(scene->scene()->id());
@@ -356,6 +370,11 @@ void GGMainWindow::highlightPage(GG::PageID id)
     currentSceneView()->editorScene()->setSelection(QSet<GGViewPage*> () << vp, QSet<GGViewConnection*> ());
     currentSceneView()->editorView()->ensureVisible(vp->bounds());
     selectPage(vp);
+}
+
+void GGMainWindow::highlightPage(const GGPage *page)
+{
+    if (page) highlightPage(page->id());
 }
 
 void GGMainWindow::selectPage(GGViewPage *page)
