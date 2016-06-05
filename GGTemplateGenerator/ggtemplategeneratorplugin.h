@@ -4,6 +4,8 @@
 #include <QObject>
 #include <gggeneratorinterface.h>
 
+class SettingsUI;
+
 class GGTemplateGeneratorPlugin : public QObject, public GGGeneratorInterface
 {
     Q_OBJECT
@@ -24,12 +26,17 @@ public:
     virtual bool loadSettings();
 
     virtual QString name() const;
+    virtual QString description() const;
     virtual QWidget *ui();
 
     virtual bool generate(const GGAbstractModel *model, const QDir &output);
 
 private:
+    bool writeFile(QString dest, QString src);
+
+private:
     QDir m_baseDir;
+    SettingsUI *m_ui;
 };
 
 #endif // GGTEMPLATEGENERATORPLUGIN_H
