@@ -90,7 +90,8 @@ SOURCES += \
     io/ggglobalsettingsserializer.cpp \
     model/ggmodelverifier.cpp \
     ui/components/ggerrorpane.cpp \
-    generator/gggeneratormanager.cpp
+    generator/gggeneratormanager.cpp \
+    ui/dialogs/gggeneratordialog.cpp
 
 HEADERS += \
     model/ggeditmodel.h \
@@ -181,7 +182,8 @@ HEADERS += \
     model/ggmodelverifier.h \
     ui/components/ggerrorpane.h \
     generator/gggeneratorinterface.h \
-    generator/gggeneratormanager.h
+    generator/gggeneratormanager.h \
+    ui/dialogs/gggeneratordialog.h
 unix {
     target.path = /usr/lib
     INSTALLS += target
@@ -224,7 +226,8 @@ FORMS += \
     ui/components/ggstyledtexteditorwidget.ui \
     ui/panes/ggentryactioneditorpane.ui \
     ui/panes/ggeditcaptionpane.ui \
-    ui/components/ggerrorpane.ui
+    ui/components/ggerrorpane.ui \
+    ui/dialogs/gggeneratordialog.ui
 
 RESOURCES += \
     ui/resources.qrc

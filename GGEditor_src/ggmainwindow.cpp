@@ -33,6 +33,7 @@
 #include <style/ggabstractstyler.h>
 #include <utils/ggglobaluserinfo.h>
 #include <model/ggmodelverifier.h>
+#include <ui/dialogs/gggeneratordialog.h>
 
 GGMainWindow::GGMainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -79,6 +80,7 @@ GGMainWindow::GGMainWindow(QWidget *parent) :
     connect(ui->actionSave, SIGNAL(triggered(bool)), this, SLOT(saveProject()));
     connect(ui->actionOpen, SIGNAL(triggered(bool)), this, SLOT(openProject()));
     connect(ui->actionSave_as_type, SIGNAL(triggered(bool)), this, SLOT(saveProjectAsType()));
+    connect(ui->actionGenerate, SIGNAL(triggered(bool)), this, SLOT(showGeneratorDialog()));
 
     connect(ui->actionRenamePage, SIGNAL(triggered(bool)), ui->wgtPageContent, SLOT(editPageTitle()));
     connect(ui->actionEditCaption, SIGNAL(triggered(bool)), ui->wgtPageContent, SLOT(editPageCaption()));
@@ -639,6 +641,13 @@ void GGMainWindow::showSceneTreeContextMenu(const QPoint &point)
     connect(cre, SIGNAL(triggered(bool)), this, SLOT(createSceneAction()));
     mnu.addAction(cre);
     mnu.exec(ui->treScenes->mapToGlobal(point));
+}
+
+void GGMainWindow::showGeneratorDialog()
+{
+    QDir d = qApp->applicationDirPath();
+    GGGeneratorDialog dlg(m_project, d, this);
+    dlg.exec();
 }
 
 void GGMainWindow::renameSceneAction()

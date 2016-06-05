@@ -19,6 +19,7 @@ public:
     virtual bool loadSettings() = 0;
 
     virtual QString name() const = 0;
+    virtual QString description() const = 0;
     virtual QWidget *ui() = 0;
 
     virtual bool generate(const GGAbstractModel *model, const QDir &output) = 0;

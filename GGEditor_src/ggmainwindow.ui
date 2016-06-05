@@ -257,8 +257,6 @@
     <addaction name="actionSave"/>
     <addaction name="actionSave_as_type"/>
     <addaction name="separator"/>
-    <addaction name="actionVerify_model"/>
-    <addaction name="separator"/>
     <addaction name="action_Quit"/>
    </widget>
    <widget class="QMenu" name="menu_Edit">
@@ -267,9 +265,6 @@
     </property>
     <addaction name="actionUndo"/>
     <addaction name="actionRedo"/>
-    <addaction name="action_Variables"/>
-    <addaction name="actionMedia"/>
-    <addaction name="actionStyles"/>
    </widget>
    <widget class="QMenu" name="menu_View">
     <property name="title">
@@ -283,8 +278,20 @@
     </property>
     <addaction name="action_About"/>
    </widget>
+   <widget class="QMenu" name="menuProject">
+    <property name="title">
+     <string>Project</string>
+    </property>
+    <addaction name="action_Variables"/>
+    <addaction name="actionStyles"/>
+    <addaction name="actionMedia"/>
+    <addaction name="separator"/>
+    <addaction name="actionVerify_model"/>
+    <addaction name="actionGenerate"/>
+   </widget>
    <addaction name="menu_File"/>
    <addaction name="menu_Edit"/>
+   <addaction name="menuProject"/>
    <addaction name="menu_View"/>
    <addaction name="menu"/>
   </widget>
@@ -638,6 +645,11 @@
     <string>Verify model</string>
    </property>
   </action>
+  <action name="actionGenerate">
+   <property name="text">
+    <string>Generate...</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>
@@ -878,6 +890,22 @@
    <sender>GGMainWindow</sender>
    <signal>hasProject(bool)</signal>
    <receiver>actionVerify_model</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>399</x>
+     <y>299</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>GGMainWindow</sender>
+   <signal>hasProject(bool)</signal>
+   <receiver>actionGenerate</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
