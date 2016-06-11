@@ -111,24 +111,7 @@ int main(int argc, char *argv[])
     GGTrasher::setTrasher(&winTrash);
 #endif
 
-    QDir dataDir(QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation));
-    dataDir.mkpath(".");
-    QString globUserData = dataDir.absoluteFilePath("userData.xml");
-
-    {
-        QFile f(globUserData);
-        if (f.open(QIODevice::ReadOnly)) {
-            GGGlobalSettingsSerializer ser;
-            ser.load(&f, &GGGlobalUserInfo::instance());
-            /*
-            QDataStream s(&f);
-            QVariant v;
-            s >> v;
-            v >> GGGlobalUserInfo::instance();
-            */
-        }
-        f.close();
-    }
+    GGGlobalSettingsSerializer::loadDefaultFile(&GGGlobalUserInfo::instance());
 
     GGMainWindow w;
     w.show();
@@ -143,19 +126,7 @@ int main(int argc, char *argv[])
 
     int ret = a.exec();
 
-    {
-        QFile f(globUserData);
-        if (f.open(QIODevice::WriteOnly)) {
-            GGGlobalSettingsSerializer ser;
-            ser.save(&f, &GGGlobalUserInfo::instance());
-            /*
-            QDataStream s(&f);
-            QVariant v;
-            v << GGGlobalUserInfo::instance();
-            s << v;
-            */
-        }
-    }
+    GGGlobalSettingsSerializer::saveDefaultFile(&GGGlobalUserInfo::instance());
 
     return ret;
 }

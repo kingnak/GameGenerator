@@ -5,10 +5,39 @@
 #include <io/ggxmlserializer.h>
 #include <io/ggxmlunserializer.h>
 #include <QXmlStreamWriter>
+#include <QDir>
+#include <QStandardPaths>
 
 GGGlobalSettingsSerializer::GGGlobalSettingsSerializer()
 {
 
+}
+
+QString GGGlobalSettingsSerializer::defaultSettingsFilePath()
+{
+    QDir dataDir(QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation));
+    dataDir.mkpath(".");
+    return dataDir.absoluteFilePath("userData.xml");
+}
+
+bool GGGlobalSettingsSerializer::saveDefaultFile(const GGGlobalUserInfo *info)
+{
+    QFile f(GGGlobalSettingsSerializer::defaultSettingsFilePath());
+    if (f.open(QIODevice::WriteOnly)) {
+        GGGlobalSettingsSerializer ser;
+        return ser.save(&f, info);
+    }
+    return false;
+}
+
+bool GGGlobalSettingsSerializer::loadDefaultFile(GGGlobalUserInfo *info)
+{
+    QFile f(GGGlobalSettingsSerializer::defaultSettingsFilePath());
+    if (f.open(QIODevice::ReadOnly)) {
+        GGGlobalSettingsSerializer ser;
+        return ser.load(&f, info);
+    }
+    return false;
 }
 
 bool GGGlobalSettingsSerializer::save(QIODevice *dev, const GGGlobalUserInfo *info)
