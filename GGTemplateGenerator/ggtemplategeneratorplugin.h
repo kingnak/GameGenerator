@@ -27,14 +27,21 @@ public:
 
     virtual QString name() const;
     virtual QString description() const;
-    virtual QWidget *ui();
+    virtual QWidget *ui(GGGeneratorUIHost *host);
+
+    virtual bool isGenerateEnabled();
 
     virtual bool generate(const GGAbstractModel *model, const QDir &output);
 
-private:
-    bool writeFile(QString dest, QString src);
+private slots:
+    void editFile(const QString &file);
 
 private:
+    bool writeFile(QString dest, QString src);
+    QString getIniFileName() const;
+
+private:
+    GGGeneratorUIHost *m_host;
     QDir m_baseDir;
     SettingsUI *m_ui;
 };
