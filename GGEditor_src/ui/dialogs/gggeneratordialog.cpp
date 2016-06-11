@@ -5,6 +5,7 @@
 #include <utils/ggglobaluserinfo.h>
 #include <io/ggglobalsettingsserializer.h>
 #include <utils/ggfileutils.h>
+#include <model/ggmodelverifier.h>
 #include <QtWidgets>
 #include <QDebug>
 #include <QProcess>
@@ -88,7 +89,7 @@ void GGGeneratorDialog::generate()
             // Clean directory
             if (!GGFileUtils::isDirEmpty(out)) {
                 int res = QMessageBox::question(this, "Clear directory",
-                                      QString("The directory\n%1\nis not empty.\n\nShould it be cleared (All files will be deleted!)").arg(QDir::toNativeSeparators(out.absolutePath())),
+                                      QString("The directory\n%1\nis not empty.\n\nShould it be cleared? (All files will be deleted!)").arg(QDir::toNativeSeparators(out.absolutePath())),
                                       QMessageBox::Yes|QMessageBox::No|QMessageBox::Cancel, QMessageBox::Yes);
 
                 if (res == QMessageBox::Yes) {
@@ -97,6 +98,16 @@ void GGGeneratorDialog::generate()
                         return;
                     }
                 } else if (res == QMessageBox::Cancel) {
+                    return;
+                }
+            }
+
+            // Verify model
+            GGModelVerifier v;
+            GGModelErrorList errs = v.verify(m_project->model());
+            if (!errs.isEmpty()) {
+                int res = QMessageBox::warning(this, "Generator", "There are errors in the current model. The output might not be working.", QMessageBox::Ok, QMessageBox::Cancel);
+                if (res == QMessageBox::Cancel) {
                     return;
                 }
             }
