@@ -6,6 +6,16 @@
 
 class GGAbstractModel;
 
+class GGGeneratorInterface;
+
+class GGGeneratorUIHost
+{
+public:
+    virtual ~GGGeneratorUIHost() {}
+    virtual bool openExternalFileEditor(const QString &file) = 0;
+    virtual void notifyGenerateEnabled(GGGeneratorInterface *generator, bool enabled) = 0;
+};
+
 class GGGeneratorInterface
 {
 public:
@@ -18,9 +28,11 @@ public:
     virtual bool saveSettings() = 0;
     virtual bool loadSettings() = 0;
 
+    virtual bool isGenerateEnabled() = 0;
+
     virtual QString name() const = 0;
     virtual QString description() const = 0;
-    virtual QWidget *ui() = 0;
+    virtual QWidget *ui(GGGeneratorUIHost *host) = 0;
 
     virtual bool generate(const GGAbstractModel *model, const QDir &output) = 0;
 };

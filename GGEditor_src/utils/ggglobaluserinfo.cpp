@@ -89,20 +89,42 @@ GGGlobalUserInfo &GGGlobalUserInfo::instance()
     return inst_;
 }
 
+void GGGlobalUserInfo::setExternalEditor(const QString &path)
+{
+    m_externalEditor = path;
+}
+
+QString GGGlobalUserInfo::externalEditor() const
+{
+    return m_externalEditor;
+}
+
 void GGGlobalUserInfo::setWindowInfo(GGWindowInfo info)
 {
     if (info.isValid())
         m_wndInfo[info.name()] = info;
 }
 
-GGWindowInfo GGGlobalUserInfo::windowInfo(const QString &name)
+GGWindowInfo GGGlobalUserInfo::windowInfo(const QString &name) const
 {
     return m_wndInfo.value(name);
+}
+
+QString GGGlobalUserInfo::generatorOutputPath() const
+{
+    return m_generatorOutputPath;
+}
+
+void GGGlobalUserInfo::setGeneratorOutputPath(const QString &generatorOutputPath)
+{
+    m_generatorOutputPath = generatorOutputPath;
 }
 
 void operator <<(QVariant &v, const GGGlobalUserInfo &info)
 {
     QVariantMap map;
+    map["externalEditor"] << info.m_externalEditor;
+    map["generatorOutput"] << info.m_generatorOutputPath;
     map["window"] << info.m_wndInfo.values();
     v << map;
 }
@@ -112,6 +134,10 @@ void operator >>(const QVariant &v, GGGlobalUserInfo &info)
     info.m_wndInfo.clear();
     QVariantMap m;
     v >> m;
+
+    m["externalEditor"] >> info.m_externalEditor;
+    m["generatorOutput"] >> info.m_generatorOutputPath;
+
     QVariantList l;
     m["window"] >> l;
     foreach (QVariant v, l) {

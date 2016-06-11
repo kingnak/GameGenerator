@@ -89,6 +89,7 @@ private slots:
     void sceneTreeActivated(const QModelIndex &idx);
     void showSceneTreeContextMenu(const QPoint &point);
     void showGeneratorDialog();
+    void showPreferences();
 
     void renameSceneAction();
     void deleteSceneAction();

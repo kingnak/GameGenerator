@@ -34,6 +34,7 @@
 #include <utils/ggglobaluserinfo.h>
 #include <model/ggmodelverifier.h>
 #include <ui/dialogs/gggeneratordialog.h>
+#include <ui/dialogs/ggpreferencesdialog.h>
 
 GGMainWindow::GGMainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -87,6 +88,7 @@ GGMainWindow::GGMainWindow(QWidget *parent) :
     connect(ui->actionEditContent, SIGNAL(triggered(bool)), ui->wgtPageContent, SLOT(editPageContent()));
     connect(ui->actionEditMapping, SIGNAL(triggered(bool)), ui->wgtPageContent, SLOT(editPageContentMap()));
     connect(ui->actionVerify_model, SIGNAL(triggered(bool)), this, SLOT(verifyModel()));
+    connect(ui->actionPreferences, SIGNAL(triggered(bool)), this, SLOT(showPreferences()));
 
     connect(this, SIGNAL(hasProject(bool)), ui->wgtSearchResults, SLOT(clearResults()));
 
@@ -648,6 +650,12 @@ void GGMainWindow::showGeneratorDialog()
     QDir d = qApp->applicationDirPath();
     GGGeneratorDialog dlg(m_project, d, this);
     dlg.exec();
+}
+
+void GGMainWindow::showPreferences()
+{
+    GGPreferencesDialog d;
+    d.exec();
 }
 
 void GGMainWindow::renameSceneAction()

@@ -91,7 +91,9 @@ SOURCES += \
     model/ggmodelverifier.cpp \
     ui/components/ggerrorpane.cpp \
     generator/gggeneratormanager.cpp \
-    ui/dialogs/gggeneratordialog.cpp
+    ui/dialogs/gggeneratordialog.cpp \
+    ui/dialogs/ggpreferencesdialog.cpp \
+    utils/ggfileutils.cpp
 
 HEADERS += \
     model/ggeditmodel.h \
@@ -183,7 +185,9 @@ HEADERS += \
     ui/components/ggerrorpane.h \
     generator/gggeneratorinterface.h \
     generator/gggeneratormanager.h \
-    ui/dialogs/gggeneratordialog.h
+    ui/dialogs/gggeneratordialog.h \
+    ui/dialogs/ggpreferencesdialog.h \
+    utils/ggfileutils.h
 unix {
     target.path = /usr/lib
     INSTALLS += target
@@ -227,7 +231,8 @@ FORMS += \
     ui/panes/ggentryactioneditorpane.ui \
     ui/panes/ggeditcaptionpane.ui \
     ui/components/ggerrorpane.ui \
-    ui/dialogs/gggeneratordialog.ui
+    ui/dialogs/gggeneratordialog.ui \
+    ui/dialogs/ggpreferencesdialog.ui
 
 RESOURCES += \
     ui/resources.qrc

@@ -46,10 +46,18 @@ private:
 public:
     static GGGlobalUserInfo &instance();
 
+    void setExternalEditor(const QString &path);
+    QString externalEditor() const;
+
     void setWindowInfo(GGWindowInfo info);
-    GGWindowInfo windowInfo(const QString &name);
+    GGWindowInfo windowInfo(const QString &name) const;
+
+    QString generatorOutputPath() const;
+    void setGeneratorOutputPath(const QString &generatorOutputPath);
 
 private:
+    QString m_externalEditor;
+    QString m_generatorOutputPath;
     QMap<QString, GGWindowInfo> m_wndInfo;
 
     friend void operator << (QVariant &v, const GGGlobalUserInfo &info);
