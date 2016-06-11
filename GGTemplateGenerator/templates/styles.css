@@ -1,1 +1,17 @@
+#caption
+{
+	font-weight: bold;
+}
+
+#decisions td
+{
+	width: 333;
+	text-align: center;
+}
+#decisions a
+{
+	color: #FFFF00;
+	text-decoration: none;
+}
+
 ###STYLES###

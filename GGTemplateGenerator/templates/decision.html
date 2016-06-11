@@ -1,7 +1,19 @@
 <html>
 <head>
+<title>###GAME_NAME###</title>
 ###SCRIPT_INCLUDE###
 </head>
 <body>
+
+<script language="javascript">
+###DECISION_FUNCTION###
+
+ggCheckDecision(followLink);
+
+function followLink(url) {
+	window.location.href = url;
+}
+</script>
+
 </body>
 </html>

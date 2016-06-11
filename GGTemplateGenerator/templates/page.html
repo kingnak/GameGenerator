@@ -1,25 +1,36 @@
 <html>
 <head>
+<title>###GAME_NAME###</title>
 ###SCRIPT_INCLUDE###
 ###STYLE_INCLUDE###
 </head>
-<body>
-###CAPTION###
-###CONTENT###
-<!-- ###MAPPINGS### -->
-<map name="###MAPPING_NAME###">
+
+<body onLoad="ggDisallowNav()">
+<div align="center">
+<div id="caption">###CAPTION###</div>
+<div id="content">
+	###CONTENT###
+	<!-- ###MAPPINGS### -->
+	<map name="###MAPPING_NAME###">
 	<!-- ###AREAS### -->
-	<area shape="###SHAPE###" coords="###COORDS###" href="###LINK###" ###ACTION_LINK### alt="###TITLE###"/>
+		<area shape="###SHAPE###" coords="###COORDS###" href="###LINK###" ###ACTION_LINK### alt="###TITLE###"/>
 	<!-- ###AREAS### -->
-</map>
-<!-- ###MAPPINGS### -->
+	</map>
+	<!-- ###MAPPINGS### -->
+</div>
 
 <!-- ###DECISIONS### -->
-<table border="1" width="100%">
+<table id="decisions">
+	<tr>
+	<!-- ###ROW_DELIM### --></tr><tr><!-- ###ROW_DELIM### -->
+
 	<!-- ###DECISION### -->
-	<a href="###LINK###" ###ACTION_LINK###>###TITLE###</a>
+	<td><a href="###LINK###" ###ACTION_LINK###>###TITLE###</a></td>
 	<!-- ###DECISION### -->
+
+	</tr>
 </table>
 <!-- ###DECISIONS### -->
+
 </body>
 </html>

@@ -1,1 +1,2 @@
+###DEFAULT_FUNCTIONS###
 ###FUNCTIONS###
