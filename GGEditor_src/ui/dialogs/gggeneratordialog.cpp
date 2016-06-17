@@ -112,7 +112,7 @@ void GGGeneratorDialog::generate()
                 }
             }
 
-            if (!currentGenerator()->generate(m_project->model(), out)) {
+            if (!currentGenerator()->generate(m_project, out)) {
                 QMessageBox::critical(this, "Generator", "Error generating game");
             }
         }

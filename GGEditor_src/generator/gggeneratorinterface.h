@@ -4,7 +4,7 @@
 #include <QtPlugin>
 #include <QDir>
 
-class GGAbstractModel;
+class GGProject;
 
 class GGGeneratorInterface;
 
@@ -34,7 +34,7 @@ public:
     virtual QString description() const = 0;
     virtual QWidget *ui(GGGeneratorUIHost *host) = 0;
 
-    virtual bool generate(const GGAbstractModel *model, const QDir &output) = 0;
+    virtual bool generate(const GGProject *project, const QDir &output) = 0;
 };
 
 #define GGGenerator_iid "com.gamegenerator.GeneratorInterface"
