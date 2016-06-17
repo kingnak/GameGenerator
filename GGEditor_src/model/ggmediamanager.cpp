@@ -345,22 +345,28 @@ GGMediaManagerResolver::GGMediaManagerResolver(GGMediaManager *manager)
 
 }
 
-QIODevice *GGMediaManagerResolver::resolve(const QString &media)
+QIODevice *GGMediaManagerResolver::resolve(const QString &media) const
 {
     QString path = m_manager->m_id2path[media];
     return GGFileSystemResolver::resolve(path);
 }
 
-QString GGMediaManagerResolver::resolveName(const QString &media)
+QString GGMediaManagerResolver::resolveName(const QString &media) const
 {
     QString path = m_manager->m_id2path[media];
     return path;
 }
 
-QString GGMediaManagerResolver::resolveTypeHint(const QString &media)
+QString GGMediaManagerResolver::resolveTypeHint(const QString &media) const
 {
     QString path = m_manager->m_id2path[media];
     return GGFileSystemResolver::resolveTypeHint(path);
+}
+
+QString GGMediaManagerResolver::resolveFile(const QString &media) const
+{
+    QString path = m_manager->m_id2path[media];
+    return GGFileSystemResolver::resolveFile(path);
 }
 
 bool GGMediaManagerResolver::isValid(const QString &media) const

@@ -96,9 +96,10 @@ class GGMediaManagerResolver : public GGFileSystemResolver
 public:
     GGMediaManagerResolver(GGMediaManager *manager);
 
-    virtual QIODevice *resolve(const QString &media);
-    virtual QString resolveName(const QString &media);
-    virtual QString resolveTypeHint(const QString &media);
+    virtual QIODevice *resolve(const QString &media) const;
+    virtual QString resolveName(const QString &media) const;
+    virtual QString resolveTypeHint(const QString &media) const;
+    virtual QString resolveFile(const QString &media) const;
     virtual bool isValid(const QString &media) const;
 
 private:

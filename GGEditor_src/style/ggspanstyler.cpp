@@ -116,6 +116,11 @@ QString GGSpanStyler::previewText(const QString &doc) const
     return prev;
 }
 
+QString GGSpanStyler::htmlText(const QString &doc) const
+{
+    return doc;
+}
+
 GGAbstractStyler::SupplementalStyleOptions GGSpanStyler::supplementalOptions() const
 {
     return Italic;

@@ -22,12 +22,22 @@ GGAbstractModel *GGRuntimeProject::model()
     return m_runtimeModel;
 }
 
+const GGAbstractModel *GGRuntimeProject::model() const
+{
+    return m_runtimeModel;
+}
+
 GGRuntimeModel *GGRuntimeProject::runtimeModel()
 {
     return m_runtimeModel;
 }
 
 GGAbstractMediaResolver *GGRuntimeProject::resolver()
+{
+    return m_runtimeModel->mediaResolver();
+}
+
+const GGAbstractMediaResolver *GGRuntimeProject::resolver() const
 {
     return m_runtimeModel->mediaResolver();
 }

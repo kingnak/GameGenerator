@@ -12,8 +12,10 @@ public:
     ~GGRuntimeProject();
 
     virtual GGAbstractModel *model();
+    virtual const GGAbstractModel *model() const;
     virtual GGRuntimeModel *runtimeModel();
     virtual GGAbstractMediaResolver *resolver();
+    virtual const GGAbstractMediaResolver *resolver() const;
 
 protected:
     GGRuntimeProject(GGRuntimeModel *model);

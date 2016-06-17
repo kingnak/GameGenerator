@@ -16,7 +16,7 @@ QDir GGFileSystemResolver::getBase() const
     return m_base;
 }
 
-QIODevice *GGFileSystemResolver::resolve(const QString &media)
+QIODevice *GGFileSystemResolver::resolve(const QString &media) const
 {
     QString path = m_base.absoluteFilePath(media);
     if (QFile::exists(path)) {
@@ -29,16 +29,21 @@ QIODevice *GGFileSystemResolver::resolve(const QString &media)
     return NULL;
 }
 
-QString GGFileSystemResolver::resolveName(const QString &media)
+QString GGFileSystemResolver::resolveName(const QString &media) const
 {
     QString path = m_base.absoluteFilePath(media);
     return path;
 }
 
-QString GGFileSystemResolver::resolveTypeHint(const QString &media)
+QString GGFileSystemResolver::resolveTypeHint(const QString &media) const
 {
     QFileInfo f(m_base.absoluteFilePath(media));
     return f.completeSuffix();
+}
+
+QString GGFileSystemResolver::resolveFile(const QString &media) const
+{
+    return m_base.absoluteFilePath(media);
 }
 
 bool GGFileSystemResolver::isValid(const QString &media) const
