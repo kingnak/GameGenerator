@@ -6,13 +6,17 @@
 <body>
 
 <script language="javascript">
-###DECISION_FUNCTION###
 
-ggCheckDecision(followLink);
-
-function followLink(url) {
-	window.location.href = url;
+function checkCondition()
+{
+	if (###CONDITION###) {
+		window.location.href = "###TRUE_LINK###";
+	} else {
+		window.location.href = "###FALSE_LINK###";
+	}
 }
+
+checkCondition();
 </script>
 
 </body>

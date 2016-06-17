@@ -2,6 +2,7 @@
 #include "settingsui.h"
 #include "ui_settingsui.h"
 #include <QSettings>
+#include "ggtemplategenerator.h"
 
 GGTemplateGeneratorPlugin::GGTemplateGeneratorPlugin(QObject *parent) :
     QObject(parent),
@@ -100,8 +101,20 @@ bool GGTemplateGeneratorPlugin::isGenerateEnabled()
     return true;
 }
 
-bool GGTemplateGeneratorPlugin::generate(const GGAbstractModel *model, const QDir &output)
+bool GGTemplateGeneratorPlugin::generate(const GGProject *project, const QDir &output)
 {
+    GGTemplateGenerator gen;
+    gen.setConditionFile(m_ui->ui->txtDecisionTmpl->text())
+            .setCSSFile(m_ui->ui->txtCSSTmpl->text())
+            .setDicisionCount(m_ui->ui->spnDecisionsPerRow->value())
+            .setJSFile(m_ui->ui->txtJSTmpl->text())
+            .setPageFile(m_ui->ui->txtPageTmpl->text())
+            .setOutputDirectory(output.absolutePath());
+
+    if (!gen.generate(project)) {
+        QString err = gen.error();
+        return false;
+    }
     return true;
 }
 

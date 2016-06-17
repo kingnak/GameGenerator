@@ -31,7 +31,7 @@ public:
 
     virtual bool isGenerateEnabled();
 
-    virtual bool generate(const GGAbstractModel *model, const QDir &output);
+    virtual bool generate(const GGProject *project, const QDir &output);
 
 private slots:
     void editFile(const QString &file);
