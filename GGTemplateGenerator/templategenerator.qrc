@@ -1,6 +1,6 @@
 <RCC>
     <qresource prefix="/templates">
-        <file>templates/decision.html</file>
+        <file>templates/condition.html</file>
         <file>templates/functions.js</file>
         <file>templates/page.html</file>
         <file>templates/styles.css</file>

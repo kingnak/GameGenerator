@@ -25,9 +25,9 @@ void GGTemplateGeneratorPlugin::setBaseDir(const QDir &dir)
 bool GGTemplateGeneratorPlugin::activate()
 {
     bool ok = true;
-    QString fn = m_baseDir.absoluteFilePath("decision.html");
+    QString fn = m_baseDir.absoluteFilePath("condition.html");
     if (!QFile::exists(fn)) {
-        ok &= writeFile(fn, ":/templates/templates/decision.html");
+        ok &= writeFile(fn, ":/templates/templates/condition.html");
     }
 
     fn = m_baseDir.absoluteFilePath("page.html");
@@ -73,7 +73,7 @@ bool GGTemplateGeneratorPlugin::loadSettings()
 
     m_ui->ui->spnDecisionsPerRow->setValue(dpr);
     m_ui->ui->txtPageTmpl->setText(QDir::toNativeSeparators(m_baseDir.absoluteFilePath("page.html")));
-    m_ui->ui->txtDecisionTmpl->setText(QDir::toNativeSeparators(m_baseDir.absoluteFilePath("decision.html")));
+    m_ui->ui->txtConditionTmpl->setText(QDir::toNativeSeparators(m_baseDir.absoluteFilePath("condition.html")));
     m_ui->ui->txtCSSTmpl->setText(QDir::toNativeSeparators(m_baseDir.absoluteFilePath("styles.css")));
     m_ui->ui->txtJSTmpl->setText(QDir::toNativeSeparators(m_baseDir.absoluteFilePath("functions.js")));
 
@@ -104,7 +104,7 @@ bool GGTemplateGeneratorPlugin::isGenerateEnabled()
 bool GGTemplateGeneratorPlugin::generate(const GGProject *project, const QDir &output)
 {
     GGTemplateGenerator gen;
-    gen.setConditionFile(m_ui->ui->txtDecisionTmpl->text())
+    gen.setConditionFile(m_ui->ui->txtConditionTmpl->text())
             .setCSSFile(m_ui->ui->txtCSSTmpl->text())
             .setDicisionCount(m_ui->ui->spnDecisionsPerRow->value())
             .setJSFile(m_ui->ui->txtJSTmpl->text())
