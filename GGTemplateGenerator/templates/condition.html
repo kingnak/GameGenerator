@@ -7,16 +7,10 @@
 
 <script language="javascript">
 
-function checkCondition()
-{
-	if (###CONDITION###) {
-		window.location.href = "###TRUE_LINK###";
-	} else {
-		window.location.href = "###FALSE_LINK###";
-	}
-}
+###CONDITION_FUNCTION###
 
-checkCondition();
+window.location.href = ggGetConditionLink();
+
 </script>
 
 </body>

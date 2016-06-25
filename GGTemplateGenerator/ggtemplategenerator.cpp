@@ -61,6 +61,8 @@ bool GGTemplateGenerator::generate(const GGProject *project)
     if (m_outDir.isEmpty()) {
         return setError("Output directory not set");
     }
+    gameDir(true);
+
     m_project = project;
 
     bool ok = true;
@@ -70,12 +72,11 @@ bool GGTemplateGenerator::generate(const GGProject *project)
 
     QString js = m_tmplJS;
     js.replace("###FUNCTIONS###", "");
-    writeFile("gggame.js", js);
+    writeFile("ggGame.js", js);
 
     QString css = m_tmplCSS;
-    // TODO: Styles
-    css.replace("###STYLES###", "");
-    writeFile("gggame.css", css);
+    css.replace("###STYLES###", formatStyles());
+    writeFile("ggGame.css", css);
 
     return ok;
 }
@@ -112,13 +113,28 @@ bool GGTemplateGenerator::generatePage(const GGPage *page)
         markerArray["###MAP_REF###"] = "";
     }
 
-    ok &= fillGlobalMarkers(markerArray);
+    QString contentLink;
+    QString overrideFileName;
+    QString relPath;
+    if (const GGStartPage *sp = GG::as<const GGStartPage>(page)) {
+        ok &= generateStartupPages(sp, contentLink);
+        overrideFileName = "start.html";
+        relPath = gameDirName();
+    } else if (/*const GGEndPage *ep =*/ GG::as<const GGEndPage>(page)) {
+        contentLink = getRestartLink();
+    }
+
+    ok &= fillGlobalMarkers(markerArray, relPath);
     ok &= fillPageMarkers(cp, markerArray);
-    ok &= fillContentMarkerArray(cp, markerArray);
+    ok &= fillContentMarkerArray(cp, markerArray, contentLink, relPath);
 
     ok &= substituteMarkerArray(markerArray, tmpl);
 
-    ok &= writeFile(page, tmpl);
+    if (overrideFileName.isEmpty()) {
+        ok &= writeFile(page, tmpl);
+    } else {
+        ok &= writeFile(overrideFileName, tmpl, false);
+    }
 
     return ok;
 }
@@ -129,10 +145,17 @@ bool GGTemplateGenerator::generateConditionPage(const GGConditionPage *page)
     bool ok = true;
 
     QMap<QString, QString> markerArray;
-    ok &= fillGlobalMarkers(markerArray);
+    ok &= fillGlobalMarkers(markerArray, "");
     markerArray["###TRUE_LINK###"] = formatLink(page->trueConnection());
     markerArray["###FALSE_LINK###"] = formatLink(page->falseConnection());
     markerArray["###CONDITION###"] = formatCondition(page->getCondition());
+    QString tmplFunc =
+            "function ggGetConditionLink() {\n"
+            "\tif(###CONDITION###) return \"###TRUE_LINK###\"; else return \"###FALSE_LINK###\";\n"
+            "}";
+
+    ok &= substituteMarkerArray(markerArray, tmplFunc);
+    markerArray["###CONDITION_FUNCTION###"] = tmplFunc;
 
     ok &= substituteMarkerArray(markerArray, tmpl);
     ok &= writeFile(page, tmpl);
@@ -189,8 +212,52 @@ bool GGTemplateGenerator::substituteDecisions(QList<GGLink> links, QString &tmpl
     QString emptyCell = getSubpart("###EMPTY_CELL###", decisions);
     const QString decs = getSubpart("###DECISION###", decisions);
 
-    QString decsSubs;
+    QStringList formattedDecs;
+    for (int i = 0; i < links.size(); ++i) {
+        GGLink l = links[i];
+        QMap<QString, QString> markers;
+        markers["###LINK###"] = formatLink(l.connection());
+        markers["###ACTION_LINK###"] = formatAction(l.action());
+        markers["###TITLE###"] = l.name();
 
+        QString line = decs;
+        substituteMarkerArray(markers, line);
+        formattedDecs << line;
+    }
+
+
+    QString decsSubs;
+    int fullRows = links.size() / m_ctDecisions;
+    for (int i = 0; i < fullRows; ++i) {
+        if (i > 0) {
+            decsSubs += delim;
+        }
+        for (int j = 0; j < m_ctDecisions; ++j) {
+            decsSubs += formattedDecs[i*m_ctDecisions+j];
+        }
+    }
+
+    int remain = links.size() % m_ctDecisions;
+    if (remain > 0) {
+        decsSubs += delim;
+        int off = links.size() - remain;
+        int diff = m_ctDecisions - remain;
+        bool lastWasLink = false;
+
+        while (diff > 0 || remain > 0) {
+            if ((diff > remain) || (diff == remain && lastWasLink)) {
+                decsSubs += emptyCell;
+                lastWasLink = false;
+                diff--;
+            } else {
+                decsSubs += formattedDecs[off++];
+                lastWasLink = true;
+                remain--;
+            }
+        }
+    }
+
+    /*
     for (int i = 0; i < links.size(); ++i) {
         GGLink l = links[i];
         if ((i % m_ctDecisions) == 0 && i > 0) {
@@ -211,6 +278,7 @@ bool GGTemplateGenerator::substituteDecisions(QList<GGLink> links, QString &tmpl
             decsSubs += emptyCell;
         }
     }
+    */
 
     decisions = substituteSubpart("###DECISION###", decsSubs, decisions);
     decisions = substituteSubpart("###ROW_DELIM###", "", decisions);
@@ -219,13 +287,15 @@ bool GGTemplateGenerator::substituteDecisions(QList<GGLink> links, QString &tmpl
     return true;
 }
 
-bool GGTemplateGenerator::fillGlobalMarkers(QMap<QString, QString> &marker)
+bool GGTemplateGenerator::fillGlobalMarkers(QMap<QString, QString> &marker, QString includeRelPath)
 {
+    if (!includeRelPath.isEmpty()) includeRelPath += "/";
+
     marker["###GAME_NAME###"] = m_project->title();
     marker["###SCRIPT_INCLUDE###"] = QString("<script type=\"text/javascript\" src=\"%1\"></script>")
-            .arg("gggame.js");
+            .arg(includeRelPath+"ggGame.js");
     marker["###STYLE_INCLUDE###"] = QString("<link rel=\"stylesheet\" type=\"text/css\" href=\"%1\"></script>")
-            .arg("gggame.css");
+            .arg(includeRelPath+"ggGame.css");
     return true;
 }
 
@@ -235,17 +305,68 @@ bool GGTemplateGenerator::fillPageMarkers(const GGContentPage *cp, QMap<QString,
     return true;
 }
 
-bool GGTemplateGenerator::fillContentMarkerArray(const GGContentPage *cp, QMap<QString, QString> &marker)
+bool GGTemplateGenerator::fillContentMarkerArray(const GGContentPage *cp, QMap<QString, QString> &marker, const QString &contentLink, QString includeRelPath)
 {
+    if (!includeRelPath.isEmpty()) includeRelPath += "/";
     bool ok = true;
     if (const GGImageContent *im = dynamic_cast<const GGImageContent*>(cp->content())) {
 
         QString imgPath;
         ok &= copyMedia(cp, im->imageFilePath(), imgPath);
-        marker["###CONTENT###"] = QString("<img src=\"%1\"###MAP_REF###>").arg(imgPath);
+
+        QString cont = QString("<img src=\"%1\"###MAP_REF###>").arg(includeRelPath + imgPath);
+        if (!contentLink.isEmpty()) {
+            cont = QString("<a href=\"%1\">%2</a>").arg(contentLink, cont);
+        }
+
+        marker["###CONTENT###"] = cont;
         return ok;
     }
     return setError("Unsupported media type");
+}
+
+bool GGTemplateGenerator::generateStartupPages(const GGStartPage *sp, QString &entryLink)
+{
+    QList<GGVariable> vars = m_project->model()->variables().toList();
+    QString init;
+    QString reset;
+
+    foreach (GGVariable v, vars) {
+        QString varSetter = QString("ggSetVar('%1', '%2');").arg(v.name(), v.value());
+        if (v.type() == GGVariable::Persistent) {
+            init += varSetter + "\n";
+        } else {
+            reset += varSetter + "\n";
+        }
+    }
+
+    QString tmpl =
+            "<html>\n"
+            "<head>\n"
+            "<script type=\"text/javascript\" src=\"%4\"></script>\n"
+            "<script type=\"text/javascript\">\n"
+            "%1\n"
+            "%2\n"
+            "window.location.href = \"%3\"\n"
+            "</script>\n"
+            "</head>\n"
+            "</html>\n";
+
+    QString realStartLink = formatLink(sp->startConnection());
+    QString contInit = tmpl.arg(init, "ggInitGame();", getRestartLink(), "ggGame.js");
+    QString contReset = tmpl.arg(reset, "ggResetGame();", realStartLink, "ggGame.js");
+
+    bool ok = true;
+    ok &= writeFile("ggInit.html", contInit);
+    ok &= writeFile(getRestartLink(), contReset);
+
+    entryLink = gameDirName() + "/ggInit.html";
+    return ok;
+}
+
+QString GGTemplateGenerator::getRestartLink() const
+{
+    return "ggRestart.html";
 }
 
 bool GGTemplateGenerator::substituteMarkerArray(QMap<QString, QString> marker, QString &tmpl)
@@ -259,10 +380,10 @@ bool GGTemplateGenerator::substituteMarkerArray(QMap<QString, QString> marker, Q
 QString GGTemplateGenerator::substituteSubpart(const QString &part, const QString &content, const QString &tmpl)
 {
     int start = tmpl.indexOf(part);
-    if (start < 0) return content;
+    if (start < 0) return tmpl;
     int startAM = start + part.length();
     int stop = tmpl.indexOf(part, startAM);
-    if (stop < 0) return content;
+    if (stop < 0) return tmpl;
     int stopAM = stop + part.length();
 
     QString before = tmpl.left(start);
@@ -278,6 +399,16 @@ QString GGTemplateGenerator::substituteSubpart(const QString &part, const QStrin
     return before + content + after;
 }
 
+QString GGTemplateGenerator::formatStyles()
+{
+    QString styles;
+    styles += m_project->model()->getStyler()->basicStyle().toCSS("body");
+    foreach (GGStyle s, m_project->model()->getStyler()->styles()) {
+        styles += s.toCSS();
+    }
+    return styles;
+}
+
 QString GGTemplateGenerator::formatAction(GGAction act)
 {
     QString op;
@@ -285,9 +416,9 @@ QString GGTemplateGenerator::formatAction(GGAction act)
     case GGAction::None: return "";
     case GGAction::Add: op = "ggVarPlus('%1', %2);"; break;
     case GGAction::Sub: op = "ggVarMinus('%1', %2);"; break;
-    //case GGAction::Multiply: op = "ggVarAdd('%1', %2);"; break;
-    //case GGAction::Divide: op = "ggVarAdd('%1', %2);"; break;
-    case GGAction::Set: op = "ggSetVar('%1', %2);"; break;
+    //case GGAction::Multiply: op = "ggVarMul('%1', %2);"; break;
+    //case GGAction::Divide: op = "ggVarDiv('%1', %2);"; break;
+    case GGAction::Set: op = "ggSetVar('%1', '%2');"; break;
     case GGAction::Unset: op = "ggDeleteVar('%1');"; break;
     }
     op = op.arg(act.variableName(), act.value());
@@ -344,6 +475,12 @@ QString GGTemplateGenerator::getSubpart(const QString &part, const QString &tmpl
 
 bool GGTemplateGenerator::copyMedia(const GGPage *page, const QString &media, QString &fOut, int ct)
 {
+    // Reuse already created file
+    if (m_mediaMap.contains(media)) {
+        fOut = m_mediaMap[media];
+        return true;
+    }
+
     QString fOrig = m_project->resolver()->resolveFile(media);
     if (fOrig.isEmpty()) {
         // Could be a internal resolver, not based on real files.
@@ -358,7 +495,12 @@ bool GGTemplateGenerator::copyMedia(const GGPage *page, const QString &media, QS
     }
     name += "." + m_project->resolver()->resolveTypeHint(media);
     fOut = name;
-    return QFile::copy(fOrig, QDir(m_outDir).absoluteFilePath(name));
+    if (QFile::copy(fOrig, gameDir().absoluteFilePath(name))) {
+        // Cache name
+        m_mediaMap[media] = name;
+        return true;
+    }
+    return false;
 }
 
 bool GGTemplateGenerator::writeFile(const GGPage *page, const QString &content)
@@ -367,9 +509,12 @@ bool GGTemplateGenerator::writeFile(const GGPage *page, const QString &content)
     return writeFile(fname, content);
 }
 
-bool GGTemplateGenerator::writeFile(const QString &name, const QString &content)
+bool GGTemplateGenerator::writeFile(const QString &name, const QString &content, bool inSubDir)
 {
-    QString fname = QDir(m_outDir).absoluteFilePath(name);
+    QDir d(m_outDir);
+    if (inSubDir) d = gameDir();
+
+    QString fname = d.absoluteFilePath(name);
     QFile fOut(fname);
     if (!fOut.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
         return setError("Cannot open " + fname + " for writing");
@@ -410,4 +555,18 @@ bool GGTemplateGenerator::parseFile(const QString &file, QString &out)
         return setStartupError("Error reading file " + file);
     }
     return true;
+}
+
+QDir GGTemplateGenerator::gameDir(bool create) const
+{
+    QDir d = QDir(m_outDir);
+    if (create) {
+        d.mkdir(gameDirName());
+    }
+    return QDir(d.absoluteFilePath(gameDirName()));
+}
+
+QString GGTemplateGenerator::gameDirName() const
+{
+    return "game";
 }
