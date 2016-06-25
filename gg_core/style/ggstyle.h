@@ -21,6 +21,8 @@ public:
     QColor foreground() const;
     void setForeground(const QColor &foreground);
 
+    QString toCSS(const QString &selector) const;
+
 private:
     QString m_font;
     quint8 m_ptSize;
@@ -38,6 +40,8 @@ public:
 
     QColor foreground() const;
     void setForeground(const QColor &foreground);
+
+    QString toCSS() const;
 
 private:
     QString m_name;

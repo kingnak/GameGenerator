@@ -49,6 +49,18 @@ void GGBasicStyle::setForeground(const QColor &foreground)
     m_foreground = foreground;
 }
 
+QString GGBasicStyle::toCSS(const QString &selector) const
+{
+    QString ret;
+    ret = selector + " {\n";
+    ret += QString("\tfont-size: %1pt;\n").arg(m_ptSize);
+    ret += QString("\tfont-family: \"%1\";\n").arg(m_font);
+    ret += QString("\tcolor: rgb(%1,%2,%3);\n").arg(m_foreground.red()).arg(m_foreground.green()).arg(m_foreground.blue());
+    ret += QString("\tbackground-color: rgb(%1,%2,%3);\n").arg(m_background.red()).arg(m_background.green()).arg(m_background.blue());
+    ret += "}\n\n";
+    return ret;
+}
+
 /////////////////////////
 
 GGStyle::GGStyle()
@@ -74,4 +86,13 @@ QColor GGStyle::foreground() const
 void GGStyle::setForeground(const QColor &foreground)
 {
     m_foreground = foreground;
+}
+
+QString GGStyle::toCSS() const
+{
+    QString ret;
+    ret = QString(".%1 {\n").arg(m_name);
+    ret += QString("\tcolor: rgb(%1,%2,%3);\n").arg(m_foreground.red()).arg(m_foreground.green()).arg(m_foreground.blue());
+    ret += "}\n\n";
+    return ret;
 }
