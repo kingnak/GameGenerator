@@ -112,8 +112,14 @@ void GGGeneratorDialog::generate()
                 }
             }
 
-            if (!currentGenerator()->generate(m_project, out)) {
+            qApp->setOverrideCursor(Qt::WaitCursor);
+            bool ok = currentGenerator()->generate(m_project, out);
+            qApp->restoreOverrideCursor();
+
+            if (!ok) {
                 QMessageBox::critical(this, "Generator", "Error generating game");
+            } else {
+                QMessageBox::information(this, "Generator", "Generation finished");
             }
         }
     }
