@@ -140,12 +140,12 @@ void GGGeneratorDialog::loadGenerators(const QDir &generatorsDir, const QDir &pl
 
     if (gens.size() > 1) {
         struct GenComp {
-            bool operator()(GGGeneratorInterface *g1, GGGeneratorInterface *g2) {
+            static bool comp(GGGeneratorInterface *g1, GGGeneratorInterface *g2) {
                 return g1->name() < g2->name();
             }
         };
 
-        qSort(gens.begin(), gens.end(), GenComp());
+        qSort(gens.begin(), gens.end(), GenComp::comp);
         qWarning() << "More than 1 generator. Only loading first";
     }
 

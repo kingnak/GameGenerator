@@ -138,7 +138,7 @@ bool GGTemplateGeneratorPlugin::writeFile(QString dest, QString src)
     }
 
     QByteArray ba = in.readAll();
-    quint64 s = out.write(ba);
+    qint64 s = out.write(ba);
     return s == ba.size();
 }
 

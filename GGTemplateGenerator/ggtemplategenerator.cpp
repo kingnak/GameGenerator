@@ -12,7 +12,8 @@
 #include <style/ggabstractstyler.h>
 
 GGTemplateGenerator::GGTemplateGenerator()
-    : m_ctDecisions(3), m_startupError(false)
+    : m_startupError(false),
+      m_ctDecisions(3)
 {
 
 }
