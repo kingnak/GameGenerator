@@ -13,6 +13,7 @@ public:
     static QString sanatizeFileName(QString name);
     static QString versionToString(quint32 version);
     static quint32 stringToVersion(QString str);
+    static QString escapeHtml(QString text);
 };
 
 #endif // GGUTILITIES_H

@@ -4,7 +4,8 @@
 #include <QIcon>
 
 GGSearchResultModel::GGSearchResultModel(QObject *parent)
-    : QAbstractListModel(parent)
+    : QAbstractListModel(parent),
+      m_escapeHtml(false)
 {
 
 }
@@ -45,7 +46,7 @@ QVariant GGSearchResultModel::data(const QModelIndex &index, int role) const
                 return m_results[index.row()].matchString();
             } else {
                 QString match = m_results[index.row()].matchString();
-                return m_results.request().formatMatch(match, m_highPre, m_highPost);
+                return m_results.request().formatMatch(match, m_highPre, m_highPost, m_escapeHtml);
             }
         }
     }
@@ -76,10 +77,11 @@ int GGSearchResultModel::columnCount(const QModelIndex &parent) const
     return COLUMN_COUNT;
 }
 
-void GGSearchResultModel::setMatchHighlightDecoration(const QString &preFix, const QString &postFix)
+void GGSearchResultModel::setMatchHighlightDecoration(const QString &preFix, const QString &postFix, bool escapeHtml)
 {
     m_highPre = preFix;
     m_highPost = postFix;
+    m_escapeHtml = escapeHtml;
 }
 
 void GGSearchResultModel::setSearchResults(const GGSearchResult &results)

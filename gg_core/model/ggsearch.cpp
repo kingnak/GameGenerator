@@ -1,4 +1,5 @@
 #include "ggsearch.h"
+#include <ggutilities.h>
 
 GGSearchRequest::GGSearchRequest(const QString &term, int type, int what)
     : m_type(type), m_what(what), m_max(-1), m_scene(GG::InvalidSceneId)
@@ -50,21 +51,41 @@ bool GGSearchRequest::searchLinks() const
     return (m_what & (Variable | Function | LinkName)) != 0;
 }
 
-QString GGSearchRequest::formatMatch(const QString &str, const QString &preFix, const QString &postFix) const
+QString GGSearchRequest::formatMatch(const QString &str, const QString &preFix, const QString &postFix, bool escapeHtml) const
 {
-    if (!matches(str)) return str;
+    if (!matches(str)) return escapeHtml ? GGUtilities::escapeHtml(str) : str;
 
     if (m_type.testFlag(Exact)) {
         // Exact. Whole string must match
-        return preFix + str + postFix;
+        return preFix + (escapeHtml ? GGUtilities::escapeHtml(str) : str) + postFix;
     }
     if (m_type.testFlag(StartsWith)) {
         // Starts with. Can only be at start
+        if (escapeHtml)
+            return preFix + GGUtilities::escapeHtml(m_term) + postFix + GGUtilities::escapeHtml(str.mid(m_term.length()));
         return preFix + m_term + postFix + str.mid(m_term.length());
     }
 
     // Find ALL matches and highlight them
-    QString s = str;
-    s.replace(m_matcher, preFix+m_matcher.cap(1)+postFix);
+    QString s;
+    if (escapeHtml) {
+        int pos = 0;
+        do {
+            int posNew = m_matcher.indexIn(str, pos);
+            if (posNew < 0) {
+                s += GGUtilities::escapeHtml(str.mid(pos));
+                break;
+            }
+            if (posNew > pos) {
+                s += GGUtilities::escapeHtml(str.mid(pos, posNew - pos));
+            }
+            s += preFix + GGUtilities::escapeHtml(str.mid(posNew, m_matcher.matchedLength())) + postFix;
+            pos = posNew + m_matcher.matchedLength();
+        } while (true);
+
+    } else {
+        s = str;
+        s.replace(m_matcher, preFix+m_matcher.cap(1)+postFix);
+    }
     return s;
 }

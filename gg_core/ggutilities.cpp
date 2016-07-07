@@ -43,3 +43,11 @@ quint32 GGUtilities::stringToVersion(QString str)
     }
     return 0xFFFFFFFF;
 }
+
+QString GGUtilities::escapeHtml(QString text)
+{
+    text.replace('&', "&amp;");
+    text.replace('<', "&lt;");
+    text.replace('>', "&gt;");
+    return text;
+}

@@ -15,7 +15,7 @@ public:
     int rowCount(const QModelIndex &parent) const;
     int columnCount(const QModelIndex &parent) const;
 
-    void setMatchHighlightDecoration(const QString &preFix, const QString &postFix);
+    void setMatchHighlightDecoration(const QString &preFix, const QString &postFix, bool escapeHtml);
 
     enum Columns {
         WHAT_COLUMN = 0,
@@ -43,6 +43,7 @@ private:
     GGSearchResult m_results;
     QString m_highPre;
     QString m_highPost;
+    bool m_escapeHtml;
 
     static const int COLUMN_COUNT = 4;
 };

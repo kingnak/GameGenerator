@@ -55,7 +55,7 @@ public:
     bool matches(const QString &str) const;
     bool searchLinks() const;
 
-    QString formatMatch(const QString &str, const QString &preFix, const QString &postFix) const;
+    QString formatMatch(const QString &str, const QString &preFix, const QString &postFix, bool escapeHtml) const;
 
 private:
     Types m_type;
