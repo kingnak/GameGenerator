@@ -1,7 +1,7 @@
 #ifndef GGXMLSERIALIZER_H
 #define GGXMLSERIALIZER_H
 
-#include <Qvariant>
+#include <QVariant>
 #include <QSet>
 
 class QXmlStreamWriter;
