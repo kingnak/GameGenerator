@@ -111,6 +111,9 @@
          <property name="viewMode">
           <enum>QListView::IconMode</enum>
          </property>
+         <property name="batchSize">
+          <number>1</number>
+         </property>
         </widget>
        </item>
        <item>
