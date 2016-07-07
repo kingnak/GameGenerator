@@ -34,6 +34,8 @@ public:
     QTextDocument *getDocument() const;
     bool hasModification() const;
 
+    bool eventFilter(QObject *watched, QEvent *event);
+
 private slots:
     void applyStyle();
     void toggleItalic();
