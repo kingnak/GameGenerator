@@ -78,6 +78,11 @@ void GGStyle::setName(const QString &name)
     m_name = name;
 }
 
+QString GGStyle::cssConformName() const
+{
+    return cssConformName(m_name);
+}
+
 QColor GGStyle::foreground() const
 {
     return m_foreground;
@@ -91,8 +96,14 @@ void GGStyle::setForeground(const QColor &foreground)
 QString GGStyle::toCSS() const
 {
     QString ret;
-    ret = QString(".%1 {\n").arg(m_name);
+    ret = QString(".%1 {\n").arg(cssConformName());
     ret += QString("\tcolor: rgb(%1,%2,%3);\n").arg(m_foreground.red()).arg(m_foreground.green()).arg(m_foreground.blue());
     ret += "}\n\n";
     return ret;
+}
+
+QString GGStyle::cssConformName(const QString &name)
+{
+    QString n = name;
+    return n.replace(QRegExp("[^_A-Za-z1-9]"), "_");
 }

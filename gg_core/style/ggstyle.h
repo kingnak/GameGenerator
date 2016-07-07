@@ -38,10 +38,14 @@ public:
     QString name() const;
     void setName(const QString &name);
 
+    QString cssConformName() const;
+
     QColor foreground() const;
     void setForeground(const QColor &foreground);
 
     QString toCSS() const;
+
+    static QString cssConformName(const QString &name);
 
 private:
     QString m_name;

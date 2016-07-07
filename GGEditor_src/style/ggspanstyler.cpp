@@ -156,8 +156,7 @@ QTextFormat GGSpanStyler::formatForStyle(const GGStyle &style) const
 
 QString GGSpanStyler::sanitizeStyleName(const QString &name) const
 {
-    QString n = name;
-    return n.replace(QRegExp("[^_A-Za-z1-9]"), "_");
+    return GGStyle::cssConformName(name);
 }
 
 QString GGSpanStyler::styleNameForFormat(const QTextFormat &format) const
