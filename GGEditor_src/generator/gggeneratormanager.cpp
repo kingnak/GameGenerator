@@ -18,8 +18,11 @@ bool GGGeneratorManager::loadGenerators(QDir pluginDir)
     unloadGenerators();
 
     QString path = pluginDir.absolutePath();
+#ifdef Q_OS_WIN
     QStringList lst = pluginDir.entryList(QStringList() << "*.dll", QDir::Files);
-
+#else
+    QStringList lst = pluginDir.entryList(QStringList() << "*.so", QDir::Files);
+#endif
     foreach (QString p, lst) {
         QString file = pluginDir.absoluteFilePath(p);
         QPluginLoader *loader = new QPluginLoader(file);
