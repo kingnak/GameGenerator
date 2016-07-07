@@ -2,6 +2,7 @@
 #include "ui_ggedittextdialog.h"
 #include <style/ggabstractstyler.h>
 #include <QMimeData>
+#include <QKeyEvent>
 
 Q_DECLARE_METATYPE(QTextCharFormat)
 
@@ -12,6 +13,7 @@ GGEditTextDialog::GGEditTextDialog(QWidget *parent) :
     m_updatingStyle(false)
 {
     ui->setupUi(this);
+    ui->txtText->installEventFilter(this);
 }
 
 GGEditTextDialog::~GGEditTextDialog()
@@ -69,6 +71,20 @@ QTextDocument *GGEditTextDialog::getDocument() const
 bool GGEditTextDialog::hasModification() const
 {
     return ui->txtText->document()->isModified();
+}
+
+bool GGEditTextDialog::eventFilter(QObject *watched, QEvent *event)
+{
+    if (watched != ui->txtText) return false;
+    if (event->type() != QEvent::KeyPress) return false;
+
+    QKeyEvent *ke = static_cast<QKeyEvent*> (event);
+    // Accept on Ctrl+Return
+    if (ke->modifiers().testFlag(Qt::ControlModifier) && ke->key() == Qt::Key_Return) {
+        this->accept();
+        return true;
+    }
+    return false;
 }
 
 void GGEditTextDialog::applyStyle()
