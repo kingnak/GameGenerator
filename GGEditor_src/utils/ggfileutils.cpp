@@ -16,8 +16,8 @@ bool GGFileUtils::recursiveClearDir(const QDir &path)
 
     QFileInfoList dirs = path.entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot);
     foreach (QFileInfo fi, dirs) {
-        ok &= recursiveClearDir(fi.absoluteFilePath());
-        ok &= QDir(fi.absoluteFilePath()).rmdir(".");
+        QDir d(fi.absoluteFilePath());
+        ok &= d.removeRecursively();
     }
     return ok;
 }
