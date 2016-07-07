@@ -34,6 +34,12 @@
    </item>
    <item>
     <widget class="QTreeView" name="lstResults">
+     <property name="iconSize">
+      <size>
+       <width>16</width>
+       <height>16</height>
+      </size>
+     </property>
      <property name="indentation">
       <number>0</number>
      </property>

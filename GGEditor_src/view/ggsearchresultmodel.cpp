@@ -151,31 +151,31 @@ QVariant GGSearchResultModel::getWhereData(GGSearchResultItem::Where where, int 
     //case GGSearchResultItem::PageCaption: return "T";
     case GGSearchResultItem::LinkAction:
         if (role == Qt::DecorationRole)
-            return QPixmap(":/search/link");
+            return QPixmap(":/search/link").scaledToHeight(16);
         if (role == Qt::ToolTipRole)
             return "In Link Action";
         break;
     case GGSearchResultItem::Action:
         if (role == Qt::DecorationRole)
-            return QPixmap(":/search/actionpage");
+            return QPixmap(":/search/actionpage").scaledToHeight(16);
         if (role == Qt::ToolTipRole)
             return "In Page Action";
         break;
     case GGSearchResultItem::Condition:
         if (role == Qt::DecorationRole)
-            return QPixmap(":/search/condition");
+            return QPixmap(":/search/condition").scaledToHeight(16);
         if (role == Qt::ToolTipRole)
             return "In Condition";
         break;
     case GGSearchResultItem::Definition:
         if (role == Qt::DecorationRole)
-            return QPixmap(":/search/definition");
+            return QPixmap(":/search/definition").scaledToHeight(16);
         if (role == Qt::ToolTipRole)
             return "In Definition";
         break;
     default:
         if (role == Qt::DecorationRole)
-            return QPixmap(":/search/other");
+            return QPixmap(":/search/other").scaledToHeight(16);
         if (role == Qt::ToolTipRole)
             return "Elsewhere";
         break;
