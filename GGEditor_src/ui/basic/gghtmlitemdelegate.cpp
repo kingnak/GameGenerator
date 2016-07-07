@@ -13,7 +13,7 @@ void GGHtmlItemDelegate::paint(QPainter* painter, const QStyleOptionViewItem & o
     doc.setHtml(options.text);
 
     options.text = "";
-    options.widget->style()->drawControl(QStyle::CE_ItemViewItem, &options, painter);
+    option.widget->style()->drawControl(QStyle::CE_ItemViewItem, &options, painter, options.widget);
 
     painter->translate(options.rect.left(), options.rect.top());
     QRect clip(0, 0, options.rect.width(), options.rect.height());
