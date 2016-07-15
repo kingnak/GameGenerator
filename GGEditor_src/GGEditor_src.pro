@@ -93,7 +93,8 @@ SOURCES += \
     generator/gggeneratormanager.cpp \
     ui/dialogs/gggeneratordialog.cpp \
     ui/dialogs/ggpreferencesdialog.cpp \
-    utils/ggfileutils.cpp
+    utils/ggfileutils.cpp \
+    ui/dialogs/ggaboutdialog.cpp
 
 HEADERS += \
     model/ggeditmodel.h \
@@ -187,7 +188,8 @@ HEADERS += \
     generator/gggeneratormanager.h \
     ui/dialogs/gggeneratordialog.h \
     ui/dialogs/ggpreferencesdialog.h \
-    utils/ggfileutils.h
+    utils/ggfileutils.h \
+    ui/dialogs/ggaboutdialog.h
 unix {
     target.path = /usr/lib
     INSTALLS += target
@@ -232,7 +234,8 @@ FORMS += \
     ui/panes/ggeditcaptionpane.ui \
     ui/components/ggerrorpane.ui \
     ui/dialogs/gggeneratordialog.ui \
-    ui/dialogs/ggpreferencesdialog.ui
+    ui/dialogs/ggpreferencesdialog.ui \
+    ui/dialogs/ggaboutdialog.ui
 
 RESOURCES += \
     ui/resources.qrc
